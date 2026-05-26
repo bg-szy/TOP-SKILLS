@@ -1,26 +1,9 @@
 name: Publish Site
-on: [push]
+on:
+  push: {}
+  workflow_dispatch: {}
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      - run: pip install pyyaml
-      - run: python scripts/generate_site.py
-      - run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git checkout --orphan gh-pages
-          rm -f .git/index
-          git clean -fdx
-          cp -r site/. .
-          touch .nojekyll
-          git add -A
-          git commit -m "Deploy $(date -u +%Y%m%d-%H%M%S)" || true
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git push origin gh-pages --force || true
+      - run: echo "hello"
