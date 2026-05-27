@@ -154,22 +154,25 @@ def get_git_timeline(skill_sources: set) -> tuple:
             source_added = {}
             continue
 
-        # Track skills/ paths
-        if line.startswith("skills/") and line not in seen_global:
-            seen_global.add(line)
-            global_added += 1
-
-            # Extract source from path: skills/{source}/{skill_name}/...
+        # Track skills/ directories (deduplicate by skill dir, not individual files)
+        if line.startswith("skills/") and '/' in line:
             path_parts = line.split("/")
             if len(path_parts) >= 3:
+                # Extract skill directory: skills/{source}/{skill_name}
+                skill_dir = f"{path_parts[0]}/{path_parts[1]}/{path_parts[2]}"
                 src = path_parts[1]
-                if src not in seen_per_source:
-                    seen_per_source[src] = set()
-                if line not in seen_per_source[src]:
-                    seen_per_source[src].add(line)
-                    if src not in source_added:
-                        source_added[src] = 0
-                    source_added[src] += 1
+
+                if skill_dir not in seen_global:
+                    seen_global.add(skill_dir)
+                    global_added += 1
+
+                    if src not in seen_per_source:
+                        seen_per_source[src] = set()
+                    if skill_dir not in seen_per_source[src]:
+                        seen_per_source[src].add(skill_dir)
+                        if src not in source_added:
+                            source_added[src] = 0
+                        source_added[src] += 1
 
     # Last commit
     if current_date and global_added > 0:
