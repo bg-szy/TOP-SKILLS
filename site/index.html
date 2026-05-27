@@ -356,6 +356,8 @@ const I18N = {
   statSources:    ['来源仓库', 'Sources'],
   statFiles:      ['文件总数', 'Total Files'],
   statReadTime:   ['平均阅读时长(分钟)', 'Avg Read Time (min)'],
+  statVisits:     ['访问总量', 'Total Visits'],
+  statToday:      ['今日访问', 'Today\'s Visits'],
 
   // Dashboard charts
   chartSource:    ['各来源技能分布', 'Skills by Source'],
@@ -481,6 +483,27 @@ function applyLang() {
 // ======================================================================
 let DATA = null;
 window._charts = {};
+let visitorCount = null;
+let visitorToday = null;
+
+async function fetchVisitorCount() {
+  try {
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 4000);
+    const [totalResp, todayResp] = await Promise.all([
+      fetch('https://api.countapi.xyz/hit/top-skills/visits', { signal: ctrl.signal }),
+      fetch('https://api.countapi.xyz/hit/top-skills/today', { signal: ctrl.signal }),
+    ]);
+    clearTimeout(tid);
+    if (totalResp.ok) { const d = await totalResp.json(); visitorCount = d.value; }
+    if (todayResp.ok) { const d = await todayResp.json(); visitorToday = d.value; }
+  } catch (_) { /* count API unavailable */ }
+  // Update stat cards if they exist
+  const el = document.getElementById('visitCount');
+  if (el) el.textContent = visitorCount != null ? visitorCount.toLocaleString() : '-';
+  const el2 = document.getElementById('visitToday');
+  if (el2) el2.textContent = visitorToday != null ? visitorToday.toLocaleString() : '-';
+}
 
 function destroyChart(name) {
   if (window._charts[name]) {
@@ -494,6 +517,8 @@ function destroyAllCharts() {
 }
 
 async function loadData() {
+  // Start visitor counter in parallel
+  fetchVisitorCount();
   const resp = await fetch('data/skills.json');
   DATA = await resp.json();
   initApp();
@@ -593,13 +618,15 @@ function initApp() {
 function renderDashboard(stats, skills, timeline) {
   // Stats cards
   const cards = [
-    { num: stats.total_skills, label: t('statTotal'), cls: '' },
-    { num: stats.total_sources, label: t('statSources'), cls: 'green' },
-    { num: stats.total_files, label: t('statFiles'), cls: 'orange' },
-    { num: stats.avg_read_time, label: t('statReadTime'), cls: 'purple' },
+    { num: stats.total_skills, label: t('statTotal'), cls: '', id: '' },
+    { num: stats.total_sources, label: t('statSources'), cls: 'green', id: '' },
+    { num: stats.total_files, label: t('statFiles'), cls: 'orange', id: '' },
+    { num: stats.avg_read_time, label: t('statReadTime'), cls: 'purple', id: '' },
+    { num: visitorCount != null ? visitorCount.toLocaleString() : '-', label: t('statVisits'), cls: '', id: 'visitCount' },
+    { num: visitorToday != null ? visitorToday.toLocaleString() : '-', label: t('statToday'), cls: '', id: 'visitToday' },
   ];
   document.getElementById('statsGrid').innerHTML = cards.map(c =>
-    `<div class="stat-card ${c.cls}"><div class="number">${c.num}</div><div class="label">${c.label}</div></div>`
+    `<div class="stat-card ${c.cls}"><div class="number"${c.id ? ` id="${c.id}"` : ''}>${c.num}</div><div class="label">${c.label}</div></div>`
   ).join('');
 
   const colors = ['#58a6ff','#3fb950','#d29922','#bc8cff','#f78166','#79c0ff'];
