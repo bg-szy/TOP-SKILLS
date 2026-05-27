@@ -22,12 +22,14 @@ jobs:
 
       - name: Deploy to gh-pages
         run: |
+          cp -r site/. /tmp/gh-pages/
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git checkout --orphan gh-pages
           rm -f .git/index
           git clean -fdx
-          cp -r site/. .
+          cp -r /tmp/gh-pages/. .
+          rm -rf /tmp/gh-pages
           touch .nojekyll
           git add -A
           git commit -m "Deploy $(date -u +%Y%m%d-%H%M%S)" || true
