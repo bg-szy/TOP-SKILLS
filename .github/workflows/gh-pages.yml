@@ -4,15 +4,18 @@ on:
     branches: [master]
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -25,7 +28,7 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git checkout --orphan gh-pages
+          git checkout --orphan gh-pages 2>/dev/null || git switch --orphan gh-pages
           rm -f .git/index
           git clean -fdx
           cp -r site/. .
