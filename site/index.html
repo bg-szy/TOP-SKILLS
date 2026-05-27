@@ -357,7 +357,7 @@ const I18N = {
   statFiles:      ['文件总数', 'Total Files'],
   statReadTime:   ['平均阅读时长(分钟)', 'Avg Read Time (min)'],
   statVisits:     ['访问总量', 'Total Visits'],
-  statToday:      ['今日访问', 'Today\'s Visits'],
+  statVisitors:   ['访客数', 'Visitors'],
 
   // Dashboard charts
   chartSource:    ['各来源技能分布', 'Skills by Source'],
@@ -484,7 +484,7 @@ function applyLang() {
 let DATA = null;
 window._charts = {};
 let visitorCount = null;
-let visitorToday = null;
+let visitorUV = null;
 
 async function fetchVisitorCount() {
   // Try Busuanzi (accessible from China), fallback to localStorage
@@ -501,7 +501,7 @@ async function fetchVisitorCount() {
       setTimeout(() => { try { document.head.removeChild(s); } catch(_) {} }, 6000);
     });
     visitorCount = data.site_pv || null;
-    visitorToday = data.site_uv || null;
+    visitorUV = data.site_uv || null;
   } catch (_) {
     // Fallback: localStorage local counter
     const key = 'top-skills-visits';
@@ -510,13 +510,13 @@ async function fetchVisitorCount() {
     n += 1;
     localStorage.setItem(key, n);
     visitorCount = n;
-    visitorToday = null;
+    visitorUV = null;
   }
   // Update DOM
   const el = document.getElementById('visitCount');
   if (el) el.textContent = visitorCount != null ? visitorCount.toLocaleString() : '-';
-  const el2 = document.getElementById('visitToday');
-  if (el2) el2.textContent = visitorToday != null ? visitorToday.toLocaleString() : '-';
+  const el2 = document.getElementById('visitUV');
+  if (el2) el2.textContent = visitorUV != null ? visitorUV.toLocaleString() : '-';
 }
 
 function destroyChart(name) {
@@ -637,7 +637,7 @@ function renderDashboard(stats, skills, timeline) {
     { num: stats.total_files, label: t('statFiles'), cls: 'orange', id: '' },
     { num: stats.avg_read_time, label: t('statReadTime'), cls: 'purple', id: '' },
     { num: visitorCount != null ? visitorCount.toLocaleString() : '-', label: t('statVisits'), cls: '', id: 'visitCount' },
-    { num: visitorToday != null ? visitorToday.toLocaleString() : '-', label: t('statToday'), cls: '', id: 'visitToday' },
+    { num: visitorUV != null ? visitorUV.toLocaleString() : '-', label: t('statVisitors'), cls: '', id: 'visitUV' },
   ];
   document.getElementById('statsGrid').innerHTML = cards.map(c =>
     `<div class="stat-card ${c.cls}"><div class="number"${c.id ? ` id="${c.id}"` : ''}>${c.num}</div><div class="label">${c.label}</div></div>`
