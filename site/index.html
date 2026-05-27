@@ -500,8 +500,10 @@ async function fetchVisitorCount() {
       // Cleanup
       setTimeout(() => { try { document.head.removeChild(s); } catch(_) {} }, 6000);
     });
-    visitorCount = data.site_pv || null;
-    visitorUV = data.site_uv || null;
+    if (data && typeof data === 'object') {
+      visitorCount = data.site_pv != null ? data.site_pv : null;
+      visitorUV = data.site_uv != null ? data.site_uv : null;
+    }
   } catch (_) {
     // Fallback: localStorage local counter
     const key = 'top-skills-visits';
