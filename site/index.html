@@ -487,18 +487,32 @@ let visitorCount = null;
 let visitorToday = null;
 
 async function fetchVisitorCount() {
+  // Try Busuanzi (accessible from China), fallback to localStorage
   try {
-    const ctrl = new AbortController();
-    const tid = setTimeout(() => ctrl.abort(), 4000);
-    const [totalResp, todayResp] = await Promise.all([
-      fetch('https://api.countapi.xyz/hit/top-skills/visits', { signal: ctrl.signal }),
-      fetch('https://api.countapi.xyz/hit/top-skills/today', { signal: ctrl.signal }),
-    ]);
-    clearTimeout(tid);
-    if (totalResp.ok) { const d = await totalResp.json(); visitorCount = d.value; }
-    if (todayResp.ok) { const d = await todayResp.json(); visitorToday = d.value; }
-  } catch (_) { /* count API unavailable */ }
-  // Update stat cards if they exist
+    const data = await new Promise((resolve, reject) => {
+      const cb = 'bsz_cb_' + Date.now();
+      window[cb] = function(json) { resolve(json); delete window[cb]; };
+      const s = document.createElement('script');
+      s.src = 'https://busuanzi.ibruce.info/busuanzi?jsonp=' + cb;
+      s.onerror = function() { delete window[cb]; reject(new Error('bsz fail')); };
+      const t = setTimeout(() => { if (window[cb]) { window[cb] = null; reject(new Error('bsz timeout')); } }, 5000);
+      document.head.appendChild(s);
+      // Cleanup
+      setTimeout(() => { try { document.head.removeChild(s); } catch(_) {} }, 6000);
+    });
+    visitorCount = data.site_pv || null;
+    visitorToday = data.site_uv || null;
+  } catch (_) {
+    // Fallback: localStorage local counter
+    const key = 'top-skills-visits';
+    let n = parseInt(localStorage.getItem(key) || '0', 10);
+    if (isNaN(n)) n = 0;
+    n += 1;
+    localStorage.setItem(key, n);
+    visitorCount = n;
+    visitorToday = null;
+  }
+  // Update DOM
   const el = document.getElementById('visitCount');
   if (el) el.textContent = visitorCount != null ? visitorCount.toLocaleString() : '-';
   const el2 = document.getElementById('visitToday');
