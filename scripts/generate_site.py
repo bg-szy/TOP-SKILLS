@@ -508,6 +508,7 @@ def main():
         "superskills": "TDD/debugging/security/spec skill pack / TDD/调试/安全技能包",
         "Claude-AI-skills-collection-2026": "Community curated full-category skill collection / 社区精选全品类技能集合",
         "awesome-claude-skills": "50+ verified skills (TDD/Git/docs) / 50+ 已验证技能",
+        "self": "TOP-SKILLS project self-skills for development workflow / 项目自身开发工作流技能",
     }
 
     stats = {

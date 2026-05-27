@@ -516,6 +516,12 @@ function fmtSize(bytes) {
 
 function esc(s) { return String(s).replace(/[&<>"']/g, ''); }
 function truncate(s, n) { return s && s.length > n ? s.slice(0, n) + '…' : s; }
+function getBilingualDesc(desc, lang) {
+  if (!desc) return '';
+  const parts = desc.split(' / ');
+  if (parts.length <= 1) return desc;
+  return (parts[lang === 'zh' ? 1 : 0] || parts[0]).trim();
+}
 
 // ======================================================================
 //  Markdown (simple)
@@ -579,9 +585,6 @@ function initApp() {
 
   // Setup browse
   setupBrowse(skills);
-
-  // Render trends
-  renderTrends();
 }
 
 // ======================================================================
@@ -599,54 +602,58 @@ function renderDashboard(stats, skills, timeline) {
     `<div class="stat-card ${c.cls}"><div class="number">${c.num}</div><div class="label">${c.label}</div></div>`
   ).join('');
 
-  // Source chart
-  destroyChart('sourceChart');
-  const srcCtx = document.getElementById('sourceChart').getContext('2d');
-  const srcLabels = Object.keys(stats.by_source);
-  const srcData = Object.values(stats.by_source);
   const colors = ['#58a6ff','#3fb950','#d29922','#bc8cff','#f78166','#79c0ff'];
 
-  window._charts.sourceChart = new Chart(srcCtx, {
-    type: 'doughnut',
-    data: {
-      labels: srcLabels,
-      datasets: [{ data: srcData, backgroundColor: colors.slice(0, srcLabels.length), borderWidth: 0 }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { color: '#8b949e', padding: 12, font: { size: 11 } } }
-      }
-    }
-  });
-
-  // Growth chart
-  destroyChart('growthChart');
-  if (timeline.length > 0) {
-    const grCtx = document.getElementById('growthChart').getContext('2d');
-    window._charts.growthChart = new Chart(grCtx, {
-      type: 'line',
+  // Source chart
+  try {
+    destroyChart('sourceChart');
+    const srcCtx = document.getElementById('sourceChart').getContext('2d');
+    const srcLabels = Object.keys(stats.by_source);
+    const srcData = Object.values(stats.by_source);
+    window._charts.sourceChart = new Chart(srcCtx, {
+      type: 'doughnut',
       data: {
-        labels: timeline.map(t => t.date),
-        datasets: [{
-          label: t('chartGrowthLabel'),
-          data: timeline.map(t => t.total),
-          borderColor: '#58a6ff', backgroundColor: 'rgba(88,166,255,0.1)',
-          fill: true, tension: 0.3, pointRadius: 4,
-        }]
+        labels: srcLabels,
+        datasets: [{ data: srcData, backgroundColor: colors.slice(0, srcLabels.length), borderWidth: 0 }]
       },
       options: {
         responsive: true, maintainAspectRatio: false,
-        scales: {
-          x: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: '#21262d' } },
-          y: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: '#21262d' }, beginAtZero: true }
-        },
         plugins: {
-          legend: { labels: { color: '#8b949e', font: { size: 11 } } }
+          legend: { position: 'bottom', labels: { color: '#8b949e', padding: 12, font: { size: 11 } } }
         }
       }
     });
-  }
+  } catch (e) { console.warn('sourceChart error:', e); }
+
+  // Growth chart
+  try {
+    destroyChart('growthChart');
+    if (timeline.length > 0) {
+      const grCtx = document.getElementById('growthChart').getContext('2d');
+      window._charts.growthChart = new Chart(grCtx, {
+        type: 'line',
+        data: {
+          labels: timeline.map(t => t.date),
+          datasets: [{
+            label: t('chartGrowthLabel'),
+            data: timeline.map(t => t.total),
+            borderColor: '#58a6ff', backgroundColor: 'rgba(88,166,255,0.1)',
+            fill: true, tension: 0.3, pointRadius: 4,
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          scales: {
+            x: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: '#21262d' } },
+            y: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: '#21262d' }, beginAtZero: true }
+          },
+          plugins: {
+            legend: { labels: { color: '#8b949e', font: { size: 11 } } }
+          }
+        }
+      });
+    }
+  } catch (e) { console.warn('growthChart error:', e); }
 
   // Source table with description column
   const maxCount = Math.max(...Object.values(stats.by_source), 1);
@@ -669,7 +676,7 @@ function renderDashboard(stats, skills, timeline) {
           return `<tr>
             <td><strong>${key}</strong></td>
             <td style="color:var(--text-dim);font-size:0.8rem">${repo}</td>
-            <td style="color:var(--text-dim);font-size:0.8rem;max-width:280px">${desc.split('/')[currentLang === 'zh' ? 1 : 0] || desc}</td>
+            <td style="color:var(--text-dim);font-size:0.8rem;max-width:280px">${getBilingualDesc(desc, currentLang)}</td>
             <td><strong>${count}</strong></td>
             <td>
               <div style="display:flex;align-items:center;gap:8px">
@@ -898,30 +905,32 @@ function renderDailyChart(tl) {
     return;
   }
 
-  const ctx = canvas.getContext('2d');
-  window._charts.dailyChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: tl.map(t => t.date),
-      datasets: [{
-        label: t('dailyLabel'),
-        data: tl.map(t => t.added),
-        backgroundColor: 'rgba(88,166,255,0.7)',
-        borderColor: '#58a6ff', borderWidth: 1,
-        borderRadius: 3,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      scales: {
-        x: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: '#21262d' } },
-        y: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: '#21262d' }, beginAtZero: true }
+  try {
+    const ctx = canvas.getContext('2d');
+    window._charts.dailyChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: tl.map(t => t.date),
+        datasets: [{
+          label: t('dailyLabel'),
+          data: tl.map(t => t.added),
+          backgroundColor: 'rgba(88,166,255,0.7)',
+          borderColor: '#58a6ff', borderWidth: 1,
+          borderRadius: 3,
+        }]
       },
-      plugins: {
-        legend: { labels: { color: '#8b949e', font: { size: 11 } } }
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+          x: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: '#21262d' } },
+          y: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: '#21262d' }, beginAtZero: true }
+        },
+        plugins: {
+          legend: { labels: { color: '#8b949e', font: { size: 11 } } }
+        }
       }
-    }
-  });
+    });
+  } catch (e) { console.warn('dailyChart error:', e); }
 }
 
 function renderSourceTrendChart(perSource) {
@@ -948,21 +957,23 @@ function renderSourceTrendChart(perSource) {
     };
   });
 
-  const ctx = canvas.getContext('2d');
-  window._charts.sourceTrendChart = new Chart(ctx, {
-    type: 'bar',
-    data: { labels: allDates, datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      scales: {
-        x: { stacked: true, ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: '#21262d' } },
-        y: { stacked: true, ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: '#21262d' }, beginAtZero: true }
-      },
-      plugins: {
-        legend: { position: 'bottom', labels: { color: '#8b949e', font: { size: 10 }, padding: 12 } }
+  try {
+    const ctx = canvas.getContext('2d');
+    window._charts.sourceTrendChart = new Chart(ctx, {
+      type: 'bar',
+      data: { labels: allDates, datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+          x: { stacked: true, ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: '#21262d' } },
+          y: { stacked: true, ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: '#21262d' }, beginAtZero: true }
+        },
+        plugins: {
+          legend: { position: 'bottom', labels: { color: '#8b949e', font: { size: 10 }, padding: 12 } }
+        }
       }
-    }
-  });
+    });
+  } catch (e) { console.warn('sourceTrendChart error:', e); }
 }
 
 function renderHotRepos(activity, stats) {
@@ -1002,7 +1013,7 @@ function renderHotRepos(activity, stats) {
             <td><span style="font-weight:${top?'700':'400'};color:${top?'var(--accent)':'var(--text)'}">#${i+1}</span></td>
             <td><strong>${key}</strong></td>
             <td style="color:var(--text-dim);font-size:0.8rem">${repo}</td>
-            <td style="color:var(--text-dim);font-size:0.8rem;max-width:260px">${desc.split('/')[currentLang === 'zh' ? 1 : 0] || desc}</td>
+            <td style="color:var(--text-dim);font-size:0.8rem;max-width:260px">${getBilingualDesc(desc, currentLang)}</td>
             <td><strong>${val.added}</strong></td>
             <td>${val.commits}</td>
             <td>${fmtDate(val.last_seen)}</td>

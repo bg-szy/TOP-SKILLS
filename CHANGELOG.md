@@ -7,6 +7,7 @@
 - **仓库描述列** — 概览页和趋势页的表格新增"仓库描述"列，中英双语
 - **7 个新技能来源** — 新增 FridrichMethod/awesome-skills、julianobarbosa/claude-code-skills、PracticalSwan/agent-skills、ariadoss/superskills、obviousworks/Claude-AI-skills-collection-2026、karanb192/awesome-claude-skills、Prat011/awesome-llm-skills
 - **README 优化** — 完整项目描述、徽章、架构图、技能覆盖领域、数据统计表
+- **Add project self-skills** — Add skills/self/ directory with site-dev, data-pipeline, review, and workflow skills; add verify-and-record automation script
 
 ### 修复
 - **来源占比错误** — git log 统计按文件路径计数导致 marketplace 显示 222%（实际应为 92.7%），改为按技能目录去重
