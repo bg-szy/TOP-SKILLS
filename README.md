@@ -6,7 +6,7 @@
 
 [![GitHub Pages](https://img.shields.io/github/deployments/bg-szy/TOP-SKILLS/github-pages?label=site&logo=github&style=flat-square)](https://bg-szy.github.io/TOP-SKILLS/)
 [![Skills](https://img.shields.io/badge/skills-3905+-blue?style=flat-square)](#)
-[![Sources](https://img.shields.io/badge/sources-5-orange?style=flat-square)](#)
+[![Sources](https://img.shields.io/badge/sources-12-orange?style=flat-square)](#)
 [![Last Updated](https://img.shields.io/github/last-commit/bg-szy/TOP-SKILLS?style=flat-square&label=updated)](#)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](#)
 
@@ -48,13 +48,20 @@
 
 ### 收录来源
 
-| 来源 | 仓库 | 技能数 | 描述 |
-|------|------|--------|------|
-| `marketplace` | [aiskillstore/marketplace](https://github.com/aiskillstore/marketplace) | 3620 | 最大的 Claude Code 技能市场 |
-| `claude-skills` | [OneWave-AI/claude-skills](https://github.com/OneWave-AI/claude-skills) | 154 | 精选 Claude 技能集合 |
-| `skills` | [trailofbits/skills](https://github.com/trailofbits/skills) | 92 | Trail of Bits 安全工具链技能 |
-| `claude-code-toolkit` | [robertguss/claude-code-toolkit](https://github.com/robertguss/claude-code-toolkit) | 28 | Claude Code 工具包 |
-| `Claude-meta-skill` | [YYH211/Claude-meta-skill](https://github.com/YYH211/Claude-meta-skill) | 11 | 元技能定义与组合 |
+| 来源 | 仓库 | 描述 |
+|------|------|--------|
+| `marketplace` | [aiskillstore/marketplace](https://github.com/aiskillstore/marketplace) | 最大的 Claude Code 技能市场 |
+| `claude-skills` | [OneWave-AI/claude-skills](https://github.com/OneWave-AI/claude-skills) | 精选 Claude 技能集合 |
+| `skills` | [trailofbits/skills](https://github.com/trailofbits/skills) | Trail of Bits 安全工具链技能 |
+| `claude-code-toolkit` | [robertguss/claude-code-toolkit](https://github.com/robertguss/claude-code-toolkit) | Claude Code 工具包 |
+| `Claude-meta-skill` | [YYH211/Claude-meta-skill](https://github.com/YYH211/Claude-meta-skill) | 元技能定义与组合 |
+| `awesome-llm-skills` | [Prat011/awesome-llm-skills](https://github.com/Prat011/awesome-llm-skills) | LLM 技能聚合 |
+| `awesome-skills` | [FridrichMethod/awesome-skills](https://github.com/FridrichMethod/awesome-skills) | 1,800+ 自动同步技能（含科学计算/生物信息） |
+| `claude-code-skills` | [julianobarbosa/claude-code-skills](https://github.com/julianobarbosa/claude-code-skills) | Python/DevOps/云基础设施技能 |
+| `agent-skills` | [PracticalSwan/agent-skills](https://github.com/PracticalSwan/agent-skills) | 跨客户端技能（Claude Code/Codex/Copilot） |
+| `superskills` | [ariadoss/superskills](https://github.com/ariadoss/superskills) | TDD/调试/安全/规约技能包 |
+| `Claude-AI-skills-collection-2026` | [obviousworks/Claude-AI-skills-collection-2026](https://github.com/obviousworks/Claude-AI-skills-collection-2026) | 社区精选全品类技能集合 |
+| `awesome-claude-skills` | [karanb192/awesome-claude-skills](https://github.com/karanb192/awesome-claude-skills) | 50+ 已验证技能（TDD/Git/文档） |
 
 ### 技能覆盖领域
 
