@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TOP-SKILLS · Claude Code 技能库</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <style>
 /* ===== Reset & Variables ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -334,6 +335,8 @@ header h1 span { color: var(--accent); }
   </div>
 </div>
 
+<div hidden><span id="busuanzi_value_site_pv"></span><span id="busuanzi_value_site_uv"></span></div>
+
 <script>
 // ======================================================================
 //  i18n
@@ -486,39 +489,40 @@ window._charts = {};
 let visitorCount = null;
 let visitorUV = null;
 
-async function fetchVisitorCount() {
-  // Try Busuanzi (accessible from China), fallback to localStorage
-  try {
-    const data = await new Promise((resolve, reject) => {
-      const cb = 'bsz_cb_' + Date.now();
-      window[cb] = function(json) { resolve(json); delete window[cb]; };
-      const s = document.createElement('script');
-      s.src = 'https://busuanzi.ibruce.info/busuanzi?jsonp=' + cb;
-      s.onerror = function() { delete window[cb]; reject(new Error('bsz fail')); };
-      const t = setTimeout(() => { if (window[cb]) { window[cb] = null; reject(new Error('bsz timeout')); } }, 5000);
-      document.head.appendChild(s);
-      // Cleanup
-      setTimeout(() => { try { document.head.removeChild(s); } catch(_) {} }, 6000);
-    });
-    if (data && typeof data === 'object') {
-      visitorCount = data.site_pv != null ? data.site_pv : null;
-      visitorUV = data.site_uv != null ? data.site_uv : null;
-    }
-  } catch (_) {
-    // Fallback: localStorage local counter
-    const key = 'top-skills-visits';
-    let n = parseInt(localStorage.getItem(key) || '0', 10);
-    if (isNaN(n)) n = 0;
-    n += 1;
-    localStorage.setItem(key, n);
-    visitorCount = n;
-    visitorUV = null;
-  }
-  // Update DOM
+function updateVisitorDisplay() {
   const el = document.getElementById('visitCount');
   if (el) el.textContent = visitorCount != null ? visitorCount.toLocaleString() : '-';
   const el2 = document.getElementById('visitUV');
   if (el2) el2.textContent = visitorUV != null ? visitorUV.toLocaleString() : '-';
+}
+
+function fetchVisitorCount() {
+  let retries = 15;
+  function poll() {
+    const pvEl = document.getElementById('busuanzi_value_site_pv');
+    const uvEl = document.getElementById('busuanzi_value_site_uv');
+    const pv = pvEl && pvEl.textContent ? parseInt(pvEl.textContent.replace(/,/g, ''), 10) : null;
+    const uv = uvEl && uvEl.textContent ? parseInt(uvEl.textContent.replace(/,/g, ''), 10) : null;
+    if (pv != null && !isNaN(pv)) {
+      visitorCount = pv;
+      visitorUV = (uv != null && !isNaN(uv)) ? uv : null;
+      updateVisitorDisplay();
+    } else if (retries > 0) {
+      retries--;
+      setTimeout(poll, 1000);
+    } else {
+      // Fallback: localStorage local counter
+      const key = 'top-skills-visits';
+      let n = parseInt(localStorage.getItem(key) || '0', 10);
+      if (isNaN(n)) n = 0;
+      n += 1;
+      localStorage.setItem(key, n);
+      visitorCount = n;
+      visitorUV = null;
+      updateVisitorDisplay();
+    }
+  }
+  poll();
 }
 
 function destroyChart(name) {
