@@ -487,11 +487,28 @@ def main():
     # Source repo mapping
     source_repos = {}
     source_branches = {}
+    source_descriptions = {}
     for s in manifest.get("sources", {}).values():
         repo = s.get("repo", "")
         prefix = repo.split("/")[-1] if repo else ""
         source_repos[prefix] = repo
         source_branches[prefix] = s.get("branch", "main")
+
+    # Human-readable descriptions for each source
+    source_descriptions = {
+        "marketplace": "Largest Claude Code skill marketplace / 最大的 Claude Code 技能市场",
+        "skills": "Trail of Bits security toolchain skills / 安全工具链技能",
+        "claude-code-toolkit": "Claude Code toolkit and utilities / 工具包与实用工具",
+        "Claude-meta-skill": "Meta-skill definitions and composition / 元技能定义与组合",
+        "claude-skills": "Curated Claude skills collection / 精选 Claude 技能集合",
+        "awesome-llm-skills": "LLM skills aggregation / LLM 技能聚合",
+        "awesome-skills": "1,800+ auto-synced skills (scientific/bioinformatics) / 自动同步科学计算技能",
+        "claude-code-skills": "Python/DevOps/cloud infrastructure skills / Python/DevOps/云基础设施",
+        "agent-skills": "Cross-client skills (Claude Code/Codex/Copilot) / 跨客户端技能",
+        "superskills": "TDD/debugging/security/spec skill pack / TDD/调试/安全技能包",
+        "Claude-AI-skills-collection-2026": "Community curated full-category skill collection / 社区精选全品类技能集合",
+        "awesome-claude-skills": "50+ verified skills (TDD/Git/docs) / 50+ 已验证技能",
+    }
 
     stats = {
         "total_skills": len(skills_data),
@@ -501,6 +518,7 @@ def main():
         "by_source": by_source,
         "source_repos": source_repos,
         "source_branches": source_branches,
+        "source_descriptions": source_descriptions,
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
 

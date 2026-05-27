@@ -36,6 +36,12 @@ header h1 { font-size: 1.4rem; font-weight: 600; display: flex; align-items: cen
 header h1 span { color: var(--accent); }
 .header-info { color: var(--text-dim); font-size: 0.85rem; }
 .header-info strong { color: var(--text); }
+.lang-toggle {
+  padding: 4px 12px; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--bg); color: var(--text-dim); cursor: pointer;
+  font-size: 0.8rem; font-family: inherit; transition: all 0.15s;
+}
+.lang-toggle:hover { border-color: var(--accent); color: var(--accent); }
 
 /* ===== Navigation Tabs ===== */
 .tabs { display: flex; gap: 4px; margin-top: 20px; border-bottom: 1px solid var(--border); }
@@ -241,8 +247,11 @@ header h1 span { color: var(--accent); }
 <header>
   <div class="container">
     <h1>TOP-SKILLS</h1>
-    <div class="header-info">
-      共 <strong id="headerTotal">-</strong> 个 Claude Code 技能 · 最后更新 <span id="headerUpdate">-</span>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <div class="header-info" id="headerInfo">
+        共 <strong id="headerTotal">-</strong> 个 Claude Code 技能 · 最后更新 <span id="headerUpdate">-</span>
+      </div>
+      <button class="lang-toggle" id="langToggle" onclick="switchLang()">English</button>
     </div>
   </div>
 </header>
@@ -251,20 +260,20 @@ header h1 span { color: var(--accent); }
 
 <!-- ===== Tabs ===== -->
 <div class="tabs">
-  <button class="tab-btn active" data-tab="dashboard">概览</button>
-  <button class="tab-btn" data-tab="browse">浏览</button>
-  <button class="tab-btn" data-tab="trends">趋势</button>
+  <button class="tab-btn active" data-tab="dashboard" id="tabBtnDashboard">概览</button>
+  <button class="tab-btn" data-tab="browse" id="tabBtnBrowse">浏览</button>
+  <button class="tab-btn" data-tab="trends" id="tabBtnTrends">趋势</button>
 </div>
 
 <!-- ===== Dashboard Tab ===== -->
 <section id="tab-dashboard" class="tab-content active">
   <div class="stats-grid" id="statsGrid"></div>
   <div class="chart-row">
-    <div class="chart-box"><h3>各来源技能分布</h3><canvas id="sourceChart"></canvas></div>
-    <div class="chart-box"><h3>技能增长趋势</h3><canvas id="growthChart"></canvas></div>
+    <div class="chart-box"><h3 id="chartSourceTitle">各来源技能分布</h3><canvas id="sourceChart"></canvas></div>
+    <div class="chart-box"><h3 id="chartGrowthTitle">技能增长趋势</h3><canvas id="growthChart"></canvas></div>
   </div>
   <div class="chart-box">
-    <h3>来源仓库详情</h3>
+    <h3 id="sourceTableTitle">来源仓库详情</h3>
     <div id="sourceTable"></div>
   </div>
 </section>
@@ -273,17 +282,17 @@ header h1 span { color: var(--accent); }
 <section id="tab-browse" class="tab-content">
   <div class="browse-toolbar">
     <input class="search-input" id="searchInput" placeholder="搜索技能名称或描述..." autofocus>
-    <select class="filter-select" id="sourceFilter"><option value="">所有来源</option></select>
+    <select class="filter-select" id="sourceFilter"><option value="" id="allSourcesOpt">所有来源</option></select>
     <select class="filter-select" id="sortSelect">
-      <option value="name">名称 ↑</option>
-      <option value="-name">名称 ↓</option>
-      <option value="updated">最近更新</option>
-      <option value="first_seen">最新添加</option>
-      <option value="files">文件数</option>
+      <option value="name" id="sortNameAsc">名称 ↑</option>
+      <option value="-name" id="sortNameDesc">名称 ↓</option>
+      <option value="updated" id="sortUpdated">最近更新</option>
+      <option value="first_seen" id="sortNewest">最新添加</option>
+      <option value="files" id="sortFiles">文件数</option>
     </select>
     <div class="view-btns">
-      <button class="view-btn active" data-view="grid">▦ 网格</button>
-      <button class="view-btn" data-view="list">☰ 列表</button>
+      <button class="view-btn active" data-view="grid" id="viewGrid">▦ 网格</button>
+      <button class="view-btn" data-view="list" id="viewList">☰ 列表</button>
     </div>
     <span class="result-count" id="resultCount"></span>
   </div>
@@ -295,11 +304,11 @@ header h1 span { color: var(--accent); }
 <section id="tab-trends" class="tab-content">
   <div class="trend-charts">
     <div class="chart-row">
-      <div class="chart-box"><h3>每日新增技能</h3><canvas id="dailyChart"></canvas></div>
-      <div class="chart-box"><h3>各来源增长趋势</h3><canvas id="sourceTrendChart"></canvas></div>
+      <div class="chart-box"><h3 id="dailyChartTitle">每日新增技能</h3><canvas id="dailyChart"></canvas></div>
+      <div class="chart-box"><h3 id="sourceTrendTitle">各来源增长趋势</h3><canvas id="sourceTrendChart"></canvas></div>
     </div>
     <div class="chart-box">
-      <h3>热门来源仓库</h3>
+      <h3 id="hotReposTitle">热门来源仓库</h3>
       <div id="hotRepos"></div>
     </div>
   </div>
@@ -315,8 +324,8 @@ header h1 span { color: var(--accent); }
       <h2 id="modalTitle"></h2>
       <div class="subtitle" id="modalSubtitle"></div>
       <div class="modal-tabs" id="modalTabs">
-        <button class="modal-tab-btn active" data-mtab="original">原文</button>
-        <button class="modal-tab-btn" data-mtab="chinese">中文概览</button>
+        <button class="modal-tab-btn active" data-mtab="original" id="modalTabOriginal">原文</button>
+        <button class="modal-tab-btn" data-mtab="chinese" id="modalTabChinese">中文概览</button>
       </div>
     </div>
     <div id="modalBodyOriginal" class="modal-body modal-tab-panel active"></div>
@@ -327,10 +336,151 @@ header h1 span { color: var(--accent); }
 
 <script>
 // ======================================================================
+//  i18n
+// ======================================================================
+const LANG = { zh: 0, en: 1 };
+let currentLang = 'zh';
+
+const I18N = {
+  // Header
+  headerInfo:     ['共 {total} 个 Claude Code 技能 · 最后更新 {date}', '{total} Claude Code skills · Last updated {date}'],
+  langToggle:     ['English', '中文'],
+
+  // Tabs
+  tabDashboard:   ['概览', 'Dashboard'],
+  tabBrowse:      ['浏览', 'Browse'],
+  tabTrends:      ['趋势', 'Trends'],
+
+  // Dashboard cards
+  statTotal:      ['技能总数', 'Total Skills'],
+  statSources:    ['来源仓库', 'Sources'],
+  statFiles:      ['文件总数', 'Total Files'],
+  statReadTime:   ['平均阅读时长(分钟)', 'Avg Read Time (min)'],
+
+  // Dashboard charts
+  chartSource:    ['各来源技能分布', 'Skills by Source'],
+  chartGrowth:    ['技能增长趋势', 'Growth Trend'],
+  chartGrowthLabel: ['技能总数', 'Total Skills'],
+
+  // Dashboard source table
+  sourceTableTitle: ['来源仓库详情', 'Source Repository Details'],
+  colSource:      ['来源', 'Source'],
+  colRepo:        ['仓库', 'Repository'],
+  colDesc:        ['仓库描述', 'Description'],
+  colSkills:      ['技能数', 'Skills'],
+  colShare:       ['占比', 'Share'],
+
+  // Browse
+  searchPlaceholder: ['搜索技能名称或描述...', 'Search skill name or description...'],
+  allSources:     ['所有来源', 'All Sources'],
+  sortNameAsc:    ['名称 ↑', 'Name ↑'],
+  sortNameDesc:   ['名称 ↓', 'Name ↓'],
+  sortUpdated:    ['最近更新', 'Recently Updated'],
+  sortNewest:     ['最新添加', 'Latest Added'],
+  sortFiles:      ['文件数', 'Files'],
+  viewGrid:       ['▦ 网格', '▦ Grid'],
+  viewList:       ['☰ 列表', '☰ List'],
+  resultCount:    ['共 {n} 个技能', '{n} skills total'],
+  noMatch:        ['没有找到匹配的技能', 'No matching skills found'],
+
+  // Skill card
+  files:          ['文件', 'files'],
+  minutes:        ['分钟', 'min'],
+
+  // Trends
+  dailyTitle:     ['每日新增技能', 'Daily New Skills'],
+  sourceTrendTitle: ['各来源增长趋势', 'Growth by Source'],
+  hotReposTitle:  ['热门来源仓库', 'Top Source Repos'],
+  noTimeline:     ['暂无足够的历史数据', 'Insufficient historical data'],
+  noDaily:        ['暂无每日新增数据', 'No daily data'],
+  noPerSource:    ['暂无各来源增长数据', 'No per-source data'],
+  noActivity:     ['暂无仓库活动数据', 'No activity data'],
+  dailyLabel:     ['新增技能', 'New Skills'],
+
+  // Hot repos table
+  colRank:        ['排名', 'Rank'],
+  colNewSkills:   ['新增技能', 'New Skills'],
+  colCommits:     ['提交次数', 'Commits'],
+  colLastActive:  ['最后活跃', 'Last Active'],
+
+  // Modal
+  modalTabOrig:   ['原文', 'Original'],
+  modalTabCN:     ['中文概览', 'Chinese Summary'],
+  noContent:      ['暂无内容', 'No content'],
+  noSummary:      ['暂无中文摘要', 'No Chinese summary'],
+  fileList:       ['文件列表 ({n})', 'Files ({n})'],
+  modalSource:    ['来源', 'Source'],
+  modalFiles:     ['文件', 'files'],
+  modalReadTime:  ['分钟阅读', 'min read'],
+  modalAdded:     ['添加', 'Added'],
+  modalUpdated:   ['更新', 'Updated'],
+  viewRepo:       ['查看仓库 ↗', 'View Repo ↗'],
+};
+
+function t(key, ...args) {
+  const idx = currentLang === 'zh' ? 0 : 1;
+  let s = I18N[key] ? I18N[key][idx] : key;
+  if (args.length) {
+    args.forEach((v, i) => { s = s.replace(`{${['n','total','date','count'].length > i ? ['n','total','date','count'][i] : i}}`, v); });
+    s = s.replace(/\{(\w+)\}/g, (_, k) => args[0] || '');
+  }
+  return s;
+}
+
+function switchLang() {
+  currentLang = currentLang === 'zh' ? 'en' : 'zh';
+  document.getElementById('langToggle').textContent = t('langToggle');
+  applyLang();
+}
+
+function applyLang() {
+  // Header
+  const total = document.getElementById('headerTotal').textContent;
+  const date = document.getElementById('headerUpdate').textContent;
+  document.getElementById('headerInfo').innerHTML = t('headerInfo').replace('{total}', total).replace('{date}', date);
+
+  // Tabs
+  document.getElementById('tabBtnDashboard').textContent = t('tabDashboard');
+  document.getElementById('tabBtnBrowse').textContent = t('tabBrowse');
+  document.getElementById('tabBtnTrends').textContent = t('tabTrends');
+
+  // Chart titles
+  document.getElementById('chartSourceTitle').textContent = t('chartSource');
+  document.getElementById('chartGrowthTitle').textContent = t('chartGrowth');
+  document.getElementById('sourceTableTitle').textContent = t('sourceTableTitle');
+
+  // Browse
+  document.getElementById('searchInput').placeholder = t('searchPlaceholder');
+  document.getElementById('allSourcesOpt').textContent = t('allSources');
+  document.getElementById('sortNameAsc').textContent = t('sortNameAsc');
+  document.getElementById('sortNameDesc').textContent = t('sortNameDesc');
+  document.getElementById('sortUpdated').textContent = t('sortUpdated');
+  document.getElementById('sortNewest').textContent = t('sortNewest');
+  document.getElementById('sortFiles').textContent = t('sortFiles');
+  document.getElementById('viewGrid').textContent = t('viewGrid');
+  document.getElementById('viewList').textContent = t('viewList');
+
+  // Trends
+  document.getElementById('dailyChartTitle').textContent = t('dailyTitle');
+  document.getElementById('sourceTrendTitle').textContent = t('sourceTrendTitle');
+  document.getElementById('hotReposTitle').textContent = t('hotReposTitle');
+
+  // Modal tabs
+  document.getElementById('modalTabOriginal').textContent = t('modalTabOrig');
+  document.getElementById('modalTabChinese').textContent = t('modalTabCN');
+
+  // Re-render dynamic content
+  renderDashboard(DATA.stats, DATA.skills, DATA.timeline);
+  if (document.querySelector('#tab-browse.tab-content.active')) renderBrowse();
+  renderTrends();
+}
+</script>
+<script>
+// ======================================================================
 //  Data & Chart Instance Management
 // ======================================================================
 let DATA = null;
-window._charts = {};  // named chart instances for cleanup
+window._charts = {};
 
 function destroyChart(name) {
   if (window._charts[name]) {
@@ -355,7 +505,7 @@ async function loadData() {
 function fmtDate(iso) {
   if (!iso) return '-';
   const d = new Date(iso);
-  return d.toLocaleDateString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit' });
+  return d.toLocaleDateString(currentLang === 'zh' ? 'zh-CN' : 'en-US', { year:'numeric', month:'2-digit', day:'2-digit' });
 }
 
 function fmtSize(bytes) {
@@ -364,32 +514,23 @@ function fmtSize(bytes) {
   return (bytes/1024/1024).toFixed(1) + ' MB';
 }
 
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
+function esc(s) { return String(s).replace(/[&<>"']/g, ''); }
+function truncate(s, n) { return s && s.length > n ? s.slice(0, n) + '…' : s; }
 
 // ======================================================================
 //  Markdown (simple)
 // ======================================================================
 function renderMarkdown(md) {
   if (!md) return '';
-  let html = escapeHtml(md);
-  // Code blocks
+  let html = esc(md);
   html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
-  // Inline code
   html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-  // Bold/italic
   html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-  // Headers
   html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
   html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
   html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
-  // Blockquotes
   html = html.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
-  // Lists
   html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
   html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
   html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
@@ -397,10 +538,8 @@ function renderMarkdown(md) {
     if (!m.includes('<ol>')) return '<ol>' + m + '</ol>';
     return m;
   });
-  // Paragraphs
   html = html.replace(/\n\n/g, '</p><p>');
   html = '<p>' + html + '</p>';
-  // Clean empty paragraphs
   html = html.replace(/<p><\/p>/g, '');
   return html;
 }
@@ -435,8 +574,8 @@ function initApp() {
   });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-  // Render dashboard
-  renderDashboard(stats, skills, timeline);
+  // Apply i18n
+  applyLang();
 
   // Setup browse
   setupBrowse(skills);
@@ -451,16 +590,16 @@ function initApp() {
 function renderDashboard(stats, skills, timeline) {
   // Stats cards
   const cards = [
-    { num: stats.total_skills, label: '技能总数', cls: '' },
-    { num: stats.total_sources, label: '来源仓库', cls: 'green' },
-    { num: stats.total_files, label: '文件总数', cls: 'orange' },
-    { num: stats.avg_read_time, label: '平均阅读时长(分钟)', cls: 'purple' },
+    { num: stats.total_skills, label: t('statTotal'), cls: '' },
+    { num: stats.total_sources, label: t('statSources'), cls: 'green' },
+    { num: stats.total_files, label: t('statFiles'), cls: 'orange' },
+    { num: stats.avg_read_time, label: t('statReadTime'), cls: 'purple' },
   ];
   document.getElementById('statsGrid').innerHTML = cards.map(c =>
     `<div class="stat-card ${c.cls}"><div class="number">${c.num}</div><div class="label">${c.label}</div></div>`
   ).join('');
 
-  // Source distribution chart (destroy previous instance)
+  // Source chart
   destroyChart('sourceChart');
   const srcCtx = document.getElementById('sourceChart').getContext('2d');
   const srcLabels = Object.keys(stats.by_source);
@@ -481,7 +620,7 @@ function renderDashboard(stats, skills, timeline) {
     }
   });
 
-  // Growth chart (destroy previous instance)
+  // Growth chart
   destroyChart('growthChart');
   if (timeline.length > 0) {
     const grCtx = document.getElementById('growthChart').getContext('2d');
@@ -490,7 +629,7 @@ function renderDashboard(stats, skills, timeline) {
       data: {
         labels: timeline.map(t => t.date),
         datasets: [{
-          label: '技能总数',
+          label: t('chartGrowthLabel'),
           data: timeline.map(t => t.total),
           borderColor: '#58a6ff', backgroundColor: 'rgba(88,166,255,0.1)',
           fill: true, tension: 0.3, pointRadius: 4,
@@ -509,19 +648,28 @@ function renderDashboard(stats, skills, timeline) {
     });
   }
 
-  // Source table
+  // Source table with description column
   const maxCount = Math.max(...Object.values(stats.by_source), 1);
+  const descs = stats.source_descriptions || {};
   const tableHtml = `
     <table class="source-table">
-      <thead><tr><th>来源</th><th>仓库</th><th>技能数</th><th>占比</th></tr></thead>
+      <thead><tr>
+        <th>${t('colSource')}</th>
+        <th>${t('colRepo')}</th>
+        <th>${t('colDesc')}</th>
+        <th>${t('colSkills')}</th>
+        <th>${t('colShare')}</th>
+      </tr></thead>
       <tbody>
         ${Object.entries(stats.by_source).map(([key, count]) => {
           const repo = stats.source_repos[key] || key;
           const pct = (count / stats.total_skills * 100).toFixed(1);
           const w = (count / maxCount * 100).toFixed(0);
+          const desc = descs[key] || '';
           return `<tr>
             <td><strong>${key}</strong></td>
             <td style="color:var(--text-dim);font-size:0.8rem">${repo}</td>
+            <td style="color:var(--text-dim);font-size:0.8rem;max-width:280px">${desc.split('/')[currentLang === 'zh' ? 1 : 0] || desc}</td>
             <td><strong>${count}</strong></td>
             <td>
               <div style="display:flex;align-items:center;gap:8px">
@@ -546,7 +694,6 @@ const PAGE_SIZE = 24;
 function setupBrowse(skills) {
   filteredSkills = [...skills];
 
-  // Source filter
   const sources = [...new Set(skills.map(s => s.source))];
   const sel = document.getElementById('sourceFilter');
   sources.sort().forEach(s => {
@@ -555,7 +702,6 @@ function setupBrowse(skills) {
     sel.appendChild(opt);
   });
 
-  // Events
   document.getElementById('searchInput').addEventListener('input', () => { currentPage=1; renderBrowse(); });
   document.getElementById('sourceFilter').addEventListener('change', () => { currentPage=1; renderBrowse(); });
   document.getElementById('sortSelect').addEventListener('change', () => { currentPage=1; renderBrowse(); });
@@ -578,7 +724,6 @@ function renderBrowse() {
   const view = document.querySelector('.view-btn.active')?.dataset?.view || 'grid';
   const container = document.getElementById('skillsContainer');
 
-  // Filter
   let list = DATA.skills.filter(s => {
     if (source && s.source !== source) return false;
     if (query) {
@@ -589,7 +734,6 @@ function renderBrowse() {
     return true;
   });
 
-  // Sort
   list.sort((a, b) => {
     switch (sort) {
       case 'name': return a.name.localeCompare(b.name);
@@ -608,15 +752,14 @@ function renderBrowse() {
   const start = (currentPage - 1) * PAGE_SIZE;
   const page = list.slice(start, start + PAGE_SIZE);
 
-  document.getElementById('resultCount').textContent = `共 ${total} 个技能`;
+  document.getElementById('resultCount').textContent = t('resultCount').replace('{n}', total);
 
   if (list.length === 0) {
-    container.innerHTML = '<div class="no-data">没有找到匹配的技能</div>';
+    container.innerHTML = '<div class="no-data">' + t('noMatch') + '</div>';
     document.getElementById('pagination').innerHTML = '';
     return;
   }
 
-  // Render cards
   container.className = 'skills-grid ' + view;
   container.innerHTML = page.map(s => `
     <div class="skill-card${view === 'list' ? ' list' : ''}" onclick="showSkill('${esc(s.key)}')">
@@ -624,19 +767,18 @@ function renderBrowse() {
         <div class="skill-name">
           ${esc(s.title || s.name)}
           <span class="skill-source">${esc(s.source)}</span>
-          ${s.source_repo ? `<a class="repo-link" href="https://github.com/${esc(s.source_repo)}/tree/${esc((DATA.stats.source_branches||{})[s.source]||'main')}/${esc(s.repo_dir||'')}" target="_blank" title="查看仓库" onclick="event.stopPropagation()">↗</a>` : ''}
+          ${s.source_repo ? `<a class="repo-link" href="https://github.com/${esc(s.source_repo)}/tree/${esc((DATA.stats.source_branches||{})[s.source]||'main')}/${esc(s.repo_dir||'')}" target="_blank" title="View repo" onclick="event.stopPropagation()">↗</a>` : ''}
         </div>
         <div class="skill-desc">${esc(truncate(s.description, 150))}</div>
       </div>
       <div class="skill-meta${view === 'list' ? ' list' : ''}">
-        <span>📄 ${s.files} 文件</span>
-        <span>⏱ ${s.read_time || '-'} 分钟</span>
+        <span>📄 ${s.files} ${t('files')}</span>
+        <span>⏱ ${s.read_time || '-'} ${t('minutes')}</span>
         <span>🕐 ${fmtDate(s.updated)}</span>
       </div>
     </div>
   `).join('');
 
-  // Pagination
   renderPagination(totalPages);
 }
 
@@ -665,8 +807,6 @@ function renderPagination(totalPages) {
 }
 
 function goPage(p) { currentPage = p; renderBrowse(); window.scrollTo({top: 200, behavior: 'smooth'}); }
-function esc(s) { return String(s).replace(/[&<>"']/g, ''); }
-function truncate(s, n) { return s && s.length > n ? s.slice(0, n) + '…' : s; }
 
 // ======================================================================
 //  Skill Detail Modal
@@ -680,23 +820,21 @@ function showSkill(key) {
   document.getElementById('modalSubtitle').innerHTML = `
     ${skill.description ? esc(skill.description) : ''}<br>
     <span style="color:var(--text-dim);font-size:0.8rem">
-      来源: ${skill.source_repo || skill.source} · ${skill.files} 文件 · ⏱ ${skill.read_time || '-'} 分钟阅读
-      · 添加: ${fmtDate(skill.first_seen)} · 更新: ${fmtDate(skill.updated)}
-      ${skill.source_repo ? ` · <a href="https://github.com/${esc(skill.source_repo)}/tree/${esc((DATA.stats.source_branches||{})[skill.source]||'main')}/${esc(skill.repo_dir||'')}" target="_blank" style="color:var(--accent)">查看仓库 ↗</a>` : ''}
+      ${t('modalSource')}: ${skill.source_repo || skill.source} · ${skill.files} ${t('modalFiles')} · ⏱ ${skill.read_time || '-'} ${t('modalReadTime')}
+      · ${t('modalAdded')}: ${fmtDate(skill.first_seen)} · ${t('modalUpdated')}: ${fmtDate(skill.updated)}
+      ${skill.source_repo ? ` · <a href="https://github.com/${esc(skill.source_repo)}/tree/${esc((DATA.stats.source_branches||{})[skill.source]||'main')}/${esc(skill.repo_dir||'')}" target="_blank" style="color:var(--accent)">${t('viewRepo')}</a>` : ''}
     </span>
   `;
 
-  // Original content panel
   document.getElementById('modalBodyOriginal').innerHTML = skill.content_snippet ?
-    renderMarkdown(skill.content_snippet) : '<p class="no-data">暂无内容</p>';
+    renderMarkdown(skill.content_snippet) : '<p class="no-data">' + t('noContent') + '</p>';
 
-  // Chinese summary panel
   document.getElementById('modalBodyChinese').innerHTML = skill.cn_summary ?
-    renderMarkdown(skill.cn_summary) : '<p class="no-data">暂无中文摘要</p>';
+    renderMarkdown(skill.cn_summary) : '<p class="no-data">' + t('noSummary') + '</p>';
 
   const fileList = skill.file_list || [];
   document.getElementById('modalFiles').innerHTML = fileList.length > 0 ? `
-    <h4>文件列表 (${fileList.length})</h4>
+    <h4>${t('fileList').replace('{n}', fileList.length)}</h4>
     <div class="file-list">
       ${fileList.map(f => {
         const fileUrl = `../skills/${skill.source}/${skill.name}/${f.name}`;
@@ -705,7 +843,6 @@ function showSkill(key) {
     </div>
   ` : '';
 
-  // Reset modal tabs to original
   document.querySelectorAll('.modal-tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.modal-tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelector('.modal-tab-btn[data-mtab="original"]').classList.add('active');
@@ -720,7 +857,6 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 
-// Modal tab switching
 document.addEventListener('click', function(e) {
   const btn = e.target.closest('.modal-tab-btn');
   if (!btn) return;
@@ -740,22 +876,15 @@ function renderTrends() {
   const tl = DATA.timeline;
   const perSource = DATA.per_source_timeline || {};
   const sourceActivity = DATA.source_activity || {};
-  const hasTimeline = tl && tl.length > 0;
-  const hasPerSource = Object.keys(perSource).some(k => perSource[k].length > 0);
 
-  if (!hasTimeline && !hasPerSource) {
+  if ((!tl || tl.length === 0) && Object.keys(perSource).every(k => perSource[k].length === 0)) {
     document.querySelector('#tab-trends .trend-charts').innerHTML =
-      '<div class="no-data">暂无足够的历史数据</div>';
+      '<div class="no-data">' + t('noTimeline') + '</div>';
     return;
   }
 
-  // --- Chart 1: Daily new skills ---
   renderDailyChart(tl);
-
-  // --- Chart 2: Per-source stacked bar ---
   renderSourceTrendChart(perSource);
-
-  // --- Hot repos section ---
   renderHotRepos(sourceActivity, DATA.stats || {});
 }
 
@@ -765,7 +894,7 @@ function renderDailyChart(tl) {
   if (!canvas) return;
 
   if (!tl || tl.length === 0) {
-    canvas.parentElement.innerHTML = '<div class="no-data">暂无每日新增数据</div>';
+    canvas.parentElement.innerHTML = '<div class="no-data">' + t('noDaily') + '</div>';
     return;
   }
 
@@ -775,7 +904,7 @@ function renderDailyChart(tl) {
     data: {
       labels: tl.map(t => t.date),
       datasets: [{
-        label: '新增技能',
+        label: t('dailyLabel'),
         data: tl.map(t => t.added),
         backgroundColor: 'rgba(88,166,255,0.7)',
         borderColor: '#58a6ff', borderWidth: 1,
@@ -802,11 +931,10 @@ function renderSourceTrendChart(perSource) {
 
   const sourceKeys = Object.keys(perSource).filter(k => perSource[k].length > 0);
   if (sourceKeys.length === 0) {
-    canvas.parentElement.innerHTML = '<div class="no-data">暂无各来源增长数据</div>';
+    canvas.parentElement.innerHTML = '<div class="no-data">' + t('noPerSource') + '</div>';
     return;
   }
 
-  // Collect all dates across sources and build per-source datasets
   const allDates = [...new Set(sourceKeys.flatMap(src => perSource[src].map(e => e.date)))].sort();
   const colors = ['#58a6ff','#3fb950','#d29922','#bc8cff','#f78166','#79c0ff','#ff7b72'];
 
@@ -843,26 +971,38 @@ function renderHotRepos(activity, stats) {
 
   const entries = Object.entries(activity).sort((a, b) => b[1].added - a[1].added);
   if (entries.length === 0) {
-    el.innerHTML = '<div class="no-data">暂无仓库活动数据</div>';
+    el.innerHTML = '<div class="no-data">' + t('noActivity') + '</div>';
     return;
   }
 
   const maxAdded = Math.max(...entries.map(e => e[1].added), 1);
   const colors = ['#58a6ff','#3fb950','#d29922','#bc8cff','#f78166','#79c0ff'];
+  const descs = stats.source_descriptions || {};
 
   el.innerHTML = `
     <table class="source-table">
-      <thead><tr><th>排名</th><th>来源</th><th>仓库</th><th>新增技能</th><th>提交次数</th><th>最后活跃</th><th>占比</th></tr></thead>
+      <thead><tr>
+        <th>${t('colRank')}</th>
+        <th>${t('colSource')}</th>
+        <th>${t('colRepo')}</th>
+        <th>${t('colDesc')}</th>
+        <th>${t('colNewSkills')}</th>
+        <th>${t('colCommits')}</th>
+        <th>${t('colLastActive')}</th>
+        <th>${t('colShare')}</th>
+      </tr></thead>
       <tbody>
         ${entries.map(([key, val], i) => {
           const repo = (stats.source_repos && stats.source_repos[key]) || key;
           const pct = (val.added / stats.total_skills * 100).toFixed(1);
           const w = (val.added / maxAdded * 100).toFixed(0);
           const top = i < 3;
+          const desc = descs[key] || '';
           return `<tr>
             <td><span style="font-weight:${top?'700':'400'};color:${top?'var(--accent)':'var(--text)'}">#${i+1}</span></td>
             <td><strong>${key}</strong></td>
             <td style="color:var(--text-dim);font-size:0.8rem">${repo}</td>
+            <td style="color:var(--text-dim);font-size:0.8rem;max-width:260px">${desc.split('/')[currentLang === 'zh' ? 1 : 0] || desc}</td>
             <td><strong>${val.added}</strong></td>
             <td>${val.commits}</td>
             <td>${fmtDate(val.last_seen)}</td>
