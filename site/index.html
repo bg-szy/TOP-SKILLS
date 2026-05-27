@@ -290,6 +290,8 @@ header h1 span { color: var(--accent); }
       <option value="updated" id="sortUpdated">最近更新</option>
       <option value="first_seen" id="sortNewest">最新添加</option>
       <option value="files" id="sortFiles">文件数</option>
+      <option value="stars" id="sortStars">⭐ 星标</option>
+      <option value="forks" id="sortForks">🍴 复刻</option>
     </select>
     <div class="view-btns">
       <button class="view-btn active" data-view="grid" id="viewGrid">▦ 网格</button>
@@ -383,6 +385,8 @@ const I18N = {
   sortUpdated:    ['最近更新', 'Recently Updated'],
   sortNewest:     ['最新添加', 'Latest Added'],
   sortFiles:      ['文件数', 'Files'],
+  sortStars:      ['⭐ 星标', '⭐ Stars'],
+  sortForks:      ['🍴 复刻', '🍴 Forks'],
   viewGrid:       ['▦ 网格', '▦ Grid'],
   viewList:       ['☰ 列表', '☰ List'],
   resultCount:    ['共 {n} 个技能', '{n} skills total'],
@@ -391,6 +395,8 @@ const I18N = {
   // Skill card
   files:          ['文件', 'files'],
   minutes:        ['分钟', 'min'],
+  cardStars:      ['星标', 'stars'],
+  cardForks:      ['复刻', 'forks'],
 
   // Trends
   dailyTitle:     ['每日新增技能', 'Daily New Skills'],
@@ -462,6 +468,8 @@ function applyLang() {
   document.getElementById('sortUpdated').textContent = t('sortUpdated');
   document.getElementById('sortNewest').textContent = t('sortNewest');
   document.getElementById('sortFiles').textContent = t('sortFiles');
+  document.getElementById('sortStars').textContent = t('sortStars');
+  document.getElementById('sortForks').textContent = t('sortForks');
   document.getElementById('viewGrid').textContent = t('viewGrid');
   document.getElementById('viewList').textContent = t('viewList');
 
@@ -488,6 +496,7 @@ let DATA = null;
 window._charts = {};
 let visitorCount = null;
 let visitorUV = null;
+let sourceStats = {};  // { "owner/repo": { stars, forks } }
 
 function updateVisitorDisplay() {
   const el = document.getElementById('visitCount');
@@ -523,6 +532,22 @@ function fetchVisitorCount() {
     }
   }
   poll();
+}
+
+function fetchSourceStats() {
+  const cached = sessionStorage.getItem('top-skills-source-stats');
+  if (cached) { try { sourceStats = JSON.parse(cached); } catch(_) {} return; }
+  if (!DATA || !DATA.stats || !DATA.stats.source_repos) return;
+  const seen = new Set();
+  const repos = Object.values(DATA.stats.source_repos).filter(r => { if (seen.has(r)) return false; seen.add(r); return true; });
+  let done = 0;
+  repos.forEach(repo => {
+    fetch('https://api.github.com/repos/' + repo, { signal: AbortSignal.timeout(5000) })
+      .then(r => r.json())
+      .then(d => { if (d.stargazers_count !== undefined) { sourceStats[repo] = { stars: d.stargazers_count, forks: d.forks_count }; } })
+      .catch(() => {})
+      .finally(() => { done++; if (done === repos.length) { sessionStorage.setItem('top-skills-source-stats', JSON.stringify(sourceStats)); if (document.querySelector('#tab-browse.tab-content.active')) renderBrowse(); } });
+  });
 }
 
 function destroyChart(name) {
@@ -630,6 +655,9 @@ function initApp() {
 
   // Setup browse
   setupBrowse(skills);
+
+  // Fetch source repo stats
+  fetchSourceStats();
 }
 
 // ======================================================================
@@ -795,6 +823,8 @@ function renderBrowse() {
       case 'updated': return (b.updated || '').localeCompare(a.updated || '');
       case 'first_seen': return (b.first_seen || '').localeCompare(a.first_seen || '');
       case 'files': return (b.files || 0) - (a.files || 0);
+      case 'stars': return (sourceStats[b.source_repo]?.stars || 0) - (sourceStats[a.source_repo]?.stars || 0);
+      case 'forks': return (sourceStats[b.source_repo]?.forks || 0) - (sourceStats[a.source_repo]?.forks || 0);
       default: return 0;
     }
   });
@@ -828,6 +858,7 @@ function renderBrowse() {
       <div class="skill-meta${view === 'list' ? ' list' : ''}">
         <span>📄 ${s.files} ${t('files')}</span>
         <span>⏱ ${s.read_time || '-'} ${t('minutes')}</span>
+        ${(() => { const st = sourceStats[s.source_repo]; return st ? `<span>⭐ ${st.stars}</span><span>🍴 ${st.forks}</span>` : ''; })()}
         <span>🕐 ${fmtDate(s.updated)}</span>
       </div>
     </div>
