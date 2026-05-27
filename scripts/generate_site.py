@@ -268,8 +268,8 @@ def generate_chinese_summary(frontmatter: dict, skill_name: str, description: st
     lines.append(f"## 技能名称\n{name}")
     lines.append("")
 
-    # Use translated description if available, otherwise original
-    cn_desc = translated_desc or description or frontmatter.get("description", "")
+    # Only use translated description; skip description section if no translation
+    cn_desc = translated_desc or ""
     if cn_desc:
         lines.append(f"## 描述\n{cn_desc}")
         lines.append("")
@@ -318,16 +318,19 @@ def generate_chinese_summary(frontmatter: dict, skill_name: str, description: st
             lines.append("")
             break
 
-    # Use cases from description — extract key scenarios
+    # Use cases from description — extract key scenarios (only if translated)
     if cn_desc and len(cn_desc) > 20:
         lines.append("## 适用场景")
         lines.append("根据技能描述，此技能适用于以下场景：")
-        # Split description into bullet points
         sentences = [s.strip() for s in cn_desc.replace("\n", " ").split(". ") if s.strip()]
         for s in sentences[:5]:
             if s and len(s) > 10:
                 lines.append(f"- {s}.")
         lines.append("")
+
+    # Only generate full summary if we have translated content
+    if not cn_desc:
+        return ""
 
     # Stats
     lines.append(f"**文件数**: {n_files}  |  **预计阅读时间**: {read_time} 分钟")
