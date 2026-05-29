@@ -1,6 +1,6 @@
 ---
 name: merge
-description: Merge the current feature branch into main and (optionally) clean up the branch and worktree. Prefers fast-forward (--ff-only) for linear history; falls back to a merge commit (--no-ff) when the branch has diverged or the user wants the merge commit preserved. Interactive cleanup at the end. USE WHEN asked to "merge to main", "merge and cleanup", "ship this branch", "integrate the feature branch", or "finish this branch".
+description: Merge the current feature branch into main and (optionally) clean up the branch and worktree. Prefers fast-forward (--ff-only) for linear history; falls back to a merge commit (--no-ff) when the branch has diverged or the user wants the merge commit preserved. Interactive cleanup at the end. USE WHEN asked to "merge to main", "merge and cleanup", "integrate the feature branch", or "finish this branch" — i.e. a direct local merge with no review gate. For PR-based delivery (push → open a PR → link a work item → clean up after merge), use the `ship` skill instead.
 ---
 
 # Merge
