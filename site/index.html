@@ -3,7 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TOP-SKILLS · Claude Code 技能库</title>
+<title>TOP-SKILLS · 全球最大 Claude Code 技能库 | AI Coding Skills Directory</title>
+<meta name="description" content="Browse 3900+ Claude Code skills from 13 curated repositories. Search, filter, and discover AI coding skills for code review, testing, architecture, DevOps and more. 全球最大的 Claude Code 技能库，每日自动更新。">
+<meta name="keywords" content="claude code, claude skills, AI coding, anthropic, code review, AI assistant, developer tools, programming, github skills, SKILL.md, claude">
+<meta name="robots" content="index, follow">
+<meta name="author" content="bg-szy">
+<link rel="canonical" href="https://bg-szy.github.io/TOP-SKILLS/">
+
+<!-- Open Graph -->
+<meta property="og:title" content="TOP-SKILLS · 全球最大 Claude Code 技能库">
+<meta property="og:description" content="Browse 3900+ Claude Code skills — code review, testing, architecture, DevOps, and more. Daily auto-updated.">
+<meta property="og:url" content="https://bg-szy.github.io/TOP-SKILLS/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TOP-SKILLS">
+<meta property="og:locale" content="zh_CN">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TOP-SKILLS · 全球最大 Claude Code 技能库">
+<meta name="twitter:description" content="3900+ Claude Code skills — code review, testing, architecture, DevOps. Daily auto-updated.">
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "TOP-SKILLS",
+  "url": "https://bg-szy.github.io/TOP-SKILLS/",
+  "description": "The world's largest Claude Code skills directory. Browse, search, and discover 3900+ AI coding skills.",
+  "inLanguage": ["zh-CN", "en"],
+  "about": {
+    "@type": "Thing",
+    "name": "Claude Code Skills",
+    "description": "Predefined prompt instruction files (SKILL.md) for guiding Claude AI in coding tasks"
+  }
+}
+</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <style>
@@ -231,8 +266,32 @@ header h1 span { color: var(--accent); }
 /* ===== No Data ===== */
 .no-data { text-align: center; padding: 40px; color: var(--text-dim); font-size: 0.9rem; }
 
+/* ===== Rankings ===== */
+.rankings-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.ranking-list { max-height: 400px; overflow-y: auto; }
+.ranking-item {
+  display: flex; align-items: center; gap: 10px; padding: 8px 0;
+  border-bottom: 1px solid var(--border); font-size: 0.85rem;
+}
+.ranking-item:last-child { border-bottom: none; }
+.ranking-rank {
+  width: 22px; height: 22px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; font-weight: 700;
+  font-size: 0.75rem; flex-shrink: 0;
+}
+.ranking-rank.top1 { background: #d29922; color: #0d1117; }
+.ranking-rank.top2 { background: #a0a0a0; color: #0d1117; }
+.ranking-rank.top3 { background: #b87333; color: #0d1117; }
+.ranking-rank.other { background: var(--bg); color: var(--text-dim); }
+.ranking-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ranking-name a { color: var(--text); }
+.ranking-name a:hover { color: var(--accent); }
+.ranking-value { color: var(--accent); font-weight: 600; white-space: nowrap; }
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
+  .rankings-row { grid-template-columns: 1fr; }
+}
   .chart-row { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .skills-grid.grid { grid-template-columns: 1fr; }
@@ -276,6 +335,16 @@ header h1 span { color: var(--accent); }
   <div class="chart-box">
     <h3 id="sourceTableTitle">来源仓库详情</h3>
     <div id="sourceTable"></div>
+  </div>
+  <div class="rankings-row">
+    <div class="chart-box">
+      <h3 id="latestSkillsTitle">最新技能</h3>
+      <div id="latestSkills" class="ranking-list"></div>
+    </div>
+    <div class="chart-box">
+      <h3 id="topSourcesTitle">最活跃来源</h3>
+      <div id="topSources" class="ranking-list"></div>
+    </div>
   </div>
 </section>
 
@@ -402,6 +471,8 @@ const I18N = {
   dailyTitle:     ['每日新增技能', 'Daily New Skills'],
   sourceTrendTitle: ['各来源增长趋势', 'Growth by Source'],
   hotReposTitle:  ['热门来源仓库', 'Top Source Repos'],
+  latestSkillsTitle: ['最新技能', 'Latest Skills'],
+  topSourcesTitle: ['最活跃来源', 'Most Active Sources'],
   noTimeline:     ['暂无足够的历史数据', 'Insufficient historical data'],
   noDaily:        ['暂无每日新增数据', 'No daily data'],
   noPerSource:    ['暂无各来源增长数据', 'No per-source data'],
@@ -477,6 +548,8 @@ function applyLang() {
   document.getElementById('dailyChartTitle').textContent = t('dailyTitle');
   document.getElementById('sourceTrendTitle').textContent = t('sourceTrendTitle');
   document.getElementById('hotReposTitle').textContent = t('hotReposTitle');
+  document.getElementById('latestSkillsTitle').textContent = t('latestSkillsTitle');
+  document.getElementById('topSourcesTitle').textContent = t('topSourcesTitle');
 
   // Modal tabs
   document.getElementById('modalTabOriginal').textContent = t('modalTabOrig');
@@ -764,6 +837,28 @@ function renderDashboard(stats, skills, timeline) {
       </tbody>
     </table>`;
   document.getElementById('sourceTable').innerHTML = tableHtml;
+
+  // Latest skills ranking (top 8)
+  const latest = [...skills].sort((a, b) => (b.first_seen || '').localeCompare(a.first_seen || '')).slice(0, 8);
+  document.getElementById('latestSkills').innerHTML = latest.map((s, i) => {
+    const rankCls = i < 3 ? `top${i+1}` : 'other';
+    return `<div class="ranking-item">
+      <div class="ranking-rank ${rankCls}">${i+1}</div>
+      <div class="ranking-name"><a href="#" onclick="event.preventDefault();showSkill('${esc(s.key)}')">${s.name}</a></div>
+      <div class="ranking-value">${fmtDate(s.first_seen)}</div>
+    </div>`;
+  }).join('') || '<div class="no-data">-</div>';
+
+  // Most active sources ranking
+  const sourcesList = Object.entries(stats.by_source || {}).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  document.getElementById('topSources').innerHTML = sourcesList.map(([key, count], i) => {
+    const rankCls = i < 3 ? `top${i+1}` : 'other';
+    return `<div class="ranking-item">
+      <div class="ranking-rank ${rankCls}">${i+1}</div>
+      <div class="ranking-name">${key}</div>
+      <div class="ranking-value">${count} skills</div>
+    </div>`;
+  }).join('') || '<div class="no-data">-</div>';
 }
 
 // ======================================================================
