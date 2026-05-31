@@ -3,24 +3,27 @@ name: bio-bedgraph-handling
 description: Create, manipulate, and convert bedGraph files for genome browser visualization. Covers bedGraph format, conversion to/from bigWig, normalization, and signal processing. Use when handling coverage and signal tracks from ChIP-seq, ATAC-seq, or RNA-seq.
 tool_type: mixed
 primary_tool: pyBigWig
+measurable_outcome: Execute skill workflow successfully with valid output within 15 minutes.
+allowed-tools:
+  - read_file
+  - run_shell_command
 ---
 
-## Version Compatibility
+<!--
+# COPYRIGHT NOTICE
+# This file is part of the "Universal Biomedical Skills" project.
+# Copyright (c) 2026 MD BABU MIA, PhD <md.babu.mia@mssm.edu>
+# All Rights Reserved.
+#
+# This code is proprietary and confidential.
+# Unauthorized copying of this file, via any medium is strictly prohibited.
+#
+# Provenance: Authenticated by MD BABU MIA
 
-Reference examples tested with: bedtools 2.31+, samtools 1.19+
+-->
 
-Before using code patterns, verify installed versions match. If versions differ:
-- Python: `pip show <package>` then `help(module.function)` to check signatures
-- CLI: `<tool> --version` then `<tool> --help` to confirm flags
-
-If code throws ImportError, AttributeError, or TypeError, introspect the installed
-package and adapt the example to match the actual API rather than retrying.
 
 # bedGraph Handling
-
-**"Work with bedGraph signal tracks"** → Create, manipulate, and convert bedGraph files for displaying coverage or signal intensity on genome browsers.
-- CLI: `bedtools genomecov -bg` to generate, `bedGraphToBigWig` to convert
-- Python: `pyBigWig`, `pybedtools`
 
 bedGraph is a text format for displaying continuous-valued data on genome browsers. Common for coverage, signal intensity, and scores.
 
@@ -294,10 +297,6 @@ awk 'NR==1 {min=$4; max=$4} {if($4<min) min=$4; if($4>max) max=$4}
 
 ## Complete Pipeline
 
-**Goal:** Generate a CPM-normalized bigWig track from a BAM file in a single automated workflow.
-
-**Approach:** Count total mapped reads with samtools, compute a CPM scale factor, generate a scaled bedGraph with bedtools genomecov, sort and clip to chromosome boundaries, then convert to bigWig format.
-
 ```bash
 #!/bin/bash
 BAM=$1
@@ -333,3 +332,6 @@ cat sample.bedgraph >> track.bedgraph
 - bigwig-tracks - Work with bigWig format
 - chip-seq/chipseq-visualization - Visualize signal tracks
 - alignment-files/sam-bam-basics - BAM file processing
+
+
+<!-- AUTHOR_SIGNATURE: 9a7f3c2e-MD-BABU-MIA-2026-MSSM-SECURE -->
