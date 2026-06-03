@@ -1,9 +1,11 @@
 ---
 name: ship
 description: >-
-  End-to-end branch delivery: commit (no AI attribution) → push → open a pull request → link the
-  work item → after merge, clean up branch and worktree. Auto-detects the platform from the remote —
-  Azure Repos + Boards (`az`, with an OAuth Bearer push fallback) or GitHub (`gh`). Use whenever
+  End-to-end branch delivery: commit (no AI attribution) → push → open a pull request → ensure a
+  Board work item exists (create one per task, assigned to the configured user, if none) and link
+  it → after merge, clean up branch and worktree. Auto-detects the platform from the remote —
+  Azure Repos + Boards (azure-devops-node-api SDK; OAuth Bearer push fallback via `az`) or GitHub
+  (Octokit; `gh` for auth). Scripts are TypeScript, run via `bun`. Use whenever
   asked to "ship", "ship it", "ship this branch", "open a PR", "push and open a PR", "raise a PR",
   "deliver this", "send this for review", or "create a PR and link the work item" — and when a
   direct push to main is blocked and the change needs to go through a PR instead.
@@ -35,12 +37,15 @@ hands a reviewable PR to the platform and cleans up after the merge.
 
 ## The flow
 
-Run `scripts/ship-detect.sh` first — it prints the platform, the Azure org/project/repo (if any),
-the branch, and an inferred work-item id. Everything below branches on that.
+Run `bun scripts/ship-detect.ts` first — it prints the platform, the Azure org/project/repo (if
+any), the branch, and an inferred work-item id. Everything below branches on that.
+
+> **One-time setup:** the scripts depend on `azure-devops-node-api` and `@octokit/rest`. Run
+> `bun install` in the skill dir (`~/.claude/skills/ship/`) once before first use.
 
 ### 0. Preflight
 - Confirm there's something to deliver: `git status` and `git log --oneline @{u}.. 2>/dev/null`.
-- Note the platform from `ship-detect.sh`. If it says `unknown` (e.g. a custom SSH host alias),
+- Note the platform from `ship-detect.ts`. If it says `unknown` (e.g. a custom SSH host alias),
   set `SHIP_PLATFORM=azure` or `SHIP_PLATFORM=github` for the session.
 
 ### 1. Commit — as the author, never as the tool
@@ -63,26 +68,38 @@ backstop, but don't rely on it — don't write them in the first place). If pre-
 
 ### 3. Push
 ```bash
-bash scripts/ship-push.sh        # pushes current branch, sets upstream
+bun scripts/ship-push.ts         # pushes current branch, sets upstream
 ```
 On Azure DevOps, if the normal push fails on auth, this automatically mints an `az` OAuth token and
 retries with a Bearer header — the fallback for when neither SSH nor an HTTPS credential helper is
 available. See `references/azure-devops.md` for the mechanics.
 
-### 4. Open the PR (+ link work item, + transition state)
+### 4. Open the PR (+ ensure/link work item, + transition state)
 Draft a real description — copy `assets/pr-template.md` to a temp file, fill Summary / Changes /
 Verification, and keep the `AB#<id>` line so the work item links.
 
 ```bash
-bash scripts/ship-pr.sh --title "<title>" --body-file /tmp/pr-body.md \
+bun scripts/ship-pr.ts --title "<title>" --body-file /tmp/pr-body.md \
   --work-item <id> --transition Resolved
 ```
-- Platform is auto-detected; the script picks `az repos pr create` or `gh pr create`.
-- `--work-item` is inferred from the branch name when omitted — pass it explicitly if the branch
-  doesn't carry it. Confirm the id is right before linking.
-- `--transition` (Azure only) moves the Board item *after* the PR opens. State names are
-  process-specific (Agile: Resolved; Scrum: Committed; Basic: Doing) — verify the valid next state
-  first; see `references/azure-devops.md`. Omit `--transition` to leave the board untouched.
+- Platform is auto-detected; the script uses the **azure-devops-node-api** SDK (`createPullRequest`)
+  or **Octokit** (`pulls.create`).
+- **Azure never opens a PR without a linked Board work item.** The script resolves the id from
+  `--work-item` (or the branch name), then **verifies it actually exists** via the SDK
+  (`getWorkItem`). The branch-name parse is only a heuristic — a branch like `1234-foo` can carry a
+  number that isn't a real item, which is why existence is checked, not assumed.
+- **If no real work item is found, one is created per task and linked to the PR**, each **assigned
+  to** `$SHIP_ADO_ASSIGNEE` (default `juliano.barbosa@hypera.com.br`; override with `--assignee`).
+  Pass `--task "<title>"` once per task (repeatable), or `--tasks-file <file>` (one title per line),
+  to create one item each. With no `--task`, a single item is created from the PR `--title`. Type
+  defaults to `Task` (`--work-item-type "User Story"|Bug`). Disable creation with
+  `--no-create-work-item` to link only a pre-existing id.
+  - The script prints `work_item_created=<id>` per created item and `work_items=<ids>` for the set —
+    surface the new ids to the user (don't fabricate them; they come from the SDK response).
+- `--transition` (Azure only) moves **each** linked/created item *after* the PR opens. State names
+  are process-specific (Agile: Resolved; Scrum: Committed; Basic: Doing) — verify the valid next
+  state first; see `references/azure-devops.md`. Omit `--transition` to leave the board untouched.
+  (Created items start in the type's initial state, e.g. `New`/`To Do`.)
 - The script prints `pr_url=…`; surface it to the user.
 
 ### 5. After merge — cleanup
@@ -98,12 +115,15 @@ Do this only once the PR is actually merged (don't delete a branch with an open 
 
 | Script | Does |
 |--------|------|
-| `scripts/ship-detect.sh [remote]` | Print platform + Azure coordinates + branch + inferred work item |
-| `scripts/ship-push.sh [-r remote] [-b branch]` | Push + set upstream; Azure OAuth Bearer fallback on auth failure |
-| `scripts/ship-pr.sh --title … [opts]` | Open PR on the detected platform; link work item; optional Board transition |
+| `bun scripts/ship-detect.ts [remote]` | Print platform + Azure coordinates + branch + inferred work item |
+| `bun scripts/ship-push.ts [-r remote] [-b branch]` | Push + set upstream; Azure OAuth Bearer fallback on auth failure |
+| `bun scripts/ship-pr.ts --title … [opts]` | Open PR on the detected platform; ensure/create + link work item(s) (assigned to the configured user); optional Board transition |
 
-Platform-specific detail lives in `references/azure-devops.md` and `references/github.md` — read the
-one matching the detected platform. The PR description starts from `assets/pr-template.md`.
+Scripts are TypeScript run via `bun`; shared helpers live in `scripts/ship-lib.ts`. Run `bun install`
+in the skill dir once (installs `azure-devops-node-api` + `@octokit/rest`). Git/push stays a
+subprocess call (it's a git operation); only the ADO/GitHub REST surfaces use the SDKs. Platform
+detail lives in `references/azure-devops.md` and `references/github.md` — read the one matching the
+detected platform. The PR description starts from `assets/pr-template.md`.
 
 ## Safety
 
@@ -117,8 +137,12 @@ one matching the detected platform. The PR description starts from `assets/pr-te
 
 ## Gotchas
 
-- `gh pr create` and `az repos pr create` both require the branch to be **pushed first** — keep
-  step 3 before step 4.
-- `ship-detect.sh` returning `unknown` is almost always a custom SSH host alias — set `SHIP_PLATFORM`.
+- Both PR-create paths (Octokit `pulls.create`, ADO `createPullRequest`) require the branch to be
+  **pushed first** — keep step 3 before step 4.
+- `ship-detect.ts` returning `unknown` is almost always a custom SSH host alias — set `SHIP_PLATFORM`.
+  (A `dev.azure.com-<alias>` SSH host is detected as azure but its org/project/repo won't parse —
+  same limitation the shell version had; pass coordinates/`--work-item` explicitly if needed.)
+- Scripts need deps: if you see `Cannot find module 'azure-devops-node-api'`, run `bun install` in
+  the skill dir.
 - A linked work item does **not** change state on its own; transitioning is a separate step (4).
 - Deleting a branch while its PR is still open abandons the PR — clean up only after merge (step 5).
