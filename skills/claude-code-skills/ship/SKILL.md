@@ -75,6 +75,17 @@ retries with a Bearer header — the fallback for when neither SSH nor an HTTPS 
 available. See `references/azure-devops.md` for the mechanics.
 
 ### 4. Open the PR (+ ensure/link work item, + transition state)
+
+> **Invariant — never ask the user for the work item id.** Resolving → verifying → (if missing)
+> creating + assigning + linking the work item is *fully automatic*. A PR must never be surfaced
+> as ready without a linked Board work item. If you're about to ask "what's the work-item id?",
+> stop — that question is the exact failure this skill exists to prevent. The id comes from
+> `--work-item`, the branch name, or a freshly created item; it never comes from a question.
+>
+> **Code review does not own the work item.** Because ship guarantees a linked item at PR-open,
+> the review step — human reviewers or the `code-review` / `bmad-code-review` skills — must not
+> re-prompt for or block on a work item. That concern is already satisfied upstream.
+
 Draft a real description — copy `assets/pr-template.md` to a temp file, fill Summary / Changes /
 Verification, and keep the `AB#<id>` line so the work item links.
 
@@ -145,4 +156,7 @@ detected platform. The PR description starts from `assets/pr-template.md`.
 - Scripts need deps: if you see `Cannot find module 'azure-devops-node-api'`, run `bun install` in
   the skill dir.
 - A linked work item does **not** change state on its own; transitioning is a separate step (4).
+- Don't hand-roll the PR with raw `az repos pr create` / `gh pr create` and then bolt the work item
+  on afterward — that path skips the auto-create+link invariant and forces a manual "what's the id?"
+  round-trip with the user. Use `ship-pr.ts` so the work item is guaranteed at PR-open.
 - Deleting a branch while its PR is still open abandons the PR — clean up only after merge (step 5).
