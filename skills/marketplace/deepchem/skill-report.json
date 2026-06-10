@@ -1,30 +1,30 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-01-17T00:26:11.568Z",
-    "slug": "davila7-deepchem",
-    "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/scientific/deepchem",
+    "generated_at": "2026-01-17T06:41:37.417Z",
+    "slug": "k-dense-ai-deepchem",
+    "source_url": "https://github.com/K-Dense-AI/claude-scientific-skills/tree/main/scientific-skills/deepchem",
     "source_ref": "main",
     "model": "claude",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "48f4c2f916dc30174d2285f320a07648b4188a708196fb059caee07c2e3aab94",
-    "tree_hash": "d163749ee3c2268d21408a92aef3ec9012f4a33014931e8406d51a9c2a2e84ac"
+    "content_hash": "1d94d874c435de301f0befdad44265fe39e6f6ceb046ae7ad75f2868dd7fadb9",
+    "tree_hash": "8eb38b611d7d45c4478413c66854f8019268cc199346257f4367eaa0a50219f9"
   },
   "skill": {
     "name": "deepchem",
-    "description": "Molecular machine learning toolkit. Property prediction (ADMET, toxicity), GNNs (GCN, MPNN), MoleculeNet benchmarks, pretrained models, featurization, for drug discovery ML.",
-    "summary": "Molecular machine learning toolkit. Property prediction (ADMET, toxicity), GNNs (GCN, MPNN), Molecul...",
+    "description": "Molecular ML with diverse featurizers and pre-built datasets. Use for property prediction (ADMET, toxicity) with traditional ML or GNNs when you want extensive featurization options and MoleculeNet benchmarks. Best for quick experiments with pre-trained models, diverse molecular representations. For graph-first PyTorch workflows use torchdrug; for benchmark datasets use pytdc.",
+    "summary": "Molecular ML with diverse featurizers and pre-built datasets. Use for property prediction (ADMET, to...",
     "icon": "🧪",
     "version": "1.0.0",
-    "author": "davila7",
-    "license": "MIT",
-    "category": "scientific",
+    "author": "K-Dense-AI",
+    "license": "MIT license",
+    "category": "data",
     "tags": [
       "machine-learning",
       "chemistry",
       "drug-discovery",
-      "molecular"
+      "molecular-biology"
     ],
     "supported_tools": [
       "claude",
@@ -33,20 +33,24 @@
     ],
     "risk_factors": [
       "scripts",
-      "network",
       "filesystem",
-      "external_commands"
+      "network"
     ]
   },
   "security_audit": {
-    "risk_level": "low",
+    "risk_level": "safe",
     "is_blocked": false,
     "safe_to_publish": true,
-    "summary": "Legitimate molecular ML toolkit with standard ML library behaviors. Downloads pretrained models from HuggingFace and saves checkpoints locally. No suspicious network endpoints, credential access, or code execution patterns. Static findings are false positives from markdown documentation parsing.",
+    "summary": "This is a legitimate scientific computing skill for DeepChem molecular machine learning. All 237 static findings are false positives. The findings originate from markdown documentation code examples being incorrectly flagged as executable Ruby/shell commands. Common English words in chemistry documentation are matching C2 security patterns. The Python scripts use argparse for safe argument handling with no hardcoded secrets or dangerous operations.",
     "risk_factor_evidence": [
       {
         "factor": "scripts",
         "evidence": [
+          {
+            "file": "scripts/graph_neural_network.py",
+            "line_start": 1,
+            "line_end": 339
+          },
           {
             "file": "scripts/predict_solubility.py",
             "line_start": 1,
@@ -56,21 +60,6 @@
             "file": "scripts/transfer_learning.py",
             "line_start": 1,
             "line_end": 376
-          },
-          {
-            "file": "scripts/graph_neural_network.py",
-            "line_start": 1,
-            "line_end": 339
-          }
-        ]
-      },
-      {
-        "factor": "network",
-        "evidence": [
-          {
-            "file": "scripts/transfer_learning.py",
-            "line_start": 59,
-            "line_end": 66
           }
         ]
       },
@@ -78,191 +67,156 @@
         "factor": "filesystem",
         "evidence": [
           {
-            "file": "scripts/transfer_learning.py",
-            "line_start": 121,
-            "line_end": 126
+            "file": "scripts/graph_neural_network.py",
+            "line_start": 55,
+            "line_end": 65
           },
           {
-            "file": "scripts/graph_neural_network.py",
-            "line_start": 191,
-            "line_end": 191
+            "file": "scripts/predict_solubility.py",
+            "line_start": 45,
+            "line_end": 55
+          },
+          {
+            "file": "scripts/transfer_learning.py",
+            "line_start": 50,
+            "line_end": 60
           }
         ]
       },
       {
-        "factor": "external_commands",
+        "factor": "network",
         "evidence": [
           {
-            "file": "scripts/predict_solubility.py",
-            "line_start": 14,
-            "line_end": 16
-          },
-          {
-            "file": "scripts/transfer_learning.py",
-            "line_start": 13,
-            "line_end": 15
-          },
-          {
-            "file": "scripts/graph_neural_network.py",
-            "line_start": 14,
-            "line_end": 16
+            "file": "SKILL.md",
+            "line_start": 245,
+            "line_end": 255
           }
         ]
       }
     ],
     "critical_findings": [],
     "high_findings": [],
-    "medium_findings": [
-      {
-        "title": "Pretrained model downloads from HuggingFace",
-        "description": "The transfer_learning.py script downloads pretrained models from HuggingFace (line 61: model_id='seyonec/ChemBERTa-zinc-base-v1'). Standard ML library behavior for transfer learning workflows.",
-        "locations": [
-          {
-            "file": "scripts/transfer_learning.py",
-            "line_start": 59,
-            "line_end": 66
-          }
-        ]
-      }
-    ],
-    "low_findings": [
-      {
-        "title": "Model checkpoint storage to local directories",
-        "description": "Scripts save model checkpoints to local directories (line 125: model_dir='./grover_pretrained'). Standard ML practice for model persistence.",
-        "locations": [
-          {
-            "file": "scripts/transfer_learning.py",
-            "line_start": 121,
-            "line_end": 126
-          }
-        ]
-      }
-    ],
+    "medium_findings": [],
+    "low_findings": [],
     "dangerous_patterns": [],
-    "files_scanned": 7,
-    "total_lines": 2639,
+    "files_scanned": 8,
+    "total_lines": 2764,
     "audit_model": "claude",
-    "audited_at": "2026-01-17T00:26:11.568Z"
+    "audited_at": "2026-01-17T06:41:37.417Z"
   },
   "content": {
-    "user_title": "Predict molecular properties for drug discovery",
-    "value_statement": "Drug discovery requires predicting molecular properties like solubility and toxicity. DeepChem provides pretrained models and graph neural networks to predict these properties from molecular structures.",
+    "user_title": "Apply machine learning to chemistry and drug discovery",
+    "value_statement": "Predict molecular properties like solubility, toxicity, and binding affinity using DeepChem. Train graph neural networks or use pretrained models like ChemBERTa for drug discovery and materials science applications.",
     "seo_keywords": [
       "DeepChem",
       "molecular machine learning",
       "drug discovery",
-      "property prediction",
       "graph neural networks",
-      "ADMET prediction",
-      "toxicity prediction",
+      "property prediction",
       "solubility prediction",
-      "MoleculeNet",
-      "ChemBERTa"
+      "toxicity prediction",
+      "ChemBERTa",
+      "GNN",
+      "MoleculeNet"
     ],
     "actual_capabilities": [
-      "Predict molecular properties including solubility, toxicity, and binding affinity",
-      "Train and use graph neural networks (GCN, GAT, MPNN, AttentiveFP)",
+      "Load molecular data from CSV, SDF, and FASTA files with specialized loaders",
+      "Convert molecules to ML-ready features using fingerprints, graphs, and descriptors",
+      "Train graph neural networks (GCN, GAT, MPNN, AttentiveFP) for molecular property prediction",
       "Apply transfer learning with pretrained models (ChemBERTa, GROVER, MolFormer)",
-      "Load and process MoleculeNet benchmark datasets",
-      "Convert molecules to ML-ready features (fingerprints, graphs, descriptors)",
-      "Generate novel molecules using GAN-based molecular generation"
+      "Predict ADMET properties (solubility, toxicity, binding affinity) on new molecules",
+      "Use MoleculeNet benchmark datasets (Tox21, BBBP, Delaney, BACE, HIV)"
     ],
     "limitations": [
-      "Requires DeepChem installation and ML dependencies (deepchem, pytorch, transformers)",
-      "Performance depends on dataset size and quality of chemical data",
-      "Models trained from scratch need substantial computational resources"
+      "Requires DeepChem library installation with appropriate dependencies",
+      "Performance depends on dataset size and quality for training",
+      "GPU recommended but not required for smaller datasets"
     ],
     "use_cases": [
       {
         "target_user": "Computational chemists",
         "title": "Screen compound libraries",
-        "description": "Predict ADMET properties for large compound libraries to prioritize candidates for synthesis."
+        "description": "Predict solubility and toxicity for large compound libraries to prioritize candidates for synthesis."
+      },
+      {
+        "target_user": "Data scientists",
+        "title": "Build molecular property models",
+        "description": "Train custom models on proprietary datasets using graph neural networks or traditional ML algorithms."
       },
       {
         "target_user": "Drug discovery researchers",
-        "title": "Build predictive models",
-        "description": "Train custom property prediction models using your proprietary chemical data."
-      },
-      {
-        "target_user": "Materials scientists",
-        "title": "Predict material properties",
-        "description": "Apply crystal graph neural networks to predict bandgap, formation energy, and other materials properties."
+        "title": "Apply transfer learning",
+        "description": "Fine-tune pretrained chemistry models like ChemBERTa on small datasets with limited labeled examples."
       }
     ],
     "prompt_templates": [
       {
-        "title": "Basic solubility prediction",
-        "scenario": "Predict solubility for small molecules",
-        "prompt": "Use DeepChem to predict aqueous solubility for these SMILES: CCO, CC(=O)O, c1ccccc1, CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
+        "title": "Load molecular data",
+        "scenario": "Load CSV with SMILES strings",
+        "prompt": "Use DeepChem to load a CSV file with SMILES strings at 'molecules.csv' and predict solubility using CircularFingerprint featurizer and a trained model."
       },
       {
-        "title": "Train property model",
-        "scenario": "Train on custom molecular dataset",
-        "prompt": "Train a GCN model on my molecules.csv file to predict activity. The SMILES column is 'smiles' and target column is 'target'. Use ScaffoldSplitter for data splitting."
+        "title": "Train GNN model",
+        "scenario": "Train graph neural network",
+        "prompt": "Train a Graph Convolutional Network on the Tox21 dataset using DeepChem to predict toxicity across all 12 tasks."
       },
       {
         "title": "Transfer learning",
         "scenario": "Fine-tune pretrained model",
-        "prompt": "Fine-tune ChemBERTa on the BBBP dataset using DeepChem. Use scaffold splitting and evaluate with ROC-AUC score."
+        "prompt": "Use ChemBERTa pretrained model from HuggingFace and fine-tune it on my custom dataset at 'activity.csv' to predict binding affinity."
       },
       {
-        "title": "Benchmark evaluation",
-        "scenario": "Evaluate model on MoleculeNet",
-        "prompt": "Evaluate GCN, GAT, and AttentiveFP models on Tox21 dataset using DeepChem. Compare ROC-AUC scores and report the best performing architecture."
+        "title": "Batch predictions",
+        "scenario": "Predict on new molecules",
+        "prompt": "Load a trained DeepChem model and make predictions on a list of new SMILES strings: 'CCO', 'CC(=O)O', 'c1ccccc1'. Return confidence scores."
       }
     ],
     "output_examples": [
       {
-        "input": "Predict solubility for caffeine using DeepChem",
+        "input": "Predict solubility for these molecules: 'CCO', 'CC(=O)O', 'c1ccccc1'",
         "output": [
-          "Predicted solubility for CN1C=NC2=C1C(=O)N(C(=O)N2C)C: -1.190 log(mol/L)",
-          "Model: MultitaskRegressor with CircularFingerprint featurizer",
-          "Dataset: Delaney benchmark, R²=0.89 on test set"
-        ]
-      },
-      {
-        "input": "Train a GCN model on Tox21 dataset",
-        "output": [
-          "Training GCN on 12 toxicity prediction tasks",
-          "Using scaffold splitting to prevent data leakage",
-          "Test ROC-AUC: 0.782 average across all tasks"
+          "Solubility predictions (log mol/L):",
+          "• Ethanol (CCO): -0.92",
+          "• Acetic acid (CC(=O)O): -0.45",
+          "• Benzene (c1ccccc1): -1.69",
+          "Note: Lower values indicate lower aqueous solubility."
         ]
       }
     ],
     "best_practices": [
-      "Use ScaffoldSplitter for molecular data to prevent data leakage from similar structures",
-      "Apply normalization transformers to features and targets for better model convergence",
-      "Start with simpler models (Random Forest + CircularFingerprint) before scaling to deep learning"
+      "Use ScaffoldSplitter instead of random split for molecular datasets to prevent data leakage from similar molecules",
+      "Apply transfer learning with pretrained models when dataset size is less than 10,000 samples",
+      "Increase dropout (0.3-0.5) and use simpler models for small datasets to prevent overfitting"
     ],
     "anti_patterns": [
-      "Using random splitting for molecular datasets causes data leakage from similar compounds",
-      "Training deep neural networks on small datasets (<1000 samples) leads to overfitting",
-      "Skipping data normalization reduces model performance and training stability"
+      "Using random train/test splits on molecular data - leads to data leakage from similar structures",
+      "Training deep GNNs on datasets smaller than 1,000 samples - severe overfitting risk",
+      "Ignoring class imbalance in toxicity datasets - always check task distribution before training"
     ],
     "faq": [
       {
-        "question": "Which featurizer should I use?",
-        "answer": "Use CircularFingerprint for small datasets and traditional ML. Use MolGraphConvFeaturizer for large datasets and graph neural networks."
+        "question": "What featurizer should I use?",
+        "answer": "Use MolGraphConvFeaturizer for GNNs, CircularFingerprint for traditional ML, and RDKitDescriptors for interpretable models."
       },
       {
-        "question": "What compute resources do I need?",
-        "answer": "Graph neural networks require GPU for training. Traditional ML (Random Forest, XGBoost) runs efficiently on CPU with smaller datasets."
+        "question": "How do I handle small datasets?",
+        "answer": "Apply transfer learning with ChemBERTa or GROVER pretrained models. Use data augmentation and stronger regularization."
       },
       {
-        "question": "How do I install DeepChem?",
-        "answer": "Run: uv pip install deepchem. For PyTorch models: uv pip install deepchem[torch]. For all features: uv pip install deepchem[all]."
+        "question": "Which splitter should I use?",
+        "answer": "Use ScaffoldSplitter for molecular datasets to ensure structurally similar compounds stay in the same split."
       },
       {
-        "question": "Is my data safe when using pretrained models?",
-        "answer": "Yes. Your data is processed locally. Pretrained model weights are downloaded from HuggingFace but your data never leaves your environment."
+        "question": "Can I use my own dataset?",
+        "answer": "Yes, provide a CSV with SMILES strings in one column and target values in another. Use CSVLoader with custom column names."
       },
       {
-        "question": "Why is my model underperforming?",
-        "answer": "Common issues: insufficient data, wrong featurizer choice, data leakage from random splitting, or insufficient training epochs. Use ScaffoldSplitter and start with simpler baselines."
+        "question": "What pretrained models are available?",
+        "answer": "ChemBERTa, GROVER, and MolFormer are integrated. Load from HuggingFace for domain-specific molecular representations."
       },
       {
-        "question": "How does this compare to other ML frameworks?",
-        "answer": "DeepChem specializes in molecular data with built-in loaders, featurizers, and benchmarks. For general ML, use scikit-learn or PyTorch directly."
+        "question": "How to improve model performance?",
+        "answer": "Try different featurizers, increase training epochs, use larger models like AttentiveFP, or apply transfer learning from pretrained models."
       }
     ]
   },
@@ -312,10 +266,16 @@
       ]
     },
     {
+      "name": "evaluation.json",
+      "type": "file",
+      "path": "evaluation.json",
+      "lines": 191
+    },
+    {
       "name": "SKILL.md",
       "type": "file",
       "path": "SKILL.md",
-      "lines": 592
+      "lines": 597
     }
   ]
 }
