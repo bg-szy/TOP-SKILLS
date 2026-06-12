@@ -156,6 +156,9 @@ detected platform. The PR description starts from `assets/pr-template.md`.
 - Scripts need deps: if you see `Cannot find module 'azure-devops-node-api'`, run `bun install` in
   the skill dir.
 - A linked work item does **not** change state on its own; transitioning is a separate step (4).
+- If `AZURE_DEVOPS_EXT_PAT` is set but under-scoped (e.g. Code-only, missing Work Items / Pull
+  Request write), `ship-pr.ts` auto-detects the 401/403 and retries with the `az` OAuth bearer
+  token — no need to unset the PAT manually. The fallback requires `az login` as an org member.
 - Don't hand-roll the PR with raw `az repos pr create` / `gh pr create` and then bolt the work item
   on afterward — that path skips the auto-create+link invariant and forces a manual "what's the id?"
   round-trip with the user. Use `ship-pr.ts` so the work item is guaranteed at PR-open.
