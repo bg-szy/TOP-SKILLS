@@ -113,6 +113,33 @@ bun scripts/ship-pr.ts --title "<title>" --body-file /tmp/pr-body.md \
   (Created items start in the type's initial state, e.g. `New`/`To Do`.)
 - The script prints `pr_url=…`; surface it to the user.
 
+### 4b. Tag the PR (optional, recommended)
+Azure DevOps calls them **tags**; GitHub calls them **labels** — same idea: a small, visible signal
+that helps reviewers triage and helps the team organize PRs. Microsoft's guidance is that tags
+"communicate extra information to reviewers, such as that the PR is still a work in progress, or is a
+hotfix for an upcoming release" ([Add tags to a pull request](https://learn.microsoft.com/azure/devops/repos/git/pull-requests#add-tags-to-a-pull-request)).
+
+Apply tags at PR-open time with `--tag` (comma-separated and/or repeatable):
+
+```bash
+bun scripts/ship-pr.ts --title "<title>" --body-file /tmp/pr-body.md \
+  --work-item <id> --transition Resolved --tag "hotfix,do-not-merge"
+```
+
+…or manage tags on an already-open PR with `ship-tag.ts` (the id is `pr_id=` on Azure / `pr_number=`
+on GitHub, both printed by `ship-pr.ts`):
+
+```bash
+bun scripts/ship-tag.ts <pr-id> --add "needs-review"     # add
+bun scripts/ship-tag.ts <pr-id> --remove "do-not-merge"  # remove
+bun scripts/ship-tag.ts <pr-id> --list                   # show current tags
+```
+
+Tags are free-form on both platforms (Azure creates the tag definition on first use; GitHub
+auto-creates a missing label). For a recommended, consistent tag set — `do-not-merge`, `work-in-progress`,
+`hotfix`, plus type/area conventions — see the **Recommended tags** section of
+`references/azure-devops.md` / `references/github.md`.
+
 ### 5. After merge — cleanup
 Do this only once the PR is actually merged (don't delete a branch with an open PR). Mirror the
 `merge` skill's cleanup, and **ask before deleting**:
@@ -128,7 +155,8 @@ Do this only once the PR is actually merged (don't delete a branch with an open 
 |--------|------|
 | `bun scripts/ship-detect.ts [remote]` | Print platform + Azure coordinates + branch + inferred work item |
 | `bun scripts/ship-push.ts [-r remote] [-b branch]` | Push + set upstream; Azure OAuth Bearer fallback on auth failure |
-| `bun scripts/ship-pr.ts --title … [opts]` | Open PR on the detected platform; ensure/create + link work item(s) (assigned to the configured user); optional Board transition |
+| `bun scripts/ship-pr.ts --title … [opts]` | Open PR on the detected platform; ensure/create + link work item(s) (assigned to the configured user); optional Board transition; optional `--tag` |
+| `bun scripts/ship-tag.ts <pr-id> [--add\|--remove "t1,t2"] [--list]` | Add / remove / list PR tags (Azure) or labels (GitHub) on an existing PR |
 
 Scripts are TypeScript run via `bun`; shared helpers live in `scripts/ship-lib.ts`. Run `bun install`
 in the skill dir once (installs `azure-devops-node-api` + `@octokit/rest`). Git/push stays a
@@ -163,3 +191,9 @@ detected platform. The PR description starts from `assets/pr-template.md`.
   on afterward — that path skips the auto-create+link invariant and forces a manual "what's the id?"
   round-trip with the user. Use `ship-pr.ts` so the work item is guaranteed at PR-open.
 - Deleting a branch while its PR is still open abandons the PR — clean up only after merge (step 5).
+- **Tags ≠ work items ≠ git tags.** PR tags/labels (`--tag`, `ship-tag.ts`) are a triage signal only —
+  they don't link traceability (that's the work item, step 4) and they're not `git tag` releases.
+- **Re-adding a tag is safe** — Azure `createPullRequestLabel` returns the existing definition rather
+  than erroring, and GitHub dedupes; `parseTags` also drops blank/duplicate names from the CSV.
+- **`ship-tag.ts` needs the PR id** — Azure uses the numeric `pr_id`, GitHub uses the `pr_number`
+  (both emitted by `ship-pr.ts`). On GitHub a tag that names a non-existent label is auto-created.
