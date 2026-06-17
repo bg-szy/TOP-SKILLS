@@ -8,7 +8,10 @@ description: >-
   (Octokit; `gh` for auth). Scripts are TypeScript, run via `bun`. Use whenever
   asked to "ship", "ship it", "ship this branch", "open a PR", "push and open a PR", "raise a PR",
   "deliver this", "send this for review", or "create a PR and link the work item" — and when a
-  direct push to main is blocked and the change needs to go through a PR instead.
+  direct push to main is blocked and the change needs to go through a PR instead. Also covers
+  snapshotting the current state as an annotated git tag — use whenever asked to "save the current
+  state", "tag this", "snapshot the state", "create a checkpoint", "tag a release point", or "mark
+  where we are" (a git-tag checkpoint, distinct from PR labels/tags).
 allowed-tools:
   - Bash
   - Read
@@ -149,6 +152,30 @@ Do this only once the PR is actually merged (don't delete a branch with an open 
   net; only escalate to `-D` if the user explicitly confirms).
 - `git push origin --delete <branch>` (ignore failure if it was local-only).
 
+### 6. Snapshot the state (optional)
+Independent of the PR flow — reach for this any time you want a return-to point: after a clean
+merge to `main`, before a risky migration, or just to mark "everything works here." It creates an
+**annotated git tag** on `HEAD` (the working tree is irrelevant — a tag names a commit).
+
+```bash
+bun scripts/ship-snapshot.ts \
+  -m "what changed / why you're saving here" \
+  -m "verification status"
+```
+
+The script auto-fills what's easy to get wrong by hand:
+- **Name** defaults to `v<YYYY.MM.DD-HHMM>` (minute-granular so repeated snapshots in a day don't
+  collide). Pass `--daily` for a once-a-day `v<YYYY.MM.DD>`, or `--name <tag>` for an exact name.
+- **First message paragraph** is auto-generated — `Snapshot <tag> — <branch> @ <shorthash>` — so the
+  tag is self-describing even with no `-m`. Each `-m` you add becomes its own paragraph (passed via
+  an arg array, so real newlines/punctuation survive — unlike a `\n` inside a single shell string).
+- **Collision is refused, not clobbered** (exit 3) — a snapshot must never silently move a tag
+  someone relies on.
+
+Tags are **local until pushed** (shared/visible — confirm first, like opening a PR). Add `--push` to
+push to `origin`; on Azure it falls back to the `az` OAuth Bearer header the same way `ship-push.ts`
+does. The script prints `tag=`, `commit=`, `branch=`, `pushed=`.
+
 ## Bundled tools
 
 | Script | Does |
@@ -157,6 +184,7 @@ Do this only once the PR is actually merged (don't delete a branch with an open 
 | `bun scripts/ship-push.ts [-r remote] [-b branch]` | Push + set upstream; Azure OAuth Bearer fallback on auth failure |
 | `bun scripts/ship-pr.ts --title … [opts]` | Open PR on the detected platform; ensure/create + link work item(s) (assigned to the configured user); optional Board transition; optional `--tag` |
 | `bun scripts/ship-tag.ts <pr-id> [--add\|--remove "t1,t2"] [--list]` | Add / remove / list PR tags (Azure) or labels (GitHub) on an existing PR |
+| `bun scripts/ship-snapshot.ts [-m "para"]… [--daily] [--name <tag>] [--push]` | Save current state as an annotated **git tag** (date-named, self-describing subject); optional push with Azure OAuth fallback |
 
 Scripts are TypeScript run via `bun`; shared helpers live in `scripts/ship-lib.ts`. Run `bun install`
 in the skill dir once (installs `azure-devops-node-api` + `@octokit/rest`). Git/push stays a
@@ -191,8 +219,10 @@ detected platform. The PR description starts from `assets/pr-template.md`.
   on afterward — that path skips the auto-create+link invariant and forces a manual "what's the id?"
   round-trip with the user. Use `ship-pr.ts` so the work item is guaranteed at PR-open.
 - Deleting a branch while its PR is still open abandons the PR — clean up only after merge (step 5).
-- **Tags ≠ work items ≠ git tags.** PR tags/labels (`--tag`, `ship-tag.ts`) are a triage signal only —
-  they don't link traceability (that's the work item, step 4) and they're not `git tag` releases.
+- **Three different "tags" — don't mix them up.** (1) PR tags/labels (`--tag`, `ship-tag.ts`) — a
+  triage signal on the PR. (2) Work items (step 4) — the traceability link. (3) Git tags
+  (`ship-snapshot.ts`) — a commit checkpoint in history. `ship-tag.ts` takes a **PR id**;
+  `ship-snapshot.ts` takes **no positional arg** and tags `HEAD`. Same word, three concepts.
 - **Re-adding a tag is safe** — Azure `createPullRequestLabel` returns the existing definition rather
   than erroring, and GitHub dedupes; `parseTags` also drops blank/duplicate names from the CSV.
 - **`ship-tag.ts` needs the PR id** — Azure uses the numeric `pr_id`, GitHub uses the `pr_number`
