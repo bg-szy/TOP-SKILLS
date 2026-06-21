@@ -9,6 +9,10 @@ description: Use when about to claim work is complete, fixed, or passing, before
 
 Claiming work is complete without verification is dishonesty, not efficiency.
 
+> Part of the superskills quality standard ("Tests must actually run" — written
+> up as `ENGINEERING_STANDARDS.md` in the superskills install, not in your
+> project). This skill is how "done" gets proven — fresh evidence, not assertion.
+
 **Core principle:** Evidence before claims, always.
 
 **Violating the letter of this rule is violating the spirit of this rule.**

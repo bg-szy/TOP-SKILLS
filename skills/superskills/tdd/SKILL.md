@@ -7,6 +7,12 @@ description: Use when implementing any feature or bugfix, before writing impleme
 
 ## Overview
 
+> TDD is the first rule of the superskills quality standard (written up as
+> `ENGINEERING_STANDARDS.md` in the superskills install — not something to look
+> for in your project). This skill is the Red-Green-Refactor loop that standard
+> requires; `/qa-full` blocks any new public surface that arrives without the
+> tests this loop produces.
+
 Write the test first. Watch it fail. Write minimal code to pass.
 
 **Core principle:** If you didn't watch the test fail, you don't know if it tests the right thing.
