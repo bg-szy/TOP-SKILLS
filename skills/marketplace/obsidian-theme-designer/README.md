@@ -1,42 +1,61 @@
-# obsidian-theme-designer — Claude Code Skill
+# Obsidian Theme Designer
 
-A Claude Code skill for designing Obsidian themes visually in the browser — style direction, color palette, font showcase, dual light/dark mode preview, and automated font installation. No CSS knowledge needed.
+[中文](README_CN.md) | English
 
-## What It Does
+**Stop trial-and-error. Design your Obsidian theme visually in the browser.**
 
-- **Visual style selection** — pick from 5 style directions (Academic, Minimal, Dark immersive, Cyberpunk-dev, Warm texture) shown as live browser mockups
-- **Color palette picker** — choose cool, warm, or neutral tones with instant visual previews
-- **Font showcase** — browse 8-10 distinctive font pairings rendered with bilingual sample content; mix and match Chinese and English fonts
-- **Dual-mode preview** — see light and dark themes side by side in a full Obsidian simulation (sidebar + editor)
-- **Auto font install** — downloads and installs Google Fonts to your system (Windows/macOS/Linux)
-- **CSS snippet generation** — produces a ready-to-use Obsidian CSS snippet placed directly in `.obsidian/snippets/`
+A Claude Code skill that guides you through designing a custom Obsidian theme — step by step, visually, with live browser previews. No CSS knowledge needed.
 
-## Install
+---
 
-```bash
-claude skill add https://github.com/XiangyuSu611/obsidian-theme-designer
-```
+## How It Works
 
-Or clone manually:
-```bash
-git clone https://github.com/XiangyuSu611/obsidian-theme-designer ~/.claude/skills/obsidian-theme-designer
-```
+### Step 1: Choose a Style Direction
 
-## Usage
+Pick from 5 visual directions — each shown as a live mockup, not just a label.
 
-Once installed, Claude will automatically apply this skill when you ask about Obsidian theme customization. For example:
+![Style Direction Selection](screenshots/style-directions.png)
 
-- *"Design my Obsidian theme"*
-- *"I want a warm, academic-looking theme for my vault"*
-- *"Help me pick fonts for my Obsidian notes"*
-- *"Create a dark mode color scheme for Obsidian"*
+### Step 2: Pick Your Colors
 
-## Key Features
+Choose cool, warm, or neutral tones. See them applied instantly.
 
-- **Visual-first** — every choice is shown in the browser, not described in text
-- **Bilingual previews** — all previews include Chinese + English mixed content
-- **Non-designer friendly** — relatable analogies, recommended defaults, and reference image support
-- **Iterative refinement** — preview and tweak until satisfied before generating CSS
+![Color Palette Selection](screenshots/color-palettes.png)
+
+### Step 3: Find Your Font
+
+Browse 8-10 distinctive font pairings rendered with your actual content. Mix and match — pick Chinese from one card, English from another.
+
+![Font Showcase](screenshots/font-showcase.png)
+
+### Step 4: Preview & Refine
+
+See your complete theme in a full Obsidian simulation — sidebar, editor, light & dark mode side by side. Iterate until perfect.
+
+![Dual Mode Preview](screenshots/dual-mode-preview.png)
+
+### Step 5: One-Click Install
+
+The skill generates a CSS snippet, installs fonts, and tells you exactly how to enable it in Obsidian. Done.
+
+---
+
+## Features
+
+- **Visual-first** — Every choice is shown in the browser, not described in text
+- **Bilingual previews** — All previews include Chinese + English mixed content
+- **Font intelligence** — Uses the `frontend-design` skill to pick distinctive, non-generic fonts
+- **Dual mode** — Light and dark themes with independent accent colors
+- **Auto font install** — Downloads and installs Google Fonts to your system (Windows/macOS/Linux)
+- **Non-designer friendly** — Relatable analogies ("like a LaTeX PDF"), recommended defaults, reference image support
+
+---
+
+## Quick Start
+
+1. Copy `obsidian-theme-designer/` to `~/.claude/skills/`
+2. Open your Obsidian vault folder in Claude Code
+3. Say: **"Design my Obsidian theme"**
 
 ## Requirements
 
