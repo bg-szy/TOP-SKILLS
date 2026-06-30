@@ -1,36 +1,32 @@
 ---
 name: ui-design-system
-description: The Design System, Theme, and UX rules for the Physical AI Hub.
+description: UI design system toolkit for Senior UI Designer including design token generation, component documentation, responsive design calculations, and developer handoff tools. Use for creating design systems, maintaining visual consistency, and facilitating design-dev collaboration.
 ---
 
-# UI Design System & Theme
+# UI Design System
 
-## Core Philosophy
-- **Aesthetic**: Premium, Modern, "Physical AI" (Dark, Sleek, Futuristic).
-- **Feel**: Smooth, Responsive, High-End.
+Professional toolkit for creating and maintaining scalable design systems.
 
-## Typography
-- **Font**: **Poppins** (Geometric Sans-Serif).
-- **Weights**: 400 (Regular), 500 (Medium), 600 (Semi-Bold), 700 (Bold).
-- **Usage**: Clean, legible, widely spaced.
+## Core Capabilities
+- Design token generation (colors, typography, spacing)
+- Component system architecture
+- Responsive design calculations
+- Accessibility compliance
+- Developer handoff documentation
 
-## Color Palette (Dark Mode - Primary)
-- **Background**: `linear-gradient(135deg, #1a1f28 0%, #161b23 50%, #0f1419 100%)`
-- **Primary Accent**: `#2d7d6c` (Teal/Greenish) used in buttons and highlights.
-- **Text**: `#ededed` (Off-white for readability).
-- **Borders**: Subtle, often `rgba(255, 255, 255, 0.1)`.
+## Key Scripts
 
-## Components
-- **Buttons**: Rounded corners, smooth hover transitions, subtle shadows.
-- **Cards**: Glassmorphism effect (blur + transparency), rounded corners (`12px` or `16px`).
-- **Inputs**: Rounded (`24px`), borderless or subtle border, focus rings.
-- **Dropdowns**: Floating, animated slide-in, shadow depth.
+### design_token_generator.py
+Generates complete design system tokens from brand colors.
 
-## Animations
-- **Transitions**: `all 0.2s ease` or `cubic-bezier` for premium feel.
-- **Keyframes**: `fadeIn`, `slideIn`, `dropdownSlideIn`.
+**Usage**: `python scripts/design_token_generator.py [brand_color] [style] [format]`
+- Styles: modern, classic, playful
+- Formats: json, css, scss
 
-## CSS Structure
-- **Global**: `app/globals.css` (Tailwind + Variables).
-- **Docusaurus**: `textbook/src/css/custom.css` (Overrides).
-- **Modules**: `styles.module.css` for complex components (like Chatbot, Dropdown).
+**Features**:
+- Complete color palette generation
+- Modular typography scale
+- 8pt spacing grid system
+- Shadow and animation tokens
+- Responsive breakpoints
+- Multiple export formats
