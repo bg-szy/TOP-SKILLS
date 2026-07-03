@@ -1,10 +1,8 @@
 ---
 name: python-executor
 description: "Execute Python code in a safe sandboxed environment via [inference.sh](https://inference.sh). Pre-installed: NumPy, Pandas, Matplotlib, requests, BeautifulSoup, Selenium, Playwright, MoviePy, Pillow, OpenCV, trimesh, and 100+ more libraries. Use for: data processing, web scraping, image manipulation, video creation, 3D model processing, PDF generation, API calls, automation scripts. Triggers: python, execute code, run script, web scraping, data analysis, image processing, video editing, 3D models, automation, pandas, matplotlib"
-allowed-tools: Bash(belt *)
+allowed-tools: Bash(infsh *)
 ---
-
-> **Install the belt CLI skill:** `npx skills add belt-sh/cli`
 
 # Python Code Executor
 
@@ -14,13 +12,13 @@ Execute Python code in a safe, sandboxed environment with 100+ pre-installed lib
 
 ## Quick Start
 
-> Requires inference.sh CLI (`belt`). [Install instructions](https://raw.githubusercontent.com/inference-sh/skills/refs/heads/main/cli-install.md)
+> Requires inference.sh CLI (`infsh`). [Install instructions](https://raw.githubusercontent.com/inference-sh/skills/refs/heads/main/cli-install.md)
 
 ```bash
-belt login
+infsh login
 
 # Run Python code
-belt app run infsh/python-executor --input '{
+infsh app run infsh/python-executor --input '{
   "code": "import pandas as pd\nprint(pd.__version__)"
 }'
 ```
@@ -80,7 +78,7 @@ belt app run infsh/python-executor --input '{
 ### Web Scraping
 
 ```bash
-belt app run infsh/python-executor --input '{
+infsh app run infsh/python-executor --input '{
   "code": "import requests\nfrom bs4 import BeautifulSoup\n\nresponse = requests.get(\"https://example.com\")\nsoup = BeautifulSoup(response.content, \"html.parser\")\nprint(soup.find(\"title\").text)"
 }'
 ```
@@ -88,7 +86,7 @@ belt app run infsh/python-executor --input '{
 ### Data Analysis with Visualization
 
 ```bash
-belt app run infsh/python-executor --input '{
+infsh app run infsh/python-executor --input '{
   "code": "import pandas as pd\nimport matplotlib.pyplot as plt\n\ndata = {\"name\": [\"Alice\", \"Bob\"], \"sales\": [100, 150]}\ndf = pd.DataFrame(data)\n\nplt.bar(df[\"name\"], df[\"sales\"])\nplt.savefig(\"outputs/chart.png\")\nprint(\"Chart saved!\")"
 }'
 ```
@@ -96,7 +94,7 @@ belt app run infsh/python-executor --input '{
 ### Image Processing
 
 ```bash
-belt app run infsh/python-executor --input '{
+infsh app run infsh/python-executor --input '{
   "code": "from PIL import Image\nimport numpy as np\n\n# Create gradient image\narr = np.linspace(0, 255, 256*256, dtype=np.uint8).reshape(256, 256)\nimg = Image.fromarray(arr, mode=\"L\")\nimg.save(\"outputs/gradient.png\")\nprint(\"Image created!\")"
 }'
 ```
@@ -104,7 +102,7 @@ belt app run infsh/python-executor --input '{
 ### Video Creation
 
 ```bash
-belt app run infsh/python-executor --input '{
+infsh app run infsh/python-executor --input '{
   "code": "from moviepy.editor import ColorClip, TextClip, CompositeVideoClip\n\nclip = ColorClip(size=(640, 480), color=(0, 100, 200), duration=3)\ntxt = TextClip(\"Hello!\", fontsize=70, color=\"white\").set_position(\"center\").set_duration(3)\nvideo = CompositeVideoClip([clip, txt])\nvideo.write_videofile(\"outputs/hello.mp4\", fps=24)\nprint(\"Video created!\")",
   "timeout": 120
 }'
@@ -113,7 +111,7 @@ belt app run infsh/python-executor --input '{
 ### 3D Model Processing
 
 ```bash
-belt app run infsh/python-executor --input '{
+infsh app run infsh/python-executor --input '{
   "code": "import trimesh\n\nsphere = trimesh.creation.icosphere(subdivisions=3, radius=1.0)\nsphere.export(\"outputs/sphere.stl\")\nprint(f\"Created sphere with {len(sphere.vertices)} vertices\")"
 }'
 ```
@@ -121,7 +119,7 @@ belt app run infsh/python-executor --input '{
 ### API Calls
 
 ```bash
-belt app run infsh/python-executor --input '{
+infsh app run infsh/python-executor --input '{
   "code": "import requests\nimport json\n\nresponse = requests.get(\"https://api.github.com/users/octocat\")\ndata = response.json()\nprint(json.dumps(data, indent=2))"
 }'
 ```
@@ -142,10 +140,10 @@ mesh.export('outputs/model.stl')
 
 ```bash
 # Default (8GB RAM)
-belt app run infsh/python-executor --input input.json
+infsh app run infsh/python-executor --input input.json
 
 # High memory (16GB RAM) for large datasets
-belt app run infsh/python-executor@high_memory --input input.json
+infsh app run infsh/python-executor@high_memory --input input.json
 ```
 
 ## Use Cases
