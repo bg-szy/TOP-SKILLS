@@ -1,10 +1,8 @@
 ---
 name: app-store-screenshots
 description: "App Store and Google Play screenshot creation with exact platform specs. Covers iOS/Android dimensions, gallery ordering, device mockups, and preview videos. Use for: app store optimization, ASO, app screenshots, app preview, play store listing. Triggers: app store screenshots, aso, app store optimization, play store screenshots, app preview, app listing, ios screenshots, android screenshots, app store images, app mockup, device mockup, app gallery, store listing"
-allowed-tools: Bash(belt *)
+allowed-tools: Bash(infsh *)
 ---
-
-> **Install the belt CLI skill:** `npx skills add belt-sh/cli`
 
 # App Store Screenshots
 
@@ -12,19 +10,18 @@ Create app store screenshots and preview videos via [inference.sh](https://infer
 
 ## Quick Start
 
-> Requires inference.sh CLI (`belt`). [Install instructions](https://raw.githubusercontent.com/inference-sh/skills/refs/heads/main/cli-install.md)
-
 ```bash
-belt login
+curl -fsSL https://cli.inference.sh | sh && infsh login
 
 # Generate a device mockup scene
-belt app run falai/flux-dev-lora --input '{
+infsh app run falai/flux-dev-lora --input '{
   "prompt": "iPhone 15 Pro showing a clean modern app interface with analytics dashboard, floating at slight angle, soft gradient background, professional product photography, subtle shadow, marketing mockup style",
   "width": 1024,
   "height": 1536
 }'
 ```
 
+> **Install note:** The [install script](https://cli.inference.sh) only detects your OS/architecture, downloads the matching binary from `dist.inference.sh`, and verifies its SHA-256 checksum. No elevated permissions or background processes. [Manual install & verification](https://dist.inference.sh/cli/checksums.txt) available.
 
 ## Platform Specifications
 
@@ -136,7 +133,7 @@ UI screenshot with arrows/circles pointing to specific features.
 
 ```bash
 # Clean device mockup with hero feature
-belt app run falai/flux-dev-lora --input '{
+infsh app run falai/flux-dev-lora --input '{
   "prompt": "modern iPhone showing a beautiful fitness tracking app with activity rings and workout summary, device floating at slight angle against soft purple gradient background, professional product shot, clean minimal composition, subtle reflection",
   "width": 1024,
   "height": 1536
@@ -147,7 +144,7 @@ belt app run falai/flux-dev-lora --input '{
 
 ```bash
 # Feature callout style
-belt app run bytedance/seedream-4-5 --input '{
+infsh app run bytedance/seedream-4-5 --input '{
   "prompt": "app store screenshot style, iPhone showing a messaging app with AI writing suggestions highlighted, clean white background, subtle UI callout arrows, professional marketing asset, modern design",
   "size": "2K"
 }'
@@ -157,7 +154,7 @@ belt app run bytedance/seedream-4-5 --input '{
 
 ```bash
 # Device in real-world setting
-belt app run falai/flux-dev-lora --input '{
+infsh app run falai/flux-dev-lora --input '{
   "prompt": "person holding iPhone showing a cooking recipe app, kitchen background with ingredients, warm natural lighting, over-the-shoulder perspective, lifestyle photography, authentic feeling",
   "width": 1024,
   "height": 1536
@@ -168,7 +165,7 @@ belt app run falai/flux-dev-lora --input '{
 
 ```bash
 # Split comparison
-belt app run infsh/stitch-images --input '{
+infsh app run infsh/stitch-images --input '{
   "images": ["before-screenshot.png", "after-screenshot.png"],
   "direction": "horizontal"
 }'
@@ -205,7 +202,7 @@ belt app run infsh/stitch-images --input '{
 
 ```bash
 # Generate preview video scenes
-belt app run google/veo-3-1-fast --input '{
+infsh app run google/veo-3-1-fast --input '{
   "prompt": "smooth screen recording style, finger tapping on a modern mobile app interface, swiping between screens showing charts and data visualizations, clean UI transitions, professional app demo"
 }'
 ```
@@ -266,5 +263,4 @@ npx skills add inference-sh/skills@image-upscaling
 npx skills add inference-sh/skills@prompt-engineering
 ```
 
-Browse all apps: `belt app store`
-
+Browse all apps: `infsh app list`

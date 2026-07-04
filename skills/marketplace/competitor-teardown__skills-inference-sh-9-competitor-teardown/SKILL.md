@@ -1,10 +1,8 @@
 ---
 name: competitor-teardown
 description: "Structured competitive analysis with feature matrices, SWOT, positioning maps, and UX review. Covers research frameworks, pricing comparison, review mining, and visual deliverables. Use for: market research, competitive intelligence, investor decks, product strategy, sales enablement. Triggers: competitor analysis, competitive analysis, competitor teardown, market research, competitive intelligence, swot analysis, competitor comparison, market landscape, competitor review, competitive landscape, feature comparison, market positioning"
-allowed-tools: Bash(belt *)
+allowed-tools: Bash(infsh *)
 ---
-
-> **Install the belt CLI skill:** `npx skills add belt-sh/cli`
 
 # Competitor Teardown
 
@@ -12,23 +10,22 @@ Structured competitive analysis with research and screenshots via [inference.sh]
 
 ## Quick Start
 
-> Requires inference.sh CLI (`belt`). [Install instructions](https://raw.githubusercontent.com/inference-sh/skills/refs/heads/main/cli-install.md)
-
 ```bash
-belt login
+curl -fsSL https://cli.inference.sh | sh && infsh login
 
 # Research competitor landscape
-belt app run tavily/search-assistant --input '{
+infsh app run tavily/search-assistant --input '{
   "query": "top project management tools comparison 2024 market share"
 }'
 
 # Screenshot competitor's website
-belt app run infsh/agent-browser --input '{
+infsh app run infsh/agent-browser --input '{
   "url": "https://competitor.com",
   "action": "screenshot"
 }'
 ```
 
+> **Install note:** The [install script](https://cli.inference.sh) only detects your OS/architecture, downloads the matching binary from `dist.inference.sh`, and verifies its SHA-256 checksum. No elevated permissions or background processes. [Manual install & verification](https://dist.inference.sh/cli/checksums.txt) available.
 
 ## Teardown Framework
 
@@ -50,17 +47,17 @@ belt app run infsh/agent-browser --input '{
 
 ```bash
 # General intelligence
-belt app run tavily/search-assistant --input '{
+infsh app run tavily/search-assistant --input '{
   "query": "CompetitorX company overview funding team size 2024"
 }'
 
 # Funding and financials
-belt app run exa/search --input '{
+infsh app run exa/search --input '{
   "query": "CompetitorX funding round series valuation investors"
 }'
 
 # Recent news
-belt app run tavily/search-assistant --input '{
+infsh app run tavily/search-assistant --input '{
   "query": "CompetitorX latest news announcements 2024"
 }'
 ```
@@ -69,17 +66,17 @@ belt app run tavily/search-assistant --input '{
 
 ```bash
 # Feature comparison
-belt app run exa/search --input '{
+infsh app run exa/search --input '{
   "query": "CompetitorX vs alternatives feature comparison review"
 }'
 
 # Pricing details
-belt app run tavily/extract --input '{
+infsh app run tavily/extract --input '{
   "urls": ["https://competitor.com/pricing"]
 }'
 
 # User reviews
-belt app run tavily/search-assistant --input '{
+infsh app run tavily/search-assistant --input '{
   "query": "CompetitorX reviews G2 Capterra pros cons 2024"
 }'
 ```
@@ -88,19 +85,19 @@ belt app run tavily/search-assistant --input '{
 
 ```bash
 # Homepage
-belt app run infsh/agent-browser --input '{
+infsh app run infsh/agent-browser --input '{
   "url": "https://competitor.com",
   "action": "screenshot"
 }'
 
 # Pricing page
-belt app run infsh/agent-browser --input '{
+infsh app run infsh/agent-browser --input '{
   "url": "https://competitor.com/pricing",
   "action": "screenshot"
 }'
 
 # Signup flow
-belt app run infsh/agent-browser --input '{
+infsh app run infsh/agent-browser --input '{
   "url": "https://competitor.com/signup",
   "action": "screenshot"
 }'
@@ -211,7 +208,7 @@ A 2x2 matrix showing where competitors sit on two meaningful dimensions.
 
 ```bash
 # Create positioning map with Python
-belt app run infsh/python-executor --input '{
+infsh app run infsh/python-executor --input '{
   "code": "import matplotlib.pyplot as plt\nimport matplotlib\nmatplotlib.use(\"Agg\")\n\nfig, ax = plt.subplots(figsize=(10, 10))\n\n# Competitors\ncompetitors = {\n    \"You\": (-0.3, -0.3),\n    \"Competitor A\": (0.5, 0.6),\n    \"Competitor B\": (0.6, -0.4),\n    \"Competitor C\": (-0.4, 0.5)\n}\n\nfor name, (x, y) in competitors.items():\n    color = \"#22c55e\" if name == \"You\" else \"#6366f1\"\n    size = 200 if name == \"You\" else 150\n    ax.scatter(x, y, s=size, c=color, zorder=5)\n    ax.annotate(name, (x, y), textcoords=\"offset points\", xytext=(10, 10), fontsize=12, fontweight=\"bold\")\n\nax.axhline(y=0, color=\"grey\", linewidth=0.5)\nax.axvline(x=0, color=\"grey\", linewidth=0.5)\nax.set_xlim(-1, 1)\nax.set_ylim(-1, 1)\nax.set_xlabel(\"Simple ← → Complex\", fontsize=14)\nax.set_ylabel(\"SMB ← → Enterprise\", fontsize=14)\nax.set_title(\"Competitive Positioning Map\", fontsize=16, fontweight=\"bold\")\nax.grid(True, alpha=0.3)\nplt.tight_layout()\nplt.savefig(\"positioning-map.png\", dpi=150)\nprint(\"Saved\")"
 }'
 ```
@@ -241,12 +238,12 @@ belt app run infsh/python-executor --input '{
 
 ```bash
 # Mine G2 reviews
-belt app run tavily/search-assistant --input '{
+infsh app run tavily/search-assistant --input '{
   "query": "CompetitorX G2 reviews complaints issues 2024"
 }'
 
 # Reddit sentiment
-belt app run exa/search --input '{
+infsh app run exa/search --input '{
   "query": "reddit CompetitorX alternative frustration switching"
 }'
 ```
@@ -287,7 +284,7 @@ belt app run exa/search --input '{
 
 ```bash
 # Stitch competitor screenshots into comparison
-belt app run infsh/stitch-images --input '{
+infsh app run infsh/stitch-images --input '{
   "images": ["your-homepage.png", "competitorA-homepage.png", "competitorB-homepage.png"],
   "direction": "horizontal"
 }'
@@ -311,5 +308,4 @@ npx skills add inference-sh/skills@web-search
 npx skills add inference-sh/skills@prompt-engineering
 ```
 
-Browse all apps: `belt app store`
-
+Browse all apps: `infsh app list`

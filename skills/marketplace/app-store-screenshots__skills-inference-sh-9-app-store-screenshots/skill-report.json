@@ -1,0 +1,486 @@
+{
+  "schema_version": "2.0",
+  "meta": {
+    "generated_at": "2026-06-30T04:31:57.653Z",
+    "slug": "inference-sh-9-app-store-screenshots",
+    "source_url": "https://github.com/inference-sh-9/skills/tree/main/skills/app-store-screenshots/",
+    "source_ref": "main",
+    "model": "codex",
+    "analysis_version": "3.0.0",
+    "source_type": "community",
+    "content_hash": "56d042dd06ff6f028b776489cc5af58bdd7e7c9e5d6a0d6a7e83d589529c2e46",
+    "tree_hash": "feef378d949f8388b21a8d3be202877d62a0577d46fad923c2e09e5a8b1be9b4"
+  },
+  "skill": {
+    "name": "app-store-screenshots",
+    "description": "Create App Store and Google Play screenshot plans, prompts, and preview video concepts using platform-specific guidance.",
+    "summary": "Plan and generate mobile app store screenshots with platform specs, gallery order, captions, and mockup prompts.",
+    "icon": "📦",
+    "version": "1.0.0",
+    "author": "inference-sh-9",
+    "license": "MIT",
+    "category": "design",
+    "tags": [
+      "app-store",
+      "screenshots",
+      "aso",
+      "mobile-marketing",
+      "device-mockups"
+    ],
+    "supported_tools": [
+      "claude",
+      "codex",
+      "claude-code"
+    ],
+    "risk_factors": [
+      "external_commands",
+      "network"
+    ]
+  },
+  "security_audit": {
+    "risk_level": "medium",
+    "is_blocked": false,
+    "safe_to_publish": true,
+    "summary": "Static analysis correctly identified a remote install script piped to sh and multiple shell command examples. The command examples are mostly legitimate inference.sh usage, but the install pattern creates supply-chain risk and should be shown with safer verification steps. No evidence found of credential theft, prompt injection, persistence, or malicious intent.",
+    "risk_factor_evidence": [
+      {
+        "factor": "external_commands",
+        "evidence": [
+          {
+            "file": "SKILL.md",
+            "line_start": 13,
+            "line_end": 22
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 22,
+            "line_end": 24
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 24,
+            "line_end": 80
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 80,
+            "line_end": 94
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 94,
+            "line_end": 118
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 118,
+            "line_end": 128
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 128,
+            "line_end": 134
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 134,
+            "line_end": 141
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 141,
+            "line_end": 145
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 145,
+            "line_end": 151
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 151,
+            "line_end": 155
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 155,
+            "line_end": 162
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 162,
+            "line_end": 166
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 166,
+            "line_end": 172
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 172,
+            "line_end": 203
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 203,
+            "line_end": 208
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 208,
+            "line_end": 259
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 259,
+            "line_end": 264
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 264,
+            "line_end": 266
+          }
+        ]
+      },
+      {
+        "factor": "network",
+        "evidence": [
+          {
+            "file": "SKILL.md",
+            "line_start": 9,
+            "line_end": 9
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 14,
+            "line_end": 14
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 24,
+            "line_end": 24
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 24,
+            "line_end": 24
+          }
+        ]
+      }
+    ],
+    "risk_factors": [
+      "external_commands",
+      "network"
+    ],
+    "critical_findings": [],
+    "high_findings": [],
+    "medium_findings": [
+      {
+        "title": "Remote Install Script Piped to Shell",
+        "description": "The quick start instructs users to run a remote installer through sh. This is a true positive because the script executes before the user can inspect it, which creates supply-chain and transport trust risk. The install note mentions checksum verification, but the piped command itself does not perform a visible manual verification step.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 14,
+            "line_end": 14
+          }
+        ],
+        "confidence": 0.9,
+        "confidence_reasoning": "The exact pipe-to-shell pattern is present on line 14. The surrounding text describes installation, so this is risky installer guidance rather than a harmless string."
+      },
+      {
+        "title": "External AI Service Commands Process User Content",
+        "description": "The skill uses infsh commands to send prompts, image names, and video-generation requests to external model services. This appears intentional for the skill, but users may include unpublished app screens, marketing copy, or other sensitive product data in those prompts.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 17,
+            "line_end": 21
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 136,
+            "line_end": 140
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 147,
+            "line_end": 150
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 157,
+            "line_end": 161
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 168,
+            "line_end": 171
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 205,
+            "line_end": 207
+          }
+        ],
+        "confidence": 0.78,
+        "confidence_reasoning": "The commands clearly invoke remote generation workflows through the CLI. The risk is contextual privacy exposure, not evidence of malicious exfiltration."
+      }
+    ],
+    "low_findings": [
+      {
+        "title": "Documented CLI Examples Trigger External Command Alerts",
+        "description": "Most external command detections are fenced documentation examples for infsh or npx. They use static command names and static example arguments, and no shell interpolation or user-controlled command construction was found.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 13,
+            "line_end": 22
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 134,
+            "line_end": 141
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 145,
+            "line_end": 151
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 155,
+            "line_end": 162
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 166,
+            "line_end": 172
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 203,
+            "line_end": 208
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 259,
+            "line_end": 264
+          }
+        ],
+        "confidence": 0.84,
+        "confidence_reasoning": "The commands are visible in Markdown examples and are aligned with the skill purpose. The only elevated command risk is the separate installer pipeline."
+      },
+      {
+        "title": "Hardcoded Service URLs Are Expected Dependencies",
+        "description": "The hardcoded URLs point to the inference.sh CLI site and distribution resources described by the skill. This is a true dependency on an external service, but no evidence found that the URLs are used to exfiltrate secrets or contact unrelated domains.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 9,
+            "line_end": 9
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 14,
+            "line_end": 14
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 24,
+            "line_end": 24
+          }
+        ],
+        "confidence": 0.86,
+        "confidence_reasoning": "The URLs are explicit and match the documented CLI provider. The finding is low risk because the dependency is expected for a generation skill."
+      },
+      {
+        "title": "Weak Cryptography and Reconnaissance Alerts Are False Positives",
+        "description": "No evidence found for weak cryptographic algorithms or system reconnaissance at the reported lines. The visible checksum reference uses SHA-256, which is appropriate for checksum verification, and the other flagged lines contain skill metadata or marketing prompt text.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 3,
+            "line_end": 3
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 24,
+            "line_end": 24
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 102,
+            "line_end": 102
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 148,
+            "line_end": 148
+          }
+        ],
+        "confidence": 0.93,
+        "confidence_reasoning": "Manual review of the cited lines found no weak hash use, no host enumeration, and no reconnaissance behavior. SHA-256 is not a weak cryptographic checksum in this context."
+      }
+    ],
+    "dangerous_patterns": [
+      {
+        "title": "Pipe to Shell Installer Pattern",
+        "description": "The skill includes a one-line installer that downloads a script and executes it with sh. This should be replaced or supplemented with a download, inspect, checksum-verify, then execute workflow.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 14,
+            "line_end": 14
+          }
+        ],
+        "confidence": 0.9,
+        "confidence_reasoning": "The pipe-to-shell syntax is directly present. This pattern is widely recognized as risky even when the provider is legitimate."
+      }
+    ],
+    "files_scanned": 1,
+    "total_lines": 267,
+    "audit_model": "codex",
+    "audited_at": "2026-06-30T04:31:57.653Z"
+  },
+  "content": {
+    "user_title": "Create App Store Screenshot Sets",
+    "value_statement": "Mobile teams need store screenshots that meet platform rules and explain value quickly. This skill helps Claude, Codex, and Claude Code plan screenshot galleries, captions, mockups, and preview video prompts.",
+    "seo_keywords": [
+      "Claude app store screenshots",
+      "Codex app screenshots",
+      "Claude Code mobile ASO",
+      "App Store screenshot generator",
+      "Google Play screenshots",
+      "app store optimization",
+      "device mockup prompts",
+      "mobile app preview video",
+      "iOS screenshot dimensions",
+      "Android store listing"
+    ],
+    "actual_capabilities": [
+      "Lists App Store and Google Play screenshot dimensions and format rules.",
+      "Recommends gallery ordering with emphasis on the first three screenshots.",
+      "Provides screenshot style patterns such as device frames, full-bleed UI, lifestyle context, and callouts.",
+      "Guides benefit-focused caption writing for store screenshots.",
+      "Includes inference.sh CLI examples for image mockups, stitched comparisons, and preview video scenes.",
+      "Covers localization priorities, Google Play experiments, and common screenshot mistakes."
+    ],
+    "limitations": [
+      "Generation examples require the inference.sh CLI and an authenticated account.",
+      "The skill does not automatically validate assets against current store console requirements.",
+      "It provides guidance and prompts, not finished app metadata or submission packages.",
+      "Remote model prompts may expose private product details if users include sensitive information."
+    ],
+    "use_cases": [
+      {
+        "title": "Plan a Launch Screenshot Gallery",
+        "description": "Create a first-pass App Store or Google Play gallery with dimensions, order, captions, and visual direction.",
+        "target_user": "Indie app developer"
+      },
+      {
+        "title": "Refresh ASO Creative",
+        "description": "Convert feature-focused screenshots into benefit-focused store assets and A/B test variants.",
+        "target_user": "Growth marketer"
+      },
+      {
+        "title": "Produce Mockup Prompts",
+        "description": "Draft prompts for device mockups, lifestyle screenshots, before-and-after comparisons, and preview video scenes.",
+        "target_user": "Product designer"
+      }
+    ],
+    "prompt_templates": [
+      {
+        "title": "Basic Screenshot Plan",
+        "scenario": "Beginner planning for one mobile app store listing.",
+        "prompt": "Create an App Store screenshot plan for my app. The app helps [target users] do [main outcome]. Include the first three screenshots, captions, and required dimensions."
+      },
+      {
+        "title": "Google Play Listing Set",
+        "scenario": "Intermediate planning for Android store assets.",
+        "prompt": "Plan a Google Play screenshot set for [app name]. Include eight screenshot concepts, a 1024 x 500 feature graphic concept, and notes for image format and aspect ratio."
+      },
+      {
+        "title": "ASO Variant Test",
+        "scenario": "Advanced creative testing for acquisition teams.",
+        "prompt": "Create two A/B test variants for my app store screenshots. Variant A should emphasize [benefit]. Variant B should emphasize [differentiator]. Include captions and success criteria."
+      },
+      {
+        "title": "Full Creative Production Brief",
+        "scenario": "Advanced brief for mockups, localization, and video.",
+        "prompt": "Build a production brief for iOS and Android store creative. Include screenshot order, mockup style, localized caption guidance, preview video structure, and inference.sh prompt ideas."
+      }
+    ],
+    "output_examples": [
+      {
+        "input": "A finance app needs iPhone screenshots for a new release.",
+        "output": [
+          "Screenshot 1 presents the main budgeting outcome with a short benefit caption.",
+          "Screenshot 2 highlights automatic expense tracking as the key differentiator.",
+          "Screenshot 3 shows weekly insights because it is a high-value repeated use case."
+        ]
+      },
+      {
+        "input": "A meditation app needs Google Play creative for testing.",
+        "output": [
+          "Variant A leads with stress relief and calm visual style.",
+          "Variant B leads with streak tracking and progress proof.",
+          "Both variants include a feature graphic concept and seven-day experiment guidance."
+        ]
+      },
+      {
+        "input": "A team wants a preview video outline for a productivity app.",
+        "output": [
+          "Open with the completed task list outcome in the first three seconds.",
+          "Show task creation, calendar sync, and report sharing in separate short scenes.",
+          "End with the app icon and a concise value message."
+        ]
+      }
+    ],
+    "best_practices": [
+      "Start with the first three screenshots because many users decide before scrolling.",
+      "Use benefit-focused captions with short lines and readable text size.",
+      "Verify dimensions, formats, and localization needs before producing final assets."
+    ],
+    "anti_patterns": [
+      "Using settings screens or onboarding screens as primary store screenshots.",
+      "Writing feature labels when a user outcome would be clearer.",
+      "Pasting confidential roadmap details into remote generation prompts."
+    ],
+    "faq": [
+      {
+        "question": "Does this skill generate final screenshot files?",
+        "answer": "It provides guidance and inference.sh command examples. Final generation depends on the CLI, account access, and source assets."
+      },
+      {
+        "question": "Can it help with both iOS and Android?",
+        "answer": "Yes. It covers App Store and Google Play screenshot requirements, ordering, and creative formats."
+      },
+      {
+        "question": "Does it support preview videos?",
+        "answer": "Yes. It outlines video duration, structure, and prompt ideas for preview scenes."
+      },
+      {
+        "question": "Is the inference.sh CLI required?",
+        "answer": "The planning guidance works without it. The provided generation commands require the CLI and login."
+      },
+      {
+        "question": "Can I use it for localization?",
+        "answer": "Yes. It suggests which markets need full screenshot localization and which can reuse translated captions."
+      },
+      {
+        "question": "What security caution should users follow?",
+        "answer": "Avoid pipe-to-shell installation when possible, verify downloaded tools, and do not send private app data in remote prompts."
+      }
+    ]
+  },
+  "file_structure": [
+    {
+      "name": "SKILL.md",
+      "type": "file",
+      "path": "SKILL.md",
+      "lines": 267
+    }
+  ]
+}

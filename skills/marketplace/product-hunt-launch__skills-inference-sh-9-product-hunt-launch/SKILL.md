@@ -1,10 +1,8 @@
 ---
 name: product-hunt-launch
 description: "Product Hunt launch optimization with specific specs, timing, and gallery strategy. Covers taglines, gallery images, maker comments, and launch day tactics. Use for: product launches, startup launches, side project launches, Product Hunt optimization. Triggers: product hunt, ph launch, product hunt launch, launch strategy, product launch, startup launch, product hunt tips, product hunt gallery, ph optimization, launch day, product hunt maker"
-allowed-tools: Bash(belt *)
+allowed-tools: Bash(infsh *)
 ---
-
-> **Install the belt CLI skill:** `npx skills add belt-sh/cli`
 
 # Product Hunt Launch
 
@@ -12,24 +10,23 @@ Optimize your Product Hunt launch with research and visuals via [inference.sh](h
 
 ## Quick Start
 
-> Requires inference.sh CLI (`belt`). [Install instructions](https://raw.githubusercontent.com/inference-sh/skills/refs/heads/main/cli-install.md)
-
 ```bash
-belt login
+curl -fsSL https://cli.inference.sh | sh && infsh login
 
 # Generate gallery hero image
-belt app run falai/flux-dev-lora --input '{
+infsh app run falai/flux-dev-lora --input '{
   "prompt": "clean product showcase, modern SaaS dashboard interface on laptop screen, floating UI elements around it, soft gradient background from blue to purple, professional marketing hero shot, minimal clean design",
   "width": 1248,
   "height": 832
 }'
 
 # Research competitor launches
-belt app run tavily/search-assistant --input '{
+infsh app run tavily/search-assistant --input '{
   "query": "Product Hunt top launches this week SaaS tools"
 }'
 ```
 
+> **Install note:** The [install script](https://cli.inference.sh) only detects your OS/architecture, downloads the matching binary from `dist.inference.sh`, and verifies its SHA-256 checksum. No elevated permissions or background processes. [Manual install & verification](https://dist.inference.sh/cli/checksums.txt) available.
 
 ## Listing Specifications
 
@@ -67,27 +64,27 @@ The first gallery image shows in the feed, email digest, and social shares. It I
 
 ```bash
 # Image 1: Hero product shot
-belt app run falai/flux-dev-lora --input '{
+infsh app run falai/flux-dev-lora --input '{
   "prompt": "modern SaaS product showcase, clean dashboard interface floating above gradient background, UI showing analytics charts and metrics, professional product marketing style, soft shadows, blue and white color scheme, wide format",
   "width": 1248,
   "height": 832
 }'
 
 # Image 2: Feature demo
-belt app run falai/flux-dev-lora --input '{
+infsh app run falai/flux-dev-lora --input '{
   "prompt": "product feature showcase, split screen showing drag-and-drop interface on left and generated output on right, clean UI design, modern SaaS aesthetic, subtle grid background, professional marketing",
   "width": 1248,
   "height": 832
 }'
 
 # Image 3: Before/after
-belt app run infsh/stitch-images --input '{
+infsh app run infsh/stitch-images --input '{
   "images": ["before-state.png", "after-state.png"],
   "direction": "horizontal"
 }'
 
 # Image 4: Social proof / metrics
-belt app run falai/flux-dev-lora --input '{
+infsh app run falai/flux-dev-lora --input '{
   "prompt": "clean infographic style image showing upward growth metrics, large numbers and charts on dark background, professional data visualization, startup metrics dashboard style, modern minimal design",
   "width": 1248,
   "height": 832
@@ -213,17 +210,17 @@ your feedback — what reporting pain points do you have?
 
 ```bash
 # Study similar product launches
-belt app run tavily/search-assistant --input '{
+infsh app run tavily/search-assistant --input '{
   "query": "Product Hunt top launches analytics tools best practices"
 }'
 
 # Competitive landscape
-belt app run exa/search --input '{
+infsh app run exa/search --input '{
   "query": "Product Hunt analytics dashboard tools launched 2024 2025"
 }'
 
 # Community sentiment
-belt app run tavily/search-assistant --input '{
+infsh app run tavily/search-assistant --input '{
   "query": "Product Hunt launch tips what works 2024 maker advice"
 }'
 ```
@@ -258,5 +255,4 @@ npx skills add inference-sh/skills@web-search
 npx skills add inference-sh/skills@prompt-engineering
 ```
 
-Browse all apps: `belt app store`
-
+Browse all apps: `infsh app list`
