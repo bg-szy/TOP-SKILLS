@@ -1,596 +1,211 @@
 ---
 name: memory-management
-description: Context tracking and decision logging patterns for intentional memory management in Claude Code Waypoint Plugin. Use when you need to remember user preferences, track decisions, capture context across sessions, learn from corrections, or maintain project-specific knowledge. Covers when to persist context, how to track decisions, context boundaries, storage mechanisms, and memory refresh strategies.
+slug: aaron-memory-management
+displayName: "Memory Management · 项目记忆"
+summary: "项目记忆/跨会话"
+description: 'Use when the user asks to "remember project context"; manages the cross-discipline marketing memory lifecycle (SEO/GEO + influencer + paid ads + email) — hot-cache, active work, archive tiers, and privacy cleanup. Not for content or domain scoring — use the auditors. 项目记忆/跨会话'
+version: "13.0.0"
+license: Apache-2.0
+compatibility: "Claude Code and compatible agent-skill hosts"
+homepage: "https://github.com/aaron-he-zhu/aaron-marketing-skills"
+when_to_use: "Use when reviewing, archiving, or cleaning up campaign memory. Also when the user asks to check saved findings, manage hot cache, or archive old data."
+argument-hint: "[review|archive|cleanup]"
+metadata: {"author": "aaron-he-zhu", "version": "13.0.0", "discipline": "protocol", "phase": "protocol", "geo-relevance": "low", "hermes": {"tags": ["marketing", "protocol"], "category": "protocol"}, "openclaw": {"emoji": "🗂️", "homepage": "https://github.com/aaron-he-zhu/aaron-marketing-skills"}}
 ---
 
-# Memory Management Skill
+# Memory Management
+This skill implements a three-tier memory system (HOT/WARM/COLD) for all marketing disciplines (SEO/GEO, influencer, paid ads, and email). HOT memory (80 lines max) loads automatically every session via the SessionStart hook. WARM memory loads on demand per skill. COLD memory is archived data queried only when explicitly requested. The skill manages the full lifecycle: capture, promote, demote, and archive.
 
-## Purpose
+## What This Skill Does
 
-Guide Claude Code to intentionally capture, store, and use context, decisions, and preferences across sessions, enabling true "memory" that survives context resets and improves over time.
+Manages a three-tier memory lifecycle (HOT/WARM/COLD) with automatic promotion, demotion, and archival. Also maintains open-loop tracking and cross-skill aggregation.
 
-## When to Use This Skill
+## Quick Start
 
-Automatically activates when you mention:
-- Remembering user preferences or choices
-- Tracking decisions made during development
-- Capturing important context
-- Learning from user corrections
-- Persisting project-specific knowledge
-- Memory that survives session resets
+Start with one of these prompts. Finish with a hot-cache update plan and a handoff summary using the repository format in [Skill Contract](../../references/skill-contract.md).
 
-## The Problem: Context Loss
-
-**Without intentional memory**:
-- ❌ Same mistakes repeated across sessions
-- ❌ User has to re-explain preferences every time
-- ❌ Important decisions forgotten after context reset
-- ❌ No learning from corrections
-- ❌ Starting from scratch each session
-
-**With intentional memory**:
-- ✅ Preferences remembered and auto-applied
-- ✅ Decisions documented and retrievable
-- ✅ Context persists across sessions
-- ✅ Learn and adapt from corrections
-- ✅ Continuous improvement over time
-
----
-
-## Core Principles
-
-### 1. Be Selective
-
-**Track signal, not noise**:
-- ✅ User explicitly states preference ("always use X")
-- ✅ User corrects same pattern 2+ times
-- ✅ Important architectural decisions
-- ✅ Project-specific conventions
-- ❌ One-time experiments
-- ❌ Formatting preferences (use linter config)
-- ❌ Temporary changes
-- ❌ Information already in codebase
-
-### 2. Be Transparent
-
-**User should always know what's stored**:
-- Store in visible location (`.claude/memory/`)
-- Use human-readable format (JSON with comments)
-- Provide commands to view memory (`/show-memory`)
-- Log when memory is created/updated
-- Allow user to clear memory anytime
-
-### 3. Be Intentional
-
-**Only capture what adds value**:
-- Preferences that save time
-- Decisions that provide context
-- Patterns that prevent mistakes
-- Knowledge that's hard to rediscover
-
-### 4. Be Respectful
-
-**Never store sensitive data**:
-- ❌ API keys, tokens, credentials
-- ❌ Personal information (unless necessary)
-- ❌ Private repository URLs with tokens
-- ❌ Business-sensitive logic
-- ✅ Preferences, patterns, conventions
-- ✅ Architecture decisions, rationale
-
----
-
-## What to Remember
-
-### User Preferences
-
-**Examples**:
-- Naming conventions (camelCase vs. snake_case)
-- Import style (named vs. default)
-- Error handling approach (try/catch vs. error boundaries)
-- State management choice (Context vs. Zustand vs. TanStack Query)
-- Component structure preferences
-
-**Storage location**: `.claude/memory/{skill-name}/preferences.json`
-
-**Example**:
-```json
-{
-  "naming": {
-    "convention": "camelCase",
-    "learned_from": "user_correction",
-    "correction_count": 2,
-    "examples": [
-      "userId (not user_id)",
-      "createdAt (not created_at)"
-    ],
-    "confidence": "high",
-    "last_updated": "2025-01-15T10:30:00Z"
-  }
-}
-```
-
-### Architectural Decisions
-
-**Examples**:
-- Why a specific pattern was chosen
-- Alternatives considered and rejected
-- Trade-offs and constraints
-- Future considerations
-
-**Storage location**: `.claude/memory/project/decisions.json`
-
-**Example**:
-```json
-{
-  "decisions": [
-    {
-      "id": "auth-jwt-2025-01-15",
-      "date": "2025-01-15",
-      "decision": "Use JWT authentication instead of sessions",
-      "rationale": "Need stateless auth for mobile apps",
-      "alternatives_considered": [
-        "Session-based auth (rejected: not stateless)",
-        "OAuth only (rejected: need custom auth flow)"
-      ],
-      "impact": "Requires database migration for refresh tokens",
-      "files_affected": [
-        "lib/supabase/auth.ts",
-        "app/api/auth/**/*.ts"
-      ]
-    }
-  ]
-}
-```
-
-### Correction Patterns
-
-**Examples**:
-- User repeatedly corrects same mistake
-- User provides specific guidance
-- User rejects suggested approach
-
-**Storage location**: `.claude/memory/{skill-name}/corrections.json`
-
-**Example**:
-```json
-{
-  "corrections": [
-    {
-      "pattern": "Import style",
-      "count": 3,
-      "first_seen": "2025-01-10T09:00:00Z",
-      "last_seen": "2025-01-15T14:30:00Z",
-      "examples": [
-        "import { Component } from 'lib' ✓",
-        "import Component from 'lib' ✗"
-      ],
-      "action": "Always use named imports",
-      "confidence": "high"
-    }
-  ]
-}
-```
-
-### Project Knowledge
-
-**Examples**:
-- Tech stack and versions
-- Project structure and organization
-- Integration points (APIs, databases)
-- Deployment patterns
-
-**Storage location**: `.claude/memory/project/knowledge.json`
-
-**Example**:
-```json
-{
-  "tech_stack": {
-    "frontend": "Next.js 14, React 19, shadcn/ui, Tailwind",
-    "backend": "Supabase Edge Functions, PostgreSQL",
-    "deployment": "Vercel (frontend), Supabase (backend)",
-    "last_verified": "2025-01-15"
-  },
-  "structure": {
-    "components": "app/components/",
-    "pages": "app/(routes)/",
-    "api": "app/api/",
-    "supabase_functions": "supabase/functions/"
-  }
-}
-```
-
----
-
-## When to Persist
-
-### Immediate Persistence
-
-Capture immediately when:
-- ✅ User explicitly says "always" or "never"
-- ✅ User provides architectural decision with rationale
-- ✅ User corrects same pattern for the 2nd time
-- ✅ User defines project-specific convention
-
-### Deferred Persistence
-
-Capture after confirmation when:
-- User provides preference once (wait for second instance)
-- Pattern seems emerging but not confirmed
-- Decision has significant impact (confirm first)
-
-### Never Persist
-
-Don't capture:
-- ❌ Experimental or temporary changes
-- ❌ Information already in code/config
-- ❌ Generic best practices (not project-specific)
-- ❌ Sensitive data of any kind
-
----
-
-## Storage Patterns
-
-### Directory Structure
+### Initialize Memory Structure
 
 ```
-.claude/memory/
-├── project/
-│   ├── knowledge.json          # Tech stack, structure
-│   ├── decisions.json          # Architectural decisions
-│   └── context.json            # Current feature context
-├── {skill-name}/
-│   ├── preferences.json        # User preferences for this skill
-│   ├── corrections.json        # User corrections tracked
-│   └── learned_patterns.json  # Patterns learned over time
-└── .gitignore                  # Don't commit sensitive memory
+Set up marketing memory for [project name]
 ```
 
-### File Format
-
-Use JSON with clear structure:
-
-```json
-{
-  "version": "1.0",
-  "created": "2025-01-15T10:00:00Z",
-  "last_updated": "2025-01-15T14:30:00Z",
-  "data": {
-    // Actual content
-  }
-}
+```
+Initialize memory structure for a new [industry] website optimization project
 ```
 
-### Schema Example
+### Update After Analysis
 
-```typescript
-interface MemoryEntry {
-  version: string;
-  created: string;           // ISO timestamp
-  last_updated: string;      // ISO timestamp
-  expires?: string;          // Optional expiry
-  confidence: 'low' | 'medium' | 'high';
-  source: 'user_stated' | 'user_correction' | 'inferred';
-  data: Record<string, any>;
-}
+```
+Update memory after ranking check for [keyword group]
 ```
 
----
-
-## Decision Tracking
-
-### What Makes a Good Decision Log
-
-**Include**:
-1. **What**: What was decided
-2. **Why**: Rationale and reasoning
-3. **When**: Date/time
-4. **Alternatives**: What else was considered
-5. **Impact**: Files affected, breaking changes
-6. **Context**: Current constraints/requirements
-
-**Example Template**:
-```markdown
-## Decision: [Short Title]
-
-**Date**: 2025-01-15
-**Context**: [What problem were we solving?]
-
-**Decision**: [What we decided to do]
-
-**Rationale**:
-- [Key reason 1]
-- [Key reason 2]
-
-**Alternatives Considered**:
-- **Option A**: [Why rejected]
-- **Option B**: [Why rejected]
-
-**Impact**:
-- Files: [List of affected files]
-- Breaking: [Yes/No - details]
-- Migration: [What needs to change]
-
-**Trade-offs**:
-- ✅ Pro: [Benefit]
-- ❌ Con: [Drawback]
+```
+Refresh hot cache with latest competitor analysis findings
 ```
 
-### When to Log Decisions
+### Query Stored Context
 
-**Always log**:
-- ✅ Architecture changes (auth, state management, routing)
-- ✅ Technology choices (new library, framework change)
-- ✅ Breaking changes to APIs or database
-- ✅ Deviation from established patterns
-
-**Optional logging**:
-- Component structure choices
-- File organization changes
-- Refactoring approaches
-
-**Don't log**:
-- Bug fixes (unless revealing design issue)
-- Minor implementation details
-- Routine tasks
-
----
-
-## Correction Tracking
-
-### Detecting Corrections
-
-User corrections happen when:
-1. User explicitly corrects Claude's output
-2. User provides same feedback multiple times
-3. User rejects suggested approach and provides alternative
-
-### Tracking Pattern
-
-```typescript
-interface Correction {
-  pattern: string;                    // What's being corrected
-  count: number;                      // How many times
-  first_seen: string;                 // ISO timestamp
-  last_seen: string;                  // ISO timestamp
-  examples: string[];                 // Examples of correct/incorrect
-  action: string;                     // What to do instead
-  threshold: number;                  // Apply after N corrections
-  confidence: 'low' | 'medium' | 'high';
-}
+```
+What are our hero keywords?
 ```
 
-### Auto-Application
-
-After threshold corrections (typically 2-3):
-1. Store preference as "high confidence"
-2. Auto-apply in future
-3. Notify user: "📚 Learned preference from your corrections"
-4. Provide way to reset if incorrect
-
-### Example Workflow
-
-```markdown
-## First Correction
-User: "Use named imports, not default"
-Action: Note correction, don't apply yet
-
-## Second Correction (same pattern)
-User: "Again, please use named imports"
-Action: Log pattern, apply going forward
-Notify: "📚 Learned: Always use named imports"
-
-## Future Usage
-Claude automatically uses named imports
-User can reset with: /clear-memory import-style
+```
+Show me the last ranking update date for [keyword category]
 ```
 
----
-
-## Context Boundaries
-
-### What Belongs in Memory vs. Code
-
-**In Memory** (`.claude/memory/`):
-- Preferences not in code/config
-- Decision rationale (the "why")
-- Correction patterns
-- Temporary feature context
-
-**In Code/Config**:
-- Linting rules (ESLint, Prettier)
-- Type definitions
-- Constants and configuration
-- Architecture (visible in structure)
-
-**Rule of Thumb**: If it can be in code, put it in code. Memory is for what code can't capture.
-
----
-
-## Memory Refresh
-
-### When to Invalidate
-
-Memory should refresh when:
-- ✅ Dependencies change (package.json updated)
-- ✅ Tech stack changes (new framework adopted)
-- ✅ Project structure refactored significantly
-- ✅ User explicitly requests reset
-- ✅ Memory is stale (> 30 days old, configurable)
-
-### Staleness Detection
-
-```typescript
-function isStale(memory: MemoryEntry, maxAge: string): boolean {
-  const age = Date.now() - new Date(memory.last_updated).getTime();
-  const maxAgeMs = parseAge(maxAge); // "7 days", "30 days"
-  return age > maxAgeMs;
-}
+```
+Look up our primary competitors and their domain authority
 ```
 
-### Refresh Strategies
+### Promotion and Demotion
 
-**Automatic Refresh**:
-- Watch critical files (package.json, tsconfig.json)
-- Invalidate related memory on change
-- Re-scan and update
-
-**Manual Refresh**:
-```bash
-/refresh-memory              # Refresh all
-/refresh-memory [skill]      # Refresh specific skill
-/clear-memory [skill]        # Clear and start fresh
+```
+Promote [keyword] to hot cache
 ```
 
----
-
-## Best Practices
-
-### DO ✅
-
-1. **Log important decisions with rationale**
-2. **Track user corrections (2+ times = pattern)**
-3. **Store in human-readable format (JSON)**
-4. **Provide user control (view/clear commands)**
-5. **Include timestamps and confidence levels**
-6. **Refresh memory when dependencies change**
-7. **Notify user when learning from corrections**
-
-### DON'T ❌
-
-1. **Don't store sensitive data**
-2. **Don't persist everything (be selective)**
-3. **Don't assume memory is always valid (check staleness)**
-4. **Don't make memory opaque (user should understand)**
-5. **Don't persist what belongs in code**
-6. **Don't keep stale memory indefinitely**
-
----
-
-## Commands for Memory Management
-
-Provide these commands to users:
-
-```bash
-# View memory
-/show-memory                  # Show all memory
-/show-memory [skill]          # Show specific skill memory
-
-# Clear memory
-/clear-memory [skill]         # Clear specific skill
-/clear-all-memory             # Clear everything (confirm first)
-
-# Refresh memory
-/refresh-memory               # Refresh all memory
-/refresh-memory [skill]       # Refresh specific skill
-
-# Export/backup
-/export-memory                # Export for backup
-/import-memory [file]         # Restore from backup
+```
+Archive stale data that hasn't been referenced in 30+ days
 ```
 
----
+### Glossary Management
 
-## Integration with Other Skills
-
-### With context-persistence Skill
-
-Memory management stores **preferences and patterns**.
-Context persistence stores **current task state**.
-
-**Example**:
-- Memory: "User prefers named imports" (permanent)
-- Context: "Currently implementing auth feature" (temporary)
-
-### With plan-approval Skill
-
-Memory management stores **approved decisions**.
-Plan approval handles **future decisions requiring approval**.
-
-**Example**:
-- Memory: "JWT auth was approved on 2025-01-15"
-- Plan: "Proposing addition of OAuth - needs approval"
-
----
-
-## Example: Complete Memory Management Workflow
-
-### Scenario: User Corrects Import Style Twice
-
-**First Correction**:
 ```
-User: "Please use named imports instead of default"
-Claude: ✓ Fixed import style
-Action: Log correction in memory (count: 1)
+Add [term] to project glossary: [definition]
 ```
 
-**Second Correction** (same pattern):
 ```
-User: "Again, use named imports"
-Claude: ✓ Fixed import style
-Action: Mark as learned pattern (count: 2)
-Notify: "📚 Learned preference: Always use named imports"
-Storage: .claude/memory/project/preferences.json
+What does [internal jargon] mean in this project?
 ```
 
-**Future Usage**:
-```
-Claude automatically uses named imports
-User sees: "✓ Using your preferred import style (named imports)"
-```
+## Skill Contract
 
-**User Can Reset**:
-```
-User: /clear-memory import-style
-Claude: ✓ Cleared import style preference
-```
+**Expected output**: a memory update plan, hot-cache changes, and a short handoff summary.
 
----
+- **Reads**: current campaign facts, new findings from other skills, approved decisions, and the shared [State Model](../../references/state-model.md).
+- **Writes**: updates to `memory/hot-cache.md`, `memory/open-loops.md`, `memory/decisions.md`, and related `memory/` folders. Manages WARM-to-COLD archival in `memory/archive/`. **Auditor handoff archiving** (v7.1.0+): when triggered by a direct user request or an auditor's explicit "Save these results?" yes-response, append a structured block to `memory/audits/YYYY-MM.md`. The Stop hook never initiates memory writes. See [Examples](references/examples.md) for the exact archive block format and rules.
+- **Promotes**: durable strategy, blockers, terminology, entity candidates, and major deltas. Applies the temperature lifecycle by **observable** rules only: promote to HOT on an explicit user/skill request ("promote X" / pin); demote and archive by the file's `last_updated` date. Reference-frequency counters are NOT tracked by any hook, so the lifecycle never depends on them — see [State Model](../../references/state-model.md).
+- **Done when**: the requested lifecycle action (capture/promote/demote/archive/query/purge) is applied, `memory/hot-cache.md` is within the 80-line / 25KB limit, and the affected memory paths are reported back to the user.
+- **Primary next skill**: use the `Next Best Skill` below when the project memory baseline is ready for active work.
 
-## Privacy & Security
+### Handoff Summary
 
-### What to Store
+> Emit the standard shape from [skill-contract.md §Handoff Summary Format](../../references/skill-contract.md).
 
-✅ **Safe**:
-- Code preferences (naming, structure)
-- Architecture decisions (patterns, approaches)
-- Correction patterns
-- Project knowledge (tech stack, structure)
+### Temperature Lifecycle Rules
 
-❌ **Never Store**:
-- API keys, tokens, credentials
-- Personal information
-- Sensitive business logic
-- Private URLs with tokens
+> See [Promotion & Demotion Rules](references/promotion-demotion-rules.md) for the full promotion/demotion table and action procedures.
 
-### User Control
+### Hook Integration
 
-**Transparency**:
-- Memory files in visible location
-- Human-readable format
-- Clear documentation of what's stored
+This skill's behavior is reinforced by the library's `claude-hook.sh` hooks. What the hook **actually does** (do not document behavior it lacks):
+- **SessionStart** (fires on startup, resume, clear, compact): injects a sanitized excerpt of `memory/hot-cache.md`, and when `memory/open-loops.md` has tracked items, appends a one-line pointer to review them for staleness. It does not compute dates or a "Quick Status" — surfacing which open loops are stale is the agent's job once pointed at the file.
+- **PostToolUse**: warns when `memory/hot-cache.md` exceeds 80 lines / 25KB; enforces the auditor artifact-gate on `memory/audits/*.md` writes; offers an optional quality check after user-facing content edits.
+- **Stop**: a no-op (exits without output). CLAUDE.md's "allow-only Stop check" is just this no-op; the hook never initiates memory writes.
 
-**Control**:
-- View memory anytime
-- Clear memory anytime
-- Export/backup memory
-- Memory not committed to git (add to .gitignore)
+## Data Sources
 
----
+With tools: auto-populate from ~~SEO tool, ~~analytics, ~~search console. Without tools: ask user for keywords, competitors, metrics, campaigns, and terminology. See [CONNECTORS.md](../../CONNECTORS.md).
 
-## Summary
+## Decision Gates
 
-**Memory management enables Claude Code to**:
-1. ✅ Remember user preferences across sessions
-2. ✅ Learn from corrections and adapt
-3. ✅ Document decisions with rationale
-4. ✅ Provide continuity across context resets
-5. ✅ Improve over time without user repetition
+**Stop and ask the user when:**
+- A purge (Art 17 / CCPA) is requested — present the matched files and the redaction-vs-delete choice, and only act on confirmed matches. Never auto-delete memory.
+- A `memory/decisions.md` entry needed to answer a query has `approved_by: skill_inferred` or a missing field — surface it as ADVISORY and confirm before treating it as authoritative.
+- A referenced term is not found in any memory layer — ask for clarification rather than guessing.
 
-**Key principle**: Be selective, transparent, intentional, and respectful of user privacy.
+**Continue silently (never stop for):**
+- Routine promotion/demotion that follows the temperature lifecycle rules.
+- Hot-cache trimming suggestions when over the 80-line / 25KB limit (recommend, don't block).
+- Missing optional tool data when auto-populating — record what is available and proceed.
 
-**Storage**: `.claude/memory/` directory with JSON files
+## Instructions
 
-**Commands**: `/show-memory`, `/clear-memory`, `/refresh-memory`
+When a user requests memory management (any discipline — SEO/GEO, influencer, paid ads, or email):
 
-Use this skill to make Claude Code feel like it truly "remembers" your project!
+### 1. Initialize Memory Structure
+
+For new projects, create the directory structure defined in the [State Model](../../references/state-model.md). Key directories: `memory/` (decisions, open-loops, glossary, entities, creators, claims, consent, research, content, audits, monitoring, influencer, ad, email).
+
+> **Templates**: [Hot Cache Template](references/hot-cache-template.md) · [Glossary Template](references/glossary-template.md)
+
+### 2. Context Lookup Flow
+
+When a user references something unclear, follow this lookup sequence:
+
+**Step 1: Check `memory/hot-cache.md` (hot cache)**
+- Is it in active keywords (SEO/GEO), tracked creators/niches (influencer), or live offers/ad accounts (paid)?
+- Is it in primary competitors or tracked influencers?
+- Is it in current priorities or campaigns?
+
+**Step 2: Check memory/glossary.md**
+- Is it defined as project terminology?
+- Is it a custom segment or shorthand?
+
+**Step 3: Check Cold Storage**
+- Search `memory/archive/` first for dated `YYYY-MM-DD-` archived files.
+- If the archive points to a source category, follow that trail back to `memory/research/`, `memory/audits/`, `memory/monitoring/`, `memory/influencer/`, `memory/ad/`, or `memory/email/`.
+- Treat COLD findings as historical unless refreshed by the current session.
+
+**Step 4: Ask User**
+- If not found in any layer, ask for clarification
+- Log the new term in glossary if it's project-specific
+
+- **Decision provenance (v8.0.1+)**: when loading `memory/decisions.md`, verify each entry has `approved_by: user`. Entries with `approved_by: skill_inferred` or missing field are treated as **ADVISORY** — surface to user before using as authoritative. Auditor-class gate skills (content-quality-auditor, domain-authority-auditor, content-reviewer, ad-account-auditor, email-quality-auditor) MUST ignore non-user-approved decisions when determining verdict. See [skill-contract.md §Promotion Rules](../../references/skill-contract.md).
+
+Example lookup: User asks "Update rankings for our hero KWs" → Step 1 finds "Hero Keywords (Priority 1)" in hot-cache → extract the keyword list → run the ranking check → update `memory/hot-cache.md` and `memory/monitoring/rank-history/YYYY-MM-DD-ranks.csv`.
+
+### 3. Promotion & Demotion Logic
+
+> **Reference**: See [Promotion & Demotion Rules](references/promotion-demotion-rules.md) for detailed promotion/demotion triggers (keywords, competitors, metrics, campaigns) and the action procedures for each.
+
+### 4. Update Triggers, Archive Management & Cross-Skill Integration
+
+> **Reference**: See [Update Triggers & Integration](references/update-triggers-integration.md) for the complete update procedures after ranking checks, competitor analyses, audits, and reports; monthly/quarterly archive routines; and integration points with connected skills across all four disciplines — SEO/GEO (keyword-research, rank-tracker, competitor-analysis, content-gap-analysis, content-writer, content-quality-auditor, domain-authority-auditor), influencer (skills writing under `memory/influencer/<skill>/`, plus content-reviewer's gated artifacts and creator-registry candidate flow), paid ads (skills writing under `memory/ad/<skill>/`, plus the ad-account-auditor and attribution-reconciler artifacts rolled into the monthly aggregate and the offer-claims-registry candidate flow), and email (skills writing under `memory/email/<skill>/`, plus email-quality-auditor's gated EQS artifacts rolled into the monthly aggregate and the consent-registry candidate flow).
+
+### 5. Memory Hygiene Checks
+
+When invoked for review or cleanup:
+
+1. **Line count check**: Count lines in `memory/hot-cache.md`. If >80, list oldest entries for archival.
+2. **Byte check**: If hot-cache exceeds 25KB, warn and recommend trimming long entries.
+3. **Staleness scan**: List memory files whose frontmatter `last_updated` date (or file mtime) is older than 30 days; recommend archival for files older than 90 days. Age is computable from disk — reference-frequency is not tracked, so never gate on "unreferenced".
+4. **Frontmatter audit**: Check that all memory files (except hot-cache.md) have `name`, `description`, and `type` in their frontmatter. Report any missing fields.
+
+### 6. Save Results
+
+Ask "Save these results for future sessions?" — if yes, write `YYYY-MM-DD-<topic>.md` to `memory/`. Add veto issues to `memory/hot-cache.md` only from auditor handoff or explicit user approval.
+
+## GDPR / Privacy Compliance
+
+`memory/` may store third-party personal data — entity names, founder bios, LinkedIn profiles, author/journalist names surfaced by `entity-optimizer` or research skills. Under GDPR Art 4(1) (applies to **processing of personal data of EU/EEA/UK residents** regardless of where the controller is located), these qualify as "personal data". The user is the data controller. Non-EU users without EU/EEA/UK data subjects may still face analogous obligations under CCPA/CPRA (California), PIPEDA (Canada), LGPD (Brazil), or other national regimes. **Not legal advice.**
+
+### Retention policy
+- WARM files: archive to `memory/archive/` after 90 days unreferenced (default lifecycle)
+- COLD archive: never auto-deleted, but eligible for Art 17 erasure requests
+- All files: user MUST honor Art 17 requests from data subjects (individuals named in memory)
+
+### Deletion flow (Art 17 / CCPA §1798.105)
+Invoke: `memory-management purge <entity-name-or-slug>`
+
+This skill then:
+1. Greps all files under `memory/` (including `memory/archive/`) for the entity name, slug, or domain — `grep -rF "<entity-name>" memory/` — and presents matches for confirmation.
+2. On confirmation, deletes or anonymizes the matched lines/files across the working tree: `memory/hot-cache.md`, WARM notes, COLD/archive files, `memory/entities/<slug>.md`, `memory/entities/candidates.md`, audit aggregates, and open loops.
+3. Appends a dated, subject-free entry to `memory/audits/gdpr-purges.md` per the [GDPR Purge Log Template](references/gdpr-purge-log-template.md) — required fields `date`, `redacted_label`, `legal_basis`, `action`, `scope`, `working_tree_only: true` — so there is a human-readable record of the request.
+
+> **Honest limitation — this edits the working tree only.** If `memory/` is under version control (it usually is, in the user's project repo), the subject **still exists in git history**. Verify with `git log -S"<entity-name>" -- memory/`; true erasure from history requires `git filter-repo` / `git filter-branch` and is the user's responsibility — it is out of this skill's scope. Do not represent a working-tree redaction as a complete, audit-grade erasure. There is no salted-fingerprint or reingest-blocking mechanism: nothing in the hooks consults a tombstone before writing, so any such claim would be false.
+
+### Lawful basis reminder
+Before writing a third-party person to `memory/entities/`, the user must have one lawful basis per GDPR Art 6 (where GDPR applies — see scope note above): `consent`, `legitimate_interest`, `contract`, or equivalent. Advisory — this skill does not enforce, and does not substitute for legal review.
+
+## Reference Materials
+
+- [Examples](references/examples.md) — Worked examples, advanced features, practical limitations, and the auditor handoff archive block format & rules
+- [Promotion & Demotion Rules](references/promotion-demotion-rules.md) — Full promotion/demotion table and action procedures
+- [Update Triggers & Integration](references/update-triggers-integration.md) — Update procedures, archive routines, and cross-skill integration points
+- [CORE-EEAT Content Benchmark](../../references/core-eeat-benchmark.md) — Content quality scoring stored in memory
+- [CITE Domain Rating](../../references/cite-domain-rating.md) — Domain authority scoring stored in memory
+
+## Next Best Skill
+
+Primary: [keyword-research](../../seo-geo/research/keyword-research/SKILL.md) — seed or refresh campaign strategy with current demand signals.

@@ -1,982 +1,130 @@
 ---
 name: report-generator
-description: Generate professional markdown and HTML reports from data with charts, tables, and analysis.
+slug: aaron-report-generator
+displayName: "Report Generator · 报告生成"
+summary: "面向干系人的营销活动报告:叙事结构、图表建议与洞察提炼"
+description: 'Use when the user asks to "create a campaign report", "build an executive summary", or "deliver client results"; produces audience-tailored influencer marketing reports (executive, client, internal team) with data tables, narrative, key learnings, and recommendations. Not for raw metric computation — use performance-analyzer.'
+version: "13.0.0"
+license: Apache-2.0
+compatibility: "Claude Code and compatible agent-skill hosts"
+homepage: "https://github.com/aaron-he-zhu/aaron-marketing-skills"
+when_to_use: "Activate after a campaign or reporting period ends and the user needs a written report for a specific stakeholder. Triggers include post-campaign wrap-ups, executive or board summaries, client-facing results decks, internal team retrospectives, and monthly or quarterly performance reports. Pick this when the inputs are already-computed metrics that need structure, narrative, and recommendations for a named audience."
+argument-hint: "<campaign name> [audience: executive|client|team|board]"
+metadata: {"author": "aaron-he-zhu", "version": "13.0.0", "discipline": "influencer", "phase": "measure", "family": "influencer-marketing", "impact-phase": "Track", "hermes": {"tags": ["marketing", "influencer", "measure"], "category": "influencer"}, "openclaw": {"emoji": "📣", "homepage": "https://github.com/aaron-he-zhu/aaron-marketing-skills"}}
 ---
 
-# Report Generator Skill
+# Report Generator
 
-Generate professional markdown and HTML reports from data with charts, tables, and analysis.
+This skill helps you create professional influencer marketing reports that tell the story of your campaign performance. It adapts content and depth based on the audience.
+
+> **Cross-discipline (paid ads):** this is also the **paid-ads** reporting surface — build exec/client/channel reports from RQS history (`memory/audits/ad/`) and measurement-loop readback verdicts. It presents metrics; it does not compute them (return math stays in [roi-calculator](../roi-calculator/SKILL.md)). Save paid runs under `memory/ad/report-generator/`.
+
+## Quick Start
+
+Shortest invocation:
+
+```
+Create a campaign report for [campaign name] for [audience: executive/client/team]
+```
+
+Common scenario:
+
+```
+Generate an executive summary for our Q3 influencer campaigns
+```
+
+## Skill Contract
+
+- **Reads**: campaign name, reporting period, target audience, and computed metrics (reach, engagement, conversions, spend, revenue, ROI/ROAS, per-influencer results). Prior outputs from `performance-analyzer` and `roi-calculator` if available.
+- **Writes**: a finished report in the audience-appropriate template, saved to `memory/influencer/report-generator/YYYY-MM-DD-<topic>.md`.
+- **Promotes**: durable verdicts (final ROI/ROAS, top performers, renew/drop calls, headline learnings) to `memory/hot-cache.md`.
+- **Done when**:
+  1. The report matches the requested audience template (executive, client, team, or board).
+  2. Every metric is paired with context (target, benchmark, or prior period).
+  3. The report ends with concrete recommendations and, where relevant, action items.
+- **Primary next skill**: [content-quality-auditor](../../../seo-geo/optimize/content-quality-auditor/SKILL.md)
+
+### Handoff Summary
+
+> Emit the standard shape from [skill-contract.md §Handoff Summary Format](../../../references/skill-contract.md).
+
+## Data Sources
+
+This family ships Tier 1: every step works with no live integration. Give the skill the campaign metrics directly and it builds the report from your inputs.
+
+Optional connectors that can pre-fill data where available:
+
+- `~~social platform analytics` — reach, impressions, engagement, video views per post
+- `~~influencer database` — creator handles, tiers, fees, audience demographics
+- `~~analytics` — link clicks, conversions, attributed revenue
+- `~~CRM` — new-customer counts and downstream revenue
+
+Without any of these, the skill asks you for the numbers and proceeds. See [CONNECTORS.md](../../../CONNECTORS.md) for the free/keyless data recipe per category.
 
 ## Instructions
 
-You are a report generation expert. When invoked:
+When a user requests a report:
 
-1. **Analyze Data**:
-   - Understand data structure and content
-   - Identify key metrics and insights
-   - Calculate statistics and trends
-   - Detect patterns and anomalies
-   - Generate executive summaries
+1. **Determine report parameters** — set report type (post-campaign/monthly/quarterly/annual), campaign(s), period, and audience. Match depth to the audience: executive wants ROI and strategy at a high level; client wants results and value; team wants detailed learnings and optimization; board wants business impact. See the audience-needs matrix in [report-templates.md](references/report-templates.md).
 
-2. **Create Report Structure**:
-   - Design clear, logical sections
-   - Create table of contents
-   - Add executive summary
-   - Include detailed analysis
-   - Provide recommendations
+2. **Pick the audience template and fill it in** — full executive, client, and internal-team templates live in [report-templates.md](references/report-templates.md). Pull metrics from `performance-analyzer` and `roi-calculator` outputs when present; otherwise ask the user for the numbers. Pair every metric with context (target, benchmark, or prior period).
 
-3. **Generate Visualizations**:
-   - Create tables for structured data
-   - Generate charts (bar, line, pie, scatter)
-   - Add badges and indicators
-   - Include code blocks and examples
-   - Format numbers and percentages
+3. **Apply visualization and writing guidance** — choose the right chart per data point and per audience, and follow the lead-with-outcomes narrative arc. See the visualization recommendations and writing best practices in [report-templates.md](references/report-templates.md).
 
-4. **Format Output**:
-   - Generate markdown reports
-   - Create HTML reports with styling
-   - Export to PDF
-   - Add branding and customization
-   - Ensure responsive design
+4. **Close with recommendations and action items** — end every report with concrete next steps; add an owner/deadline action-items table for team and board audiences.
 
-## Usage Examples
+5. **Save and promote** — write the finished report to `memory/influencer/report-generator/YYYY-MM-DD-<topic>.md` (paid runs to `memory/ad/report-generator/`). Promote durable verdicts (final ROI/ROAS, top performers, renew/drop calls, headline learnings) to `memory/hot-cache.md`.
 
-```
-@report-generator data.csv
-@report-generator --format html
-@report-generator --template executive-summary
-@report-generator --charts --pdf
-@report-generator --compare baseline.json current.json
+## Example
+
+**User**: "Create an executive report for our holiday campaign: $50K spend, $165K revenue, 3.5M reach across 15 influencers"
+
+**Output** (excerpt — full template in [report-templates.md](references/report-templates.md)):
+
+```markdown
+# Holiday Campaign 2024: Executive Summary
+
+## Bottom Line: Campaign Exceeded All Targets ✅
+
+**ROI: 230%** | **ROAS: 3.3:1** | **Revenue: $165,000**
+
+| Metric | Target | Actual | Status |
+|--------|--------|--------|--------|
+| Revenue | $100K | $165K | ✅ +65% |
+| ROAS | 2:1 | 3.3:1 | ✅ +65% |
+| Reach | 2M | 3.5M | ✅ +75% |
+
+### Recommendation
+
+Increase Q1 influencer budget by 25%, focused on TikTok micro-influencers and product-demo content.
 ```
 
-## Report Types
+## Reference Materials
 
-### Executive Summary Report
+- [report-templates.md](references/report-templates.md) — full executive/client/team templates, visualization recs, writing best practices, worked example
+- [skill-contract.md](../../../references/skill-contract.md) — shared contract and handoff format
+- [state-model.md](../../../references/state-model.md) — memory tiers and save-path convention
+- [CONNECTORS.md](../../../CONNECTORS.md) — free/keyless data recipes per connector category
+- [performance-analyzer](../performance-analyzer/SKILL.md) — generates the metrics this report consumes
+- [roi-calculator](../roi-calculator/SKILL.md) — supplies ROI/ROAS figures
+- [campaign-planner](../../plan/campaign-planner/SKILL.md) — original plan to compare results against
+- [content-amplifier](../../activate/content-amplifier/SKILL.md) — amplification results to report on
+- [content-quality-auditor](../../../seo-geo/optimize/content-quality-auditor/SKILL.md) — quality gate for the report itself
 
-```python
-def generate_executive_summary(data, title="Executive Summary"):
-    """
-    Generate high-level executive summary report
-    """
-    from datetime import datetime
+## Next Best Skill
 
-    report = f"""# {title}
-**Generated:** {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
+**Primary**: [content-quality-auditor](../../../seo-geo/optimize/content-quality-auditor/SKILL.md) — run the finished report through the publish-readiness gate before it goes to a stakeholder.
 
----
+**Alternates (same measure phase / IMPACT family)**:
 
-## Key Highlights
+- [performance-analyzer](../performance-analyzer/SKILL.md) — if the report exposes data gaps, re-analyze before re-reporting.
+- [roi-calculator](../roi-calculator/SKILL.md) — recompute return figures if the financial inputs changed.
 
-"""
+**Termination note** (visited-set): if a recommended skill has already been invoked this session, stop and report the chain as complete instead of re-running it. Honor a max chain depth of 3 hops to avoid loops.
 
-    # Calculate key metrics
-    metrics = calculate_key_metrics(data)
+## Related Skills
 
-    for metric in metrics:
-        icon = "✅" if metric['status'] == 'good' else "⚠️" if metric['status'] == 'warning' else "❌"
-        report += f"{icon} **{metric['name']}**: {metric['value']}\n"
-
-    report += f"""
-
----
-
-## Performance Overview
-
-| Metric | Current | Previous | Change |
-|--------|---------|----------|--------|
-"""
-
-    for metric in metrics:
-        if 'previous' in metric:
-            change = calculate_change(metric['current'], metric['previous'])
-            arrow = "↑" if change > 0 else "↓" if change < 0 else "→"
-            color = "green" if change > 0 else "red" if change < 0 else "gray"
-
-            report += f"| {metric['name']} | {metric['current']:,} | {metric['previous']:,} | {arrow} {abs(change):.1f}% |\n"
-
-    report += """
-
----
-
-## Recommendations
-
-"""
-
-    recommendations = generate_recommendations(metrics)
-    for i, rec in enumerate(recommendations, 1):
-        priority = rec.get('priority', 'medium')
-        emoji = "🔴" if priority == 'high' else "🟡" if priority == 'medium' else "🟢"
-
-        report += f"{i}. {emoji} **{rec['title']}**\n"
-        report += f"   {rec['description']}\n\n"
-
-    return report
-```
-
-### Data Analysis Report
-
-```python
-import pandas as pd
-import numpy as np
-from datetime import datetime
-
-def generate_data_analysis_report(df, title="Data Analysis Report"):
-    """
-    Generate comprehensive data analysis report
-    """
-
-    report = f"""# {title}
-**Date:** {datetime.now().strftime('%Y-%m-%d')}
-**Dataset:** {len(df):,} rows × {len(df.columns)} columns
-
----
-
-## Table of Contents
-1. [Dataset Overview](#dataset-overview)
-2. [Data Quality](#data-quality)
-3. [Statistical Summary](#statistical-summary)
-4. [Distributions](#distributions)
-5. [Correlations](#correlations)
-6. [Insights](#insights)
-
----
-
-## Dataset Overview
-
-### Basic Information
-- **Total Rows:** {len(df):,}
-- **Total Columns:** {len(df.columns)}
-- **Memory Usage:** {df.memory_usage(deep=True).sum() / 1024**2:.2f} MB
-- **Duplicate Rows:** {df.duplicated().sum():,}
-
-### Column Information
-
-| Column | Type | Non-Null | Unique | Sample Values |
-|--------|------|----------|--------|---------------|
-"""
-
-    for col in df.columns:
-        dtype = str(df[col].dtype)
-        non_null = df[col].count()
-        unique = df[col].nunique()
-        samples = df[col].dropna().head(3).tolist()
-        sample_str = ", ".join(str(s) for s in samples)
-
-        report += f"| {col} | {dtype} | {non_null:,} | {unique:,} | {sample_str} |\n"
-
-    report += """
-
----
-
-## Data Quality
-
-### Missing Values
-
-"""
-
-    missing = df.isnull().sum()
-    if missing.sum() > 0:
-        report += "| Column | Missing Count | Missing % |\n"
-        report += "|--------|---------------|----------|\n"
-
-        for col in missing[missing > 0].index:
-            count = missing[col]
-            pct = (count / len(df)) * 100
-            report += f"| {col} | {count:,} | {pct:.1f}% |\n"
-    else:
-        report += "✅ No missing values detected.\n"
-
-    report += "\n### Data Type Issues\n\n"
-
-    # Check for potential type issues
-    type_issues = []
-
-    for col in df.select_dtypes(include=['object']):
-        # Check if column should be numeric
-        try:
-            pd.to_numeric(df[col], errors='raise')
-            type_issues.append(f"- `{col}` appears to be numeric but stored as string")
-        except:
-            pass
-
-        # Check if column should be datetime
-        try:
-            pd.to_datetime(df[col], errors='raise')
-            if df[col].str.contains(r'\d{4}-\d{2}-\d{2}').any():
-                type_issues.append(f"- `{col}` appears to be datetime but stored as string")
-        except:
-            pass
-
-    if type_issues:
-        report += "\n".join(type_issues) + "\n"
-    else:
-        report += "✅ No data type issues detected.\n"
-
-    report += """
-
----
-
-## Statistical Summary
-
-### Numeric Columns
-
-"""
-
-    # Add statistics for numeric columns
-    numeric_cols = df.select_dtypes(include=[np.number]).columns
-
-    if len(numeric_cols) > 0:
-        stats = df[numeric_cols].describe()
-        report += stats.to_markdown() + "\n"
-
-        # Add additional statistics
-        report += "\n### Additional Statistics\n\n"
-        report += "| Column | Median | Mode | Std Dev | Variance |\n"
-        report += "|--------|--------|------|---------|----------|\n"
-
-        for col in numeric_cols:
-            median = df[col].median()
-            mode = df[col].mode().iloc[0] if not df[col].mode().empty else "N/A"
-            std = df[col].std()
-            var = df[col].var()
-
-            report += f"| {col} | {median:.2f} | {mode} | {std:.2f} | {var:.2f} |\n"
-
-    report += """
-
-### Categorical Columns
-
-"""
-
-    categorical_cols = df.select_dtypes(include=['object']).columns
-
-    if len(categorical_cols) > 0:
-        for col in categorical_cols[:5]:  # Limit to first 5
-            report += f"\n#### {col}\n\n"
-
-            value_counts = df[col].value_counts().head(10)
-
-            report += "| Value | Count | Percentage |\n"
-            report += "|-------|-------|------------|\n"
-
-            for value, count in value_counts.items():
-                pct = (count / len(df)) * 100
-                report += f"| {value} | {count:,} | {pct:.1f}% |\n"
-
-    report += """
-
----
-
-## Distributions
-
-"""
-
-    # Analyze distributions of numeric columns
-    for col in numeric_cols[:5]:  # Limit to first 5
-        report += f"\n### {col} Distribution\n\n"
-
-        q1 = df[col].quantile(0.25)
-        q2 = df[col].quantile(0.50)
-        q3 = df[col].quantile(0.75)
-        iqr = q3 - q1
-
-        # Detect outliers
-        lower_bound = q1 - 1.5 * iqr
-        upper_bound = q3 + 1.5 * iqr
-        outliers = df[(df[col] < lower_bound) | (df[col] > upper_bound)]
-
-        report += f"""
-**Quartiles:**
-- Q1 (25%): {q1:.2f}
-- Q2 (50%, Median): {q2:.2f}
-- Q3 (75%): {q3:.2f}
-- IQR: {iqr:.2f}
-
-**Outliers:** {len(outliers)} ({len(outliers)/len(df)*100:.1f}%)
-- Lower bound: {lower_bound:.2f}
-- Upper bound: {upper_bound:.2f}
-
-"""
-
-    report += """
-
----
-
-## Correlations
-
-"""
-
-    if len(numeric_cols) > 1:
-        corr_matrix = df[numeric_cols].corr()
-
-        report += "\n### Correlation Matrix\n\n"
-        report += corr_matrix.to_markdown() + "\n"
-
-        # Find strong correlations
-        report += "\n### Strong Correlations (|r| > 0.7)\n\n"
-
-        strong_corr = []
-        for i in range(len(corr_matrix.columns)):
-            for j in range(i+1, len(corr_matrix.columns)):
-                corr_val = corr_matrix.iloc[i, j]
-                if abs(corr_val) > 0.7:
-                    col1 = corr_matrix.columns[i]
-                    col2 = corr_matrix.columns[j]
-                    strong_corr.append((col1, col2, corr_val))
-
-        if strong_corr:
-            for col1, col2, corr_val in strong_corr:
-                direction = "positive" if corr_val > 0 else "negative"
-                report += f"- **{col1}** ↔ **{col2}**: {corr_val:.3f} ({direction})\n"
-        else:
-            report += "No strong correlations found.\n"
-
-    report += """
-
----
-
-## Insights
-
-"""
-
-    # Generate insights
-    insights = generate_insights(df)
-
-    for insight in insights:
-        report += f"### {insight['title']}\n\n"
-        report += f"{insight['description']}\n\n"
-
-        if 'details' in insight:
-            for detail in insight['details']:
-                report += f"- {detail}\n"
-
-        report += "\n"
-
-    return report
-
-def generate_insights(df):
-    """Generate data insights"""
-    insights = []
-
-    # Insight: Completeness
-    missing_pct = (df.isnull().sum().sum() / (len(df) * len(df.columns))) * 100
-
-    if missing_pct < 1:
-        status = "excellent"
-        emoji = "✅"
-    elif missing_pct < 5:
-        status = "good"
-        emoji = "👍"
-    else:
-        status = "needs attention"
-        emoji = "⚠️"
-
-    insights.append({
-        "title": f"{emoji} Data Completeness: {status.title()}",
-        "description": f"Overall data completeness is {100-missing_pct:.1f}% with {missing_pct:.1f}% missing values.",
-        "details": [
-            f"Total cells: {len(df) * len(df.columns):,}",
-            f"Missing cells: {df.isnull().sum().sum():,}"
-        ]
-    })
-
-    # Insight: Duplicates
-    dup_count = df.duplicated().sum()
-
-    if dup_count > 0:
-        insights.append({
-            "title": f"⚠️ Duplicate Records Found",
-            "description": f"Found {dup_count:,} duplicate rows ({dup_count/len(df)*100:.1f}% of dataset)",
-            "details": [
-                "Consider removing duplicates for accurate analysis",
-                "Review business logic for duplicate handling"
-            ]
-        })
-
-    return insights
-```
-
-### Performance Report
-
-```python
-def generate_performance_report(metrics, baseline=None):
-    """
-    Generate performance comparison report
-    """
-
-    report = f"""# Performance Report
-**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-
----
-
-## Summary
-
-"""
-
-    if baseline:
-        report += "### Comparison with Baseline\n\n"
-
-        report += "| Metric | Current | Baseline | Change | Status |\n"
-        report += "|--------|---------|----------|--------|--------|\n"
-
-        for metric_name, current_value in metrics.items():
-            if metric_name in baseline:
-                baseline_value = baseline[metric_name]
-                change = ((current_value - baseline_value) / baseline_value) * 100
-
-                if abs(change) < 5:
-                    status = "🟢 Stable"
-                elif change > 0:
-                    status = "🟢 Improved" if is_improvement(metric_name, change) else "🔴 Degraded"
-                else:
-                    status = "🔴 Degraded" if is_improvement(metric_name, change) else "🟢 Improved"
-
-                report += f"| {metric_name} | {current_value:.2f} | {baseline_value:.2f} | {change:+.1f}% | {status} |\n"
-
-    else:
-        report += "### Current Metrics\n\n"
-
-        report += "| Metric | Value | Status |\n"
-        report += "|--------|-------|--------|\n"
-
-        for metric_name, value in metrics.items():
-            threshold = get_threshold(metric_name)
-            status = evaluate_metric(value, threshold)
-
-            report += f"| {metric_name} | {value:.2f} | {status} |\n"
-
-    report += """
-
----
-
-## Detailed Analysis
-
-"""
-
-    for metric_name, value in metrics.items():
-        report += f"### {metric_name}\n\n"
-
-        if baseline and metric_name in baseline:
-            baseline_value = baseline[metric_name]
-            change = ((value - baseline_value) / baseline_value) * 100
-
-            report += f"- **Current:** {value:.2f}\n"
-            report += f"- **Baseline:** {baseline_value:.2f}\n"
-            report += f"- **Change:** {change:+.1f}%\n\n"
-
-            if abs(change) > 10:
-                report += f"⚠️ Significant change detected. "
-                report += "Review recent changes that may have impacted this metric.\n\n"
-
-        else:
-            report += f"- **Value:** {value:.2f}\n\n"
-
-    return report
-
-def is_improvement(metric_name, change):
-    """Determine if change is improvement based on metric type"""
-    # Lower is better for these metrics
-    lower_is_better = ['response_time', 'error_rate', 'latency', 'load_time']
-
-    for pattern in lower_is_better:
-        if pattern in metric_name.lower():
-            return change < 0
-
-    return change > 0
-```
-
-## HTML Report Generation
-
-```python
-def generate_html_report(data, title="Report", template="default"):
-    """
-    Generate styled HTML report
-    """
-
-    # CSS styles
-    css = """
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-
-        .report-container {
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        h1 {
-            color: #2c3e50;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 10px;
-        }
-
-        h2 {
-            color: #34495e;
-            margin-top: 30px;
-            border-left: 4px solid #3498db;
-            padding-left: 10px;
-        }
-
-        h3 {
-            color: #7f8c8d;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        th {
-            background: #3498db;
-            color: white;
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-        }
-
-        td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #ecf0f1;
-        }
-
-        tr:hover {
-            background: #f8f9fa;
-        }
-
-        .metric-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 10px 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .metric-value {
-            font-size: 2em;
-            font-weight: bold;
-        }
-
-        .metric-label {
-            font-size: 0.9em;
-            opacity: 0.9;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.85em;
-            font-weight: 600;
-        }
-
-        .badge-success {
-            background: #2ecc71;
-            color: white;
-        }
-
-        .badge-warning {
-            background: #f39c12;
-            color: white;
-        }
-
-        .badge-danger {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .chart-container {
-            margin: 30px 0;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-
-        code {
-            background: #f4f4f4;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-        }
-
-        pre {
-            background: #2c3e50;
-            color: #ecf0f1;
-            padding: 15px;
-            border-radius: 5px;
-            overflow-x: auto;
-        }
-
-        .timestamp {
-            color: #7f8c8d;
-            font-size: 0.9em;
-        }
-    </style>
-    """
-
-    # Generate HTML content
-    html = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{title}</title>
-        {css}
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    </head>
-    <body>
-        <div class="report-container">
-            <h1>{title}</h1>
-            <p class="timestamp">Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
-
-            {generate_html_content(data)}
-        </div>
-    </body>
-    </html>
-    """
-
-    return html
-
-def generate_html_content(data):
-    """Generate HTML content from data"""
-
-    html = ""
-
-    # Key metrics section
-    if 'metrics' in data:
-        html += "<h2>Key Metrics</h2>"
-        html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">'
-
-        for metric in data['metrics']:
-            html += f"""
-            <div class="metric-card">
-                <div class="metric-label">{metric['name']}</div>
-                <div class="metric-value">{metric['value']}</div>
-            </div>
-            """
-
-        html += "</div>"
-
-    # Table data
-    if 'table' in data:
-        html += "<h2>Data Table</h2>"
-        html += generate_html_table(data['table'])
-
-    # Charts
-    if 'charts' in data:
-        for chart in data['charts']:
-            html += f'<h2>{chart["title"]}</h2>'
-            html += '<div class="chart-container">'
-            html += generate_chart_html(chart)
-            html += '</div>'
-
-    return html
-
-def generate_html_table(table_data):
-    """Generate HTML table from data"""
-
-    html = "<table>"
-
-    # Header
-    if 'headers' in table_data:
-        html += "<thead><tr>"
-        for header in table_data['headers']:
-            html += f"<th>{header}</th>"
-        html += "</tr></thead>"
-
-    # Rows
-    html += "<tbody>"
-    for row in table_data.get('rows', []):
-        html += "<tr>"
-        for cell in row:
-            html += f"<td>{cell}</td>"
-        html += "</tr>"
-    html += "</tbody>"
-
-    html += "</table>"
-    return html
-
-def generate_chart_html(chart_data):
-    """Generate Chart.js chart"""
-
-    chart_id = f"chart_{abs(hash(chart_data['title']))}"
-
-    html = f'<canvas id="{chart_id}" width="400" height="200"></canvas>'
-    html += f"""
-    <script>
-        var ctx = document.getElementById('{chart_id}').getContext('2d');
-        var chart = new Chart(ctx, {{
-            type: '{chart_data.get('type', 'bar')}',
-            data: {{
-                labels: {chart_data['labels']},
-                datasets: [{{
-                    label: '{chart_data['title']}',
-                    data: {chart_data['data']},
-                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 2
-                }}]
-            }},
-            options: {{
-                responsive: true,
-                maintainAspectRatio: true,
-                scales: {{
-                    y: {{
-                        beginAtZero: true
-                    }}
-                }}
-            }}
-        }});
-    </script>
-    """
-
-    return html
-```
-
-## Markdown Tables
-
-```python
-def generate_markdown_table(data, headers=None, alignment=None):
-    """
-    Generate markdown table from data
-
-    alignment: list of 'left', 'center', 'right'
-    """
-
-    if not data:
-        return ""
-
-    # Auto-detect headers if not provided
-    if headers is None:
-        if isinstance(data[0], dict):
-            headers = list(data[0].keys())
-        else:
-            headers = [f"Column {i+1}" for i in range(len(data[0]))]
-
-    # Generate header row
-    table = "| " + " | ".join(str(h) for h in headers) + " |\n"
-
-    # Generate alignment row
-    if alignment is None:
-        alignment = ['left'] * len(headers)
-
-    align_chars = {
-        'left': ':--',
-        'center': ':-:',
-        'right': '--:'
-    }
-
-    table += "| " + " | ".join(align_chars.get(a, ':--') for a in alignment) + " |\n"
-
-    # Generate data rows
-    for row in data:
-        if isinstance(row, dict):
-            row_data = [str(row.get(h, '')) for h in headers]
-        else:
-            row_data = [str(cell) for cell in row]
-
-        table += "| " + " | ".join(row_data) + " |\n"
-
-    return table
-
-# Example usage
-data = [
-    {"name": "John", "age": 30, "city": "New York"},
-    {"name": "Jane", "age": 25, "city": "San Francisco"},
-    {"name": "Bob", "age": 35, "city": "Chicago"}
-]
-
-table = generate_markdown_table(
-    data,
-    headers=['Name', 'Age', 'City'],
-    alignment=['left', 'right', 'left']
-)
-```
-
-## Charts and Visualizations
-
-```python
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-def generate_chart(data, chart_type='bar', title='Chart', output='chart.png'):
-    """
-    Generate chart from data
-    """
-
-    plt.figure(figsize=(10, 6))
-    plt.style.use('seaborn-v0_8-darkgrid')
-
-    if chart_type == 'bar':
-        plt.bar(data['labels'], data['values'])
-
-    elif chart_type == 'line':
-        plt.plot(data['labels'], data['values'], marker='o', linewidth=2)
-
-    elif chart_type == 'pie':
-        plt.pie(data['values'], labels=data['labels'], autopct='%1.1f%%')
-
-    elif chart_type == 'scatter':
-        plt.scatter(data['x'], data['y'], alpha=0.6)
-
-    plt.title(title, fontsize=16, fontweight='bold')
-    plt.tight_layout()
-    plt.savefig(output, dpi=300, bbox_inches='tight')
-    plt.close()
-
-    return output
-
-# For markdown reports
-def embed_chart_in_markdown(chart_path, alt_text="Chart"):
-    """Generate markdown image embed"""
-    return f"![{alt_text}]({chart_path})\n"
-```
-
-## PDF Export
-
-```python
-from markdown import markdown
-from weasyprint import HTML
-
-def markdown_to_pdf(markdown_text, output_path='report.pdf', css=None):
-    """
-    Convert markdown to PDF
-    """
-
-    # Convert markdown to HTML
-    html_content = markdown(markdown_text, extensions=['tables', 'fenced_code'])
-
-    # Wrap in HTML document
-    html_doc = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <style>
-            {css if css else get_default_pdf_css()}
-        </style>
-    </head>
-    <body>
-        {html_content}
-    </body>
-    </html>
-    """
-
-    # Convert to PDF
-    HTML(string=html_doc).write_pdf(output_path)
-
-def get_default_pdf_css():
-    """Default CSS for PDF export"""
-    return """
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        h1 {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #3498db;
-            color: white;
-        }
-
-        code {
-            background: #f4f4f4;
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
-
-        pre {
-            background: #f4f4f4;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-x: auto;
-        }
-    """
-```
-
-## Report Templates
-
-```python
-TEMPLATES = {
-    'executive': {
-        'sections': ['summary', 'key_metrics', 'recommendations'],
-        'style': 'concise'
-    },
-    'technical': {
-        'sections': ['overview', 'detailed_analysis', 'code_examples', 'metrics'],
-        'style': 'comprehensive'
-    },
-    'comparison': {
-        'sections': ['baseline', 'current', 'differences', 'trends'],
-        'style': 'comparative'
-    }
-}
-
-def generate_from_template(data, template_name='executive'):
-    """Generate report from template"""
-
-    template = TEMPLATES.get(template_name, TEMPLATES['executive'])
-
-    report = f"# {template_name.title()} Report\n\n"
-
-    for section in template['sections']:
-        report += generate_section(data, section, template['style'])
-
-    return report
-```
-
-## Best Practices
-
-1. **Structure reports clearly** with table of contents
-2. **Use visual hierarchy** (headings, tables, charts)
-3. **Include timestamps** for all reports
-4. **Add executive summary** for long reports
-5. **Use consistent formatting** throughout
-6. **Include data sources** and methodology
-7. **Add actionable recommendations**
-8. **Use charts for trends**, tables for detailed data
-9. **Export to multiple formats** (MD, HTML, PDF)
-10. **Automate report generation** where possible
-
-## Notes
-
-- Keep reports focused and actionable
-- Use appropriate visualizations for data types
-- Include both summary and detailed views
-- Version control report templates
-- Test PDF export with different data sizes
-- Consider accessibility in HTML reports
-- Use responsive design for HTML reports
-- Cache generated charts for performance
+- [performance-analyzer](../performance-analyzer/SKILL.md) - Generate data for reports
+- [roi-calculator](../roi-calculator/SKILL.md) - Calculate ROI figures
+- [campaign-planner](../../plan/campaign-planner/SKILL.md) - Reference original plans
+- [content-amplifier](../../activate/content-amplifier/SKILL.md) - Report on amplification results

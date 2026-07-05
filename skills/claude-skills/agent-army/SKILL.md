@@ -1,20 +1,20 @@
 ---
 name: agent-army
-description: "Deploy a 2-layer parallel agent hierarchy for large, parallelizable work — big refactors, multi-file migrations, codebase-wide audits, bulk generation. Layer 1 is 3-50+ specialist agents, each with its own full context window; Layer 2 is 2+ sub-agents per member. Includes git safety, tiered sizing, a pre-deploy gate, phantom-completion checks, and multi-wave follow-up."
+description: "Deploy a 2-layer parallel agent hierarchy for large, parallelizable work — big refactors, multi-file migrations, codebase-wide audits, bulk generation. A top-tier commander (Fable or Opus) orchestrates the swarms; the user picks a power level (Max Power / Heavy / Balanced / Economy) that sets the Opus/Sonnet/Haiku model mix per layer. Layer 1 is 3-50+ specialist agents, each with its own full context window; Layer 2 is 2+ sub-agents per member. Includes git safety, tiered sizing, a pre-deploy gate, phantom-completion checks, and multi-wave follow-up."
 user_invocable: true
 ---
 
 # Agent Army
 
-A 2-layer parallel execution framework. Each Layer 1 agent has its own full context window (not a slice). Each spawns Layer 2 sub-agents under it. The result is many independent brains running at once — not one brain divided.
+A 2-layer parallel execution framework. The Commander is the top-tier model — Fable by default, or Opus if that's the session model — and does the thinking: recon, composition, briefing, verification. It orchestrates swarms of subordinate models whose tiers the user picks at deploy time (see Power Level). Each Layer 1 agent has its own full context window (not a slice). Each spawns Layer 2 sub-agents under it. The result is many independent brains running at once — not one brain divided.
 
 ```
-Commander (you)
+Commander (you — Fable or Opus, the session model)
  |
- |-- Layer 1: Team (3 to 50+, each = own 1M context)
- |    |-- Agent A (1M) -- Sub-agent A1, A2, ...
- |    |-- Agent B (1M) -- Sub-agent B1, B2, ...
- |    |-- Agent C (1M) -- Sub-agent C1, C2, ...
+ |-- Layer 1: Team (3 to 50+, each = own 1M context, L1 tier from power level)
+ |    |-- Agent A (1M) -- Sub-agent A1, A2, ...  (L2 tier)
+ |    |-- Agent B (1M) -- Sub-agent B1, B2, ...  (L2 tier)
+ |    |-- Agent C (1M) -- Sub-agent C1, C2, ...  (L2 tier)
  |    |-- ... (no cap)
 ```
 
@@ -42,6 +42,7 @@ If the task doesn't clearly fit, say so and propose doing it inline instead of s
 
 1. EVERY Layer 1 agent MUST spawn 2+ sub-agents. No exceptions. If you're about to deploy an L1 agent with no sub-agents, STOP and restructure.
 2. NEVER silently shrink the army. Match the user's chosen tier. If you must deviate, say so out loud and why.
+2b. NEVER silently downgrade models. Pass `model:` explicitly on every Agent call at the user's chosen power level. Omitting it inherits the session model — that's a silent Max Power bill.
 3. Sub-agent deployment instructions go INSIDE the Layer 1 brief. If they're missing, the sub-agents will never be created.
 4. Report as agents complete: `[Agent N/M complete] name: X files modified, Y flags`.
 5. Show the army plan and pass the Deployment Gate before deploying (Full Mode). Quick Mode composes the plan internally but still passes the Gate.
@@ -65,13 +66,32 @@ Confirm a tier before starting. Present this table:
 
 Default to **Standard** on "just do it." After recon (Step 3), recommend a specific number based on what you found — e.g. "35 files across 6 domains → Aggressive: 8 L1 agents, 2-3 sub-agents each (~22 total, ~2M tokens). Adjust?" Token estimates are rough and scale with task complexity.
 
+## Power Level
+
+Size sets how many agents; power sets which models. Ask for both in one question (AskUserQuestion works well — size and power as two questions in one call). Skip asking if the user already named a power level or explicit models.
+
+```
+| Power Level         | Commander          | Layer 1 | Layer 2 | Best For                                        |
+|---------------------|--------------------|---------|---------|-------------------------------------------------|
+| Max Power           | Fable/Opus (session)| Opus   | Opus    | gnarly refactors, correctness-critical migrations|
+| Heavy (recommended) | Fable/Opus (session)| Opus   | Sonnet  | most large tasks — smart orchestration, fast exec|
+| Balanced            | Fable/Opus (session)| Sonnet | Sonnet  | mechanical migrations with clear patterns        |
+| Economy             | Fable/Opus (session)| Sonnet | Haiku   | high-volume, dead-simple find/replace            |
+```
+
+Rules:
+- The **Commander is always the session model** — Fable or Opus, the user's choice — and is never delegated. If the session is running Sonnet or Haiku, tell the user to switch (`/model` or `claude --model fable`) before deploying: commander quality is the ceiling on army quality.
+- Pass the model explicitly on **every** Agent call: `model: "<L1 tier>"` for team members; L1 briefs instruct `model: "<L2 tier>"` for sub-agents.
+- **Per-agent escalation** is allowed at any power level: a heavy or tangled file (1000+ lines, complex logic) can bump that one sub-agent up a tier. Note escalations in the army plan.
+- **Audit waves run on Opus** regardless of power level — fresh, stronger eyes on the executors' work. Notify waves can drop to Haiku.
+
 ## Protocol
 
 **Mode:** If scope is already concrete (file paths, exact changes, tier), skip to Step 3 (Quick Mode). Otherwise start at Step 1 (Full Mode).
 
 ### Step 1: Intake (Full Mode)
 
-Confirm in one line if the user already gave context: "Goal: [X]. Scope: [Y]. Tier: [Z]. Starting." Otherwise ask for: goal (one sentence), scope (files/dirs/"everything"), constraints (don't touch X, match Y), tier.
+Confirm in one line if the user already gave context: "Goal: [X]. Scope: [Y]. Tier: [Z]. Power: [P]. Starting." Otherwise ask for: goal (one sentence), scope (files/dirs/"everything"), constraints (don't touch X, match Y), tier, and power level.
 
 ### Step 2: Git Checkpoint
 
@@ -113,14 +133,15 @@ DEPLOYMENT GATE:
 [ ] Every file is owned by exactly one sub-agent (no overlap, no gap)
 [ ] L1 briefs include full sub-agent deployment instructions
 [ ] Tier matches the user's selection
+[ ] Power level set: model: "<L1 tier>" on every L1 call; L2 tier + escalations in every brief
 ```
 
 All must PASS. Any FAIL → fix the plan before deploying.
 
 ### Step 5: Deploy
 
-1. Foundation Agent first (if any). Wait for completion.
-2. Launch ALL Layer 1 agents in parallel — `run_in_background: true`, in a single message.
+1. Foundation Agent first (if any), at the L1 tier. Wait for completion.
+2. Launch ALL Layer 1 agents in parallel — `run_in_background: true` and `model: "<L1 tier>"` on every call, in a single message.
 3. Each L1 agent spawns its L2 sub-agents in parallel (per its brief).
 4. Report each completion: `[Agent N/M complete] name: results`.
 
@@ -170,7 +191,8 @@ Flag issues outside your files in "Flags for Commander" — do NOT fix them.
 
 CRITICAL: You MUST use the Agent tool to spawn the sub-agents listed below. Do
 NOT do the work yourself. Do NOT skip spawning. Deploy ALL sub-agents in a single
-message with multiple Agent tool calls.
+message with multiple Agent tool calls, passing model: "[L2_TIER]" on every call
+[note escalations: except "NAME" which gets model: "[higher tier]"].
 
 Sub-agents:
 - "[NAME]": [files with line counts]
@@ -219,6 +241,7 @@ These are the failure modes this skill exists to prevent. If you catch yourself 
 - **Phantom fan-out** — an L1 agent does the work itself instead of spawning sub-agents. The whole speed advantage is gone. Enforced by Mandatory Rule 1 + the Gate.
 - **Phantom completion** — an agent reports COMPLETE without editing anything. Caught by the `git diff --stat` cross-check, not by trusting the report.
 - **Silent shrink** — quietly running 3 agents when the user picked Aggressive. Always surface deviations.
+- **Model drift** — omitting `model:` on Agent calls, so every sub-agent silently inherits the commander's model. The user picked Economy and got billed Max Power. Enforced by Mandatory Rule 2b + the Gate.
 - **Overlapping ownership** — two sub-agents editing the same file → conflicts and lost edits. Enforced by exactly-one-owner in the Gate.
 - **Skipping the foundation** — touching dependents before shared files are updated → cascade of broken imports. Foundation Agent runs first.
 - **Army for a small job** — 9 agents for 4 files is slower (orchestration overhead) and burns tokens. See "When NOT to use."
@@ -235,7 +258,7 @@ These are the failure modes this skill exists to prevent. If you catch yourself 
 
 User: "Replace all neon Tailwind colors with our sand palette across the site."
 
-**Recon:** 45 files, 5 domains, 2 shared dependencies (a theme config + a shared `<Button>`). Build cmd: `npm run build`. Recommend Aggressive: 1 Foundation Agent + 5 L1 agents, 2-4 sub-agents each (~22 total).
+**Recon:** 45 files, 5 domains, 2 shared dependencies (a theme config + a shared `<Button>`). Build cmd: `npm run build`. Recommend Aggressive: 1 Foundation Agent + 5 L1 agents, 2-4 sub-agents each (~22 total). User picks **Heavy** power: Fable commander, Opus L1, Sonnet L2.
 
 **Wave 1 (Execute):** Foundation Agent updates the 2 shared files first. Then 5 L1 agents deploy in parallel, each fanning out to sub-agents. Reports: 43 modified, 2 skipped (already correct), 3 flags.
 
