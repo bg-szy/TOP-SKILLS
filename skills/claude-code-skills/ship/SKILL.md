@@ -11,7 +11,9 @@ description: >-
   direct push to main is blocked and the change needs to go through a PR instead. Also covers
   snapshotting the current state as an annotated git tag — use whenever asked to "save the current
   state", "tag this", "snapshot the state", "create a checkpoint", "tag a release point", or "mark
-  where we are" (a git-tag checkpoint, distinct from PR labels/tags).
+  where we are" (a git-tag checkpoint, distinct from PR labels/tags). Also opens a just-created (or
+  any) PR in a chosen browser account profile — use whenever asked to "open the PR in my browser",
+  "open it in Edge/Chrome", or "open the PR as <account>".
 allowed-tools:
   - Bash
   - Read
@@ -94,10 +96,21 @@ Verification, and keep the `AB#<id>` line so the work item links.
 
 ```bash
 bun scripts/ship-pr.ts --title "<title>" --body-file /tmp/pr-body.md \
-  --work-item <id> --transition Resolved
+  --work-item <id> --transition Resolved \
+  --reviewer alice@corp.com --required-reviewer lead@corp.com --tag needs-review
 ```
 - Platform is auto-detected; the script uses the **azure-devops-node-api** SDK (`createPullRequest`)
   or **Octokit** (`pulls.create`).
+- **Prerequisites ride along in the create, not as follow-up round trips.** On Azure the work item,
+  tags/labels, and reviewers are all packed into the single `createPullRequest` call. On GitHub the
+  create API accepts none of those, so labels + reviewers are attached in follow-up calls — same
+  result, just unavoidable there.
+- **Reviewers** — `--reviewer <upn|username>` adds an optional (non-blocking) reviewer;
+  `--required-reviewer` marks it **required** on Azure (blocks completion). Both are comma-separated
+  and/or repeatable. On Azure a UPN/email is resolved to an identity; an unresolvable name is warned
+  and skipped (`reviewer_skipped=…`), never blocking the PR. GitHub has no per-PR "required"
+  reviewer (that's branch protection), so required ones are just requested. The script prints
+  `reviewer_added=<name> required=<bool>` for each.
 - **Azure never opens a PR without a linked Board work item.** The script resolves the id from
   `--work-item` (or the branch name), then **verifies it actually exists** via the SDK
   (`getWorkItem`). The branch-name parse is only a heuristic — a branch like `1234-foo` can carry a
@@ -143,6 +156,44 @@ auto-creates a missing label). For a recommended, consistent tag set — `do-not
 `hotfix`, plus type/area conventions — see the **Recommended tags** section of
 `references/azure-devops.md` / `references/github.md`.
 
+### 4c. Open the PR in the browser (optional)
+Review actually happens on the PR page, and **which signed-in account you open it under matters**
+when you juggle several (work vs. personal vs. cloud) — the wrong profile shows the wrong
+permissions, or no access at all. So after the PR opens, **always surface the `pr_url`**, then ask
+whether to open it in the browser. Opening is opt-in, never automatic (a browser window is a visible
+side effect; the user asked to be prompted).
+
+`ship-open.ts` resolves an **email → browser profile** by reading the browser's own `Local State`
+(the same account map its profile switcher shows), then launches that profile at the URL. It works
+on WSL (→ Windows Edge/Chrome) and macOS (→ Chrome/Edge). Nothing is baked in — the map is
+discovered live each run, the email is an argument, and only your *default* email is remembered, in
+`~/.config/ship/open.json` (outside this skill).
+
+Discover the accounts, then ask the user which one with **AskUserQuestion** (only worth prompting
+when there's more than one; offer each account plus a "don't open" choice):
+
+```bash
+bun scripts/ship-open.ts --list-profiles   # prints browser= + one `profile=<dir>\t<email>\t<name>` per account
+```
+
+Open the PR under the chosen account (add `--dry-run` first if you want to confirm the resolved
+profile without a window):
+
+```bash
+bun scripts/ship-open.ts "<pr_url>" --profile <email>              # opens; prints opened_url= / profile_dir=
+bun scripts/ship-open.ts "<pr_url>" --profile <email> --dry-run    # resolve only, no window
+```
+
+Remember the pick as the default so future ships offer it with one keypress:
+
+```bash
+bun scripts/ship-open.ts --set-default <email> [--browser edge|chrome]
+```
+
+An unknown or omitted email falls back to the browser's Default profile (with a note on stderr)
+rather than guessing wrong. This step is independent of the merge/cleanup below — opening the PR to
+review it doesn't advance or block anything.
+
 ### 5. After merge — cleanup
 Do this only once the PR is actually merged (don't delete a branch with an open PR). Mirror the
 `merge` skill's cleanup, and **ask before deleting**:
@@ -182,8 +233,9 @@ does. The script prints `tag=`, `commit=`, `branch=`, `pushed=`.
 |--------|------|
 | `bun scripts/ship-detect.ts [remote]` | Print platform + Azure coordinates + branch + inferred work item |
 | `bun scripts/ship-push.ts [-r remote] [-b branch]` | Push + set upstream; Azure OAuth Bearer fallback on auth failure |
-| `bun scripts/ship-pr.ts --title … [opts]` | Open PR on the detected platform; ensure/create + link work item(s) (assigned to the configured user); optional Board transition; optional `--tag` |
+| `bun scripts/ship-pr.ts --title … [opts]` | Open PR on the detected platform; ensure/create + link work item(s) (assigned to the configured user); optional Board transition; optional `--tag`; optional `--reviewer`/`--required-reviewer` — work item + tags + reviewers packed into one create call on Azure |
 | `bun scripts/ship-tag.ts <pr-id> [--add\|--remove "t1,t2"] [--list]` | Add / remove / list PR tags (Azure) or labels (GitHub) on an existing PR |
+| `bun scripts/ship-open.ts <url> [--profile <email>] [--dry-run]` | Open a PR/URL in a chosen browser **account profile** (email→profile via the browser's `Local State`); WSL→Edge/Chrome, macOS→Chrome/Edge; also `--list-profiles`, `--set-default` |
 | `bun scripts/ship-snapshot.ts [-m "para"]… [--daily] [--name <tag>] [--push]` | Save current state as an annotated **git tag** (date-named, self-describing subject); optional push with Azure OAuth fallback |
 
 Scripts are TypeScript run via `bun`; shared helpers live in `scripts/ship-lib.ts`. Run `bun install`
@@ -219,6 +271,11 @@ detected platform. The PR description starts from `assets/pr-template.md`.
   on afterward — that path skips the auto-create+link invariant and forces a manual "what's the id?"
   round-trip with the user. Use `ship-pr.ts` so the work item is guaranteed at PR-open.
 - Deleting a branch while its PR is still open abandons the PR — clean up only after merge (step 5).
+- `ship-open.ts` matches `--profile <email>` against the browser's **signed-in** account emails, so a
+  profile with no account attached is only reachable as the Default fallback, not by email. It
+  auto-picks the installed browser (chrome preferred if both) and needs no deps or network — just the
+  browser's local `Local State` file. If it can't find that file, the browser isn't installed where
+  expected; pass `--browser` or check the path it printed.
 - **Three different "tags" — don't mix them up.** (1) PR tags/labels (`--tag`, `ship-tag.ts`) — a
   triage signal on the PR. (2) Work items (step 4) — the traceability link. (3) Git tags
   (`ship-snapshot.ts`) — a commit checkpoint in history. `ship-tag.ts` takes a **PR id**;

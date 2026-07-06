@@ -1,15 +1,15 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-04T16:36:53.994Z",
+    "generated_at": "2026-07-06T01:34:37.555Z",
     "slug": "0xbigboss-web-fetch",
     "source_url": "https://github.com/0xBigBoss/claude-code/tree/main/.claude/skills/web-fetch",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "7855d7866db7fbd01ddc89902f77ed39613f4de5fececc6f2eee6bb7de0076c7",
-    "tree_hash": "3cbcb7a7dd8cb65e2f4b529c87f294bb360abf3a7033897a0b3e8a4dd34eaf26",
+    "content_hash": "87b9b7a30a799e6b324c5057ffe7c2346da711e1780ce85c43401837a3706e23",
+    "tree_hash": "86d39323fe79ff4e5dca08154ca74fe50146de9b84ad75068bfa0c4e11b08b2b",
     "provenance": {
       "model_requested": "gpt-5.5:high",
       "model_effective": "codex:gpt-5.5:high",
@@ -26,8 +26,8 @@
   },
   "skill": {
     "name": "web-fetch",
-    "description": "Fetches HTTP and HTTPS pages, extracts main HTML content, and converts it to clean Markdown for research and documentation review.",
-    "summary": "Extracts readable Markdown from web pages for documentation and article research.",
+    "description": "Fetch public web pages and convert the main content to clean Markdown using curl, html2markdown, and a Bun fallback parser.",
+    "summary": "Turns documentation and articles into clean Markdown for AI context.",
     "icon": "📦",
     "version": "1.0.0",
     "author": "0xBigBoss",
@@ -37,7 +37,7 @@
       "markdown",
       "documentation",
       "research",
-      "html-extraction"
+      "content-extraction"
     ],
     "supported_tools": [
       "claude",
@@ -52,31 +52,31 @@
     "category": "research"
   },
   "security_audit": {
-    "risk_level": "high",
+    "risk_level": "medium",
     "is_blocked": false,
-    "safe_to_publish": false,
+    "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The skill intentionally fetches remote web pages and runs documented shell commands, which creates real network and command-use risk. Most backtick detections in fetch.ts and several SKILL.md entries are false positives from JavaScript template literals or Markdown formatting. Additional context shows unrestricted URL fetching and untrusted page output that can expose agents to internal network access and prompt injection.",
+    "summary": "The TypeScript backtick findings are false positives from template literals that format Markdown and logs. The skill still intentionally fetches arbitrary URLs and includes shell workflows using curl, html2markdown, and Bun. No prompt injection text was found in the reviewed files.",
     "remediation": [
       {
         "issue": "Unrestricted URL fetching",
-        "suggestion": "Allow only HTTP and HTTPS URLs, resolve hostnames, and block localhost, private, link-local, and cloud metadata addresses.",
-        "severity": "high"
-      },
-      {
-        "issue": "Untrusted fetched content enters the agent context",
-        "suggestion": "Wrap fetched output in an explicit untrusted-content boundary and instruct agents not to follow page instructions.",
-        "severity": "high"
-      },
-      {
-        "issue": "Shell examples use user-controlled URL and selector placeholders",
-        "suggestion": "Prefer a script with argument arrays, strict URL validation, and documented quoting rules instead of raw shell pipelines.",
+        "suggestion": "Validate URLs before fetching. Allow only http and https, and block localhost, link-local, and private network ranges by default.",
         "severity": "medium"
       },
       {
-        "issue": "Setup guidance runs bun install from a hidden skill directory",
-        "suggestion": "Provide pinned dependency metadata and explain exactly what installation changes before asking users to run setup.",
+        "issue": "Pasteable shell commands use raw URL placeholders",
+        "suggestion": "Move URL handling into a reviewed script that receives arguments safely. Avoid asking agents to interpolate untrusted text into shell snippets.",
         "severity": "medium"
+      },
+      {
+        "issue": "Runtime dependency installation is documented",
+        "suggestion": "Ship a lockfile and pinned dependencies. Prefer installation during skill setup, not during normal task execution.",
+        "severity": "medium"
+      },
+      {
+        "issue": "Network shell workflows require user awareness",
+        "suggestion": "Require confirmation before fetching user-supplied URLs, especially for internal domains or authenticated environments.",
+        "severity": "low"
       }
     ],
     "risk_factor_evidence": [
@@ -105,33 +105,143 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 8,
-            "line_end": 8
+            "line_start": 9,
+            "line_end": 9
           },
           {
             "file": "SKILL.md",
-            "line_start": 14,
-            "line_end": 26
+            "line_start": 17,
+            "line_end": 21
           },
           {
             "file": "SKILL.md",
-            "line_start": 26,
-            "line_end": 32
+            "line_start": 21,
+            "line_end": 25
           },
           {
             "file": "SKILL.md",
-            "line_start": 32,
+            "line_start": 25,
+            "line_end": 27
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 27,
             "line_end": 33
           },
           {
             "file": "SKILL.md",
             "line_start": 33,
-            "line_end": 34
+            "line_end": 45
           },
           {
             "file": "SKILL.md",
-            "line_start": 34,
-            "line_end": 35
+            "line_start": 45,
+            "line_end": 51
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 51,
+            "line_end": 52
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 52,
+            "line_end": 53
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 53,
+            "line_end": 54
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 54,
+            "line_end": 54
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 55,
+            "line_end": 55
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 59,
+            "line_end": 64
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 64,
+            "line_end": 70
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 70,
+            "line_end": 79
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 79,
+            "line_end": 85
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 85,
+            "line_end": 87
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 87,
+            "line_end": 91
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 91,
+            "line_end": 93
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 93,
+            "line_end": 97
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 97,
+            "line_end": 101
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 101,
+            "line_end": 107
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 107,
+            "line_end": 109
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 109,
+            "line_end": 113
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 113,
+            "line_end": 115
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 115,
+            "line_end": 117
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 117,
+            "line_end": 119
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 119,
+            "line_end": 119
           },
           {
             "file": "SKILL.md",
@@ -140,68 +250,8 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 36,
-            "line_end": 36
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 42,
-            "line_end": 44
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 44,
-            "line_end": 48
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 48,
-            "line_end": 50
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 50,
-            "line_end": 56
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 56,
-            "line_end": 65
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 65,
-            "line_end": 69
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 69,
-            "line_end": 73
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 73,
-            "line_end": 80
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 80,
-            "line_end": 86
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 86,
-            "line_end": 88
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 88,
-            "line_end": 90
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 90,
-            "line_end": 90
+            "line_start": 33,
+            "line_end": 45
           }
         ]
       },
@@ -215,8 +265,8 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 72,
-            "line_end": 72
+            "line_start": 100,
+            "line_end": 100
           }
         ]
       },
@@ -225,23 +275,48 @@
         "evidence": [
           {
             "file": "SKILL.md",
-            "line_start": 43,
-            "line_end": 43
+            "line_start": 26,
+            "line_end": 26
           },
           {
             "file": "SKILL.md",
-            "line_start": 49,
-            "line_end": 49
+            "line_start": 86,
+            "line_end": 86
           },
           {
             "file": "SKILL.md",
-            "line_start": 43,
-            "line_end": 43
+            "line_start": 119,
+            "line_end": 119
           },
           {
             "file": "SKILL.md",
-            "line_start": 49,
-            "line_end": 49
+            "line_start": 26,
+            "line_end": 26
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 86,
+            "line_end": 86
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 119,
+            "line_end": 119
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 18,
+            "line_end": 18
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 19,
+            "line_end": 19
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 20,
+            "line_end": 20
           }
         ]
       }
@@ -298,44 +373,54 @@
         "snippet": "const response = await fetch(url, {"
       },
       {
-        "id": "external_commands:SKILL.md:8:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:9:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 8,
-        "line_end": 8,
-        "snippet": "Fetch web content using `curl | html2markdown` with CSS selectors for clean, complete markdown outpu"
+        "line_start": 9,
+        "line_end": 9,
+        "snippet": "1. Prefer markdown-native endpoints (`content-type: text/markdown`)"
       },
       {
-        "id": "external_commands:SKILL.md:14:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:17:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 14,
-        "line_end": 26,
+        "line_start": 17,
+        "line_end": 21,
         "snippet": "```bash"
       },
       {
-        "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:21:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 26,
-        "line_end": 32,
+        "line_start": 21,
+        "line_end": 25,
         "snippet": "```"
       },
       {
-        "id": "external_commands:SKILL.md:32:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 32,
+        "line_start": 25,
+        "line_end": 27,
+        "snippet": "```bash"
+      },
+      {
+        "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 27,
         "line_end": 33,
-        "snippet": "| platform.claude.com | `#content-container` | - |"
+        "snippet": "```"
       },
       {
         "id": "external_commands:SKILL.md:33:ruby-shell-backtick-execution",
@@ -344,404 +429,639 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 33,
-        "line_end": 34,
+        "line_end": 45,
+        "snippet": "```bash"
+      },
+      {
+        "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 45,
+        "line_end": 51,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:SKILL.md:51:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 51,
+        "line_end": 52,
+        "snippet": "| platform.claude.com | `#content-container` | - |"
+      },
+      {
+        "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 52,
+        "line_end": 53,
         "snippet": "| docs.anthropic.com | `#content-container` | - |"
       },
       {
-        "id": "external_commands:SKILL.md:34:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:53:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 34,
-        "line_end": 35,
+        "line_start": 53,
+        "line_end": 54,
         "snippet": "| developer.mozilla.org | `article` | - |"
       },
       {
-        "id": "external_commands:SKILL.md:35:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 35,
-        "line_end": 35,
+        "line_start": 54,
+        "line_end": 54,
         "snippet": "| github.com (docs) | `article` | `nav,.sidebar` |"
       },
       {
-        "id": "external_commands:SKILL.md:36:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 36,
-        "line_end": 36,
-        "snippet": "| Generic | `article,main` | `nav,header,footer,script,style` |"
+        "line_start": 55,
+        "line_end": 55,
+        "snippet": "| Generic | `article,main,[role=main]` | `nav,header,footer,script,style` |"
       },
       {
-        "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 42,
-        "line_end": 44,
+        "line_start": 59,
+        "line_end": 64,
         "snippet": "```bash"
       },
       {
-        "id": "external_commands:SKILL.md:44:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:64:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 44,
-        "line_end": 48,
+        "line_start": 64,
+        "line_end": 70,
         "snippet": "```"
       },
       {
-        "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:70:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 48,
-        "line_end": 50,
+        "line_start": 70,
+        "line_end": 79,
         "snippet": "```bash"
       },
       {
-        "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:79:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 50,
-        "line_end": 56,
+        "line_start": 79,
+        "line_end": 85,
         "snippet": "```"
       },
       {
-        "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:85:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 56,
-        "line_end": 65,
+        "line_start": 85,
+        "line_end": 87,
         "snippet": "```bash"
       },
       {
-        "id": "external_commands:SKILL.md:65:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:87:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 65,
-        "line_end": 69,
+        "line_start": 87,
+        "line_end": 91,
         "snippet": "```"
       },
       {
-        "id": "external_commands:SKILL.md:69:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:91:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 69,
-        "line_end": 73,
+        "line_start": 91,
+        "line_end": 93,
         "snippet": "```bash"
       },
       {
-        "id": "external_commands:SKILL.md:73:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:93:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 73,
-        "line_end": 80,
+        "line_start": 93,
+        "line_end": 97,
         "snippet": "```"
       },
       {
-        "id": "external_commands:SKILL.md:80:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:97:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 80,
-        "line_end": 86,
-        "snippet": "| `--include-selector \"#content-container\"` | 385 lines | Yes | Clean |"
-      },
-      {
-        "id": "external_commands:SKILL.md:86:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 86,
-        "line_end": 88,
+        "line_start": 97,
+        "line_end": 101,
         "snippet": "```bash"
       },
       {
-        "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:101:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 88,
-        "line_end": 90,
+        "line_start": 101,
+        "line_end": 107,
         "snippet": "```"
       },
       {
-        "id": "external_commands:SKILL.md:90:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:107:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 90,
-        "line_end": 90,
-        "snippet": "**Empty output**: The selector doesn't match. Try broader selectors like `main` or `body`."
+        "line_start": 107,
+        "line_end": 109,
+        "snippet": "```bash"
       },
       {
-        "id": "network:SKILL.md:72:hardcoded-url",
+        "id": "external_commands:SKILL.md:109:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 109,
+        "line_end": 113,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:SKILL.md:113:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 113,
+        "line_end": 115,
+        "snippet": "```bash"
+      },
+      {
+        "id": "external_commands:SKILL.md:115:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 115,
+        "line_end": 117,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:SKILL.md:117:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 117,
+        "line_end": 119,
+        "snippet": "**`html2markdown` not found**: Install it, then retry selector-based extraction."
+      },
+      {
+        "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 119,
+        "line_end": 119,
+        "snippet": "**`bun` or script deps missing**: Run `cd ~/.claude/skills/web-fetch && bun install`."
+      },
+      {
+        "id": "external_commands:SKILL.md:35:shell-command-substitution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Shell command substitution",
+        "file": "SKILL.md",
+        "line_start": 35,
+        "line_end": 35,
+        "snippet": "CONTENT_TYPE=\"$(curl -sIL \"$URL\" | awk -F': ' 'tolower($1)==\"content-type\"{print tolower($2)}' | tr "
+      },
+      {
+        "id": "external_commands:SKILL.md:33:template-literal-with-command-substitution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Template literal with command substitution",
+        "file": "SKILL.md",
+        "line_start": 33,
+        "line_end": 45,
+        "snippet": "```bash"
+      },
+      {
+        "id": "network:SKILL.md:100:hardcoded-url",
         "category": "network",
         "severity": "low",
         "pattern": "Hardcoded URL",
         "file": "SKILL.md",
-        "line_start": 72,
-        "line_end": 72,
+        "line_start": 100,
+        "line_end": 100,
         "snippet": "--domain \"https://...\"    # Convert relative links to absolute"
       },
       {
-        "id": "filesystem:SKILL.md:43:hidden-file-in-home-directory",
+        "id": "filesystem:SKILL.md:26:hidden-file-in-home-directory",
         "category": "filesystem",
         "severity": "high",
         "pattern": "Hidden file in home directory",
         "file": "SKILL.md",
-        "line_start": 43,
-        "line_end": 43,
-        "snippet": "bun ~/.claude/skills/web-fetch/fetch.ts \"<url>\""
+        "line_start": 26,
+        "line_end": 26,
+        "snippet": "cd ~/.claude/skills/web-fetch && bun install"
       },
       {
-        "id": "filesystem:SKILL.md:49:hidden-file-in-home-directory",
+        "id": "filesystem:SKILL.md:86:hidden-file-in-home-directory",
         "category": "filesystem",
         "severity": "high",
         "pattern": "Hidden file in home directory",
         "file": "SKILL.md",
-        "line_start": 49,
-        "line_end": 49,
-        "snippet": "cd ~/.claude/skills/web-fetch && bun install"
-      },
-      {
-        "id": "filesystem:SKILL.md:43:hidden-file-access",
-        "category": "filesystem",
-        "severity": "medium",
-        "pattern": "Hidden file access",
-        "file": "SKILL.md",
-        "line_start": 43,
-        "line_end": 43,
+        "line_start": 86,
+        "line_end": 86,
         "snippet": "bun ~/.claude/skills/web-fetch/fetch.ts \"<url>\""
       },
       {
-        "id": "filesystem:SKILL.md:49:hidden-file-access",
+        "id": "filesystem:SKILL.md:119:hidden-file-in-home-directory",
+        "category": "filesystem",
+        "severity": "high",
+        "pattern": "Hidden file in home directory",
+        "file": "SKILL.md",
+        "line_start": 119,
+        "line_end": 119,
+        "snippet": "**`bun` or script deps missing**: Run `cd ~/.claude/skills/web-fetch && bun install`."
+      },
+      {
+        "id": "filesystem:SKILL.md:26:hidden-file-access",
         "category": "filesystem",
         "severity": "medium",
         "pattern": "Hidden file access",
         "file": "SKILL.md",
-        "line_start": 49,
-        "line_end": 49,
+        "line_start": 26,
+        "line_end": 26,
         "snippet": "cd ~/.claude/skills/web-fetch && bun install"
+      },
+      {
+        "id": "filesystem:SKILL.md:86:hidden-file-access",
+        "category": "filesystem",
+        "severity": "medium",
+        "pattern": "Hidden file access",
+        "file": "SKILL.md",
+        "line_start": 86,
+        "line_end": 86,
+        "snippet": "bun ~/.claude/skills/web-fetch/fetch.ts \"<url>\""
+      },
+      {
+        "id": "filesystem:SKILL.md:119:hidden-file-access",
+        "category": "filesystem",
+        "severity": "medium",
+        "pattern": "Hidden file access",
+        "file": "SKILL.md",
+        "line_start": 119,
+        "line_end": 119,
+        "snippet": "**`bun` or script deps missing**: Run `cd ~/.claude/skills/web-fetch && bun install`."
+      },
+      {
+        "id": "filesystem:SKILL.md:18:standard-device-file-access",
+        "category": "filesystem",
+        "severity": "low",
+        "pattern": "Standard device file access",
+        "file": "SKILL.md",
+        "line_start": 18,
+        "line_end": 18,
+        "snippet": "command -v curl >/dev/null || echo \"curl is required\""
+      },
+      {
+        "id": "filesystem:SKILL.md:19:standard-device-file-access",
+        "category": "filesystem",
+        "severity": "low",
+        "pattern": "Standard device file access",
+        "file": "SKILL.md",
+        "line_start": 19,
+        "line_end": 19,
+        "snippet": "command -v html2markdown >/dev/null || echo \"html2markdown is required for HTML extraction\""
+      },
+      {
+        "id": "filesystem:SKILL.md:20:standard-device-file-access",
+        "category": "filesystem",
+        "severity": "low",
+        "pattern": "Standard device file access",
+        "file": "SKILL.md",
+        "line_start": 20,
+        "line_end": 20,
+        "snippet": "command -v bun >/dev/null || echo \"bun is required for fetch.ts fallback\""
       }
     ],
     "finding_verdicts": [
       {
         "id": "external_commands:fetch.ts:18:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is a JavaScript template literal used for an error message. It does not execute a shell command or evaluate untrusted code."
+        "confidence": 0.96,
+        "reason": "This is a TypeScript template literal used to format an error message. It does not invoke a shell or execute user-controlled commands."
       },
       {
         "id": "external_commands:fetch.ts:93:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This template literal formats Markdown fenced code blocks from parsed HTML. It is string construction, not command execution."
+        "confidence": 0.95,
+        "reason": "This template literal returns a Markdown fenced code block. The backticks are output formatting, not shell execution."
       },
       {
         "id": "external_commands:fetch.ts:107:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This template literal formats Markdown for preformatted text. No shell, Ruby, or dynamic code execution is invoked."
+        "confidence": 0.95,
+        "reason": "This template literal formats preformatted text as Markdown. It does not call a command interpreter."
       },
       {
         "id": "external_commands:fetch.ts:141:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This template literal prints a Markdown title to standard output. It does not execute commands."
+        "confidence": 0.96,
+        "reason": "This line logs a Markdown title with a TypeScript template literal. No external command is executed."
       },
       {
         "id": "network:fetch.ts:11:fetch-api-call",
         "verdict": "confirmed",
         "confidence": 0.88,
-        "reason": "The script fetches a URL supplied on the command line without visible allow-listing or private-address blocking. Network access is intentional, but this can reach unsafe hosts if misused.",
-        "severity": "medium"
+        "reason": "The script performs a network fetch against the URL supplied on the command line. That is intended behavior but can reach untrusted or internal hosts without validation.",
+        "severity": "low"
       },
       {
-        "id": "external_commands:SKILL.md:8:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The skill description explicitly tells the agent to use a curl and html2markdown shell pipeline. This is legitimate functionality, but it is real external command use.",
-        "severity": "medium"
+        "id": "external_commands:SKILL.md:9:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.96,
+        "reason": "The backticks mark inline Markdown around a content type label. There is no shell command or executable code on this line."
       },
       {
-        "id": "external_commands:SKILL.md:14:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
+        "id": "external_commands:SKILL.md:17:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
         "confidence": 0.82,
-        "reason": "This Markdown code block contains curl pipelines that interpolate a user-provided URL into shell commands. The commands are useful, but unsafe substitution can create command or network risk.",
-        "severity": "medium"
+        "reason": "This code block only checks whether required tools exist with command -v and redirects output to /dev/null. It uses no untrusted input and does not execute fetched content."
       },
       {
-        "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:21:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "This finding lands on a Markdown code fence boundary and adjacent selector table content. There is no executable instruction at this specific location."
+        "reason": "The finding points at Markdown code-fence syntax and surrounding prose. No executable shell logic is introduced by this line range."
       },
       {
-        "id": "external_commands:SKILL.md:32:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.78,
+        "reason": "This block instructs users to run bun install in the skill directory. Package-manager execution can download and run dependency code, so it is a real external-command risk.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The backticks mark an inline CSS selector in a Markdown table. They are documentation formatting, not shell execution."
+        "confidence": 0.87,
+        "reason": "The finding points at a closing Markdown fence and section text. The install command itself is covered by the adjacent line 25 and line 119 findings."
       },
       {
         "id": "external_commands:SKILL.md:33:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The backticks mark an inline CSS selector in a Markdown table. They do not indicate executable code."
-      },
-      {
-        "id": "external_commands:SKILL.md:34:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The inline text names the article CSS selector for documentation. It is not a command invocation."
-      },
-      {
-        "id": "external_commands:SKILL.md:35:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The inline snippets are CSS selectors in a site-pattern table. They are not shell commands by themselves."
-      },
-      {
-        "id": "external_commands:SKILL.md:36:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The inline snippets are CSS selector examples for filtering HTML. This location does not execute commands."
-      },
-      {
-        "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "This code block instructs use of bun to run the skill script with a supplied URL. It is real external command execution even though it supports the skill purpose.",
+        "confidence": 0.9,
+        "reason": "This shell workflow runs curl, awk, tr, grep, and html2markdown on a caller-supplied URL. It is legitimate functionality but exposes external command and untrusted-input handling risk.",
         "severity": "medium"
       },
       {
-        "id": "external_commands:SKILL.md:44:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "This finding lands on a Markdown code fence boundary near setup text. The boundary itself is not executable shell content."
+        "reason": "The finding points at a Markdown fence and table header text after the command block. No shell command is present in this range."
       },
       {
-        "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.8,
-        "reason": "This setup block instructs running cd and bun install in the skill directory. That is real external command execution and can install dependencies.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This finding lands on a Markdown code fence boundary and section text. It does not identify an executable command at that line."
-      },
-      {
-        "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "This block contains curl, grep, head, and wc pipelines using URL and selector placeholders. These are real shell commands and may be risky with unsafe input.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:65:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This finding lands on a Markdown code fence boundary before an options reference. The specific location is not an executable command."
-      },
-      {
-        "id": "external_commands:SKILL.md:69:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The code fence shows command-line options, not a complete command to execute. It is reference documentation."
-      },
-      {
-        "id": "external_commands:SKILL.md:73:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This finding lands on a Markdown code fence boundary and comparison table text. It is not command execution."
-      },
-      {
-        "id": "external_commands:SKILL.md:80:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The inline backticks wrap a command-line option in a comparison table. This is documentation formatting only."
-      },
-      {
-        "id": "external_commands:SKILL.md:86:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "This troubleshooting block contains a curl and grep pipeline with a supplied URL. It is real external command use and needs safe input handling.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This finding lands on a Markdown code fence boundary. The boundary itself is not executable content."
-      },
-      {
-        "id": "external_commands:SKILL.md:90:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:51:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The inline backticks mark selector names in prose. They are not shell commands or code execution."
+        "reason": "The backticks contain a CSS selector in a Markdown table. They are documentation formatting, not command execution."
       },
       {
-        "id": "network:SKILL.md:72:hardcoded-url",
+        "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.96,
+        "reason": "The inline backticks wrap a CSS selector for documentation. There is no shell syntax or executable command."
+      },
+      {
+        "id": "external_commands:SKILL.md:53:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.96,
+        "reason": "The inline backticks mark a CSS selector name. This is safe Markdown formatting, not execution."
+      },
+      {
+        "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.95,
-        "reason": "The text uses https://... as a placeholder for a domain option. It is not a real hardcoded endpoint or exfiltration destination."
+        "reason": "The backticks document CSS selectors in a table. They do not create shell execution or command substitution."
       },
       {
-        "id": "filesystem:SKILL.md:43:hidden-file-in-home-directory",
+        "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.95,
+        "reason": "The line documents generic CSS selectors inside Markdown backticks. It is not executable shell code."
+      },
+      {
+        "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.86,
+        "reason": "This example pipes curl output from a supplied URL into html2markdown. Running shell pipelines on external URLs is a real command and network risk.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:64:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The finding points at a closing Markdown fence and nearby prose. The actual curl pipeline is covered by the line 59 finding."
+      },
+      {
+        "id": "external_commands:SKILL.md:70:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.88,
+        "reason": "This block runs curl, grep, head, and wc against a supplied URL and selector workflow. It chains external commands over untrusted web input.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:79:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The finding points at the end of a Markdown code block and prose. The shell commands are covered by the line 70 finding."
+      },
+      {
+        "id": "external_commands:SKILL.md:85:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.85,
+        "reason": "This command runs the bundled Bun script from the skill directory with a caller-supplied URL. It executes local code and performs network access.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:87:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The finding points at Markdown fence syntax and a transition sentence. The Bun execution command is covered by the line 85 finding."
+      },
+      {
+        "id": "external_commands:SKILL.md:91:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.84,
+        "reason": "This command runs fetch.ts with Bun and passes a supplied URL into the script. It is a real external command that triggers network fetching.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:93:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The finding points at the closing fence after the Bun example. No additional executable command is present in this range."
+      },
+      {
+        "id": "external_commands:SKILL.md:97:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.94,
+        "reason": "This block documents command-line option names and example argument shapes. It does not instruct execution by itself."
+      },
+      {
+        "id": "external_commands:SKILL.md:101:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The finding points at a closing Markdown fence and troubleshooting prose. There is no command execution in this range."
+      },
+      {
+        "id": "external_commands:SKILL.md:107:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.82,
+        "reason": "The troubleshooting step runs curl against a supplied URL and pipes output to grep. It is external command execution with network access.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:109:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The finding points at a closing Markdown fence and explanatory text. The curl command is covered by the line 107 finding."
+      },
+      {
+        "id": "external_commands:SKILL.md:113:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.82,
+        "reason": "This troubleshooting example runs curl and grep on a supplied URL. It is a real shell pipeline over untrusted remote content.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:115:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The finding points at a closing Markdown fence and text containing an inline tool name. It does not add a command execution path."
+      },
+      {
+        "id": "external_commands:SKILL.md:117:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.86,
-        "reason": "The path points to the skill script inside the standard hidden Claude skills directory. It does not read secrets or arbitrary hidden files."
+        "reason": "The inline html2markdown and bun names are Markdown formatting in troubleshooting prose. The explicit bun install command is covered by the line 119 finding."
       },
       {
-        "id": "filesystem:SKILL.md:49:hidden-file-in-home-directory",
-        "verdict": "false_positive",
+        "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
         "confidence": 0.78,
-        "reason": "The setup command changes into the skill installation directory before running bun install. This touches a hidden skills path, but no secret file access is shown."
+        "reason": "This troubleshooting text instructs running cd into the skill directory and bun install. Package-manager execution is a real external-command risk.",
+        "severity": "medium"
       },
       {
-        "id": "filesystem:SKILL.md:43:hidden-file-access",
-        "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The referenced hidden path is the installed skill script location. The evidence does not show reading or writing unrelated hidden files."
+        "id": "external_commands:SKILL.md:35:shell-command-substitution",
+        "verdict": "confirmed",
+        "confidence": 0.92,
+        "reason": "Line 35 uses shell command substitution to run curl, awk, tr, and tail on a supplied URL. This is actual shell execution, not Markdown formatting.",
+        "severity": "medium"
       },
       {
-        "id": "filesystem:SKILL.md:49:hidden-file-access",
+        "id": "external_commands:SKILL.md:33:template-literal-with-command-substitution",
+        "verdict": "confirmed",
+        "confidence": 0.9,
+        "reason": "The block contains command substitution and a shell pipeline using a user-supplied URL. The template-literal label is imprecise, but the command risk is real.",
+        "severity": "medium"
+      },
+      {
+        "id": "network:SKILL.md:100:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The command targets the skill directory for setup. It is installation behavior, not hidden user data access."
+        "confidence": 0.95,
+        "reason": "The string is a placeholder for an html2markdown --domain option. It is not a hardcoded destination that receives data."
+      },
+      {
+        "id": "filesystem:SKILL.md:26:hidden-file-in-home-directory",
+        "verdict": "false_positive",
+        "confidence": 0.72,
+        "reason": "The path is the documented Claude skill installation directory, not a hidden secret or persistence target. The bun install command risk is covered separately."
+      },
+      {
+        "id": "filesystem:SKILL.md:86:hidden-file-in-home-directory",
+        "verdict": "false_positive",
+        "confidence": 0.74,
+        "reason": "The command references the expected installed skill path under ~/.claude. It does not read hidden credentials or write hidden persistence."
+      },
+      {
+        "id": "filesystem:SKILL.md:119:hidden-file-in-home-directory",
+        "verdict": "false_positive",
+        "confidence": 0.72,
+        "reason": "The hidden path is the standard Claude skill directory used in the setup command. The package-manager execution risk is handled by external-command verdicts."
+      },
+      {
+        "id": "filesystem:SKILL.md:26:hidden-file-access",
+        "verdict": "false_positive",
+        "confidence": 0.72,
+        "reason": "This is access to the skill installation directory for dependency setup. It is not evidence of secret file access or unauthorized filesystem traversal."
+      },
+      {
+        "id": "filesystem:SKILL.md:86:hidden-file-access",
+        "verdict": "false_positive",
+        "confidence": 0.74,
+        "reason": "This path executes the installed skill script from its expected location. It does not access unrelated hidden files."
+      },
+      {
+        "id": "filesystem:SKILL.md:119:hidden-file-access",
+        "verdict": "false_positive",
+        "confidence": 0.72,
+        "reason": "This repeats the documented skill setup path. The security concern is package installation, not hidden-file access itself."
+      },
+      {
+        "id": "filesystem:SKILL.md:18:standard-device-file-access",
+        "verdict": "false_positive",
+        "confidence": 0.96,
+        "reason": "Redirecting command -v output to /dev/null is a standard shell pattern. It does not read sensitive device files or expose data."
+      },
+      {
+        "id": "filesystem:SKILL.md:19:standard-device-file-access",
+        "verdict": "false_positive",
+        "confidence": 0.96,
+        "reason": "The /dev/null redirect suppresses a tool-existence check. This is benign standard-device usage."
+      },
+      {
+        "id": "filesystem:SKILL.md:20:standard-device-file-access",
+        "verdict": "false_positive",
+        "confidence": 0.96,
+        "reason": "The /dev/null redirect is used only for a prerequisite check. It has no meaningful filesystem security impact."
       }
     ],
     "semantic_findings": [
       {
         "title": "Unrestricted URL Fetching",
-        "description": "fetch.ts reads the URL from process.argv[2] and passes it directly to fetch without scheme, host, or private-address checks. This can retrieve internal or local network resources if an agent supplies an unsafe URL.",
-        "severity": "high",
+        "description": "fetch.ts reads a command-line URL and fetches it without scheme, host, localhost, or private-network restrictions. A prompt could cause access to internal or sensitive network resources.",
+        "severity": "medium",
         "locations": [
           {
             "file": "fetch.ts",
@@ -749,34 +1069,216 @@
             "line_end": 11
           }
         ],
-        "confidence": 0.9,
-        "confidence_reasoning": "The source shows direct command-line URL input flowing to fetch. No validation or address filtering appears in the reviewed file."
+        "confidence": 0.86,
+        "confidence_reasoning": "There is direct data flow from process.argv[2] into fetch(url), and no validation appears before the request."
       },
       {
-        "title": "Prompt Injection Exposure From Fetched Pages",
-        "description": "The script converts arbitrary page HTML to Markdown and prints it without labeling the content as untrusted. A hostile page can place instructions in the output that influence an agent.",
-        "severity": "high",
+        "title": "Shell URL Placeholder Injection Risk",
+        "description": "SKILL.md shows pasteable shell commands where <url> is substituted into quoted shell strings. If an agent inserts attacker-controlled text with quotes or metacharacters, command injection may occur.",
+        "severity": "medium",
         "locations": [
           {
-            "file": "fetch.ts",
-            "line_start": 22,
-            "line_end": 25
+            "file": "SKILL.md",
+            "line_start": 33,
+            "line_end": 44
           },
           {
-            "file": "fetch.ts",
-            "line_start": 122,
-            "line_end": 142
+            "file": "SKILL.md",
+            "line_start": 70,
+            "line_end": 78
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 85,
+            "line_end": 92
           }
         ],
-        "confidence": 0.86,
-        "confidence_reasoning": "The code reads remote HTML, converts it, and prints it into the agent workflow. There is no visible warning boundary or instruction filtering for prompt injection."
+        "confidence": 0.74,
+        "confidence_reasoning": "The examples are documentation, not an automatic parser, but they direct agents to place untrusted URL text inside shell commands."
       }
     ],
     "critical_findings": [],
-    "high_findings": [
+    "high_findings": [],
+    "medium_findings": [
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 25,
+            "line_end": 27
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.78,
+        "confidence_reasoning": "This block instructs users to run bun install in the skill directory. Package-manager execution can download and run dependency code, so it is a real external-command risk."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 33,
+            "line_end": 45
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.9,
+        "confidence_reasoning": "This shell workflow runs curl, awk, tr, grep, and html2markdown on a caller-supplied URL. It is legitimate functionality but exposes external command and untrusted-input handling risk."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 59,
+            "line_end": 64
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "This example pipes curl output from a supplied URL into html2markdown. Running shell pipelines on external URLs is a real command and network risk."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 70,
+            "line_end": 79
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.88,
+        "confidence_reasoning": "This block runs curl, grep, head, and wc against a supplied URL and selector workflow. It chains external commands over untrusted web input."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 85,
+            "line_end": 87
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.85,
+        "confidence_reasoning": "This command runs the bundled Bun script from the skill directory with a caller-supplied URL. It executes local code and performs network access."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 91,
+            "line_end": 93
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.84,
+        "confidence_reasoning": "This command runs fetch.ts with Bun and passes a supplied URL into the script. It is a real external command that triggers network fetching."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 107,
+            "line_end": 109
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.82,
+        "confidence_reasoning": "The troubleshooting step runs curl against a supplied URL and pipes output to grep. It is external command execution with network access."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 113,
+            "line_end": 115
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.82,
+        "confidence_reasoning": "This troubleshooting example runs curl and grep on a supplied URL. It is a real shell pipeline over untrusted remote content."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "**`bun` or script deps missing**: Run `cd ~/.claude/skills/web-fetch && bun install`.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 119,
+            "line_end": 119
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.78,
+        "confidence_reasoning": "This troubleshooting text instructs running cd into the skill directory and bun install. Package-manager execution is a real external-command risk."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "CONTENT_TYPE=\"$(curl -sIL \"$URL\" | awk -F': ' 'tolower($1)==\"content-type\"{print tolower($2)}' | tr ",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 35,
+            "line_end": 35
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.92,
+        "confidence_reasoning": "Line 35 uses shell command substitution to run curl, awk, tr, and tail on a supplied URL. This is actual shell execution, not Markdown formatting."
+      },
+      {
+        "title": "Template literal with command substitution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 33,
+            "line_end": 45
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.9,
+        "confidence_reasoning": "The block contains command substitution and a shell pipeline using a user-supplied URL. The template-literal label is imprecise, but the command risk is real."
+      },
       {
         "title": "Unrestricted URL Fetching",
-        "description": "fetch.ts reads the URL from process.argv[2] and passes it directly to fetch without scheme, host, or private-address checks. This can retrieve internal or local network resources if an agent supplies an unsafe URL.",
+        "description": "fetch.ts reads a command-line URL and fetches it without scheme, host, localhost, or private-network restrictions. A prompt could cause access to internal or sensitive network resources.",
         "locations": [
           {
             "file": "fetch.ts",
@@ -786,33 +1288,38 @@
         ],
         "review_kind": "security",
         "source_category": "semantic",
-        "source_severity": "high",
-        "confidence": 0.9,
-        "confidence_reasoning": "The source shows direct command-line URL input flowing to fetch. No validation or address filtering appears in the reviewed file."
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "There is direct data flow from process.argv[2] into fetch(url), and no validation appears before the request."
       },
       {
-        "title": "Prompt Injection Exposure From Fetched Pages",
-        "description": "The script converts arbitrary page HTML to Markdown and prints it without labeling the content as untrusted. A hostile page can place instructions in the output that influence an agent.",
+        "title": "Shell URL Placeholder Injection Risk",
+        "description": "SKILL.md shows pasteable shell commands where <url> is substituted into quoted shell strings. If an agent inserts attacker-controlled text with quotes or metacharacters, command injection may occur.",
         "locations": [
           {
-            "file": "fetch.ts",
-            "line_start": 22,
-            "line_end": 25
+            "file": "SKILL.md",
+            "line_start": 33,
+            "line_end": 44
           },
           {
-            "file": "fetch.ts",
-            "line_start": 122,
-            "line_end": 142
+            "file": "SKILL.md",
+            "line_start": 70,
+            "line_end": 78
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 85,
+            "line_end": 92
           }
         ],
         "review_kind": "security",
         "source_category": "semantic",
-        "source_severity": "high",
-        "confidence": 0.86,
-        "confidence_reasoning": "The code reads remote HTML, converts it, and prints it into the agent workflow. There is no visible warning boundary or instruction filtering for prompt injection."
+        "source_severity": "medium",
+        "confidence": 0.74,
+        "confidence_reasoning": "The examples are documentation, not an automatic parser, but they direct agents to place untrusted URL text inside shell commands."
       }
     ],
-    "medium_findings": [
+    "low_findings": [
       {
         "title": "Fetch API call",
         "description": "const response = await fetch(url, {",
@@ -827,234 +1334,132 @@
         "source_category": "network",
         "source_severity": "low",
         "confidence": 0.88,
-        "confidence_reasoning": "The script fetches a URL supplied on the command line without visible allow-listing or private-address blocking. Network access is intentional, but this can reach unsafe hosts if misused."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "Fetch web content using `curl | html2markdown` with CSS selectors for clean, complete markdown outpu",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 8,
-            "line_end": 8
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "The skill description explicitly tells the agent to use a curl and html2markdown shell pipeline. This is legitimate functionality, but it is real external command use."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 14,
-            "line_end": 26
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "This Markdown code block contains curl pipelines that interpolate a user-provided URL into shell commands. The commands are useful, but unsafe substitution can create command or network risk."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 42,
-            "line_end": 44
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "This code block instructs use of bun to run the skill script with a supplied URL. It is real external command execution even though it supports the skill purpose."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 48,
-            "line_end": 50
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.8,
-        "confidence_reasoning": "This setup block instructs running cd and bun install in the skill directory. That is real external command execution and can install dependencies."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 56,
-            "line_end": 65
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "This block contains curl, grep, head, and wc pipelines using URL and selector placeholders. These are real shell commands and may be risky with unsafe input."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 86,
-            "line_end": 88
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "This troubleshooting block contains a curl and grep pipeline with a supplied URL. It is real external command use and needs safe input handling."
+        "confidence_reasoning": "The script performs a network fetch against the URL supplied on the command line. That is intended behavior but can reach untrusted or internal hosts without validation."
       }
     ],
-    "low_findings": [],
     "dangerous_patterns": [],
-    "files_scanned": 2,
-    "total_lines": 238,
+    "files_scanned": 4,
+    "total_lines": 281,
     "audit_model": "codex",
-    "audited_at": "2026-07-04T16:36:53.994Z",
-    "agent_auto_install_policy": "confirmation_required",
+    "audited_at": "2026-07-06T01:34:37.555Z",
+    "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Fetch Clean Markdown From Web Pages",
-    "value_statement": "Research workflows need readable web content without navigation noise. This skill fetches pages and converts main HTML content into clean Markdown for Claude, Codex, and Claude Code.",
+    "user_title": "Fetch Web Pages as Markdown",
+    "value_statement": "Teams often need web pages as clean Markdown for AI context. This skill fetches pages, selects main content, and removes common navigation noise.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
-      "web fetch skill",
+      "web fetch",
+      "markdown extraction",
       "HTML to Markdown",
       "documentation research",
-      "CSS selector extraction",
-      "Bun fetch script",
-      "AI research workflow",
-      "technical reference collection"
+      "AI context",
+      "content extraction",
+      "curl workflow"
     ],
     "actual_capabilities": [
-      "Fetches a URL with a browser-like user agent through the Bun script.",
-      "Finds article, main, role main, content class, or content id elements.",
-      "Removes common navigation, header, footer, script, style, and sidebar elements.",
-      "Converts selected HTML into Markdown with fenced code block preservation.",
-      "Prints the page title and cleaned Markdown to standard output.",
-      "Documents site-specific CSS selectors for Anthropic, MDN, GitHub, and generic pages."
+      "Checks page content type before choosing a Markdown or HTML extraction path.",
+      "Uses curl and html2markdown examples for selector-based page extraction.",
+      "Provides selectors for Anthropic, Claude, MDN, GitHub, and generic documentation pages.",
+      "Runs a bundled Bun parser when command-line selectors produce poor output.",
+      "Removes common navigation, header, footer, script, style, and copy-button content."
     ],
     "limitations": [
-      "Does not render client-side JavaScript or wait for dynamic content.",
-      "Requires Bun and the listed packages to run the fallback script.",
-      "Does not validate URLs or block internal network addresses.",
-      "Can include prompt injection text from fetched pages unless the user reviews the output."
+      "Requires curl, html2markdown, and Bun for the full workflow.",
+      "Does not render JavaScript-only pages or browser-dependent content.",
+      "Can fetch only URLs reachable from the local execution environment.",
+      "Selector quality may vary by site structure and page template."
     ],
     "use_cases": [
       {
-        "title": "Collect Documentation References",
-        "description": "Fetch clean Markdown from reference pages for migration, comparison, or offline review.",
-        "target_user": "Technical writers"
+        "title": "Collect API Documentation",
+        "description": "Fetch a public documentation page and convert the main article into Markdown for model context.",
+        "target_user": "Software developer"
       },
       {
-        "title": "Prepare AI Coding Context",
-        "description": "Load source documentation before asking Claude, Codex, or Claude Code to summarize implementation details.",
-        "target_user": "AI developers"
+        "title": "Prepare Research Notes",
+        "description": "Extract readable article content from public pages before summarizing findings or comparing sources.",
+        "target_user": "Technical researcher"
       },
       {
-        "title": "Review Public Web Content",
-        "description": "Inspect extracted article text while tracking network and prompt-injection risk.",
-        "target_user": "Security researchers"
+        "title": "Clean Reference Material",
+        "description": "Remove navigation and layout noise from source pages before drafting guides or support answers.",
+        "target_user": "Technical writer"
       }
     ],
     "prompt_templates": [
       {
         "title": "Fetch One Page",
-        "scenario": "Beginner page extraction",
-        "prompt": "Use web-fetch to fetch <https://example.com/docs/page>. Return the cleaned Markdown and note the detected page title."
+        "scenario": "Beginner request for a single public page.",
+        "prompt": "Fetch this documentation page as clean Markdown: <url>"
       },
       {
-        "title": "Use Known Selector",
-        "scenario": "Focused documentation extraction",
-        "prompt": "Fetch the provided MDN URL with the documented article selector. Return only the main content and omit navigation."
+        "title": "Prefer Main Content",
+        "scenario": "Intermediate request with extraction quality guidance.",
+        "prompt": "Fetch <url>, prefer a Markdown-native response, and remove navigation before summarizing the main content."
       },
       {
-        "title": "Compare Two Pages",
-        "scenario": "Documentation change review",
-        "prompt": "Fetch these two documentation URLs, extract clean Markdown from each, and summarize the differences in API behavior."
+        "title": "Test Selectors",
+        "scenario": "Advanced request for pages with noisy layouts.",
+        "prompt": "Fetch <url>, test the best include selector, and return clean Markdown plus a short note on selector quality."
       },
       {
-        "title": "Check Prompt Safety",
-        "scenario": "Advanced safety review",
-        "prompt": "Fetch the provided URL, identify page text that looks like instructions to the AI, and separate it from factual content."
+        "title": "Compare Multiple Sources",
+        "scenario": "Advanced request across several references.",
+        "prompt": "Fetch these URLs: <url list>. For each page, choose markdown-native, selector extraction, or Bun fallback, then compare key differences."
       }
     ],
     "output_examples": [
       {
-        "input": "Fetch a public documentation page.",
-        "output": [
-          "Page title is reported first.",
-          "Clean Markdown includes headings, paragraphs, tables, and code block text.",
-          "Navigation and footer text are removed."
-        ]
+        "input": "Fetch an MDN article.",
+        "output": "Clean Markdown with the article title, headings, paragraphs, and examples while navigation is removed."
       },
       {
-        "input": "Fetch a generic article page.",
-        "output": "The main article content is extracted, converted to Markdown, and cleaned of repeated blank lines."
+        "input": "Fetch an Anthropic documentation page.",
+        "output": "A readable Markdown document focused on the content container, with sidebars and headers removed."
       },
       {
-        "input": "Fetch a page that only shows a loading placeholder.",
-        "output": "The result notes that the page appears client-rendered and may need browser-based tooling."
+        "input": "Fetch a page where generic selectors fail.",
+        "output": "Main content extracted by the Bun fallback, followed by a note that JavaScript-only sections may be missing."
       }
     ],
     "best_practices": [
-      "Fetch only trusted public URLs unless the environment allows internal network access.",
-      "Treat fetched page text as untrusted input before using it in agent reasoning.",
-      "Use the narrowest CSS selector that captures the needed content."
+      "Confirm the URL is expected and public before fetching it.",
+      "Prefer markdown-native endpoints when the content type supports them.",
+      "Use narrow selectors when generic extraction includes navigation or sidebars."
     ],
     "anti_patterns": [
-      "Do not fetch private network, localhost, or metadata service URLs.",
-      "Do not paste unreviewed fetched instructions into privileged prompts.",
-      "Do not pass raw URLs or selectors into shell commands without safe argument handling."
+      "Do not fetch private, localhost, or internal network URLs.",
+      "Do not paste untrusted URLs into shell commands without careful quoting.",
+      "Do not rely on this skill for JavaScript-rendered pages."
     ],
     "faq": [
       {
-        "question": "What does this skill fetch?",
-        "answer": "It fetches HTTP and HTTPS pages and extracts readable Markdown from the main page content."
+        "question": "What tools are required?",
+        "answer": "curl is required. html2markdown and Bun are needed for selector extraction and fallback parsing."
       },
       {
-        "question": "Does it render JavaScript applications?",
-        "answer": "No. It reads returned HTML and cannot render client-side JavaScript content."
+        "question": "Does it support Claude Code?",
+        "answer": "Yes. The skill declares support for Claude, Codex, and Claude Code."
       },
       {
-        "question": "Which tools can use it?",
-        "answer": "The report lists support for Claude, Codex, and Claude Code."
+        "question": "Can it fetch private websites?",
+        "answer": "It can only fetch URLs reachable from your environment. Private sites may require separate authenticated access."
       },
       {
-        "question": "Can it target a specific page section?",
-        "answer": "Yes. The documentation provides CSS selector patterns for common documentation sites."
+        "question": "Does it run a browser?",
+        "answer": "No. It uses curl, html2markdown, and a Bun parser. It cannot render browser-only content."
       },
       {
-        "question": "What security care is needed?",
-        "answer": "Use trusted public URLs and treat all fetched content as untrusted text."
+        "question": "How does it choose content?",
+        "answer": "It prefers Markdown responses, then selectors such as article, main, or role main, then the Bun fallback."
       },
       {
-        "question": "Why might output be empty?",
-        "answer": "The selector may not match, or the page may require client-side rendering."
+        "question": "What security review is needed?",
+        "answer": "Review URLs before fetching and avoid internal hosts. Community skills with shell commands should require confirmation."
       }
     ]
   },
@@ -1066,10 +1471,16 @@
       "lines": 143
     },
     {
+      "name": "package.json",
+      "type": "file",
+      "path": "package.json",
+      "lines": 11
+    },
+    {
       "name": "SKILL.md",
       "type": "file",
       "path": "SKILL.md",
-      "lines": 95
+      "lines": 124
     }
   ]
 }

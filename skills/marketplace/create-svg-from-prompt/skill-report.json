@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-06-27T11:28:01.939Z",
+    "generated_at": "2026-07-06T00:49:52.569Z",
     "slug": "0x6a77-create-svg-from-prompt",
     "source_url": "https://github.com/0x6a77/pelican-rides-a-bicycle/tree/main/.claude/skills/create-svg-from-prompt",
     "source_ref": "main",
@@ -9,21 +9,33 @@
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "30ce897b55c018dadb7c351404f5f7fed5dde538e797530e223dc824cba7f775",
-    "tree_hash": "f71dd4270d2dc8393cff57910febd9404ccab39c4d5293bd031c7b6dde33bd15"
+    "tree_hash": "b5acba741bdaa69aa36c7703c44298a41df23899cb53027bc3a46ba7e63835ca",
+    "provenance": {
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
+      "fallback_chain": [
+        {
+          "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
+          "outcome": "success"
+        }
+      ],
+      "analysis_version": "3.0.0"
+    }
   },
   "skill": {
     "name": "create-svg-from-prompt",
-    "description": "Creates SVG artwork from a text prompt by generating an image with Gemini and tracing it with autotrace.",
-    "summary": "Generate traced SVG images from text prompts through Gemini and autotrace.",
+    "description": "Generate SVG artwork from a user prompt through Gemini image generation and autotrace conversion.",
+    "summary": "Converts image prompts into SVG files using Gemini and autotrace.",
     "icon": "📦",
     "version": "1.0.0",
     "author": "0x6a77",
     "license": "MIT",
-    "category": "design",
     "tags": [
       "svg",
       "image-generation",
-      "vector-art",
+      "vector-graphics",
       "gemini",
       "autotrace"
     ],
@@ -36,26 +48,95 @@
       "external_commands",
       "network",
       "env_access"
-    ]
+    ],
+    "category": "design"
   },
   "security_audit": {
     "risk_level": "high",
     "is_blocked": false,
     "safe_to_publish": false,
-    "summary": "The static findings for privileged shell commands, network access, and environment key handling are true positives. The weak cryptography findings appear to be false positives caused by base64 decoding, but the skill still presents high risk because it asks agents to install software with sudo, clone and build external source, and send prompts plus an API key to a third-party API.",
+    "analysis_status": "ok",
+    "summary": "The skill contains real shell setup and generation workflows, including sudo installation, cloning autotrace, and a curl request to Gemini. Several markdown backtick detections are false positives, but the command blocks, network calls, and GEMINI_API_KEY handling are confirmed risks. No evidence found of a prompt injection attempt in SKILL.md.",
+    "remediation": [
+      {
+        "issue": "Privileged installation commands are embedded in the skill.",
+        "suggestion": "Remove sudo steps from the skill and require users to install autotrace through trusted documentation or a vetted package.",
+        "severity": "high"
+      },
+      {
+        "issue": "The setup clones and installs code from a mutable GitHub source.",
+        "suggestion": "Pin a signed release or package version, and verify checksums before any build or installation step.",
+        "severity": "high"
+      },
+      {
+        "issue": "The generation workflow passes a Gemini API key through a shell command.",
+        "suggestion": "Use a secret manager or dedicated tool API that avoids exposing keys in shell history, logs, or process lists.",
+        "severity": "high"
+      },
+      {
+        "issue": "User prompt and filename values are inserted into a shell pipeline.",
+        "suggestion": "Escape prompt content, validate filenames, restrict output paths, and avoid direct shell interpolation for user-controlled values.",
+        "severity": "high"
+      },
+      {
+        "issue": "Prompts are sent to an external image generation service.",
+        "suggestion": "Disclose that prompt content leaves the local environment and request confirmation before sending sensitive material.",
+        "severity": "medium"
+      }
+    ],
     "risk_factor_evidence": [
       {
         "factor": "external_commands",
         "evidence": [
           {
             "file": "SKILL.md",
-            "line_start": 10,
-            "line_end": 18
+            "line_start": 8,
+            "line_end": 8
           },
           {
             "file": "SKILL.md",
-            "line_start": 30,
-            "line_end": 30
+            "line_start": 10,
+            "line_end": 19
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 19,
+            "line_end": 29
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 29,
+            "line_end": 31
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 31,
+            "line_end": 34
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 34,
+            "line_end": 35
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 35,
+            "line_end": 36
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 11,
+            "line_end": 11
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 12,
+            "line_end": 12
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 18,
+            "line_end": 18
           }
         ]
       },
@@ -90,95 +171,248 @@
         ]
       }
     ],
-    "critical_findings": [],
-    "high_findings": [
+    "static_findings": [
       {
-        "title": "Privileged Source Build And Install",
-        "description": "The setup instructions run apt commands with sudo, clone autotrace from GitHub, build it locally, and run sudo make install. This can modify the host system and execute unreviewed build scripts with elevated privileges.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 10,
-            "line_end": 18
-          }
-        ],
+        "id": "external_commands:SKILL.md:8:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 8,
+        "line_end": 8,
+        "snippet": "if `autotrace` is not available in the environment, then install it with the following command:"
+      },
+      {
+        "id": "external_commands:SKILL.md:10:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 10,
+        "line_end": 19,
+        "snippet": "```bash"
+      },
+      {
+        "id": "external_commands:SKILL.md:19:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 19,
+        "line_end": 29,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 29,
+        "line_end": 31,
+        "snippet": "```bash"
+      },
+      {
+        "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 31,
+        "line_end": 34,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:SKILL.md:34:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 34,
+        "line_end": 35,
+        "snippet": "- `<GEMINI_API_KEY>`: The Gemini API key gotten from the environment variable \"GEMINI_API_KEY\""
+      },
+      {
+        "id": "external_commands:SKILL.md:35:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 35,
+        "line_end": 36,
+        "snippet": "- `<IMAGE_PROMPT>`: The user's initial prompt modified to change phrases like \"Generate an svg\" to \""
+      },
+      {
+        "id": "external_commands:SKILL.md:11:sudo-privilege-escalation",
+        "category": "external_commands",
+        "severity": "high",
+        "pattern": "sudo privilege escalation",
+        "file": "SKILL.md",
+        "line_start": 11,
+        "line_end": 11,
+        "snippet": "sudo apt update"
+      },
+      {
+        "id": "external_commands:SKILL.md:12:sudo-privilege-escalation",
+        "category": "external_commands",
+        "severity": "high",
+        "pattern": "sudo privilege escalation",
+        "file": "SKILL.md",
+        "line_start": 12,
+        "line_end": 12,
+        "snippet": "sudo apt install git build-essential intltool imagemagick libmagickcore-dev pstoedit libpstoedit-dev"
+      },
+      {
+        "id": "external_commands:SKILL.md:18:sudo-privilege-escalation",
+        "category": "external_commands",
+        "severity": "high",
+        "pattern": "sudo privilege escalation",
+        "file": "SKILL.md",
+        "line_start": 18,
+        "line_end": 18,
+        "snippet": "sudo make install"
+      },
+      {
+        "id": "network:SKILL.md:13:hardcoded-url",
+        "category": "network",
+        "severity": "low",
+        "pattern": "Hardcoded URL",
+        "file": "SKILL.md",
+        "line_start": 13,
+        "line_end": 13,
+        "snippet": "git clone https://github.com/autotrace/autotrace.git"
+      },
+      {
+        "id": "network:SKILL.md:30:hardcoded-url",
+        "category": "network",
+        "severity": "low",
+        "pattern": "Hardcoded URL",
+        "file": "SKILL.md",
+        "line_start": 30,
+        "line_end": 30,
+        "snippet": "curl -s -X POST \"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:gene"
+      },
+      {
+        "id": "env_access:SKILL.md:30:generic-api-secret-keys",
+        "category": "env_access",
+        "severity": "high",
+        "pattern": "Generic API/secret keys",
+        "file": "SKILL.md",
+        "line_start": 30,
+        "line_end": 30,
+        "snippet": "curl -s -X POST \"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:gene"
+      },
+      {
+        "id": "env_access:SKILL.md:34:generic-api-secret-keys",
+        "category": "env_access",
+        "severity": "high",
+        "pattern": "Generic API/secret keys",
+        "file": "SKILL.md",
+        "line_start": 34,
+        "line_end": 34,
+        "snippet": "- `<GEMINI_API_KEY>`: The Gemini API key gotten from the environment variable \"GEMINI_API_KEY\""
+      }
+    ],
+    "finding_verdicts": [
+      {
+        "id": "external_commands:SKILL.md:8:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.95,
+        "reason": "Line 8 uses markdown backticks to format the tool name autotrace. It does not execute a shell command."
+      },
+      {
+        "id": "external_commands:SKILL.md:10:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
         "confidence": 0.93,
-        "confidence_reasoning": "The shell commands and sudo usage are explicit in the setup block. This is a direct operational risk even though it is not proof of malicious intent."
+        "severity": "high",
+        "reason": "The bash block is intended for execution and installs packages, clones source, builds, and changes the host. This creates host modification and supply-chain risk."
       },
       {
-        "title": "External API Call With Environment API Key",
-        "description": "The workflow sends a generated image prompt to a Google Gemini endpoint using a Gemini API key from the environment. This exposes user prompt content to a third party and requires secret handling in an inline shell command.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 30,
-            "line_end": 34
-          }
-        ],
-        "confidence": 0.91,
-        "confidence_reasoning": "The curl command, API endpoint, API key header, and environment variable source are explicit. The risk is clear, although using Gemini may be functionally intended."
+        "id": "external_commands:SKILL.md:19:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.86,
+        "reason": "Line 19 is a closing markdown code fence, not executable content. The real setup commands are covered by separate findings."
       },
       {
-        "title": "Prompt-Derived Shell Substitution Risk",
-        "description": "The workflow places the user-derived image prompt and output file name into a long shell command. Without explicit quoting or validation rules, crafted prompt text or filenames could break command structure.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 30,
-            "line_end": 36
-          }
-        ],
-        "confidence": 0.82,
-        "confidence_reasoning": "The command includes placeholders populated from user request content. The file does not provide escaping, JSON construction, or filename validation safeguards."
-      }
-    ],
-    "medium_findings": [
-      {
-        "title": "Remote Response Piped Into Local Tooling",
-        "description": "The command decodes data from the API response and pipes it directly into autotrace. Malformed or unexpected image data could trigger parser bugs or resource exhaustion in local tooling.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 30,
-            "line_end": 30
-          }
-        ],
-        "confidence": 0.76,
-        "confidence_reasoning": "The pipeline from network response to base64 decoding and autotrace is explicit. The impact depends on autotrace behavior and sandboxing, so confidence is high but not absolute."
-      }
-    ],
-    "low_findings": [
-      {
-        "title": "Weak Cryptography Static Findings Are False Positives",
-        "description": "The static weak cryptography findings appear related to base64 decoding and the Gemini model string, not to cryptographic hashing or encryption. No evidence found of a weak cryptographic algorithm being used for security.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 30,
-            "line_end": 35
-          }
-        ],
-        "confidence": 0.88,
-        "confidence_reasoning": "The visible file only shows base64 decoding for image data extraction. I did not find security-sensitive cryptographic operations in the skill file."
+        "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.95,
+        "severity": "high",
+        "reason": "The bash block contains a curl pipeline that sends a prompt to Gemini, decodes data, invokes autotrace, and writes a file. It uses user-derived values inside a shell command."
       },
       {
-        "title": "Markdown Backtick Execution Findings Are Partly False Positives",
-        "description": "Some Ruby or shell backtick findings point to Markdown inline code and fenced code formatting. The fenced shell commands are still real operational instructions, but the Markdown syntax itself is not Ruby command execution.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 8,
-            "line_end": 10
-          }
-        ],
+        "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
         "confidence": 0.84,
-        "confidence_reasoning": "The file is Markdown, not Ruby. The backticks mark code formatting, although the displayed commands remain relevant security evidence."
+        "reason": "Line 31 is a closing markdown code fence and the surrounding argument list is prose. It does not itself execute an external command."
+      },
+      {
+        "id": "external_commands:SKILL.md:34:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "Line 34 uses markdown backticks around a placeholder name. The secret-handling concern is covered by the env_access finding for the same line."
+      },
+      {
+        "id": "external_commands:SKILL.md:35:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.89,
+        "reason": "Line 35 uses markdown backticks around the IMAGE_PROMPT placeholder in prose. The command-injection context is addressed as a semantic finding."
+      },
+      {
+        "id": "external_commands:SKILL.md:11:sudo-privilege-escalation",
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "severity": "high",
+        "reason": "The setup explicitly runs sudo apt update. It requires elevated privileges and can alter system package state."
+      },
+      {
+        "id": "external_commands:SKILL.md:12:sudo-privilege-escalation",
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "severity": "high",
+        "reason": "The setup explicitly installs system packages with sudo apt install. This changes the host and expands the trusted dependency set."
+      },
+      {
+        "id": "external_commands:SKILL.md:18:sudo-privilege-escalation",
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "severity": "high",
+        "reason": "The setup runs sudo make install after building cloned source. This can write arbitrary files into privileged system paths."
+      },
+      {
+        "id": "network:SKILL.md:13:hardcoded-url",
+        "verdict": "confirmed",
+        "confidence": 0.92,
+        "severity": "medium",
+        "reason": "The skill clones source from a hardcoded GitHub URL during setup. Because the source is then built and installed, this is a real supply-chain dependency."
+      },
+      {
+        "id": "network:SKILL.md:30:hardcoded-url",
+        "verdict": "confirmed",
+        "confidence": 0.94,
+        "severity": "medium",
+        "reason": "The workflow sends user prompt content to a hardcoded Google Gemini API endpoint. This is an intentional external network call with privacy impact."
+      },
+      {
+        "id": "env_access:SKILL.md:30:generic-api-secret-keys",
+        "verdict": "confirmed",
+        "confidence": 0.93,
+        "severity": "high",
+        "reason": "The curl command passes a Gemini API key in an HTTP header. Shell commands can expose secrets through logs, history, or process inspection."
+      },
+      {
+        "id": "env_access:SKILL.md:34:generic-api-secret-keys",
+        "verdict": "confirmed",
+        "confidence": 0.91,
+        "severity": "high",
+        "reason": "The arguments section says the Gemini API key is taken from the GEMINI_API_KEY environment variable. This confirms the skill depends on a secret value."
       }
     ],
-    "dangerous_patterns": [
+    "semantic_findings": [
       {
-        "title": "Sudo Package Installation",
-        "description": "The setup block instructs the agent to update packages, install dependencies, and run make install with sudo. This grants broad host modification capability.",
+        "title": "Unpinned Privileged Source Installation",
+        "description": "The setup clones autotrace from GitHub, builds it, and runs sudo make install. It does not pin a release, verify integrity, or isolate the build.",
+        "severity": "high",
         "locations": [
           {
             "file": "SKILL.md",
@@ -186,12 +420,114 @@
             "line_end": 18
           }
         ],
-        "confidence": 0.95,
-        "confidence_reasoning": "The sudo commands are explicit and require elevated privileges. Their impact is inherent to the commands shown."
+        "confidence": 0.91,
+        "confidence_reasoning": "Lines 11-18 show package installation, git clone, build steps, and privileged install. The absence of pinning or verification is clear in the setup block."
       },
       {
-        "title": "Shell Pipeline Combining Network, Secret, And Local Execution",
-        "description": "A single shell pipeline combines curl, an API key header, text extraction, base64 decoding, and autotrace processing. This creates a broad failure surface for secret exposure and command misuse.",
+        "title": "User Prompt Interpolated Into Shell Command",
+        "description": "Line 30 places IMAGE_PROMPT inside a shell command, and line 35 says to preserve the user prompt. A crafted prompt can break quoting before curl and autotrace run.",
+        "severity": "high",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 30,
+            "line_end": 30
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 35,
+            "line_end": 36
+          }
+        ],
+        "confidence": 0.88,
+        "confidence_reasoning": "The command template includes user-derived prompt and output placeholders without escaping rules. The skill instructs minimal prompt modification, which keeps unsafe characters possible."
+      }
+    ],
+    "critical_findings": [],
+    "high_findings": [
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 10,
+            "line_end": 19
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.93,
+        "confidence_reasoning": "The bash block is intended for execution and installs packages, clones source, builds, and changes the host. This creates host modification and supply-chain risk."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 29,
+            "line_end": 31
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.95,
+        "confidence_reasoning": "The bash block contains a curl pipeline that sends a prompt to Gemini, decodes data, invokes autotrace, and writes a file. It uses user-derived values inside a shell command."
+      },
+      {
+        "title": "sudo privilege escalation",
+        "description": "sudo apt update",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 11,
+            "line_end": 11
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "high",
+        "confidence": 0.99,
+        "confidence_reasoning": "The setup explicitly runs sudo apt update. It requires elevated privileges and can alter system package state."
+      },
+      {
+        "title": "sudo privilege escalation",
+        "description": "sudo apt install git build-essential intltool imagemagick libmagickcore-dev pstoedit libpstoedit-dev",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 12,
+            "line_end": 12
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "high",
+        "confidence": 0.99,
+        "confidence_reasoning": "The setup explicitly installs system packages with sudo apt install. This changes the host and expands the trusted dependency set."
+      },
+      {
+        "title": "sudo privilege escalation",
+        "description": "sudo make install",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 18,
+            "line_end": 18
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "high",
+        "confidence": 0.99,
+        "confidence_reasoning": "The setup runs sudo make install after building cloned source. This can write arbitrary files into privileged system paths."
+      },
+      {
+        "title": "Generic API/secret keys",
+        "description": "curl -s -X POST \"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:gene",
         "locations": [
           {
             "file": "SKILL.md",
@@ -199,135 +535,224 @@
             "line_end": 30
           }
         ],
-        "confidence": 0.9,
-        "confidence_reasoning": "The combined command is directly visible in the workflow. It matches the static dangerous-combination heuristic with clear semantic support."
+        "review_kind": "capability",
+        "source_category": "env_access",
+        "source_severity": "high",
+        "confidence": 0.93,
+        "confidence_reasoning": "The curl command passes a Gemini API key in an HTTP header. Shell commands can expose secrets through logs, history, or process inspection."
+      },
+      {
+        "title": "Generic API/secret keys",
+        "description": "- `<GEMINI_API_KEY>`: The Gemini API key gotten from the environment variable \"GEMINI_API_KEY\"",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 34,
+            "line_end": 34
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "env_access",
+        "source_severity": "high",
+        "confidence": 0.91,
+        "confidence_reasoning": "The arguments section says the Gemini API key is taken from the GEMINI_API_KEY environment variable. This confirms the skill depends on a secret value."
+      },
+      {
+        "title": "Unpinned Privileged Source Installation",
+        "description": "The setup clones autotrace from GitHub, builds it, and runs sudo make install. It does not pin a release, verify integrity, or isolate the build.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 11,
+            "line_end": 18
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "high",
+        "confidence": 0.91,
+        "confidence_reasoning": "Lines 11-18 show package installation, git clone, build steps, and privileged install. The absence of pinning or verification is clear in the setup block."
+      },
+      {
+        "title": "User Prompt Interpolated Into Shell Command",
+        "description": "Line 30 places IMAGE_PROMPT inside a shell command, and line 35 says to preserve the user prompt. A crafted prompt can break quoting before curl and autotrace run.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 30,
+            "line_end": 30
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 35,
+            "line_end": 36
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "high",
+        "confidence": 0.88,
+        "confidence_reasoning": "The command template includes user-derived prompt and output placeholders without escaping rules. The skill instructs minimal prompt modification, which keeps unsafe characters possible."
       }
     ],
+    "medium_findings": [
+      {
+        "title": "Hardcoded URL",
+        "description": "git clone https://github.com/autotrace/autotrace.git",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 13,
+            "line_end": 13
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.92,
+        "confidence_reasoning": "The skill clones source from a hardcoded GitHub URL during setup. Because the source is then built and installed, this is a real supply-chain dependency."
+      },
+      {
+        "title": "Hardcoded URL",
+        "description": "curl -s -X POST \"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:gene",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 30,
+            "line_end": 30
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.94,
+        "confidence_reasoning": "The workflow sends user prompt content to a hardcoded Google Gemini API endpoint. This is an intentional external network call with privacy impact."
+      }
+    ],
+    "low_findings": [],
+    "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 38,
     "audit_model": "codex",
-    "audited_at": "2026-06-27T11:28:01.939Z",
-    "risk_factors": [
-      "external_commands",
-      "network",
-      "env_access"
-    ]
+    "audited_at": "2026-07-06T00:49:52.569Z",
+    "agent_auto_install_policy": "confirmation_required",
+    "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Create SVG Art From Text Prompts",
-    "value_statement": "Teams often need quick vector artwork without manual tracing. This skill describes a workflow that generates an image from a prompt and converts it into SVG form.",
+    "user_title": "Create SVG Art From Image Prompts",
+    "value_statement": "Producing SVG artwork from plain language can require image generation and tracing tools. This skill defines a Gemini and autotrace workflow to convert prompts into SVG files.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
-      "SVG generator",
-      "text to SVG",
-      "AI vector art",
+      "SVG generation",
+      "prompt to SVG",
       "Gemini image generation",
       "autotrace workflow",
-      "prompt to image",
-      "design automation"
+      "vector graphics",
+      "AI design skill",
+      "image tracing"
     ],
     "actual_capabilities": [
-      "Guides creation of SVG artwork from a user text prompt.",
-      "Uses Gemini image generation as the raster image source.",
-      "Uses autotrace to convert image output into SVG format.",
-      "Suggests prompt rewriting from SVG language to image language.",
-      "Defines an output filename based on the requested image."
+      "Guides setup for autotrace when it is missing.",
+      "Calls Gemini 2.5 Flash Image through a curl request.",
+      "Uses the user prompt as the image generation prompt with minimal edits.",
+      "Decodes returned image data and pipes it into autotrace.",
+      "Writes a generated SVG file with a prompt-based filename."
     ],
     "limitations": [
-      "Requires autotrace and several native build dependencies.",
-      "Requires a Gemini API key available in the environment.",
-      "Sends user prompt content to an external Google API.",
-      "Generated SVG quality depends on the raster image and tracing result."
+      "Requires a valid GEMINI_API_KEY and network access to Google APIs.",
+      "Requires autotrace and related native dependencies on the host.",
+      "Does not validate prompts, filenames, API responses, or SVG output.",
+      "Can expose prompts to an external image generation service."
     ],
     "use_cases": [
       {
-        "title": "Prototype Interface Icons",
-        "description": "A product designer can request simple SVG concepts for early interface mockups.",
-        "target_user": "Product designer"
+        "title": "Draft Vector Concept Art",
+        "description": "Create rough SVG illustrations for layout exploration before a designer refines the final asset.",
+        "target_user": "Product designers"
       },
       {
-        "title": "Create Draft Marketing Graphics",
-        "description": "A marketer can generate rough vector illustrations for campaign drafts and creative exploration.",
-        "target_user": "Marketing specialist"
+        "title": "Generate Placeholder SVG Assets",
+        "description": "Produce temporary vector images for prototypes, demos, and documentation while final artwork is pending.",
+        "target_user": "Frontend developers"
       },
       {
-        "title": "Prepare Editable Vector Assets",
-        "description": "A developer can create a starting SVG asset for later cleanup in design tools.",
-        "target_user": "Frontend developer"
+        "title": "Create Simple Diagram Seeds",
+        "description": "Turn a visual idea into an editable SVG starting point for lessons, slides, or guides.",
+        "target_user": "Educators and technical writers"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Basic SVG Request",
-        "prompt": "Create an SVG of a simple blue rocket launching upward.",
-        "scenario": "Use this for a straightforward icon or illustration request."
+        "title": "Simple Icon",
+        "scenario": "Beginner prompt for a small UI asset.",
+        "prompt": "Create an SVG of a flat calendar icon using blue, white, and gray."
       },
       {
-        "title": "Style And Subject",
-        "prompt": "Create an SVG of a flat-style coffee cup with steam, using warm colors and clean shapes.",
-        "scenario": "Use this when the subject and visual style both matter."
+        "title": "Scene Illustration",
+        "scenario": "Intermediate prompt for a simple composition.",
+        "prompt": "Create an SVG of a clean office desk scene with a laptop, notebook, plant, and soft daylight."
       },
       {
-        "title": "Brand Asset Draft",
-        "prompt": "Create an SVG mascot concept for a project management app, with friendly geometric shapes and no text.",
-        "scenario": "Use this to explore brand visuals before manual refinement."
+        "title": "Product Placeholder",
+        "scenario": "Intermediate prompt for prototype artwork.",
+        "prompt": "Create an SVG product placeholder showing a compact smart speaker on a neutral background with simple shadows."
       },
       {
-        "title": "Detailed Scene Conversion",
-        "prompt": "Create an SVG scene of a compact city garden at sunrise, with simplified buildings, plants, and a clear foreground.",
-        "scenario": "Use this for more complex compositions that still need clean vector output."
+        "title": "Detailed Vector Brief",
+        "scenario": "Advanced prompt with style and output constraints.",
+        "prompt": "Create an SVG poster-style mountain cabin at sunrise with five colors, clear foreground shapes, and no readable text."
       }
     ],
     "output_examples": [
       {
-        "input": "Create an SVG of a minimal mountain badge.",
-        "output": "A traced SVG file representing a simple badge with mountains, sky, and clean outer shape."
+        "input": "Create an SVG of a red bicycle with simple wheels and a white background.",
+        "output": "An SVG file named red-bicycle.svg containing a traced vector bicycle illustration."
       },
       {
-        "input": "Create an SVG of a friendly robot assistant.",
-        "output": "An SVG illustration draft with a robot character, simplified features, and editable vector paths."
+        "input": "Create an SVG of a coffee cup icon for a settings page.",
+        "output": "An SVG file with a simple cup shape, neutral colors, and editable vector paths."
       },
       {
-        "input": "Create an SVG of a small delivery van icon.",
-        "output": "A vector-style vehicle asset suitable for review and manual cleanup in a design editor."
+        "input": "Create an SVG of a small city skyline at sunset.",
+        "output": "An SVG illustration with skyline shapes, warm sky colors, and simplified building outlines."
       }
     ],
     "best_practices": [
-      "Use short prompts with clear subjects, style, and composition.",
-      "Review generated SVG files before using them in production.",
-      "Run network and tracing commands in a sandboxed environment."
+      "Review the generated SVG before using it in public products.",
+      "Use prompts that specify simple shapes, colors, and composition.",
+      "Run external setup commands only in a disposable or trusted environment."
     ],
     "anti_patterns": [
-      "Do not provide secrets directly in the prompt text.",
-      "Do not run privileged setup commands on sensitive hosts.",
-      "Do not expect the traced SVG to be clean production artwork without review."
+      "Do not include secrets, personal data, or private project details in prompts.",
+      "Do not run the setup commands on production systems without review.",
+      "Do not expect precise logos, text rendering, or brand-safe output."
     ],
     "faq": [
       {
-        "question": "Does this skill create SVG files directly?",
-        "answer": "It describes a workflow that generates an image first, then traces that image into SVG format."
+        "question": "What does this skill create?",
+        "answer": "It creates SVG files from image or scene prompts using Gemini image generation and autotrace conversion."
       },
       {
-        "question": "Does it require an external service?",
-        "answer": "Yes. The workflow calls the Google Gemini image generation API."
+        "question": "Does it require an API key?",
+        "answer": "Yes. The workflow expects a GEMINI_API_KEY value for the Google Gemini API request."
       },
       {
-        "question": "Does it need an API key?",
-        "answer": "Yes. It expects a Gemini API key from the GEMINI_API_KEY environment variable."
+        "question": "Does prompt content leave my machine?",
+        "answer": "Yes. The workflow sends prompt content to the Google Gemini API endpoint."
       },
       {
-        "question": "Is the output ready for production use?",
-        "answer": "Usually not. Traced SVG output should be inspected and cleaned before production use."
+        "question": "Can it create production-ready SVG assets?",
+        "answer": "It can create useful drafts, but generated SVG files should be reviewed and cleaned before production use."
       },
       {
-        "question": "Can it work without installing autotrace?",
-        "answer": "No. The documented workflow depends on autotrace for vector conversion."
+        "question": "What tools must be installed?",
+        "answer": "The workflow requires curl, base64 decoding tools, autotrace, and native dependencies needed by autotrace."
       },
       {
-        "question": "What is the main security concern?",
-        "answer": "The skill combines privileged setup commands, network access, and API key handling in shell workflows."
+        "question": "Is it safe to run on a shared system?",
+        "answer": "Use caution. The setup uses sudo commands and installs software, so review it before running on shared systems."
       }
     ]
   },

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-04T16:24:06.730Z",
+    "generated_at": "2026-07-06T00:31:37.748Z",
     "slug": "01000001-01001110-jira-workflow",
     "source_url": "https://github.com/01000001-01001110/agent-jira-skills/tree/main/jira-safe/jira-workflow",
     "source_ref": "main",
@@ -9,7 +9,7 @@
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "ceed974cc33e576804ec47c1b7ca0edb9509543b806e661ae5db16cc26ec5bf7",
-    "tree_hash": "538599e6e818506996a23fa9ed8e08571cb1e4fc7098910dab7ea01c0fc6e552",
+    "tree_hash": "703c0b809bced05e39dbd448375d0eb61adc08e25b8537e10c8ce612ba5a7be1",
     "provenance": {
       "model_requested": "gpt-5.5:high",
       "model_effective": "codex:gpt-5.5:high",
@@ -26,8 +26,8 @@
   },
   "skill": {
     "name": "jira-workflow",
-    "description": "Manage Jira story proposals, approvals, workflow transitions, and completion updates through Jira REST API guidance.",
-    "summary": "Guides Jira story creation, approval, workflow transition, and completion updates for development teams.",
+    "description": "Orchestrate Jira workflows with approved story creation, Jira REST API examples, lifecycle transitions, comments, and Claude Code task syncing.",
+    "summary": "Manage Jira stories, approvals, workflow transitions, and implementation updates from one guided workflow.",
     "icon": "📦",
     "version": "1.0.0",
     "author": "01000001-01001110",
@@ -36,8 +36,8 @@
       "jira",
       "workflow",
       "agile",
-      "safe",
-      "issue-tracking"
+      "issue-tracking",
+      "project-management"
     ],
     "supported_tools": [
       "claude",
@@ -52,25 +52,30 @@
     "category": "productivity"
   },
   "security_audit": {
-    "risk_level": "low",
+    "risk_level": "high",
     "is_blocked": false,
-    "safe_to_publish": true,
+    "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "Most static external-command findings are false positives from Markdown backticks, code fences, and JavaScript template literals. The real risks are expected Jira integration behaviors: reading Jira environment variables and making authenticated REST calls that create, transition, or comment on issues. No prompt injection or malicious intent was found in SKILL.md.",
+    "summary": "Most external command findings are false positives from Markdown formatting and JavaScript template literals. The real risks are expected Jira network access and Jira credential handling through environment variables, especially JIRA_API_TOKEN. No prompt injection or malicious data-exfiltration intent was found in SKILL.md.",
     "remediation": [
       {
-        "issue": "Authenticated Jira requests",
-        "suggestion": "Validate JIRA_BASE_URL against a trusted Atlassian domain before sending Basic auth, and never log Jira API tokens.",
+        "issue": "Jira API token is read from the environment and sent in Basic authentication headers.",
+        "suggestion": "Document a scoped Jira API token, validate JIRA_BASE_URL, and warn users not to use administrator credentials.",
+        "severity": "high"
+      },
+      {
+        "issue": "The examples perform authenticated Jira mutations such as issue creation, comments, and transitions.",
+        "suggestion": "Keep explicit approval gates before every write operation and log the intended issue key and target state first.",
+        "severity": "medium"
+      },
+      {
+        "issue": "The documentation references executable scripts that are not present in the audited package.",
+        "suggestion": "Remove those references or include the scripts so users can inspect them before execution.",
         "severity": "low"
       },
       {
-        "issue": "Jira state changes",
-        "suggestion": "Keep explicit user approval before issue creation, workflow transitions, and comments. Add dry-run guidance for unapproved work.",
-        "severity": "low"
-      },
-      {
-        "issue": "Referenced executable scripts",
-        "suggestion": "Include the referenced scripts or remove the command examples so users do not run unreviewed external files.",
+        "issue": "Error and status logs may include Jira issue summaries or API response text.",
+        "suggestion": "Avoid logging sensitive ticket content unless the user asks for detailed diagnostics.",
         "severity": "low"
       }
     ],
@@ -1797,725 +1802,742 @@
       {
         "id": "external_commands:SKILL.md:11:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:12:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:13:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:14:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:15:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:17:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:64:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:74:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:77:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:79:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:101:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:109:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:145:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:151:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:153:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:174:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:182:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:186:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:209:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:217:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:226:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:230:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:256:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:261:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:262:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:263:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:278:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:300:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:308:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:311:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:316:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:322:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:326:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:338:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:339:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:340:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:345:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:355:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:358:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:361:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:365:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:369:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:375:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:381:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:387:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:389:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:397:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:413:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:422:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:425:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:428:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:432:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:436:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:475:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:485:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:493:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:508:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:528:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:538:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:551:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:555:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:580:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:604:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:605:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:606:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:607:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:608:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:609:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:610:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:611:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:623:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:628:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:647:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The match is Markdown formatting or a JavaScript template literal, not Ruby or shell backtick execution. The snippet does not execute a local command by itself."
+        "confidence": 0.93,
+        "reason": "The hit is Markdown formatting, a code fence, or a JavaScript template literal in sample code. SKILL.md does not contain Ruby backtick execution or automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:657:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a Markdown command example for optional Jira helper scripts, not Ruby or shell backtick execution in the skill. The audited package contains only SKILL.md, so no executable script body is present here."
+        "confidence": 0.86,
+        "reason": "This is a fenced command example in documentation, not an embedded script or automatic execution. The static hit comes from Markdown backticks, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:665:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a Markdown command example for optional Jira helper scripts, not Ruby or shell backtick execution in the skill. The audited package contains only SKILL.md, so no executable script body is present here."
+        "confidence": 0.86,
+        "reason": "This is a fenced command example in documentation, not an embedded script or automatic execution. The static hit comes from Markdown backticks, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:669:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a Markdown command example for optional Jira helper scripts, not Ruby or shell backtick execution in the skill. The audited package contains only SKILL.md, so no executable script body is present here."
+        "confidence": 0.86,
+        "reason": "This is a fenced command example in documentation, not an embedded script or automatic execution. The static hit comes from Markdown backticks, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:683:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a Markdown command example for optional Jira helper scripts, not Ruby or shell backtick execution in the skill. The audited package contains only SKILL.md, so no executable script body is present here."
+        "confidence": 0.86,
+        "reason": "This is a fenced command example in documentation, not an embedded script or automatic execution. The static hit comes from Markdown backticks, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:689:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a Markdown command example for optional Jira helper scripts, not Ruby or shell backtick execution in the skill. The audited package contains only SKILL.md, so no executable script body is present here."
+        "confidence": 0.86,
+        "reason": "This is a fenced command example in documentation, not an embedded script or automatic execution. The static hit comes from Markdown backticks, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:690:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a Markdown command example for optional Jira helper scripts, not Ruby or shell backtick execution in the skill. The audited package contains only SKILL.md, so no executable script body is present here."
+        "confidence": 0.86,
+        "reason": "This is a fenced command example in documentation, not an embedded script or automatic execution. The static hit comes from Markdown backticks, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:691:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a Markdown command example for optional Jira helper scripts, not Ruby or shell backtick execution in the skill. The audited package contains only SKILL.md, so no executable script body is present here."
+        "confidence": 0.86,
+        "reason": "This is a fenced command example in documentation, not an embedded script or automatic execution. The static hit comes from Markdown backticks, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:692:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a Markdown command example for optional Jira helper scripts, not Ruby or shell backtick execution in the skill. The audited package contains only SKILL.md, so no executable script body is present here."
+        "confidence": 0.86,
+        "reason": "This is a fenced command example in documentation, not an embedded script or automatic execution. The static hit comes from Markdown backticks, not Ruby shell backtick execution."
       },
       {
         "id": "network:SKILL.md:174:fetch-api-call",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "low",
-        "reason": "The example performs an authenticated Jira REST request to JIRA_BASE_URL. This is expected for the skill, but it can create or change Jira data and sends credentials to the configured host."
+        "confidence": 0.84,
+        "reason": "The sample code sends authenticated Jira REST API requests using headers built from Jira credentials. This is intended behavior, but it is real outbound network access that can mutate Jira data.",
+        "severity": "medium"
       },
       {
         "id": "network:SKILL.md:209:fetch-api-call",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "low",
-        "reason": "The example performs an authenticated Jira REST request to JIRA_BASE_URL. This is expected for the skill, but it can create or change Jira data and sends credentials to the configured host."
+        "confidence": 0.84,
+        "reason": "The sample code sends authenticated Jira REST API requests using headers built from Jira credentials. This is intended behavior, but it is real outbound network access that can mutate Jira data.",
+        "severity": "medium"
       },
       {
         "id": "network:SKILL.md:310:fetch-api-call",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "low",
-        "reason": "The example performs an authenticated Jira REST request to JIRA_BASE_URL. This is expected for the skill, but it can create or change Jira data and sends credentials to the configured host."
+        "confidence": 0.8,
+        "reason": "The sample code performs an authenticated Jira REST API request to query transitions. This is expected integration behavior, but it still sends credentials to a configured remote host.",
+        "severity": "low"
       },
       {
         "id": "network:SKILL.md:344:fetch-api-call",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "low",
-        "reason": "The example performs an authenticated Jira REST request to JIRA_BASE_URL. This is expected for the skill, but it can create or change Jira data and sends credentials to the configured host."
+        "confidence": 0.84,
+        "reason": "The sample code sends authenticated Jira REST API requests using headers built from Jira credentials. This is intended behavior, but it is real outbound network access that can mutate Jira data.",
+        "severity": "medium"
       },
       {
         "id": "network:SKILL.md:412:fetch-api-call",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "low",
-        "reason": "The example performs an authenticated Jira REST request to JIRA_BASE_URL. This is expected for the skill, but it can create or change Jira data and sends credentials to the configured host."
+        "confidence": 0.84,
+        "reason": "The sample code sends authenticated Jira REST API requests using headers built from Jira credentials. This is intended behavior, but it is real outbound network access that can mutate Jira data.",
+        "severity": "medium"
       },
       {
         "id": "network:SKILL.md:474:fetch-api-call",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "low",
-        "reason": "The example performs an authenticated Jira REST request to JIRA_BASE_URL. This is expected for the skill, but it can create or change Jira data and sends credentials to the configured host."
+        "confidence": 0.84,
+        "reason": "The sample code sends authenticated Jira REST API requests using headers built from Jira credentials. This is intended behavior, but it is real outbound network access that can mutate Jira data.",
+        "severity": "medium"
       },
       {
         "id": "network:SKILL.md:34:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This URL is a Jira configuration example or documentation reference, not an outbound request. It does not transmit data or credentials by itself."
+        "confidence": 0.92,
+        "reason": "This is an example environment variable value for the user tenant URL, not a hardcoded outbound request. The actual host is supplied by the user at runtime."
       },
       {
         "id": "network:SKILL.md:698:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This URL is a Jira configuration example or documentation reference, not an outbound request. It does not transmit data or credentials by itself."
+        "confidence": 0.96,
+        "reason": "This is a documentation reference link to Atlassian or SAFe resources. It is not contacted by the skill and does not create runtime network behavior."
       },
       {
         "id": "network:SKILL.md:699:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This URL is a Jira configuration example or documentation reference, not an outbound request. It does not transmit data or credentials by itself."
+        "confidence": 0.96,
+        "reason": "This is a documentation reference link to Atlassian or SAFe resources. It is not contacted by the skill and does not create runtime network behavior."
       },
       {
         "id": "network:SKILL.md:700:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This URL is a Jira configuration example or documentation reference, not an outbound request. It does not transmit data or credentials by itself."
+        "confidence": 0.96,
+        "reason": "This is a documentation reference link to Atlassian or SAFe resources. It is not contacted by the skill and does not create runtime network behavior."
       },
       {
         "id": "network:SKILL.md:701:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This URL is a Jira configuration example or documentation reference, not an outbound request. It does not transmit data or credentials by itself."
+        "confidence": 0.96,
+        "reason": "This is a documentation reference link to Atlassian or SAFe resources. It is not contacted by the skill and does not create runtime network behavior."
       },
       {
         "id": "env_access:SKILL.md:146:environment-variable-access-dot-notation",
         "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "low",
-        "reason": "The skill reads named Jira configuration from process.env, including values used for authentication and routing. This is expected, but environment access should stay limited to these allowlisted Jira variables."
+        "confidence": 0.78,
+        "reason": "The sample code reads JIRA_EMAIL from process.env as part of the Jira Basic authentication identity. It is expected configuration access, but still credential-adjacent environment access.",
+        "severity": "low"
       },
       {
         "id": "env_access:SKILL.md:147:environment-variable-access-dot-notation",
         "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "low",
-        "reason": "The skill reads named Jira configuration from process.env, including values used for authentication and routing. This is expected, but environment access should stay limited to these allowlisted Jira variables."
+        "confidence": 0.93,
+        "reason": "The sample code reads JIRA_API_TOKEN from process.env and later uses it for Basic authentication. This is expected, but it is real sensitive environment variable access.",
+        "severity": "low"
       },
       {
         "id": "env_access:SKILL.md:148:environment-variable-access-dot-notation",
         "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "low",
-        "reason": "The skill reads named Jira configuration from process.env, including values used for authentication and routing. This is expected, but environment access should stay limited to these allowlisted Jira variables."
+        "confidence": 0.78,
+        "reason": "The sample code reads JIRA_BASE_URL from process.env and uses it as the outbound request host. This is expected configuration access, but an untrusted value could redirect authenticated requests.",
+        "severity": "low"
       },
       {
         "id": "env_access:SKILL.md:149:environment-variable-access-dot-notation",
         "verdict": "confirmed",
         "confidence": 0.72,
-        "severity": "low",
-        "reason": "The skill reads named Jira configuration from process.env, including values used for authentication and routing. This is expected, but environment access should stay limited to these allowlisted Jira variables."
+        "reason": "The sample code reads JIRA_PROJECT_KEY from process.env to choose the Jira project. It is not secret, but it is genuine environment-derived behavior.",
+        "severity": "low"
       },
       {
         "id": "env_access:SKILL.md:146:environment-variable-object",
         "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "low",
-        "reason": "The skill reads named Jira configuration from process.env, including values used for authentication and routing. This is expected, but environment access should stay limited to these allowlisted Jira variables."
+        "confidence": 0.78,
+        "reason": "The sample code reads JIRA_EMAIL from process.env as part of the Jira Basic authentication identity. It is expected configuration access, but still credential-adjacent environment access.",
+        "severity": "low"
       },
       {
         "id": "env_access:SKILL.md:147:environment-variable-object",
         "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "low",
-        "reason": "The skill reads named Jira configuration from process.env, including values used for authentication and routing. This is expected, but environment access should stay limited to these allowlisted Jira variables."
+        "confidence": 0.93,
+        "reason": "The sample code reads JIRA_API_TOKEN from process.env and later uses it for Basic authentication. This is expected, but it is real sensitive environment variable access.",
+        "severity": "low"
       },
       {
         "id": "env_access:SKILL.md:148:environment-variable-object",
         "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "low",
-        "reason": "The skill reads named Jira configuration from process.env, including values used for authentication and routing. This is expected, but environment access should stay limited to these allowlisted Jira variables."
+        "confidence": 0.78,
+        "reason": "The sample code reads JIRA_BASE_URL from process.env and uses it as the outbound request host. This is expected configuration access, but an untrusted value could redirect authenticated requests.",
+        "severity": "low"
       },
       {
         "id": "env_access:SKILL.md:149:environment-variable-object",
         "verdict": "confirmed",
         "confidence": 0.72,
-        "severity": "low",
-        "reason": "The skill reads named Jira configuration from process.env, including values used for authentication and routing. This is expected, but environment access should stay limited to these allowlisted Jira variables."
+        "reason": "The sample code reads JIRA_PROJECT_KEY from process.env to choose the Jira project. It is not secret, but it is genuine environment-derived behavior.",
+        "severity": "low"
       },
       {
         "id": "sensitive:SKILL.md:146:environment-file-access",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This reads a named Jira configuration value from process.env, not an environment file. The line is expected setup data and does not expose a secret by itself."
+        "confidence": 0.74,
+        "reason": "This is process.env access to a Jira email value, not an environment file read. The lower-severity env_access verdict covers the expected credential-adjacent configuration use."
       },
       {
         "id": "sensitive:SKILL.md:147:environment-file-access",
-        "verdict": "false_positive",
-        "confidence": 0.68,
-        "reason": "This reads the expected Jira API token from process.env for Jira authentication; it does not access an environment file or log the token. The related credential and network risk is covered by lower-severity env and fetch findings."
+        "verdict": "confirmed",
+        "confidence": 0.91,
+        "reason": "The code reads JIRA_API_TOKEN from the environment and encodes it into the Authorization header. This is a real credential-handling risk, even though it supports the intended Jira integration.",
+        "severity": "high"
       },
       {
         "id": "sensitive:SKILL.md:148:environment-file-access",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This reads a named Jira configuration value from process.env, not an environment file. The line is expected setup data and does not expose a secret by itself."
+        "confidence": 0.8,
+        "reason": "This is process.env access to a Jira base URL, not an environment file read or secret file access. The network and env_access findings cover the real risk."
       },
       {
         "id": "sensitive:SKILL.md:149:environment-file-access",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This reads a named Jira configuration value from process.env, not an environment file. The line is expected setup data and does not expose a secret by itself."
+        "confidence": 0.86,
+        "reason": "JIRA_PROJECT_KEY is a Jira project identifier, not a secret file or cryptographic key. The static sensitive-file pattern does not match this context."
       },
       {
         "id": "sensitive:SKILL.md:186:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is the Jira issue.key property in example code, not a certificate or private key file path. No credential file access is present at this location."
+        "confidence": 0.95,
+        "reason": "The word key refers to a Jira issue key property, not a certificate, private key, or key file. No certificate or private key file access appears at this location."
       },
       {
         "id": "sensitive:SKILL.md:191:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is the Jira issue.key property in example code, not a certificate or private key file path. No credential file access is present at this location."
+        "confidence": 0.95,
+        "reason": "The word key refers to a Jira issue key property, not a certificate, private key, or key file. No certificate or private key file access appears at this location."
       },
       {
         "id": "sensitive:SKILL.md:508:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is the Jira issue.key property in example code, not a certificate or private key file path. No credential file access is present at this location."
+        "confidence": 0.95,
+        "reason": "The word key refers to a Jira issue key property, not a certificate, private key, or key file. No certificate or private key file access appears at this location."
       },
       {
         "id": "sensitive:SKILL.md:511:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is the Jira issue.key property in example code, not a certificate or private key file path. No credential file access is present at this location."
+        "confidence": 0.95,
+        "reason": "The word key refers to a Jira issue key property, not a certificate, private key, or key file. No certificate or private key file access appears at this location."
       },
       {
         "id": "sensitive:SKILL.md:517:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is the Jira issue.key property in example code, not a certificate or private key file path. No credential file access is present at this location."
+        "confidence": 0.95,
+        "reason": "The word key refers to a Jira issue key property, not a certificate, private key, or key file. No certificate or private key file access appears at this location."
       },
       {
         "id": "sensitive:SKILL.md:524:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is the Jira issue.key property in example code, not a certificate or private key file path. No credential file access is present at this location."
+        "confidence": 0.95,
+        "reason": "The word key refers to a Jira issue key property, not a certificate, private key, or key file. No certificate or private key file access appears at this location."
       },
       {
         "id": "blocker:SKILL.md:349:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The transition.id value is a Jira workflow transition identifier used in a POST body. It is not system reconnaissance or host enumeration."
+        "confidence": 0.94,
+        "reason": "This posts a Jira workflow transition id returned by the Jira API. It does not enumerate local system information or perform system reconnaissance."
       }
     ],
     "semantic_findings": [],
     "critical_findings": [],
-    "high_findings": [],
-    "medium_findings": [],
-    "low_findings": [
+    "high_findings": [
+      {
+        "title": "Environment file access",
+        "description": "const JIRA_API_TOKEN = process.env.JIRA_API_TOKEN;",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 147,
+            "line_end": 147
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.91,
+        "confidence_reasoning": "The code reads JIRA_API_TOKEN from the environment and encodes it into the Authorization header. This is a real credential-handling risk, even though it supports the intended Jira integration."
+      }
+    ],
+    "medium_findings": [
       {
         "title": "Fetch API call",
         "description": "const response = await fetch(`${JIRA_BASE_URL}/rest/api/3/issue`, {",
@@ -2529,8 +2551,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.74,
-        "confidence_reasoning": "The example performs an authenticated Jira REST request to JIRA_BASE_URL. This is expected for the skill, but it can create or change Jira data and sends credentials to the configured host."
+        "confidence": 0.84,
+        "confidence_reasoning": "The sample code sends authenticated Jira REST API requests using headers built from Jira credentials. This is intended behavior, but it is real outbound network access that can mutate Jira data."
       },
       {
         "title": "Fetch API call",
@@ -2545,24 +2567,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.74,
-        "confidence_reasoning": "The example performs an authenticated Jira REST request to JIRA_BASE_URL. This is expected for the skill, but it can create or change Jira data and sends credentials to the configured host."
-      },
-      {
-        "title": "Fetch API call",
-        "description": "const response = await fetch(",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 310,
-            "line_end": 310
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.74,
-        "confidence_reasoning": "The example performs an authenticated Jira REST request to JIRA_BASE_URL. This is expected for the skill, but it can create or change Jira data and sends credentials to the configured host."
+        "confidence": 0.84,
+        "confidence_reasoning": "The sample code sends authenticated Jira REST API requests using headers built from Jira credentials. This is intended behavior, but it is real outbound network access that can mutate Jira data."
       },
       {
         "title": "Fetch API call",
@@ -2577,8 +2583,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.74,
-        "confidence_reasoning": "The example performs an authenticated Jira REST request to JIRA_BASE_URL. This is expected for the skill, but it can create or change Jira data and sends credentials to the configured host."
+        "confidence": 0.84,
+        "confidence_reasoning": "The sample code sends authenticated Jira REST API requests using headers built from Jira credentials. This is intended behavior, but it is real outbound network access that can mutate Jira data."
       },
       {
         "title": "Fetch API call",
@@ -2593,8 +2599,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.74,
-        "confidence_reasoning": "The example performs an authenticated Jira REST request to JIRA_BASE_URL. This is expected for the skill, but it can create or change Jira data and sends credentials to the configured host."
+        "confidence": 0.84,
+        "confidence_reasoning": "The sample code sends authenticated Jira REST API requests using headers built from Jira credentials. This is intended behavior, but it is real outbound network access that can mutate Jira data."
       },
       {
         "title": "Fetch API call",
@@ -2609,8 +2615,26 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.74,
-        "confidence_reasoning": "The example performs an authenticated Jira REST request to JIRA_BASE_URL. This is expected for the skill, but it can create or change Jira data and sends credentials to the configured host."
+        "confidence": 0.84,
+        "confidence_reasoning": "The sample code sends authenticated Jira REST API requests using headers built from Jira credentials. This is intended behavior, but it is real outbound network access that can mutate Jira data."
+      }
+    ],
+    "low_findings": [
+      {
+        "title": "Fetch API call",
+        "description": "const response = await fetch(",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 310,
+            "line_end": 310
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.8,
+        "confidence_reasoning": "The sample code performs an authenticated Jira REST API request to query transitions. This is expected integration behavior, but it still sends credentials to a configured remote host."
       },
       {
         "title": "Environment variable access (dot notation)",
@@ -2625,8 +2649,8 @@
         "review_kind": "capability",
         "source_category": "env_access",
         "source_severity": "low",
-        "confidence": 0.72,
-        "confidence_reasoning": "The skill reads named Jira configuration from process.env, including values used for authentication and routing. This is expected, but environment access should stay limited to these allowlisted Jira variables."
+        "confidence": 0.78,
+        "confidence_reasoning": "The sample code reads JIRA_EMAIL from process.env as part of the Jira Basic authentication identity. It is expected configuration access, but still credential-adjacent environment access."
       },
       {
         "title": "Environment variable access (dot notation)",
@@ -2641,8 +2665,8 @@
         "review_kind": "capability",
         "source_category": "env_access",
         "source_severity": "low",
-        "confidence": 0.72,
-        "confidence_reasoning": "The skill reads named Jira configuration from process.env, including values used for authentication and routing. This is expected, but environment access should stay limited to these allowlisted Jira variables."
+        "confidence": 0.93,
+        "confidence_reasoning": "The sample code reads JIRA_API_TOKEN from process.env and later uses it for Basic authentication. This is expected, but it is real sensitive environment variable access."
       },
       {
         "title": "Environment variable access (dot notation)",
@@ -2657,8 +2681,8 @@
         "review_kind": "capability",
         "source_category": "env_access",
         "source_severity": "low",
-        "confidence": 0.72,
-        "confidence_reasoning": "The skill reads named Jira configuration from process.env, including values used for authentication and routing. This is expected, but environment access should stay limited to these allowlisted Jira variables."
+        "confidence": 0.78,
+        "confidence_reasoning": "The sample code reads JIRA_BASE_URL from process.env and uses it as the outbound request host. This is expected configuration access, but an untrusted value could redirect authenticated requests."
       },
       {
         "title": "Environment variable access (dot notation)",
@@ -2674,7 +2698,7 @@
         "source_category": "env_access",
         "source_severity": "low",
         "confidence": 0.72,
-        "confidence_reasoning": "The skill reads named Jira configuration from process.env, including values used for authentication and routing. This is expected, but environment access should stay limited to these allowlisted Jira variables."
+        "confidence_reasoning": "The sample code reads JIRA_PROJECT_KEY from process.env to choose the Jira project. It is not secret, but it is genuine environment-derived behavior."
       },
       {
         "title": "Environment variable object",
@@ -2689,8 +2713,8 @@
         "review_kind": "capability",
         "source_category": "env_access",
         "source_severity": "low",
-        "confidence": 0.72,
-        "confidence_reasoning": "The skill reads named Jira configuration from process.env, including values used for authentication and routing. This is expected, but environment access should stay limited to these allowlisted Jira variables."
+        "confidence": 0.78,
+        "confidence_reasoning": "The sample code reads JIRA_EMAIL from process.env as part of the Jira Basic authentication identity. It is expected configuration access, but still credential-adjacent environment access."
       },
       {
         "title": "Environment variable object",
@@ -2705,8 +2729,8 @@
         "review_kind": "capability",
         "source_category": "env_access",
         "source_severity": "low",
-        "confidence": 0.72,
-        "confidence_reasoning": "The skill reads named Jira configuration from process.env, including values used for authentication and routing. This is expected, but environment access should stay limited to these allowlisted Jira variables."
+        "confidence": 0.93,
+        "confidence_reasoning": "The sample code reads JIRA_API_TOKEN from process.env and later uses it for Basic authentication. This is expected, but it is real sensitive environment variable access."
       },
       {
         "title": "Environment variable object",
@@ -2721,8 +2745,8 @@
         "review_kind": "capability",
         "source_category": "env_access",
         "source_severity": "low",
-        "confidence": 0.72,
-        "confidence_reasoning": "The skill reads named Jira configuration from process.env, including values used for authentication and routing. This is expected, but environment access should stay limited to these allowlisted Jira variables."
+        "confidence": 0.78,
+        "confidence_reasoning": "The sample code reads JIRA_BASE_URL from process.env and uses it as the outbound request host. This is expected configuration access, but an untrusted value could redirect authenticated requests."
       },
       {
         "title": "Environment variable object",
@@ -2738,133 +2762,136 @@
         "source_category": "env_access",
         "source_severity": "low",
         "confidence": 0.72,
-        "confidence_reasoning": "The skill reads named Jira configuration from process.env, including values used for authentication and routing. This is expected, but environment access should stay limited to these allowlisted Jira variables."
+        "confidence_reasoning": "The sample code reads JIRA_PROJECT_KEY from process.env to choose the Jira project. It is not secret, but it is genuine environment-derived behavior."
       }
     ],
     "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 702,
     "audit_model": "codex",
-    "audited_at": "2026-07-04T16:24:06.730Z",
-    "agent_auto_install_policy": "allowed",
+    "audited_at": "2026-07-06T00:31:37.748Z",
+    "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Orchestrate Jira Workflows With Approval",
-    "value_statement": "Jira work often drifts from implementation when stories, approvals, and status changes live in separate tools. This skill guides Claude, Codex, and Claude Code through approved story creation, transitions, and completion updates.",
+    "user_title": "Manage Jira Workflows with Approval Gates",
+    "value_statement": "Teams lose time translating work requests into Jira stories and status updates. This skill guides approved story creation, workflow transitions, comments, and completion tracking.",
     "seo_keywords": [
       "Jira workflow",
       "Jira automation",
+      "SAFe stories",
+      "Agile issue tracking",
       "Claude",
       "Codex",
       "Claude Code",
-      "SAFe stories",
-      "Agile issue tracking",
-      "Jira REST API",
-      "story approval",
-      "workflow transitions"
+      "Atlassian Jira",
+      "workflow transitions",
+      "project management"
     ],
     "actual_capabilities": [
-      "Drafts SAFe-style Jira stories with acceptance criteria and definition of done.",
-      "Prompts for user approval before creating Jira issues.",
-      "Shows how to create Jira stories and subtasks through Jira REST API v3.",
-      "Queries available Jira transitions before moving an issue between workflow states.",
+      "Builds SAFe-style user story proposals with acceptance criteria and definition of done.",
+      "Requires user approval before creating Jira items.",
+      "Shows Jira REST API examples for creating stories and subtasks.",
+      "Queries available Jira transitions before moving issues between workflow states.",
       "Adds work log and implementation detail comments to Jira issues.",
-      "Coordinates TodoWrite progress with Jira issue status changes."
+      "Maps Jira progress to Claude Code TodoWrite task states."
     ],
     "limitations": [
-      "Requires Jira email, API token, base URL, project key, and board information.",
-      "Cannot verify live Jira workflows without access to the target Jira project.",
-      "Documented script commands depend on script files that are not present in this package.",
-      "Does not replace Jira permission controls or organizational approval policies."
+      "Requires Jira Cloud credentials, project permissions, and configured environment variables.",
+      "Targets Jira REST API v3 and a team-managed workflow with specific status names.",
+      "Cannot know valid transition IDs until it queries the target Jira project.",
+      "The audited package contains documentation only; referenced script files are not present."
     ],
     "use_cases": [
       {
-        "title": "Plan Approved Stories",
-        "target_user": "Product owners",
-        "description": "Turn feature requests into SAFe-style Jira stories before creating work items."
+        "title": "Plan Approved Product Stories",
+        "description": "Convert a work request into a SAFe story proposal, then create it only after approval.",
+        "target_user": "Product owner"
       },
       {
-        "title": "Keep Development Status Current",
-        "target_user": "Developers",
-        "description": "Move Jira issues through To Do, Progressing, review, and Done as implementation progresses."
+        "title": "Track Sprint Workflow State",
+        "description": "Move Jira issues from backlog to active work and done while adding implementation notes.",
+        "target_user": "Engineering lead"
       },
       {
-        "title": "Synchronize Delivery Notes",
-        "target_user": "Engineering leads",
-        "description": "Add implementation details, modified files, and completion notes to Jira when work finishes."
+        "title": "Sync Coding Work with Jira",
+        "description": "Coordinate Claude Code task progress with Jira issue comments and status transitions.",
+        "target_user": "Developer"
       }
     ],
     "prompt_templates": [
       {
         "title": "Draft a Story Proposal",
         "scenario": "Beginner story planning",
-        "prompt": "Use jira-workflow to draft a Jira story for [feature]. Include persona, goal, benefit, acceptance criteria, and definition of done. Do not create it yet."
+        "prompt": "Draft a SAFe story proposal for [request]. Include persona, goal, benefit, acceptance criteria, definition of done, and subtasks. Ask for approval before Jira creation."
       },
       {
-        "title": "Prepare an Approved Issue",
-        "scenario": "Controlled issue creation",
-        "prompt": "Use jira-workflow to present a Jira story for [task]. Ask for my approval before creating the issue in project [KEY]."
+        "title": "Create an Approved Story",
+        "scenario": "Approved Jira creation",
+        "prompt": "Create the approved Jira story for [proposal] in project [project key]. Use [epic key] if provided, and summarize the created issue key."
       },
       {
-        "title": "Transition Active Work",
-        "scenario": "Workflow status update",
-        "prompt": "Use jira-workflow to check available transitions for [ISSUE-KEY]. Move it to [target state] only if the transition exists."
+        "title": "Move a Jira Issue",
+        "scenario": "Workflow transition",
+        "prompt": "Query available transitions for [issue key], choose the transition matching [target state], and explain the status change before applying it."
       },
       {
-        "title": "Run End-to-End Delivery Sync",
-        "scenario": "Advanced Jira delivery loop",
-        "prompt": "Use jira-workflow to manage [epic or task]. Create approved stories, track TodoWrite progress, add completion comments, and transition finished issues to Done."
+        "title": "Run the Full Workflow",
+        "scenario": "Advanced end-to-end coordination",
+        "prompt": "For [task], propose the story, wait for approval, create it under [epic key], start work, add implementation details, and transition it to Done."
       }
     ],
     "output_examples": [
       {
-        "input": "Create a story for password reset.",
-        "output": "The skill returns a proposed Jira story with a user story, acceptance criteria, subtasks, and an approval question."
+        "input": "Plan a signup API story for Jira.",
+        "output": [
+          "A proposed story with persona, goal, benefit, acceptance criteria, and definition of done.",
+          "A clear approval question before any Jira item is created."
+        ]
       },
       {
-        "input": "Start SCRUM-100.",
-        "output": "The skill checks Jira transitions, identifies the Progressing transition, and reports whether the issue was moved."
+        "input": "Move SCRUM-55 to Progressing.",
+        "output": "The skill queries available transitions, selects the matching Jira transition, and reports the new workflow state."
       },
       {
-        "input": "Mark SCRUM-100 done with implementation notes.",
-        "output": "The skill prepares a completion comment, adds implementation details, and transitions the issue to Done when allowed."
+        "input": "Finish SCRUM-55 with implementation details.",
+        "output": "The skill adds a Jira comment with modified files, commits, notes, and then transitions the issue to Done."
       }
     ],
     "best_practices": [
-      "Confirm story content with the user before creating or changing Jira issues.",
-      "Verify JIRA_BASE_URL points to the correct Atlassian site before using credentials.",
-      "Query available transitions before choosing a target workflow state."
+      "Query available transitions before every status change.",
+      "Ask for explicit approval before creating Jira issues or subtasks.",
+      "Use a scoped Jira API token with the minimum required project permissions."
     ],
     "anti_patterns": [
-      "Do not create Jira issues from vague requests without acceptance criteria.",
-      "Do not send Jira API tokens to unverified hosts or shared logs.",
-      "Do not assume every Jira project uses the same transition names."
+      "Do not transition issues without confirming the target state is available.",
+      "Do not use an administrator Jira token for routine workflow updates.",
+      "Do not run referenced scripts unless their contents are present and reviewed."
     ],
     "faq": [
       {
+        "question": "Does this skill create Jira issues automatically?",
+        "answer": "It instructs the assistant to ask for user approval before creating Jira issues."
+      },
+      {
+        "question": "Which Jira version does it target?",
+        "answer": "It targets Jira Cloud REST API v3 and team-managed workflow states."
+      },
+      {
         "question": "What credentials are required?",
-        "answer": "A Jira email, API token, base URL, project key, and board ID are expected."
+        "answer": "It expects Jira email, Jira API token, base URL, project key, and optional board ID variables."
       },
       {
-        "question": "Does it create issues automatically?",
-        "answer": "It instructs the assistant to ask for user approval before creating Jira items."
+        "question": "Can it handle custom workflow states?",
+        "answer": "Yes. It queries available transitions before choosing a target state."
       },
       {
-        "question": "Can it work with team-managed Jira?",
-        "answer": "Yes. It documents Team-managed states and uses the parent field for Epic links."
+        "question": "Does the package include executable scripts?",
+        "answer": "No. The audited package includes SKILL.md only, although the documentation references scripts."
       },
       {
-        "question": "Can it transition issues?",
-        "answer": "Yes. It first queries available transitions and then posts a valid transition ID."
-      },
-      {
-        "question": "Does this package include executable scripts?",
-        "answer": "The audited package only lists SKILL.md, so referenced scripts may need a separate source."
-      },
-      {
-        "question": "Is it suitable for Claude Code?",
-        "answer": "Yes. It includes TodoWrite synchronization guidance for Claude Code workflows."
+        "question": "Can Claude, Codex, and Claude Code use it?",
+        "answer": "Yes. The metadata marks support for Claude, Codex, and Claude Code."
       }
     ]
   },
