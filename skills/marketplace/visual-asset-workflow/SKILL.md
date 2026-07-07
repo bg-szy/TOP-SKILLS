@@ -1,6 +1,6 @@
 ---
 name: visual-asset-workflow
-description: Create professional creative briefs for educational visuals using story, intent, pedagogy, proficiency alignment, and duplicate prevention.
+description: Guides educational visual asset creation using professional creative briefs, proficiency alignment, prerequisite validation, and duplicate prevention.
 ---
 
 # Visual Asset Workflow Skill

@@ -1,6 +1,6 @@
 ---
 name: ngx-hybrid-sales
-description: Guía de ventas para calificar leads, preparar llamadas, manejar objeciones y dar seguimiento al producto HYBRID.
+description: Framework de ventas para calificar leads, preparar llamadas, manejar objeciones y dar seguimiento al producto HYBRID.
 ---
 
 # NGX HYBRID Sales Skill
