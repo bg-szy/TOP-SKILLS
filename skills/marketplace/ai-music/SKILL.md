@@ -3,20 +3,9 @@ name: ai-music
 displayName: "AI Music"
 allowed-tools: Bash(runcomfy *)
 description: >
-  Generate AI music on RunComfy via the `runcomfy` CLI — a smart router
-  across the music-model catalog. Routes to ElevenLabs AI Music
-  Generation (premium 44.1 kHz stereo vocal tracks, 5 s–5 min, $0.0083/s)
-  and ACE Step / ACE Step 1.5 (StepFun-AI open-weights, tag-driven
-  composition, multilingual lyrics, $0.0002–0.0003/s, ~27× cheaper),
-  plus ACE Step audio-inpaint (regenerate a time range inside an
-  existing track) and ACE Step audio-outpaint (extend a track before
-  or after). Picks the right model for the user's actual intent —
-  premium vocal hook, cheap background music library, multilingual
-  pop song, repair a bad chorus, lengthen a 30 s draft into a 2 min
-  cut — and ships each model's documented prompting patterns plus the
-  minimal `runcomfy run` invoke. Triggers on requests to generate,
-  edit, compose, inpaint, or outpaint music, songs, soundtracks,
-  jingles, or background tracks.
+  Generate or edit AI music on RunComfy with the `runcomfy` CLI, routing
+  requests to ElevenLabs Music, ACE Step, ACE Step 1.5, audio-inpaint, or
+  audio-outpaint with documented prompting patterns and minimal commands.
 homepage: https://www.runcomfy.com
 license: MIT
 ---

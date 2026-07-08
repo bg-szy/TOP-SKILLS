@@ -1,6 +1,7 @@
 ---
 name: evidence-verification
-description: "This skill teaches agents how to collect and verify evidence before marking tasks complete. Inspired by production-grade development practices, it ensures all claims are backed by executable proof:..."
+description: Guides agents to collect test, build, lint, and deployment evidence before marking work complete.
+license: MIT
 ---
 
 # Evidence-Based Verification Skill
