@@ -1,15 +1,15 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T21:57:57.691Z",
+    "generated_at": "2026-07-08T14:43:59.420Z",
     "slug": "anthropics-cookbook-audit",
-    "source_url": "https://github.com/anthropics/claude-cookbooks/tree/main/.claude/skills/cookbook-audit",
+    "source_url": "https://github.com/anthropics/anthropic-cookbook/tree/main/.claude/skills/cookbook-audit",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "63b4c68ffe7ea6c95b13ab008d58224651a5c63d3559ae4e58ec317f72a16258",
-    "tree_hash": "0e576b70a1c58a4d126c2cc04e6376f7c5f28a7803bfa5c2603cba790bd29d5a",
+    "tree_hash": "9ea925b8ea47292a9b31ec65ccf95c60aaeac9914d3be5495caa15042f553f56",
     "provenance": {
       "model_effective": "codex",
       "fallback_chain": [
@@ -23,18 +23,18 @@
   },
   "skill": {
     "name": "cookbook-audit",
-    "description": "Audits Anthropic Cookbook Jupyter notebooks with an automated validator and a structured style rubric.",
-    "summary": "Review Anthropic Cookbook notebooks for structure, code quality, security hygiene, and learning value.",
+    "description": "Review Anthropic Cookbook notebooks against style, structure, code quality, and technical requirements.",
+    "summary": "Audit Anthropic Cookbook notebooks with a rubric, validator script, and concrete improvement recommendations.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "author": "anthropics",
     "license": "MIT",
     "tags": [
-      "cookbook",
       "notebook-audit",
-      "jupyter",
-      "documentation",
-      "anthropic"
+      "cookbook-review",
+      "documentation-quality",
+      "jupyter-notebooks",
+      "anthropic-cookbook"
     ],
     "supported_tools": [
       "claude",
@@ -54,21 +54,26 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static findings are false positives from Markdown code spans, cookbook examples, or benign documentation links. I confirmed the detect-secrets command path in validate_notebook.py because it builds sh -c pipelines with interpolated paths. No prompt injection or additional intent-level abuse was found in the reviewed files.",
+    "summary": "Most static findings are markdown inline-code examples, setup placeholders, or rubric text rather than executable behavior. One confirmed risk remains in validate_notebook.py: the detect-secrets path builds a shell command with interpolated paths. No prompt injection or data-exfiltration intent was found.",
     "remediation": [
       {
-        "issue": "Shell command construction in validate_notebook.py",
-        "suggestion": "Replace sh -c pipelines with direct subprocess argument arrays and pass notebook paths as separate arguments to detect-secrets-hook.",
+        "issue": "Shell command construction in detect-secrets validation",
+        "suggestion": "Replace the sh -c pipeline with subprocess.run arguments, pass paths as separate argv values, and remove echo and xargs.",
         "severity": "high"
       },
       {
-        "issue": "Unsafe path interpolation in detect-secrets commands",
-        "suggestion": "Avoid echo and xargs for notebook paths. Add tests for paths containing quotes, spaces, and shell metacharacters.",
-        "severity": "high"
+        "issue": "External tool execution during notebook audits",
+        "suggestion": "Document that the validator runs uv, jupyter nbconvert, and detect-secrets, and request confirmation before running it on untrusted notebooks.",
+        "severity": "medium"
       },
       {
-        "issue": "External validator command dependency",
-        "suggestion": "Pin versions for nbconvert and detect-secrets tooling so validation behavior is reproducible across environments.",
+        "issue": "Implicit dependency execution through uv and uvx",
+        "suggestion": "Pin tool versions or vendor requirements, and avoid implicit package downloads during audit execution when possible.",
+        "severity": "medium"
+      },
+      {
+        "issue": "Placeholder secrets in documentation examples",
+        "suggestion": "Keep placeholder keys clearly labeled as examples or bad examples, and never include real credentials in skill documentation.",
         "severity": "low"
       }
     ],
@@ -990,389 +995,390 @@
       {
         "id": "external_commands:SKILL.md:10:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is Markdown inline code or workflow text, not executable Ruby backtick syntax. Executable behavior is implemented in validate_notebook.py and adjudicated separately."
+        "confidence": 0.9,
+        "reason": "This is markdown inline code or documentation text, not Ruby backtick execution. I found no executable shell interpolation at this location."
       },
       {
         "id": "external_commands:SKILL.md:18:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is Markdown inline code or workflow text, not executable Ruby backtick syntax. Executable behavior is implemented in validate_notebook.py and adjudicated separately."
+        "confidence": 0.9,
+        "reason": "This is markdown inline code or documentation text, not Ruby backtick execution. I found no executable shell interpolation at this location."
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is Markdown inline code or workflow text, not executable Ruby backtick syntax. Executable behavior is implemented in validate_notebook.py and adjudicated separately."
+        "confidence": 0.9,
+        "reason": "This is markdown inline code or documentation text, not Ruby backtick execution. I found no executable shell interpolation at this location."
       },
       {
         "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is Markdown inline code or workflow text, not executable Ruby backtick syntax. Executable behavior is implemented in validate_notebook.py and adjudicated separately."
+        "verdict": "confirmed",
+        "confidence": 0.74,
+        "severity": "medium",
+        "reason": "The workflow instructs the agent to run python3 validate_notebook.py with a user-supplied notebook path. That script invokes external tools, so this is a real command-execution surface."
       },
       {
         "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is Markdown inline code or workflow text, not executable Ruby backtick syntax. Executable behavior is implemented in validate_notebook.py and adjudicated separately."
+        "confidence": 0.9,
+        "reason": "This is markdown inline code or documentation text, not Ruby backtick execution. I found no executable shell interpolation at this location."
       },
       {
         "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is Markdown inline code or workflow text, not executable Ruby backtick syntax. Executable behavior is implemented in validate_notebook.py and adjudicated separately."
+        "confidence": 0.9,
+        "reason": "This is markdown inline code or documentation text, not Ruby backtick execution. I found no executable shell interpolation at this location."
       },
       {
         "id": "external_commands:SKILL.md:30:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is Markdown inline code or workflow text, not executable Ruby backtick syntax. Executable behavior is implemented in validate_notebook.py and adjudicated separately."
+        "confidence": 0.9,
+        "reason": "This is markdown inline code or documentation text, not Ruby backtick execution. I found no executable shell interpolation at this location."
       },
       {
         "id": "external_commands:SKILL.md:178:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is Markdown inline code or workflow text, not executable Ruby backtick syntax. Executable behavior is implemented in validate_notebook.py and adjudicated separately."
+        "confidence": 0.9,
+        "reason": "This is markdown inline code or documentation text, not Ruby backtick execution. I found no executable shell interpolation at this location."
       },
       {
         "id": "external_commands:SKILL.md:213:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is Markdown inline code or workflow text, not executable Ruby backtick syntax. Executable behavior is implemented in validate_notebook.py and adjudicated separately."
+        "confidence": 0.9,
+        "reason": "This is markdown inline code or documentation text, not Ruby backtick execution. I found no executable shell interpolation at this location."
       },
       {
         "id": "external_commands:SKILL.md:214:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is Markdown inline code or workflow text, not executable Ruby backtick syntax. Executable behavior is implemented in validate_notebook.py and adjudicated separately."
+        "confidence": 0.9,
+        "reason": "This is markdown inline code or documentation text, not Ruby backtick execution. I found no executable shell interpolation at this location."
       },
       {
         "id": "external_commands:SKILL.md:215:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is Markdown inline code or workflow text, not executable Ruby backtick syntax. Executable behavior is implemented in validate_notebook.py and adjudicated separately."
+        "confidence": 0.9,
+        "reason": "This is markdown inline code or documentation text, not Ruby backtick execution. I found no executable shell interpolation at this location."
       },
       {
         "id": "external_commands:SKILL.md:256:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is Markdown inline code or workflow text, not executable Ruby backtick syntax. Executable behavior is implemented in validate_notebook.py and adjudicated separately."
+        "confidence": 0.9,
+        "reason": "This is markdown inline code or documentation text, not Ruby backtick execution. I found no executable shell interpolation at this location."
       },
       {
         "id": "external_commands:SKILL.md:258:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is Markdown inline code or workflow text, not executable Ruby backtick syntax. Executable behavior is implemented in validate_notebook.py and adjudicated separately."
+        "confidence": 0.9,
+        "reason": "This is markdown inline code or documentation text, not Ruby backtick execution. I found no executable shell interpolation at this location."
       },
       {
         "id": "filesystem:SKILL.md:29:hidden-file-access",
         "verdict": "false_positive",
-        "confidence": 0.87,
-        "reason": "The line names a detect-secrets baseline under scripts for validation. It references a repository audit artifact, not hidden-file harvesting."
+        "confidence": 0.9,
+        "reason": "The hidden file reference is a standard detect-secrets baseline path used for comparison. It does not read or exfiltrate user secrets by itself."
       },
       {
         "id": "env_access:SKILL.md:85:python-environment-access",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line recommends dotenv or contrasts os.environ usage in documentation. It does not read or expose environment variables at runtime."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:SKILL.md:178:python-environment-access",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line recommends dotenv or contrasts os.environ usage in documentation. It does not read or expose environment variables at runtime."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:SKILL.md:214:python-environment-access",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line recommends dotenv or contrasts os.environ usage in documentation. It does not read or expose environment variables at runtime."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:SKILL.md:258:python-environment-access",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line recommends dotenv or contrasts os.environ usage in documentation. It does not read or expose environment variables at runtime."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:SKILL.md:85:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line recommends dotenv or contrasts os.environ usage in documentation. It does not read or expose environment variables at runtime."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:SKILL.md:178:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line recommends dotenv or contrasts os.environ usage in documentation. It does not read or expose environment variables at runtime."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:SKILL.md:214:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line recommends dotenv or contrasts os.environ usage in documentation. It does not read or expose environment variables at runtime."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:SKILL.md:258:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line recommends dotenv or contrasts os.environ usage in documentation. It does not read or expose environment variables at runtime."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:SKILL.md:260:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line recommends dotenv or contrasts os.environ usage in documentation. It does not read or expose environment variables at runtime."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:SKILL.md:85:python-dotenv-loader",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line recommends dotenv or contrasts os.environ usage in documentation. It does not read or expose environment variables at runtime."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:SKILL.md:178:python-dotenv-loader",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line recommends dotenv or contrasts os.environ usage in documentation. It does not read or expose environment variables at runtime."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:SKILL.md:214:python-dotenv-loader",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line recommends dotenv or contrasts os.environ usage in documentation. It does not read or expose environment variables at runtime."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:SKILL.md:258:generic-api-secret-keys",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The text is an anti-pattern example using placeholder API_KEY to discourage hardcoding. It does not contain a real secret or execute environment access."
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "blocker:SKILL.md:31:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is documentation or validation text rather than host reconnaissance. It does not inspect system state or enumerate the environment."
+        "confidence": 0.9,
+        "reason": "The matched text is rubric or validation wording, not system reconnaissance. It does not collect host details, enumerate sensitive files, or bypass controls."
       },
       {
         "id": "blocker:SKILL.md:126:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is documentation or validation text rather than host reconnaissance. It does not inspect system state or enumerate the environment."
+        "confidence": 0.9,
+        "reason": "The matched text is rubric or validation wording, not system reconnaissance. It does not collect host details, enumerate sensitive files, or bypass controls."
       },
       {
         "id": "blocker:SKILL.md:170:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is documentation or validation text rather than host reconnaissance. It does not inspect system state or enumerate the environment."
+        "confidence": 0.9,
+        "reason": "The matched text is rubric or validation wording, not system reconnaissance. It does not collect host details, enumerate sensitive files, or bypass controls."
       },
       {
         "id": "blocker:SKILL.md:271:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is documentation or validation text rather than host reconnaissance. It does not inspect system state or enumerate the environment."
+        "confidence": 0.9,
+        "reason": "The matched text is rubric or validation wording, not system reconnaissance. It does not collect host details, enumerate sensitive files, or bypass controls."
       },
       {
         "id": "external_commands:style_guide.md:63:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is a Markdown template or example that uses backticks for formatting. It is not Ruby or shell backtick execution."
+        "confidence": 0.9,
+        "reason": "This is markdown inline code or documentation text, not Ruby backtick execution. I found no executable shell interpolation at this location."
       },
       {
         "id": "external_commands:style_guide.md:133:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is a Markdown template or example that uses backticks for formatting. It is not Ruby or shell backtick execution."
+        "confidence": 0.9,
+        "reason": "This is markdown inline code or documentation text, not Ruby backtick execution. I found no executable shell interpolation at this location."
       },
       {
         "id": "network:style_guide.md:117:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is a documentation link to the Anthropic Console for obtaining an API key. It is not programmatic network access."
+        "confidence": 0.9,
+        "reason": "The hardcoded URL is an informational documentation link, not code that sends data over the network. I found no request or exfiltration behavior at this location."
       },
       {
         "id": "env_access:style_guide.md:98:python-environment-access",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The dotenv reference is setup guidance for notebooks. It is not code that exfiltrates environment values."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:style_guide.md:101:python-getenv-function",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The getenv reference appears inside a bad setup example for authors to avoid. It is documentation text, not executed skill code."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:style_guide.md:101:getenv-function-call",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The getenv reference appears inside a bad setup example for authors to avoid. It is documentation text, not executed skill code."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:style_guide.md:63:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The dotenv reference is setup guidance for notebooks. It is not code that exfiltrates environment values."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:style_guide.md:74:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The dotenv reference is setup guidance for notebooks. It is not code that exfiltrates environment values."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:style_guide.md:77:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The dotenv reference is setup guidance for notebooks. It is not code that exfiltrates environment values."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:style_guide.md:129:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The dotenv reference is setup guidance for notebooks. It is not code that exfiltrates environment values."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:style_guide.md:141:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The dotenv reference is setup guidance for notebooks. It is not code that exfiltrates environment values."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:style_guide.md:143:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The dotenv reference is setup guidance for notebooks. It is not code that exfiltrates environment values."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:style_guide.md:77:python-dotenv-loader",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The dotenv reference is setup guidance for notebooks. It is not code that exfiltrates environment values."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:style_guide.md:141:python-dotenv-loader",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The dotenv reference is setup guidance for notebooks. It is not code that exfiltrates environment values."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:style_guide.md:143:python-dotenv-loader",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The dotenv reference is setup guidance for notebooks. It is not code that exfiltrates environment values."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:style_guide.md:98:generic-api-secret-keys",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The line is a placeholder or example in a style guide for API key handling. No real credential is present or transmitted."
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:style_guide.md:101:generic-api-secret-keys",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The line is a placeholder or example in a style guide for API key handling. No real credential is present or transmitted."
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "env_access:style_guide.md:134:generic-api-secret-keys",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The line is a placeholder or example in a style guide for API key handling. No real credential is present or transmitted."
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "sensitive:style_guide.md:133:environment-file-access",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The line introduces a .env template with a placeholder API key. I found no instruction to read or disclose actual .env contents."
+        "confidence": 0.9,
+        "reason": "This appears in setup guidance or explicitly labeled good and bad examples with placeholder API key text. I found no real credential value or unauthorized environment access here."
       },
       {
         "id": "blocker:style_guide.md:50:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is documentation or validation text rather than host reconnaissance. It does not inspect system state or enumerate the environment."
+        "confidence": 0.9,
+        "reason": "The matched text is rubric or validation wording, not system reconnaissance. It does not collect host details, enumerate sensitive files, or bypass controls."
       },
       {
         "id": "blocker:style_guide.md:157:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is documentation or validation text rather than host reconnaissance. It does not inspect system state or enumerate the environment."
+        "confidence": 0.9,
+        "reason": "The matched text is rubric or validation wording, not system reconnaissance. It does not collect host details, enumerate sensitive files, or bypass controls."
       },
       {
         "id": "blocker:style_guide.md:166:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is documentation or validation text rather than host reconnaissance. It does not inspect system state or enumerate the environment."
+        "confidence": 0.9,
+        "reason": "The matched text is rubric or validation wording, not system reconnaissance. It does not collect host details, enumerate sensitive files, or bypass controls."
       },
       {
         "id": "external_commands:validate_notebook.py:82:python-subprocess-run",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "subprocess.run uses a fixed argument list with no shell interpolation. The notebook path is passed as a separate absolute argument, so this line does not create command injection."
+        "confidence": 0.78,
+        "reason": "This subprocess.run call uses an argv array with fixed uv and jupyter nbconvert arguments. The notebook path is passed as a separate argument, so I found no shell injection vector at this call."
       },
       {
         "id": "external_commands:validate_notebook.py:128:python-subprocess-run",
         "verdict": "confirmed",
-        "confidence": 0.9,
+        "confidence": 0.93,
         "severity": "high",
-        "reason": "subprocess.run executes the sh -c command assembled on lines 116-126. Because that command contains unescaped path values, this is a command injection risk."
+        "reason": "subprocess.run executes a command list that calls sh -c with the interpolated detect-secrets pipeline. The shell boundary makes crafted paths capable of changing command behavior."
       },
       {
         "id": "external_commands:validate_notebook.py:119:xargs-command-can-execute-arbitrary-commands",
         "verdict": "confirmed",
-        "confidence": 0.89,
+        "confidence": 0.92,
         "severity": "high",
-        "reason": "The shell pipeline interpolates notebook_abs, baseline_path, and plugins_path into sh -c before xargs. A crafted path containing quotes or shell metacharacters could alter the command."
+        "reason": "The detect-secrets command interpolates notebook_abs into a sh -c pipeline using echo and xargs. A crafted path containing quotes or shell metacharacters could alter the command."
       },
       {
         "id": "external_commands:validate_notebook.py:125:xargs-command-can-execute-arbitrary-commands",
         "verdict": "confirmed",
-        "confidence": 0.89,
+        "confidence": 0.91,
         "severity": "high",
-        "reason": "The no-baseline branch still builds a shell command with the user-provided notebook path inside an f-string. A malicious path can break quoting and inject shell syntax."
+        "reason": "The fallback detect-secrets command also interpolates notebook_abs into a shell pipeline. Because the notebook path is user controlled, this creates a command injection risk."
       },
       {
         "id": "network:validate_notebook.py:461:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This line prints the uv project URL in usage help. It does not make a network request."
+        "confidence": 0.78,
+        "reason": "The hardcoded URL is an informational documentation link, not code that sends data over the network. I found no request or exfiltration behavior at this location."
       },
       {
         "id": "blocker:validate_notebook.py:328:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The validator checks notebook model strings against a static allowlist. It does not perform host or system reconnaissance."
+        "confidence": 0.78,
+        "reason": "The matched text is rubric or validation wording, not system reconnaissance. It does not collect host details, enumerate sensitive files, or bypass controls."
       },
       {
         "id": "blocker:validate_notebook.py:329:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The validator checks notebook model strings against a static allowlist. It does not perform host or system reconnaissance."
+        "confidence": 0.78,
+        "reason": "The matched text is rubric or validation wording, not system reconnaissance. It does not collect host details, enumerate sensitive files, or bypass controls."
       },
       {
         "id": "blocker:validate_notebook.py:368:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The validator checks notebook model strings against a static allowlist. It does not perform host or system reconnaissance."
+        "confidence": 0.78,
+        "reason": "The matched text is rubric or validation wording, not system reconnaissance. It does not collect host details, enumerate sensitive files, or bypass controls."
       },
       {
         "id": "blocker:validate_notebook.py:379:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The validator checks notebook model strings against a static allowlist. It does not perform host or system reconnaissance."
+        "confidence": 0.78,
+        "reason": "The matched text is rubric or validation wording, not system reconnaissance. It does not collect host details, enumerate sensitive files, or bypass controls."
       },
       {
         "id": "blocker:validate_notebook.py:380:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The validator checks notebook model strings against a static allowlist. It does not perform host or system reconnaissance."
+        "confidence": 0.78,
+        "reason": "The matched text is rubric or validation wording, not system reconnaissance. It does not collect host details, enumerate sensitive files, or bypass controls."
       },
       {
         "id": "blocker:validate_notebook.py:482:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is documentation or validation text rather than host reconnaissance. It does not inspect system state or enumerate the environment."
+        "confidence": 0.78,
+        "reason": "The matched text is rubric or validation wording, not system reconnaissance. It does not collect host details, enumerate sensitive files, or bypass controls."
       }
     ],
     "semantic_findings": [],
@@ -1391,8 +1397,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "high",
-        "confidence": 0.9,
-        "confidence_reasoning": "subprocess.run executes the sh -c command assembled on lines 116-126. Because that command contains unescaped path values, this is a command injection risk."
+        "confidence": 0.93,
+        "confidence_reasoning": "subprocess.run executes a command list that calls sh -c with the interpolated detect-secrets pipeline. The shell boundary makes crafted paths capable of changing command behavior."
       },
       {
         "title": "xargs command (can execute arbitrary commands)",
@@ -1407,8 +1413,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.89,
-        "confidence_reasoning": "The shell pipeline interpolates notebook_abs, baseline_path, and plugins_path into sh -c before xargs. A crafted path containing quotes or shell metacharacters could alter the command."
+        "confidence": 0.92,
+        "confidence_reasoning": "The detect-secrets command interpolates notebook_abs into a sh -c pipeline using echo and xargs. A crafted path containing quotes or shell metacharacters could alter the command."
       },
       {
         "title": "xargs command (can execute arbitrary commands)",
@@ -1423,23 +1429,40 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.89,
-        "confidence_reasoning": "The no-baseline branch still builds a shell command with the user-provided notebook path inside an f-string. A malicious path can break quoting and inject shell syntax."
+        "confidence": 0.91,
+        "confidence_reasoning": "The fallback detect-secrets command also interpolates notebook_abs into a shell pipeline. Because the notebook path is user controlled, this creates a command injection risk."
       }
     ],
-    "medium_findings": [],
+    "medium_findings": [
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "3. **Run automated checks**: Use `python3 validate_notebook.py <path>` to catch technical issues and",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 26,
+            "line_end": 26
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.74,
+        "confidence_reasoning": "The workflow instructs the agent to run python3 validate_notebook.py with a user-supplied notebook path. That script invokes external tools, so this is a real command-execution surface."
+      }
+    ],
     "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 4,
     "total_lines": 962,
     "audit_model": "codex",
-    "audited_at": "2026-07-07T21:57:57.691Z",
+    "audited_at": "2026-07-08T14:43:59.420Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Audit Anthropic Cookbook Notebooks",
-    "value_statement": "Cookbook notebooks can drift from style, setup, and security standards before review. This skill combines automated checks with a rubric-based content audit.",
+    "value_statement": "Notebook reviewers need consistent checks for structure, code quality, setup, and learning value. This skill combines a rubric, style guide, and validator script for focused cookbook audits.",
     "seo_keywords": [
       "Claude",
       "Codex",
@@ -1447,122 +1470,129 @@
       "Anthropic Cookbook audit",
       "notebook review",
       "Jupyter notebook validation",
-      "detect-secrets",
-      "cookbook rubric",
-      "AI documentation quality",
-      "technical content audit"
+      "AI cookbook rubric",
+      "technical documentation QA",
+      "cookbook style guide",
+      "Python notebook checks"
     ],
     "actual_capabilities": [
-      "Reads the included style guide before reviewing a cookbook notebook.",
-      "Runs a validator that converts notebooks to markdown for easier review.",
-      "Checks introductions, prerequisites, setup, conclusions, and code explanations.",
-      "Scans notebook content for possible hardcoded secrets when tooling is available.",
-      "Scores narrative quality, code quality, technical accuracy, and actionability.",
-      "Produces prioritized recommendations with concrete notebook references."
+      "Guides notebook audits with a four-part scoring rubric.",
+      "Uses the included style guide for introductions, setup, structure, and conclusions.",
+      "Runs a validator script that converts notebooks to markdown for review.",
+      "Checks for hardcoded secrets, invalid model names, noisy output, and weak setup patterns.",
+      "Produces scored reports with strengths, critical issues, recommendations, and examples."
     ],
     "limitations": [
-      "It is tuned for Anthropic Cookbook standards, not every notebook style.",
-      "It requires a local notebook path and working Python command-line tools.",
-      "Automated checks do not replace manual technical review.",
-      "It may miss project-specific requirements outside the rubric."
+      "Designed for Anthropic Cookbook notebooks, not every notebook format.",
+      "Automated checks depend on Python, uv, nbconvert, and optional detect-secrets tooling.",
+      "The validator does not execute notebook cells or prove all examples are correct.",
+      "Manual judgment is still required for narrative quality and technical accuracy."
     ],
     "use_cases": [
       {
-        "title": "Review a Cookbook Pull Request",
-        "description": "Apply the rubric to a submitted notebook and return a clear score with required fixes.",
-        "target_user": "Documentation maintainer"
+        "title": "Review incoming cookbook contributions",
+        "description": "Apply the rubric before maintainers approve a new notebook for publication.",
+        "target_user": "Cookbook maintainer"
       },
       {
-        "title": "Prepare a Notebook for Submission",
-        "description": "Find missing setup details, weak introductions, noisy outputs, and unclear code explanations before review.",
-        "target_user": "Cookbook author"
+        "title": "Improve learning-focused notebook drafts",
+        "description": "Check objectives, setup, explanations, and conclusions before editorial review.",
+        "target_user": "Technical writer"
       },
       {
-        "title": "Check Security and Model Hygiene",
-        "description": "Scan for possible secrets, dated model IDs, invalid model names, and weak environment setup practices.",
-        "target_user": "Technical reviewer"
+        "title": "Prepare educational examples for release",
+        "description": "Find setup, model naming, secret handling, and output issues before sharing a notebook.",
+        "target_user": "Developer educator"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Audit One Notebook",
-        "scenario": "Beginner review with a provided notebook path.",
-        "prompt": "Audit this Anthropic Cookbook notebook: <path>. Run the automated validator, review the markdown output, and give a score with the top fixes."
+        "title": "Audit a notebook",
+        "scenario": "Beginner review with a provided path",
+        "prompt": "Audit the Anthropic Cookbook notebook at [path]. Use the cookbook-audit rubric and give a concise scored report."
       },
       {
-        "title": "Focus on Learning Quality",
-        "scenario": "Intermediate review focused on teaching effectiveness.",
-        "prompt": "Review <path> for narrative quality and actionability. Check the introduction, learning objectives, explanations before code, and conclusion mapping."
+        "title": "Review structure and setup",
+        "scenario": "Focused review for early drafts",
+        "prompt": "Review [path] for introduction quality, prerequisites, setup, and conclusion mapping. Prioritize the top five fixes."
       },
       {
-        "title": "Check Technical Readiness",
-        "scenario": "Intermediate review focused on implementation details.",
-        "prompt": "Audit <path> for technical accuracy, setup quality, model naming, dependency handling, output management, and possible hardcoded secrets."
+        "title": "Validate and score readiness",
+        "scenario": "Standard publication readiness check",
+        "prompt": "Run the automated validation for [path], inspect the markdown output, then score the notebook across all rubric dimensions."
       },
       {
-        "title": "Compare Against the Full Rubric",
-        "scenario": "Advanced review for publication readiness.",
-        "prompt": "Perform a full cookbook audit for <path>. Score all four dimensions, cite specific notebook sections, separate blockers from suggestions, and propose exact revisions."
+        "title": "Produce a remediation plan",
+        "scenario": "Advanced review for maintainers",
+        "prompt": "Audit [path] against the style guide and create a prioritized remediation plan with section references and rewrite suggestions."
       }
     ],
     "output_examples": [
       {
-        "input": "Audit a notebook that lacks learning objectives and has noisy installation output.",
-        "output": "The report gives a lower narrative and actionability score, flags missing objectives, recommends suppressed installation output, and lists publication blockers first."
+        "input": "Audit a customer support automation cookbook notebook.",
+        "output": [
+          "Overall score: 15 out of 20.",
+          "Key strengths: clear problem framing and useful examples.",
+          "Critical issues: setup does not use dotenv, and the conclusion does not map back to objectives.",
+          "Recommended fixes: tighten prerequisites, add objective mapping, and replace repeated model names with one constant."
+        ]
       },
       {
-        "input": "Review a notebook that uses a dated Claude model ID and a weak conclusion.",
-        "output": "The report identifies the dated model issue, suggests a supported alias, and asks for a conclusion that maps back to stated learning objectives."
+        "input": "Review only the setup and code quality for a draft notebook.",
+        "output": [
+          "Setup review found three issues.",
+          "The install step should suppress pip output.",
+          "The notebook should use one grouped dependency install.",
+          "Secret handling should use an environment file and clear placeholder instructions."
+        ]
       },
       {
-        "input": "Check a cookbook draft before opening a pull request.",
-        "output": "The report summarizes readiness, lists the strongest sections, and gives prioritized edits for setup, explanations, examples, and security hygiene."
+        "input": "Create a remediation plan for a notebook before publication.",
+        "output": [
+          "Priority one: rewrite the introduction around the user problem.",
+          "Priority two: add specific learning objectives and map them in the conclusion.",
+          "Priority three: add explanations before and after important code cells."
+        ]
       }
     ],
     "best_practices": [
-      "Run the automated validator before the manual rubric review.",
-      "Cite specific notebook cells or sections when giving recommendations.",
-      "Separate critical publication blockers from optional quality improvements."
+      "Read the style guide before scoring any notebook.",
+      "Run automated validation first, then inspect the generated markdown review file.",
+      "Support every score and recommendation with specific notebook evidence."
     ],
     "anti_patterns": [
-      "Scoring a notebook without reading the style guide first.",
-      "Treating automated checks as a complete content review.",
-      "Giving generic feedback without concrete notebook references."
+      "Do not score a notebook without citing concrete evidence.",
+      "Do not treat automated validation as a complete manual review.",
+      "Do not ignore setup, secret handling, model naming, or output requirements."
     ],
     "faq": [
       {
         "question": "What does this skill audit?",
-        "answer": "It audits Anthropic Cookbook Jupyter notebooks against a style guide, validation checks, and a four-part scoring rubric."
+        "answer": "It audits Anthropic Cookbook notebooks for narrative quality, code quality, technical accuracy, and reader actionability."
       },
       {
-        "question": "Does it run code inside the notebook?",
-        "answer": "The validator converts notebooks to markdown and inspects cells. It is not designed to execute notebook cells."
+        "question": "Does it run notebook cells?",
+        "answer": "No. The validator converts notebooks to markdown and checks patterns, but it does not execute notebook cells."
       },
       {
-        "question": "Can it detect hardcoded secrets?",
-        "answer": "It attempts to run detect-secrets and also includes fallback pattern checks for common API key formats."
+        "question": "What tools does it need?",
+        "answer": "It uses Python and may use uv, nbconvert, and detect-secrets for automated validation."
       },
       {
-        "question": "What score does it produce?",
-        "answer": "It scores narrative quality, code quality, technical accuracy, and actionability for a total out of 20."
+        "question": "Can it review non-Anthropic notebooks?",
+        "answer": "It can provide useful feedback, but the rubric is tailored to Anthropic Cookbook standards."
       },
       {
-        "question": "Can I use it for non-Anthropic notebooks?",
-        "answer": "You can, but the recommendations are based on Anthropic Cookbook standards and may not fit other formats."
+        "question": "Does it detect hardcoded secrets?",
+        "answer": "Yes. The validator uses detect-secrets when available and falls back to basic secret patterns."
       },
       {
-        "question": "What should I provide to start?",
-        "answer": "Provide the local path to the notebook that needs review."
+        "question": "What output should I expect?",
+        "answer": "Expect a scored audit report with strengths, critical issues, detailed scoring, and prioritized recommendations."
       }
     ]
   },
   "file_structure": [
-    {
-      "name": ".gitignore",
-      "type": "file",
-      "path": ".gitignore",
-      "lines": 5
-    },
     {
       "name": "SKILL.md",
       "type": "file",

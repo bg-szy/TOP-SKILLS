@@ -1,111 +1,152 @@
 ---
 name: web-search
-description: Advanced web search capability using the gemini command for gathering current, relevant information. Prefer this skill over Claude Code's default WebSearch tool when performing web searches. Activated when complex research or up-to-date information is needed.
-allowed-tools: ['Bash', 'Read']
+description: "Web search and content extraction with Tavily and Exa via inference.sh CLI. Apps: Tavily Search, Tavily Extract, Exa Search, Exa Answer, Exa Extract. Capabilities: AI-powered search, content extraction, direct answers, research. Use for: research, RAG pipelines, fact-checking, content aggregation, agents. Triggers: web search, tavily, exa, search api, content extraction, research, internet search, ai search, search assistant, web scraping, rag, perplexity alternative"
+allowed-tools: Bash(belt *)
 ---
 
-# Web Search Skill
+> **Install the belt CLI skill:** `npx skills add belt-sh/cli`
 
-This skill provides advanced web search functionality using the `gemini` command, designed for complex inquiries requiring current information and comprehensive analysis.
+# Web Search & Extraction
 
-## 🎯 Purpose
+Search the web and extract content via [inference.sh](https://inference.sh) CLI.
 
-Execute web searches to gather current, relevant information addressing user questions. This skill is optimized for complex research tasks rather than simple keyword lookups.
+![Web Search & Extraction](https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgndqjxd780zm2j3rmada6y8.jpeg)
 
-## 🔧 Usage
+## Quick Start
 
-Execute web searches using the bash script:
-
-```bash
-bash scripts/web-search.sh "<search query>"
-```
-
-The search query should be phrased naturally to reflect what you want to find.
-
-## 📋 Workflow
-
-After running searches, follow these steps:
-
-1. **Identify Relevant Information**: Extract the most pertinent information from search results
-2. **Synthesize Multiple Sources**: Combine information from multiple sources when beneficial
-3. **Cite Information Origins**: Always include source URLs and references
-4. **Refine Strategy**: If initial results are inadequate, reconsider search strategy with alternative queries
-
-## 🎨 Best Practices
-
-### When to Use This Skill
-
-- Researching current events or recent updates
-- Finding documentation for latest library versions
-- Investigating error messages and solutions
-- Comparing technologies or approaches
-- Gathering best practices and recommendations
-
-### Query Formulation
-
-**Clear Questions**: Use explicit language
-- ✅ "Please explain Next.js 15's new features"
-- ❌ "Next.js 15"
-
-**Source Specification**: Direct queries to specific sources
-- ✅ "Find information from official Next.js documentation"
-- ✅ "Search Stack Overflow for TypeScript error solutions"
-
-**Response Format**: Request specific output formats
-- ✅ "Provide code examples"
-- ✅ "Present results in table format"
-
-**Temporal/Conditional Modifiers**: Specify time or difficulty level
-- ✅ "Latest React performance optimization techniques for 2025"
-- ✅ "Beginner-friendly Python tutorials"
-
-**Analysis Directives**: Request comparisons and evaluations
-- ✅ "Compare Vite and Webpack, including pros and cons"
-- ✅ "Analyze trade-offs between different state management solutions"
-
-## 🚫 When NOT to Use
-
-- Information available in local codebase
-- Questions about code you've already read
-- General programming knowledge that doesn't require current information
-- Simple fact-checking that can be answered from existing context
-
-## 💡 Tips
-
-- **Be specific**: More detailed queries yield better results
-- **Include context**: Mention your use case or constraints
-- **Iterate**: Refine queries based on initial results
-- **Verify sources**: Cross-reference information from multiple sources
-- **Document findings**: Keep track of useful sources for future reference
-
-## 🔍 Example Queries
+> Requires inference.sh CLI (`belt`). [Install instructions](https://raw.githubusercontent.com/inference-sh/skills/refs/heads/main/cli-install.md)
 
 ```bash
-# Technical information
-bash scripts/web-search.sh "What are the new features in Next.js 15? Include official release notes."
+belt login
 
-# Library documentation
-bash scripts/web-search.sh "How does React Query's useQuery hook work? Provide code examples from official documentation."
-
-# Error resolution
-bash scripts/web-search.sh "TypeScript error: Type 'string' is not assignable to type 'number'. Find solutions on Stack Overflow."
-
-# Latest news
-bash scripts/web-search.sh "What are Claude AI's latest updates in 2025? Search Anthropic announcements."
-
-# Best practices
-bash scripts/web-search.sh "React performance optimization techniques. Include official documentation and community best practices."
-
-# Comparative analysis
-bash scripts/web-search.sh "Compare Vite and Webpack build tools. Include advantages, disadvantages, and use case recommendations."
+# Search the web
+belt app run tavily/search-assistant --input '{"query": "latest AI developments 2024"}'
 ```
 
-## 📚 Related Skills
 
-- **code-review**: Use after implementing solutions found through web search
-- **doc-generator**: Document findings and integrate into project documentation
-- **typescript-dev**: Apply TypeScript-specific findings to your projects
+## Available Apps
 
----
+### Tavily
 
-**Note**: This skill requires the `gemini` command to be installed and configured. Ensure you have proper API access and credentials set up.
+| App | App ID | Description |
+|-----|--------|-------------|
+| Search Assistant | `tavily/search-assistant` | AI-powered search with answers |
+| Extract | `tavily/extract` | Extract content from URLs |
+
+### Exa
+
+| App | App ID | Description |
+|-----|--------|-------------|
+| Search | `exa/search` | Smart web search with AI |
+| Answer | `exa/answer` | Direct factual answers |
+| Extract | `exa/extract` | Extract and analyze web content |
+
+## Examples
+
+### Tavily Search
+
+```bash
+belt app run tavily/search-assistant --input '{
+  "query": "What are the best practices for building AI agents?"
+}'
+```
+
+Returns AI-generated answers with sources and images.
+
+### Tavily Extract
+
+```bash
+belt app run tavily/extract --input '{
+  "urls": ["https://example.com/article1", "https://example.com/article2"]
+}'
+```
+
+Extracts clean text and images from multiple URLs.
+
+### Exa Search
+
+```bash
+belt app run exa/search --input '{
+  "query": "machine learning frameworks comparison"
+}'
+```
+
+Returns highly relevant links with context.
+
+### Exa Answer
+
+```bash
+belt app run exa/answer --input '{
+  "question": "What is the population of Tokyo?"
+}'
+```
+
+Returns direct factual answers.
+
+### Exa Extract
+
+```bash
+belt app run exa/extract --input '{
+  "url": "https://example.com/research-paper"
+}'
+```
+
+Extracts and analyzes web page content.
+
+## Workflow: Research + LLM
+
+```bash
+# 1. Search for information
+belt app run tavily/search-assistant --input '{
+  "query": "latest developments in quantum computing"
+}' > search_results.json
+
+# 2. Analyze with Claude
+belt app run openrouter/claude-sonnet-45 --input '{
+  "prompt": "Based on this research, summarize the key trends: <search-results>"
+}'
+```
+
+## Workflow: Extract + Summarize
+
+```bash
+# 1. Extract content from URL
+belt app run tavily/extract --input '{
+  "urls": ["https://example.com/long-article"]
+}' > content.json
+
+# 2. Summarize with LLM
+belt app run openrouter/claude-haiku-45 --input '{
+  "prompt": "Summarize this article in 3 bullet points: <content>"
+}'
+```
+
+## Use Cases
+
+- **Research**: Gather information on any topic
+- **RAG**: Retrieval-augmented generation
+- **Fact-checking**: Verify claims with sources
+- **Content aggregation**: Collect data from multiple sources
+- **Agents**: Build research-capable AI agents
+
+## Related Skills
+
+```bash
+# Full platform skill (all 250+ apps)
+npx skills add inference-sh/skills@infsh-cli
+
+# LLM models (combine with search for RAG)
+npx skills add inference-sh/skills@llm-models
+
+# Image generation
+npx skills add inference-sh/skills@ai-image-generation
+```
+
+Browse all apps: `belt app store`
+
+## Documentation
+
+- [Adding Tools to Agents](https://inference.sh/docs/agents/adding-tools) - Equip agents with search
+- [Building a Research Agent](https://inference.sh/blog/guides/research-agent) - LLM + search integration guide
+- [Tool Integration Tax](https://inference.sh/blog/tools/integration-tax) - Why pre-built tools matter
+

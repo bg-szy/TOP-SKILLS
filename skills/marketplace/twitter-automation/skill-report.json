@@ -1,23 +1,20 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-05T15:11:16.484Z",
-    "slug": "halt-catch-fire-twitter-automation",
-    "source_url": "https://github.com/halt-catch-fire/skills/tree/main/tools/social/twitter-automation/",
+    "generated_at": "2026-07-08T14:06:02.070Z",
+    "slug": "101-skills-twitter-automation",
+    "source_url": "https://github.com/101-skills/skills/tree/main/tools/social/twitter-automation/",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "60f7d62f928793da401bc1b48e6bc11a715fc9ac7ec870700b3aa1c7ed165d26",
-    "tree_hash": "52ac4f5c653f108ee15a83f533725b8e4d7f75dfd030231c2751ed0cdbfb6fad",
+    "tree_hash": "7dc999eb72c85b05b7fdc5f906598d8f30c234eb26889868a2a92c04ab4514ec",
     "provenance": {
-      "model_requested": "gpt-5.5:high",
-      "model_effective": "codex:gpt-5.5:high",
+      "model_effective": "codex",
       "fallback_chain": [
         {
           "agent": "codex",
-          "model": "gpt-5.5",
-          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -26,11 +23,11 @@
   },
   "skill": {
     "name": "twitter-automation",
-    "description": "Automate Twitter/X tasks through the belt CLI, including posting, media posts, likes, retweets, direct messages, follows, profile lookup, and post lookup.",
-    "summary": "Run Twitter/X posting and engagement actions through inference.sh belt apps.",
+    "description": "Use the inference.sh belt CLI to manage Twitter/X posts, media posts, likes, retweets, DMs, follows, deletes, and profile lookups.",
+    "summary": "Run Twitter/X posting and engagement workflows through the inference.sh belt CLI.",
     "icon": "📦",
     "version": "1.0.0",
-    "author": "halt-catch-fire",
+    "author": "101-skills",
     "license": "MIT",
     "tags": [
       "twitter",
@@ -51,26 +48,31 @@
     "category": "communication"
   },
   "security_audit": {
-    "risk_level": "high",
+    "risk_level": "medium",
     "is_blocked": false,
-    "safe_to_publish": false,
+    "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The skill is a Markdown wrapper around the belt CLI for Twitter/X automation. Several static backtick findings are Markdown false positives, but the real command examples can post, delete, like, retweet, message, follow, and install related skills. No prompt injection text was found, but automated engagement and messaging create a high-risk abuse path.",
+    "summary": "The skill is documentation-only, but it includes actionable belt and npx commands for installing external skills and performing authenticated Twitter/X actions. I confirmed real command-execution and account-mutation examples, while marking markdown fences, app identifiers, and ordinary documentation links as false positives. No prompt injection text was found.",
     "remediation": [
       {
-        "issue": "Commands can mutate a connected Twitter/X account.",
-        "suggestion": "Require explicit user confirmation before posting, deleting, liking, retweeting, following, or sending direct messages.",
+        "issue": "External package installation through npx",
+        "suggestion": "Pin trusted package sources, prefer signed releases, and tell users to review package provenance before installing related skills.",
         "severity": "medium"
       },
       {
-        "issue": "Direct message, follow, and engagement examples can enable spam or social engineering.",
-        "suggestion": "Add consent, rate-limit, and policy checks. Remove language that promotes engagement bots or audience growth automation.",
-        "severity": "high"
+        "issue": "Authenticated Twitter/X mutations",
+        "suggestion": "Require explicit user confirmation before posting, deleting, sending DMs, following users, liking, or retweeting from a connected account.",
+        "severity": "medium"
       },
       {
-        "issue": "Setup instructions use npx to install additional skills.",
-        "suggestion": "Pin trusted package sources and versions. Ask users to review package provenance before running install commands.",
+        "issue": "Third-party CLI authentication dependency",
+        "suggestion": "Document where belt stores credentials, how users can revoke access, and how to avoid exposing account tokens.",
         "severity": "medium"
+      },
+      {
+        "issue": "Embedded remote image in documentation",
+        "suggestion": "Use a local marketplace asset or make the remote image optional to reduce automatic third-party requests during rendering.",
+        "severity": "low"
       }
     ],
     "risk_factor_evidence": [
@@ -751,337 +753,326 @@
       {
         "id": "external_commands:SKILL.md:7:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "severity": "medium",
-        "reason": "The line instructs users to run npx to install another skill package. That is an external command with supply-chain risk, even though it is presented as setup documentation."
+        "confidence": 0.86,
+        "reason": "This line instructs users to run npx to install an external CLI skill package. That executes code from the package ecosystem and is a real supply-chain risk.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:17:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "The backticks only format the belt command name inside a requirement sentence. This line does not include an executable command invocation."
+        "confidence": 0.87,
+        "reason": "This is inline documentation naming the belt CLI and linking to install instructions. The separate network finding covers the URL, and no shell command is executed here."
       },
       {
         "id": "external_commands:SKILL.md:19:ruby-shell-backtick-execution",
         "verdict": "confirmed",
         "confidence": 0.9,
-        "severity": "medium",
-        "reason": "The quick start includes belt login and a belt app run call that can authenticate and post to Twitter/X. These are intended external commands with account side effects."
+        "reason": "The fenced block contains belt login and a belt app run command that can authenticate and post to a connected Twitter/X account. This is legitimate functionality, but it is real external command execution.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The flagged text is a Markdown code-fence delimiter, not shell backtick execution. The delimiter itself cannot execute commands."
+        "confidence": 0.87,
+        "reason": "This finding points to a markdown fence boundary after the quick-start block. The executable commands are covered by the adjacent confirmed finding."
       },
       {
         "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The flagged backticks wrap an app identifier in a Markdown table, not executable shell or Ruby code. No command line is present at this location."
+        "confidence": 0.87,
+        "reason": "This table row contains an app identifier in inline code, not a shell command. There is no execution or command injection path in the row."
       },
       {
         "id": "external_commands:SKILL.md:32:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The flagged backticks wrap an app identifier in a Markdown table, not executable shell or Ruby code. No command line is present at this location."
+        "confidence": 0.87,
+        "reason": "This table row contains an app identifier in inline code, not a shell command. There is no execution or command injection path in the row."
       },
       {
         "id": "external_commands:SKILL.md:33:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The flagged backticks wrap an app identifier in a Markdown table, not executable shell or Ruby code. No command line is present at this location."
+        "confidence": 0.87,
+        "reason": "This table row contains an app identifier in inline code, not a shell command. There is no execution or command injection path in the row."
       },
       {
         "id": "external_commands:SKILL.md:34:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The flagged backticks wrap an app identifier in a Markdown table, not executable shell or Ruby code. No command line is present at this location."
+        "confidence": 0.87,
+        "reason": "This table row contains an app identifier in inline code, not a shell command. There is no execution or command injection path in the row."
       },
       {
         "id": "external_commands:SKILL.md:35:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The flagged backticks wrap an app identifier in a Markdown table, not executable shell or Ruby code. No command line is present at this location."
+        "confidence": 0.87,
+        "reason": "This table row contains an app identifier in inline code, not a shell command. There is no execution or command injection path in the row."
       },
       {
         "id": "external_commands:SKILL.md:36:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The flagged backticks wrap an app identifier in a Markdown table, not executable shell or Ruby code. No command line is present at this location."
+        "confidence": 0.87,
+        "reason": "This table row contains an app identifier in inline code, not a shell command. There is no execution or command injection path in the row."
       },
       {
         "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The flagged backticks wrap an app identifier in a Markdown table, not executable shell or Ruby code. No command line is present at this location."
+        "confidence": 0.87,
+        "reason": "This table row contains an app identifier in inline code, not a shell command. There is no execution or command injection path in the row."
       },
       {
         "id": "external_commands:SKILL.md:38:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The flagged backticks wrap an app identifier in a Markdown table, not executable shell or Ruby code. No command line is present at this location."
+        "confidence": 0.87,
+        "reason": "This table row contains an app identifier in inline code, not a shell command. There is no execution or command injection path in the row."
       },
       {
         "id": "external_commands:SKILL.md:39:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The flagged backticks wrap an app identifier in a Markdown table, not executable shell or Ruby code. No command line is present at this location."
+        "confidence": 0.87,
+        "reason": "This table row contains an app identifier in inline code, not a shell command. The next executable example is covered by a later finding."
       },
       {
         "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "severity": "medium",
-        "reason": "The example runs belt app run x/post-tweet, which posts content through an external service. This is intended command execution with public account side effects."
+        "confidence": 0.88,
+        "reason": "The block contains a belt app run command that posts content to Twitter/X through an external CLI. The command performs an authenticated account action.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:47:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The flagged text is a Markdown code-fence delimiter, not shell backtick execution. The delimiter itself cannot execute commands."
+        "confidence": 0.87,
+        "reason": "This finding points to a markdown fence boundary and heading text. The actual post command is covered by the preceding confirmed finding."
       },
       {
         "id": "external_commands:SKILL.md:51:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "severity": "medium",
-        "reason": "The example runs belt commands to create an input file and post media through x/post-create. It has external service and account side effects."
+        "confidence": 0.88,
+        "reason": "The block runs belt commands to create sample input and post media through the external CLI. It also relies on a local input file passed to the command.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:61:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The flagged text is a Markdown code-fence delimiter, not shell backtick execution. The delimiter itself cannot execute commands."
+        "confidence": 0.87,
+        "reason": "This finding points to a markdown fence boundary and heading text. The actual media command block is covered by the preceding confirmed finding."
       },
       {
         "id": "external_commands:SKILL.md:65:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "severity": "medium",
-        "reason": "The example runs belt app run x/post-like against a tweet ID. It performs an external account action on Twitter/X."
+        "confidence": 0.86,
+        "reason": "The block runs belt app run x/post-like against a tweet ID. This is an authenticated engagement action through an external CLI.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The flagged text is a Markdown code-fence delimiter, not shell backtick execution. The delimiter itself cannot execute commands."
+        "confidence": 0.87,
+        "reason": "This finding points to a markdown fence boundary and heading text. The actual like command is covered by the preceding confirmed finding."
       },
       {
         "id": "external_commands:SKILL.md:71:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "severity": "medium",
-        "reason": "The example runs belt app run x/post-retweet against a tweet ID. It performs an external account action that can amplify content."
+        "confidence": 0.86,
+        "reason": "The block runs belt app run x/post-retweet against a tweet ID. This is an authenticated public engagement action through an external CLI.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:73:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The flagged text is a Markdown code-fence delimiter, not shell backtick execution. The delimiter itself cannot execute commands."
+        "confidence": 0.87,
+        "reason": "This finding points to a markdown fence boundary and heading text. The actual retweet command is covered by the preceding confirmed finding."
       },
       {
         "id": "external_commands:SKILL.md:77:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "severity": "medium",
-        "reason": "The example runs belt app run x/dm-send with recipient and message text. It can send direct messages from the connected account."
+        "confidence": 0.88,
+        "reason": "The block runs belt app run x/dm-send with a recipient and message. This can send authenticated direct messages from the connected account.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The flagged text is a Markdown code-fence delimiter, not shell backtick execution. The delimiter itself cannot execute commands."
+        "confidence": 0.87,
+        "reason": "This finding points to a markdown fence boundary and heading text. The actual direct-message command is covered by the preceding confirmed finding."
       },
       {
         "id": "external_commands:SKILL.md:86:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "severity": "medium",
-        "reason": "The example runs belt app run x/user-follow for a username. It performs an external account-follow action."
+        "confidence": 0.86,
+        "reason": "The block runs belt app run x/user-follow against a username. This performs an authenticated follow action through an external CLI.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The flagged text is a Markdown code-fence delimiter, not shell backtick execution. The delimiter itself cannot execute commands."
+        "confidence": 0.87,
+        "reason": "This finding points to a markdown fence boundary and heading text. The actual follow command is covered by the preceding confirmed finding."
       },
       {
         "id": "external_commands:SKILL.md:92:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "severity": "medium",
-        "reason": "The example runs belt app run x/user-get and contacts an external service to retrieve account data. It is an intended external command, though read-only."
+        "confidence": 0.78,
+        "reason": "The block runs belt app run x/user-get, which calls an external service to retrieve a profile. It is read-only but still executes an external CLI command.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:94:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The flagged text is a Markdown code-fence delimiter, not shell backtick execution. The delimiter itself cannot execute commands."
+        "confidence": 0.87,
+        "reason": "This finding points to a markdown fence boundary and heading text. The actual profile lookup command is covered by the preceding confirmed finding."
       },
       {
         "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "severity": "medium",
-        "reason": "The example runs belt app run x/post-get and contacts an external service to retrieve post data. It is an intended external command, though read-only."
+        "confidence": 0.78,
+        "reason": "The block runs belt app run x/post-get, which calls an external service to retrieve post details. It is read-only but still executes an external CLI command.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:100:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The flagged text is a Markdown code-fence delimiter, not shell backtick execution. The delimiter itself cannot execute commands."
+        "confidence": 0.87,
+        "reason": "This finding points to a markdown fence boundary and heading text. The actual post lookup command is covered by the preceding confirmed finding."
       },
       {
         "id": "external_commands:SKILL.md:104:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "severity": "medium",
-        "reason": "The example runs belt app run x/post-delete against a tweet ID. It can delete content from the connected Twitter/X account."
+        "confidence": 0.88,
+        "reason": "The block runs belt app run x/post-delete against a tweet ID. This can delete content from the connected Twitter/X account.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:106:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The flagged text is a Markdown code-fence delimiter, not shell backtick execution. The delimiter itself cannot execute commands."
+        "confidence": 0.87,
+        "reason": "This finding points to a markdown fence boundary and heading text. The actual delete command is covered by the preceding confirmed finding."
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
         "verdict": "confirmed",
         "confidence": 0.9,
-        "severity": "medium",
-        "reason": "The workflow runs belt commands for AI image generation and then posting media. It combines external service calls with public social posting."
+        "reason": "The workflow runs belt commands for image generation and Twitter/X posting, including output redirection to image.json. It executes external services and then publishes media.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The flagged text is a Markdown code-fence delimiter, not shell backtick execution. The delimiter itself cannot execute commands."
+        "confidence": 0.87,
+        "reason": "This finding points to a markdown fence boundary and heading text. The actual image workflow commands are covered by the preceding confirmed finding."
       },
       {
         "id": "external_commands:SKILL.md:123:ruby-shell-backtick-execution",
         "verdict": "confirmed",
         "confidence": 0.9,
-        "severity": "medium",
-        "reason": "The workflow runs belt commands for AI video generation and then posting media. It combines external service calls with public social posting."
+        "reason": "The workflow runs belt commands for video generation and Twitter/X posting, including output redirection to video.json. It executes external services and then publishes media.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:132:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The flagged text is a Markdown code-fence delimiter, not shell backtick execution. The delimiter itself cannot execute commands."
+        "confidence": 0.87,
+        "reason": "This finding points to a markdown fence boundary and heading text. The actual video workflow commands are covered by the preceding confirmed finding."
       },
       {
         "id": "external_commands:SKILL.md:136:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "severity": "medium",
-        "reason": "The related-skills block instructs users to run npx skills add for external skills. Installing additional packages is a supply-chain-sensitive external command."
+        "confidence": 0.86,
+        "reason": "The block instructs users to run npx skills add for several external skill packages. Installing external packages is a supply-chain and command execution risk.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:148:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The flagged text is a Markdown code-fence delimiter, not shell backtick execution. The delimiter itself cannot execute commands."
+        "verdict": "confirmed",
+        "confidence": 0.58,
+        "reason": "The finding range includes an inline belt app store command after the closing fence. It appears read-only, but it still directs execution of an external CLI.",
+        "severity": "medium"
       },
       {
         "id": "network:SKILL.md:11:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The URL is a Markdown link naming the inference.sh service, not code that sends data or executes a request. No evidence shows secret transfer or automatic network behavior from this line."
+        "confidence": 0.86,
+        "reason": "This is a visible documentation link to the inference.sh homepage. It does not make a hidden request or transmit user data by itself."
       },
       {
         "id": "network:SKILL.md:13:hardcoded-url",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The URL is a Markdown image reference for documentation. It may load when rendered, but there is no code path that exfiltrates data or accepts untrusted input."
+        "verdict": "confirmed",
+        "confidence": 0.74,
+        "reason": "This is an embedded remote image from cloud.inference.sh. Markdown renderers may fetch it automatically, which can expose viewer metadata to a third party.",
+        "severity": "low"
       },
       {
         "id": "network:SKILL.md:17:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The URL points to install instructions in documentation. It is not an automatic fetch or command execution by the skill file itself."
+        "confidence": 0.84,
+        "reason": "This is a visible link to installation documentation hosted on GitHub. It is not a hidden network request or data exfiltration path."
       },
       {
         "id": "network:SKILL.md:57:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The URL is a placeholder media_url value in a commented sample payload. It is not a real endpoint used by the skill."
+        "confidence": 0.91,
+        "reason": "This is a placeholder media URL inside a commented example input. It is not an active request or a fixed exfiltration endpoint."
       },
       {
         "id": "network:SKILL.md:154:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The URL is a documentation link for the X.com integration. It is not executable code and no data transfer behavior is shown."
+        "confidence": 0.88,
+        "reason": "This is a visible documentation link for the X integration. It does not make a request unless the user follows it."
       },
       {
         "id": "network:SKILL.md:155:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The URL is a documentation link for an integration example. It is not executable code and no data transfer behavior is shown."
+        "confidence": 0.88,
+        "reason": "This is a visible documentation link for an X integration example. It does not make a request unless the user follows it."
       },
       {
         "id": "network:SKILL.md:156:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The URL is a documentation link for app overview material. It is not executable code and no data transfer behavior is shown."
+        "confidence": 0.88,
+        "reason": "This is a visible documentation link for the app overview. It does not make a request unless the user follows it."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Automated Social Engagement and Messaging Abuse",
-        "description": "The skill advertises engagement bots and includes workflows for direct messages, likes, retweets, and follows. These capabilities can support spam, impersonation, or social engineering if used without strict consent controls.",
-        "severity": "high",
+        "title": "Authenticated Twitter/X Account Actions",
+        "description": "The skill describes posting, liking, retweeting, deleting, sending DMs, and following users from a connected account. These actions can cause public, private, or destructive account changes if run without clear user consent.",
+        "severity": "medium",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 3,
-            "line_end": 4
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 37,
+            "line_start": 31,
             "line_end": 38
           },
           {
             "file": "SKILL.md",
             "line_start": 75,
-            "line_end": 87
+            "line_end": 88
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 102,
+            "line_end": 106
           }
         ],
-        "confidence": 0.9,
-        "confidence_reasoning": "The description explicitly mentions engagement bots and audience growth, and the examples show DM and follow automation. This is direct evidence of business-logic abuse potential, although legitimate marketing use is possible."
+        "confidence": 0.93,
+        "confidence_reasoning": "The app table and examples explicitly include mutating Twitter/X actions, including DMs, follows, posts, and deletion. The risk is contextual business-logic abuse rather than a code pattern."
+      },
+      {
+        "title": "Third-Party CLI Authentication Requirement",
+        "description": "The quick start requires users to authenticate with the belt CLI before running Twitter/X commands. Connected account tokens or session state are therefore entrusted to the external CLI and service.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 17,
+            "line_end": 23
+          }
+        ],
+        "confidence": 0.86,
+        "confidence_reasoning": "The quick-start text requires the belt CLI and shows belt login before posting. The exact credential storage model is not shown, so the finding is limited to the documented authentication dependency."
       }
     ],
     "critical_findings": [],
-    "high_findings": [
-      {
-        "title": "Automated Social Engagement and Messaging Abuse",
-        "description": "The skill advertises engagement bots and includes workflows for direct messages, likes, retweets, and follows. These capabilities can support spam, impersonation, or social engineering if used without strict consent controls.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 3,
-            "line_end": 4
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 37,
-            "line_end": 38
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 75,
-            "line_end": 87
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "semantic",
-        "source_severity": "high",
-        "confidence": 0.9,
-        "confidence_reasoning": "The description explicitly mentions engagement bots and audience growth, and the examples show DM and follow automation. This is direct evidence of business-logic abuse potential, although legitimate marketing use is possible."
-      }
-    ],
+    "high_findings": [],
     "medium_findings": [
       {
         "title": "Ruby/shell backtick execution",
@@ -1096,8 +1087,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The line instructs users to run npx to install another skill package. That is an external command with supply-chain risk, even though it is presented as setup documentation."
+        "confidence": 0.86,
+        "confidence_reasoning": "This line instructs users to run npx to install an external CLI skill package. That executes code from the package ecosystem and is a real supply-chain risk."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1113,7 +1104,7 @@
         "source_category": "external_commands",
         "source_severity": "medium",
         "confidence": 0.9,
-        "confidence_reasoning": "The quick start includes belt login and a belt app run call that can authenticate and post to Twitter/X. These are intended external commands with account side effects."
+        "confidence_reasoning": "The fenced block contains belt login and a belt app run command that can authenticate and post to a connected Twitter/X account. This is legitimate functionality, but it is real external command execution."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1128,8 +1119,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The example runs belt app run x/post-tweet, which posts content through an external service. This is intended command execution with public account side effects."
+        "confidence": 0.88,
+        "confidence_reasoning": "The block contains a belt app run command that posts content to Twitter/X through an external CLI. The command performs an authenticated account action."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1144,8 +1135,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The example runs belt commands to create an input file and post media through x/post-create. It has external service and account side effects."
+        "confidence": 0.88,
+        "confidence_reasoning": "The block runs belt commands to create sample input and post media through the external CLI. It also relies on a local input file passed to the command."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1160,8 +1151,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The example runs belt app run x/post-like against a tweet ID. It performs an external account action on Twitter/X."
+        "confidence": 0.86,
+        "confidence_reasoning": "The block runs belt app run x/post-like against a tweet ID. This is an authenticated engagement action through an external CLI."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1176,8 +1167,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The example runs belt app run x/post-retweet against a tweet ID. It performs an external account action that can amplify content."
+        "confidence": 0.86,
+        "confidence_reasoning": "The block runs belt app run x/post-retweet against a tweet ID. This is an authenticated public engagement action through an external CLI."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1192,8 +1183,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The example runs belt app run x/dm-send with recipient and message text. It can send direct messages from the connected account."
+        "confidence": 0.88,
+        "confidence_reasoning": "The block runs belt app run x/dm-send with a recipient and message. This can send authenticated direct messages from the connected account."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1208,8 +1199,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The example runs belt app run x/user-follow for a username. It performs an external account-follow action."
+        "confidence": 0.86,
+        "confidence_reasoning": "The block runs belt app run x/user-follow against a username. This performs an authenticated follow action through an external CLI."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1224,8 +1215,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The example runs belt app run x/user-get and contacts an external service to retrieve account data. It is an intended external command, though read-only."
+        "confidence": 0.78,
+        "confidence_reasoning": "The block runs belt app run x/user-get, which calls an external service to retrieve a profile. It is read-only but still executes an external CLI command."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1240,8 +1231,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The example runs belt app run x/post-get and contacts an external service to retrieve post data. It is an intended external command, though read-only."
+        "confidence": 0.78,
+        "confidence_reasoning": "The block runs belt app run x/post-get, which calls an external service to retrieve post details. It is read-only but still executes an external CLI command."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1256,8 +1247,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The example runs belt app run x/post-delete against a tweet ID. It can delete content from the connected Twitter/X account."
+        "confidence": 0.88,
+        "confidence_reasoning": "The block runs belt app run x/post-delete against a tweet ID. This can delete content from the connected Twitter/X account."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1273,7 +1264,7 @@
         "source_category": "external_commands",
         "source_severity": "medium",
         "confidence": 0.9,
-        "confidence_reasoning": "The workflow runs belt commands for AI image generation and then posting media. It combines external service calls with public social posting."
+        "confidence_reasoning": "The workflow runs belt commands for image generation and Twitter/X posting, including output redirection to image.json. It executes external services and then publishes media."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1289,7 +1280,7 @@
         "source_category": "external_commands",
         "source_severity": "medium",
         "confidence": 0.9,
-        "confidence_reasoning": "The workflow runs belt commands for AI video generation and then posting media. It combines external service calls with public social posting."
+        "confidence_reasoning": "The workflow runs belt commands for video generation and Twitter/X posting, including output redirection to video.json. It executes external services and then publishes media."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1304,135 +1295,209 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The related-skills block instructs users to run npx skills add for external skills. Installing additional packages is a supply-chain-sensitive external command."
+        "confidence": 0.86,
+        "confidence_reasoning": "The block instructs users to run npx skills add for several external skill packages. Installing external packages is a supply-chain and command execution risk."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 148,
+            "line_end": 150
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.58,
+        "confidence_reasoning": "The finding range includes an inline belt app store command after the closing fence. It appears read-only, but it still directs execution of an external CLI."
+      },
+      {
+        "title": "Authenticated Twitter/X Account Actions",
+        "description": "The skill describes posting, liking, retweeting, deleting, sending DMs, and following users from a connected account. These actions can cause public, private, or destructive account changes if run without clear user consent.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 31,
+            "line_end": 38
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 75,
+            "line_end": 88
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 102,
+            "line_end": 106
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.93,
+        "confidence_reasoning": "The app table and examples explicitly include mutating Twitter/X actions, including DMs, follows, posts, and deletion. The risk is contextual business-logic abuse rather than a code pattern."
+      },
+      {
+        "title": "Third-Party CLI Authentication Requirement",
+        "description": "The quick start requires users to authenticate with the belt CLI before running Twitter/X commands. Connected account tokens or session state are therefore entrusted to the external CLI and service.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 17,
+            "line_end": 23
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "The quick-start text requires the belt CLI and shows belt login before posting. The exact credential storage model is not shown, so the finding is limited to the documented authentication dependency."
       }
     ],
-    "low_findings": [],
+    "low_findings": [
+      {
+        "title": "Hardcoded URL",
+        "description": "![Twitter/X Automation](https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgad3pxs",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 13,
+            "line_end": 13
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.74,
+        "confidence_reasoning": "This is an embedded remote image from cloud.inference.sh. Markdown renderers may fetch it automatically, which can expose viewer metadata to a third party."
+      }
+    ],
     "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 158,
     "audit_model": "codex",
-    "audited_at": "2026-07-05T15:11:16.484Z",
-    "agent_auto_install_policy": "confirmation_required",
+    "audited_at": "2026-07-08T14:06:02.070Z",
+    "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Automate Twitter/X Workflows with Belt",
-    "value_statement": "Managing Twitter/X actions by hand is slow and error prone. This skill helps Claude, Codex, and Claude Code run approved belt CLI workflows for posts, media, and engagement.",
+    "user_title": "Automate Twitter/X Posts and Engagement",
+    "value_statement": "Managing Twitter/X posts, media, DMs, and follow actions through separate tools is slow and error-prone. This skill gives Claude, Codex, and Claude Code structured prompts for using the inference.sh belt CLI.",
     "seo_keywords": [
+      "Twitter automation",
+      "X automation",
       "Claude",
       "Codex",
       "Claude Code",
-      "Twitter automation",
-      "X automation",
+      "inference.sh",
       "belt CLI",
-      "social media workflow",
-      "tweet scheduler",
-      "direct message automation",
-      "inference.sh"
+      "tweet workflow",
+      "social media automation",
+      "DM automation"
     ],
     "actual_capabilities": [
-      "Posts text updates to Twitter/X through the x/post-tweet app.",
-      "Creates media posts with the x/post-create app and a media URL.",
-      "Likes, retweets, deletes, and reads posts by tweet ID.",
-      "Sends direct messages to a specified recipient ID.",
-      "Follows users and retrieves profile data through belt apps.",
-      "Shows workflows for generating media with belt apps before posting."
+      "Post text tweets through the x/post-tweet app.",
+      "Create Twitter/X posts with media URLs through x/post-create.",
+      "Like, retweet, delete, and retrieve posts by ID.",
+      "Send direct messages, follow users, and retrieve user profiles.",
+      "Combine AI image or video generation with a media post workflow."
     ],
     "limitations": [
       "Requires the inference.sh belt CLI and an authenticated account.",
-      "Does not include built-in consent, rate-limit, or campaign approval checks.",
-      "Uses command examples only. It does not implement a native API client.",
-      "Twitter/X permissions and platform policies can limit or block actions."
+      "Does not implement the Twitter/X API directly inside the skill.",
+      "Does not add rate-limit, anti-spam, or policy compliance checks.",
+      "Media posting requires a reachable media URL from another service."
     ],
     "use_cases": [
       {
-        "title": "Publish Product Updates",
-        "description": "A product marketer can prepare approved text or media posts and publish them through the connected account.",
-        "target_user": "Product marketers"
+        "title": "Publish Campaign Updates",
+        "description": "Prepare and send approved Twitter/X updates from a connected account using the belt CLI workflow.",
+        "target_user": "Social media manager"
       },
       {
-        "title": "Manage Social Support Messages",
-        "description": "A support lead can send approved direct messages after confirming the recipient and message text.",
-        "target_user": "Customer support teams"
+        "title": "Share Product Announcements",
+        "description": "Draft a concise announcement, confirm the final text, and post it through the x/post-tweet app.",
+        "target_user": "Developer advocate"
       },
       {
-        "title": "Inspect Account and Post Data",
-        "description": "A social analyst can retrieve post details or user profiles for manual review and reporting.",
-        "target_user": "Social media analysts"
+        "title": "Coordinate Media Posts",
+        "description": "Generate an image or video asset, collect its media URL, and create a Twitter/X post with that media.",
+        "target_user": "Content operations specialist"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Post a Simple Update",
-        "scenario": "Beginner post publishing",
-        "prompt": "Post this approved update to Twitter/X: [text]. Confirm the account and exact text before running the command."
+        "title": "Draft a Tweet",
+        "scenario": "Beginner posting workflow",
+        "prompt": "Use the twitter-automation skill to draft a tweet about this update. Ask for confirmation before posting it to Twitter/X."
       },
       {
-        "title": "Create a Media Post",
-        "scenario": "Post with an existing media URL",
-        "prompt": "Create a Twitter/X media post with this text and media URL: [text], [media URL]. Ask for confirmation before publishing."
+        "title": "Post With Media",
+        "scenario": "Media publishing workflow",
+        "prompt": "Use the twitter-automation skill to prepare a Twitter/X post with this message and media URL. Confirm the account action before running belt."
       },
       {
-        "title": "Review a Post Before Engagement",
-        "scenario": "Controlled like or retweet action",
-        "prompt": "Get details for tweet ID [id], summarize the content, then ask whether to like or retweet it."
+        "title": "Engage With a Post",
+        "scenario": "Managed engagement workflow",
+        "prompt": "Use the twitter-automation skill to review this tweet ID and prepare a like or retweet action. Ask before changing the account."
       },
       {
-        "title": "Run an Approved Campaign Sequence",
-        "scenario": "Advanced multi-step social workflow",
-        "prompt": "Prepare a sequence for posting, profile lookup, and one approved follow action. Require confirmation before every account-changing command."
+        "title": "Build a Media Campaign",
+        "scenario": "Advanced multi-step workflow",
+        "prompt": "Use the twitter-automation skill to plan an image or video post workflow. Generate the media first, then confirm the final Twitter/X post."
       }
     ],
     "output_examples": [
       {
-        "input": "Post an approved launch message with a media URL.",
-        "output": "The assistant confirms the target account, repeats the exact post text, verifies the media URL, and waits for approval before publishing."
+        "input": "Post a short update about a new feature release.",
+        "output": "A concise tweet draft, a confirmation request, and the intended Twitter/X posting action before any account change."
       },
       {
-        "input": "Send a thank-you direct message to a customer.",
-        "output": "The assistant asks for recipient confirmation, checks that the message is approved, and sends it only after explicit consent."
+        "input": "Share this product image on Twitter/X with a launch caption.",
+        "output": "A polished caption, the selected media URL, and a confirmation step before creating the media post."
       },
       {
-        "input": "Look up a public profile for reporting.",
-        "output": "The assistant retrieves the profile details and summarizes the relevant public information for the report."
+        "input": "Send a thank-you direct message to a new follower.",
+        "output": "A brief direct-message draft, the recipient identifier to verify, and a confirmation prompt before sending."
       }
     ],
     "best_practices": [
-      "Confirm the connected account and exact action before every account-changing command.",
-      "Use approved copy, consent records, and platform policy checks for messages and follows.",
-      "Start with read-only profile or post lookup before liking, retweeting, deleting, or messaging."
+      "Confirm every public post, DM, follow, like, retweet, or delete before running the command.",
+      "Review connected account permissions and revoke unused access after campaigns end.",
+      "Keep media URLs, tweet IDs, and recipient IDs explicit in the user request."
     ],
     "anti_patterns": [
-      "Do not automate unsolicited direct messages, bulk follows, or engagement farming.",
-      "Do not publish generated media or text without human review and rights checks.",
-      "Do not run install commands from unreviewed package sources or moving branches."
+      "Do not run engagement or DM actions in bulk without user review.",
+      "Do not post generated media until the user has reviewed the final asset and caption.",
+      "Do not paste private tokens, cookies, or account credentials into prompts."
     ],
     "faq": [
       {
-        "question": "Does this skill require a Twitter/X account?",
-        "answer": "Yes. It requires belt CLI authentication and a connected Twitter/X integration with the needed permissions."
+        "question": "Does this skill post directly to Twitter/X?",
+        "answer": "It guides Claude, Codex, or Claude Code to use the inference.sh belt CLI for posting from an authenticated account."
       },
       {
-        "question": "Can it post media?",
-        "answer": "Yes. It uses the x/post-create app with text and a media URL."
+        "question": "Does it require an API key?",
+        "answer": "The skill expects the belt CLI to be installed and authenticated. Follow the provider documentation for account setup."
       },
       {
-        "question": "Can it read posts and profiles?",
-        "answer": "Yes. It includes examples for x/post-get and x/user-get through belt."
+        "question": "Can it post images or videos?",
+        "answer": "Yes. The skill shows media post workflows that use a media URL with the x/post-create app."
       },
       {
-        "question": "Does it schedule posts automatically?",
-        "answer": "No built-in scheduler is shown. It provides command examples for immediate belt app actions."
+        "question": "Can it send direct messages?",
+        "answer": "Yes. It includes a direct-message workflow using a recipient identifier and message text."
       },
       {
-        "question": "Is it safe for bulk engagement campaigns?",
-        "answer": "Use caution. Bulk likes, follows, retweets, and direct messages can violate policies and harm recipients."
+        "question": "Does it protect against spam or policy violations?",
+        "answer": "No. Users must apply platform rules, rate limits, consent checks, and content review before publishing or messaging."
       },
       {
-        "question": "Can Claude Code or Codex use it?",
-        "answer": "Yes. The report lists support for Claude, Codex, and Claude Code, with belt CLI commands as the operating path."
+        "question": "Can it work with Claude Code and Codex?",
+        "answer": "Yes. The report declares support for Claude, Codex, and Claude Code when the required CLI is available."
       }
     ]
   },

@@ -1,0 +1,375 @@
+{
+  "schema_version": "2.0",
+  "meta": {
+    "generated_at": "2026-07-06T06:29:15.863Z",
+    "slug": "cain96-web-search",
+    "source_url": "https://github.com/Cain96/dotfiles/tree/main/dot_config/claude/skills/web-search",
+    "source_ref": "main",
+    "model": "codex",
+    "analysis_version": "3.0.0",
+    "source_type": "community",
+    "content_hash": "fc477bc62633820c6b2f6575af54b7d3b344e255e3873e93dc15107857f183ff",
+    "tree_hash": "52a2c97fb174f32fce7992584af6c417b13924f841b1cb2416e4a4d97bfade11",
+    "provenance": {
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
+      "fallback_chain": [
+        {
+          "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
+          "outcome": "success"
+        }
+      ],
+      "analysis_version": "3.0.0"
+    }
+  },
+  "skill": {
+    "name": "web-search",
+    "description": "Run current web research through the Gemini CLI for technical questions that need recent sources, citations, and synthesized findings.",
+    "summary": "Uses a Gemini CLI web-search workflow to gather current, cited technical research.",
+    "icon": "📦",
+    "version": "1.0.0",
+    "author": "Cain96",
+    "license": "MIT",
+    "tags": [
+      "web-search",
+      "gemini-cli",
+      "research",
+      "citations",
+      "developer-tools"
+    ],
+    "supported_tools": [
+      "claude",
+      "codex",
+      "claude-code"
+    ],
+    "risk_factors": [
+      "external_commands"
+    ],
+    "category": "research"
+  },
+  "security_audit": {
+    "risk_level": "high",
+    "is_blocked": false,
+    "safe_to_publish": false,
+    "analysis_status": "ok",
+    "summary": "The SKILL.md backtick detections are Markdown formatting and examples, so I treated them as false positives for shell backtick execution. The bundled script still creates a real security concern because it invokes Gemini with --yolo while handling user-provided search prompts. No prompt injection text was found in the skill documentation.",
+    "remediation": [
+      {
+        "issue": "Gemini CLI auto-approval mode",
+        "suggestion": "Remove --yolo and require explicit confirmation for any Gemini action beyond returning search results.",
+        "severity": "high"
+      },
+      {
+        "issue": "Broad external command workflow",
+        "suggestion": "Constrain the script to search-only behavior and document the exact Gemini permissions required before installation.",
+        "severity": "medium"
+      }
+    ],
+    "risk_factor_evidence": [
+      {
+        "factor": "external_commands",
+        "evidence": [
+          {
+            "file": "SKILL.md",
+            "line_start": 9,
+            "line_end": 9
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 19,
+            "line_end": 21
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 21,
+            "line_end": 83
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 83,
+            "line_end": 101
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 101,
+            "line_end": 111
+          }
+        ]
+      }
+    ],
+    "static_findings": [
+      {
+        "id": "external_commands:SKILL.md:9:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 9,
+        "line_end": 9,
+        "snippet": "This skill provides advanced web search functionality using the `gemini` command, designed for compl"
+      },
+      {
+        "id": "external_commands:SKILL.md:19:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 19,
+        "line_end": 21,
+        "snippet": "```bash"
+      },
+      {
+        "id": "external_commands:SKILL.md:21:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 21,
+        "line_end": 83,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:SKILL.md:83:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 83,
+        "line_end": 101,
+        "snippet": "```bash"
+      },
+      {
+        "id": "external_commands:SKILL.md:101:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 101,
+        "line_end": 111,
+        "snippet": "```"
+      }
+    ],
+    "finding_verdicts": [
+      {
+        "id": "external_commands:SKILL.md:9:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.94,
+        "reason": "Line 9 uses Markdown inline backticks around the gemini command name. It is not Ruby or shell backtick execution at that location."
+      },
+      {
+        "id": "external_commands:SKILL.md:19:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "Lines 19-21 are a Markdown fenced Bash example, not shell backtick substitution. The external execution risk is better represented by the bundled script behavior."
+      },
+      {
+        "id": "external_commands:SKILL.md:21:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The finding starts on a closing Markdown fence and spans prose guidance. I found no shell backtick execution in this documented section."
+      },
+      {
+        "id": "external_commands:SKILL.md:83:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.87,
+        "reason": "Lines 83-101 are a fenced block of example commands, not Ruby or shell backtick execution. They document intended use rather than executable package code."
+      },
+      {
+        "id": "external_commands:SKILL.md:101:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.91,
+        "reason": "The finding starts on the closing Markdown fence and continues into related-skill prose. No backtick-based command execution is present there."
+      }
+    ],
+    "semantic_findings": [
+      {
+        "title": "Gemini CLI Auto-Approval Mode",
+        "description": "The helper script embeds the user search query into a Gemini prompt and runs gemini with --yolo. Auto-approval mode can allow model actions without interactive confirmation while processing arbitrary prompts or web content.",
+        "severity": "high",
+        "locations": [
+          {
+            "file": "scripts/executable_web-search.sh",
+            "line_start": 23,
+            "line_end": 39
+          }
+        ],
+        "confidence": 0.9,
+        "confidence_reasoning": "Line 23 stores the user query and lines 26-39 pass it to gemini with --yolo. Exact impact depends on local Gemini CLI permissions, but the unsafe auto-approval mode is explicit."
+      }
+    ],
+    "critical_findings": [],
+    "high_findings": [
+      {
+        "title": "Gemini CLI Auto-Approval Mode",
+        "description": "The helper script embeds the user search query into a Gemini prompt and runs gemini with --yolo. Auto-approval mode can allow model actions without interactive confirmation while processing arbitrary prompts or web content.",
+        "locations": [
+          {
+            "file": "scripts/executable_web-search.sh",
+            "line_start": 23,
+            "line_end": 39
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "high",
+        "confidence": 0.9,
+        "confidence_reasoning": "Line 23 stores the user query and lines 26-39 pass it to gemini with --yolo. Exact impact depends on local Gemini CLI permissions, but the unsafe auto-approval mode is explicit."
+      }
+    ],
+    "medium_findings": [],
+    "low_findings": [],
+    "dangerous_patterns": [],
+    "files_scanned": 3,
+    "total_lines": 389,
+    "audit_model": "codex",
+    "audited_at": "2026-07-06T06:29:15.863Z",
+    "agent_auto_install_policy": "confirmation_required",
+    "manual_install_policy": "allowed"
+  },
+  "content": {
+    "user_title": "Search the Web with Gemini CLI",
+    "value_statement": "Current technical research can be slow when answers depend on recent sources. This skill runs a Gemini CLI search workflow that returns cited Markdown research.",
+    "seo_keywords": [
+      "Claude web search",
+      "Codex web research",
+      "Claude Code search skill",
+      "Gemini CLI search",
+      "AI research assistant",
+      "current documentation search",
+      "technical web research",
+      "cited search results",
+      "developer research workflow"
+    ],
+    "actual_capabilities": [
+      "Runs a Bash wrapper that sends a user-provided search query to the Gemini CLI.",
+      "Requests current web research with source URLs and Markdown-formatted answers.",
+      "Supports queries for official documentation, error messages, release notes, and technology comparisons.",
+      "Encourages synthesis across multiple sources when the answer benefits from comparison.",
+      "Provides example query patterns for technical research, debugging, news, and migration planning."
+    ],
+    "limitations": [
+      "Requires the Gemini CLI to be installed, configured, and authenticated before use.",
+      "Depends on external web results, so users must verify source quality and recency.",
+      "Does not replace local code inspection for questions already answerable from the repository.",
+      "The packaged script uses Gemini auto-approval mode unless the author removes --yolo."
+    ],
+    "use_cases": [
+      {
+        "title": "Research Framework Updates",
+        "description": "Find recent release notes, migration guidance, and official documentation for fast-moving developer tools.",
+        "target_user": "Software developers"
+      },
+      {
+        "title": "Resolve Error Messages",
+        "description": "Search public discussions and documentation for likely causes and fixes for specific build or runtime errors.",
+        "target_user": "Debugging engineers"
+      },
+      {
+        "title": "Compare Technical Options",
+        "description": "Gather cited advantages, trade-offs, and adoption signals before choosing a library, framework, or workflow.",
+        "target_user": "Technical leads"
+      }
+    ],
+    "prompt_templates": [
+      {
+        "title": "Find Official Guidance",
+        "scenario": "Beginner search for current documentation.",
+        "prompt": "Search for the latest official documentation about [topic]. Summarize the key points and include source URLs."
+      },
+      {
+        "title": "Investigate an Error",
+        "scenario": "Intermediate debugging research.",
+        "prompt": "Search for this exact error: [error message]. Explain common causes, reliable fixes, and sources from documentation or trusted discussions."
+      },
+      {
+        "title": "Compare Options",
+        "scenario": "Intermediate technology selection.",
+        "prompt": "Compare [option A] and [option B] for [use case]. Include strengths, weaknesses, current maintenance status, and cited sources."
+      },
+      {
+        "title": "Build an Evidence Brief",
+        "scenario": "Advanced research for a decision record.",
+        "prompt": "Research [decision topic] using recent primary sources. Separate facts, trade-offs, risks, and recommendations, with source URLs for each claim."
+      }
+    ],
+    "output_examples": [
+      {
+        "input": "Search for the latest Next.js release notes and migration guidance.",
+        "output": "A concise research summary with release highlights, migration risks, official documentation links, and dated source references."
+      },
+      {
+        "input": "Find causes of a TypeScript assignment error and trusted fixes.",
+        "output": "An explanation of likely causes, several repair strategies, and links to relevant documentation or public issue discussions."
+      },
+      {
+        "input": "Compare Vite and Webpack for a large React application.",
+        "output": "A structured comparison covering performance, ecosystem support, configuration complexity, migration cost, and source URLs."
+      }
+    ],
+    "best_practices": [
+      "Prefer official documentation and primary sources when asking for current technical facts.",
+      "Include versions, dates, error text, and project constraints in the search query.",
+      "Verify important claims across more than one source before acting on the result."
+    ],
+    "anti_patterns": [
+      "Do not use this skill for information already available in the local repository.",
+      "Do not treat generated search summaries as authoritative without checking cited sources.",
+      "Do not send secrets, private code, or sensitive business details in search queries."
+    ],
+    "faq": [
+      {
+        "question": "What does this skill use for search?",
+        "answer": "It uses a Bash helper that calls the Gemini CLI with a structured web-research prompt."
+      },
+      {
+        "question": "Does it require external credentials?",
+        "answer": "Yes. The Gemini CLI must be installed and configured with valid access before the skill can work."
+      },
+      {
+        "question": "Can it cite sources?",
+        "answer": "Yes. The prompt asks Gemini to include source URLs and synthesize information from multiple sources."
+      },
+      {
+        "question": "Is it suitable for private data?",
+        "answer": "No. Search queries may leave the local environment, so sensitive data should not be included."
+      },
+      {
+        "question": "When should I use local file search instead?",
+        "answer": "Use local search when the answer depends on files already present in the current repository."
+      },
+      {
+        "question": "What is the main security concern?",
+        "answer": "The bundled script uses Gemini auto-approval mode, which should be removed before broad publication."
+      }
+    ]
+  },
+  "file_structure": [
+    {
+      "name": "scripts",
+      "type": "dir",
+      "path": "scripts",
+      "children": [
+        {
+          "name": "executable_web-search.sh",
+          "type": "file",
+          "path": "scripts/executable_web-search.sh",
+          "lines": 41
+        }
+      ]
+    },
+    {
+      "name": "examples.md",
+      "type": "file",
+      "path": "examples.md",
+      "lines": 236
+    },
+    {
+      "name": "SKILL.md",
+      "type": "file",
+      "path": "SKILL.md",
+      "lines": 112
+    }
+  ]
+}

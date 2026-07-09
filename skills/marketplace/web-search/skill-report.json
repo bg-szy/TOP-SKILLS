@@ -1,23 +1,20 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-06T06:29:15.863Z",
-    "slug": "cain96-web-search",
-    "source_url": "https://github.com/Cain96/dotfiles/tree/main/dot_config/claude/skills/web-search",
+    "generated_at": "2026-07-08T14:30:26.101Z",
+    "slug": "101-skills-web-search",
+    "source_url": "https://github.com/101-skills/skills/tree/main/tools/llm/web-search/",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "fc477bc62633820c6b2f6575af54b7d3b344e255e3873e93dc15107857f183ff",
-    "tree_hash": "52a2c97fb174f32fce7992584af6c417b13924f841b1cb2416e4a4d97bfade11",
+    "content_hash": "1dae36ea3022702cf45740c5f6d708317304d6ef1491665e282272efa6c1d7f8",
+    "tree_hash": "d4632c99f554f8bd566fc6fd817ccb5339b511b4beab3a977748647236928542",
     "provenance": {
-      "model_requested": "gpt-5.5:high",
-      "model_effective": "codex:gpt-5.5:high",
+      "model_effective": "codex",
       "fallback_chain": [
         {
           "agent": "codex",
-          "model": "gpt-5.5",
-          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -26,18 +23,18 @@
   },
   "skill": {
     "name": "web-search",
-    "description": "Run current web research through the Gemini CLI for technical questions that need recent sources, citations, and synthesized findings.",
-    "summary": "Uses a Gemini CLI web-search workflow to gather current, cited technical research.",
+    "description": "Use Tavily and Exa through the inference.sh belt CLI for web search, factual answers, and page content extraction.",
+    "summary": "Search and extract web content through Tavily and Exa using the inference.sh belt CLI.",
     "icon": "📦",
     "version": "1.0.0",
-    "author": "Cain96",
+    "author": "101-skills",
     "license": "MIT",
     "tags": [
       "web-search",
-      "gemini-cli",
-      "research",
-      "citations",
-      "developer-tools"
+      "tavily",
+      "exa",
+      "content-extraction",
+      "rag"
     ],
     "supported_tools": [
       "claude",
@@ -45,25 +42,31 @@
       "claude-code"
     ],
     "risk_factors": [
-      "external_commands"
+      "external_commands",
+      "network"
     ],
     "category": "research"
   },
   "security_audit": {
-    "risk_level": "high",
+    "risk_level": "medium",
     "is_blocked": false,
-    "safe_to_publish": false,
+    "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The SKILL.md backtick detections are Markdown formatting and examples, so I treated them as false positives for shell backtick execution. The bundled script still creates a real security concern because it invokes Gemini with --yolo while handling user-provided search prompts. No prompt injection text was found in the skill documentation.",
+    "summary": "Most static findings are Markdown backticks, code fences, app identifiers, or documentation links. Real residual risk comes from visible external belt commands, the broad Bash(belt *) permission, and third-party handling of queries or extracted content. No prompt injection language or covert credential access was found.",
     "remediation": [
       {
-        "issue": "Gemini CLI auto-approval mode",
-        "suggestion": "Remove --yolo and require explicit confirmation for any Gemini action beyond returning search results.",
-        "severity": "high"
+        "issue": "Broad belt command permission",
+        "suggestion": "Replace Bash(belt *) with narrower allowed commands for the documented Tavily, Exa, and OpenRouter workflows.",
+        "severity": "medium"
       },
       {
-        "issue": "Broad external command workflow",
-        "suggestion": "Constrain the script to search-only behavior and document the exact Gemini permissions required before installation.",
+        "issue": "External service data exposure",
+        "suggestion": "Add a clear warning that queries, URLs, extracted pages, and prompts may be sent to third-party hosted services.",
+        "severity": "low"
+      },
+      {
+        "issue": "External skill install guidance",
+        "suggestion": "Pin or verify recommended skill install sources and explain the trust boundary before users run npx skills add commands.",
         "severity": "medium"
       }
     ],
@@ -73,42 +76,202 @@
         "evidence": [
           {
             "file": "SKILL.md",
-            "line_start": 9,
-            "line_end": 9
+            "line_start": 7,
+            "line_end": 7
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 17,
+            "line_end": 17
           },
           {
             "file": "SKILL.md",
             "line_start": 19,
-            "line_end": 21
+            "line_end": 24
           },
           {
             "file": "SKILL.md",
-            "line_start": 21,
-            "line_end": 83
+            "line_start": 24,
+            "line_end": 33
           },
           {
             "file": "SKILL.md",
-            "line_start": 83,
-            "line_end": 101
+            "line_start": 33,
+            "line_end": 34
           },
           {
             "file": "SKILL.md",
-            "line_start": 101,
-            "line_end": 111
+            "line_start": 34,
+            "line_end": 40
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 40,
+            "line_end": 41
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 41,
+            "line_end": 42
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 42,
+            "line_end": 48
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 48,
+            "line_end": 52
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 52,
+            "line_end": 58
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 58,
+            "line_end": 62
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 62,
+            "line_end": 68
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 68,
+            "line_end": 72
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 72,
+            "line_end": 78
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 78,
+            "line_end": 82
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 82,
+            "line_end": 88
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 88,
+            "line_end": 92
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 92,
+            "line_end": 98
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 98,
+            "line_end": 108
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 108,
+            "line_end": 112
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 112,
+            "line_end": 122
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 122,
+            "line_end": 134
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 134,
+            "line_end": 143
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 143,
+            "line_end": 145
+          }
+        ]
+      },
+      {
+        "factor": "network",
+        "evidence": [
+          {
+            "file": "SKILL.md",
+            "line_start": 11,
+            "line_end": 11
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 13,
+            "line_end": 13
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 17,
+            "line_end": 17
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 60,
+            "line_end": 60
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 90,
+            "line_end": 90
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 115,
+            "line_end": 115
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 149,
+            "line_end": 149
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 150,
+            "line_end": 150
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 151,
+            "line_end": 151
           }
         ]
       }
     ],
     "static_findings": [
       {
-        "id": "external_commands:SKILL.md:9:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:7:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 9,
-        "line_end": 9,
-        "snippet": "This skill provides advanced web search functionality using the `gemini` command, designed for compl"
+        "line_start": 7,
+        "line_end": 7,
+        "snippet": "> **Install the belt CLI skill:** `npx skills add belt-sh/cli`"
+      },
+      {
+        "id": "external_commands:SKILL.md:17:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 17,
+        "line_end": 17,
+        "snippet": "> Requires inference.sh CLI (`belt`). [Install instructions](https://raw.githubusercontent.com/infer"
       },
       {
         "id": "external_commands:SKILL.md:19:ruby-shell-backtick-execution",
@@ -117,259 +280,954 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 19,
-        "line_end": 21,
+        "line_end": 24,
         "snippet": "```bash"
       },
       {
-        "id": "external_commands:SKILL.md:21:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 21,
-        "line_end": 83,
+        "line_start": 24,
+        "line_end": 33,
         "snippet": "```"
       },
       {
-        "id": "external_commands:SKILL.md:83:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:33:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 83,
-        "line_end": 101,
+        "line_start": 33,
+        "line_end": 34,
+        "snippet": "| Search Assistant | `tavily/search-assistant` | AI-powered search with answers |"
+      },
+      {
+        "id": "external_commands:SKILL.md:34:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 34,
+        "line_end": 40,
+        "snippet": "| Extract | `tavily/extract` | Extract content from URLs |"
+      },
+      {
+        "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 40,
+        "line_end": 41,
+        "snippet": "| Search | `exa/search` | Smart web search with AI |"
+      },
+      {
+        "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 41,
+        "line_end": 42,
+        "snippet": "| Answer | `exa/answer` | Direct factual answers |"
+      },
+      {
+        "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 42,
+        "line_end": 48,
+        "snippet": "| Extract | `exa/extract` | Extract and analyze web content |"
+      },
+      {
+        "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 48,
+        "line_end": 52,
         "snippet": "```bash"
       },
       {
-        "id": "external_commands:SKILL.md:101:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 101,
-        "line_end": 111,
+        "line_start": 52,
+        "line_end": 58,
         "snippet": "```"
+      },
+      {
+        "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 58,
+        "line_end": 62,
+        "snippet": "```bash"
+      },
+      {
+        "id": "external_commands:SKILL.md:62:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 62,
+        "line_end": 68,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:SKILL.md:68:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 68,
+        "line_end": 72,
+        "snippet": "```bash"
+      },
+      {
+        "id": "external_commands:SKILL.md:72:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 72,
+        "line_end": 78,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 78,
+        "line_end": 82,
+        "snippet": "```bash"
+      },
+      {
+        "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 82,
+        "line_end": 88,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 88,
+        "line_end": 92,
+        "snippet": "```bash"
+      },
+      {
+        "id": "external_commands:SKILL.md:92:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 92,
+        "line_end": 98,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 98,
+        "line_end": 108,
+        "snippet": "```bash"
+      },
+      {
+        "id": "external_commands:SKILL.md:108:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 108,
+        "line_end": 112,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:SKILL.md:112:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 112,
+        "line_end": 122,
+        "snippet": "```bash"
+      },
+      {
+        "id": "external_commands:SKILL.md:122:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 122,
+        "line_end": 134,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:SKILL.md:134:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 134,
+        "line_end": 143,
+        "snippet": "```bash"
+      },
+      {
+        "id": "external_commands:SKILL.md:143:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 143,
+        "line_end": 145,
+        "snippet": "```"
+      },
+      {
+        "id": "network:SKILL.md:11:hardcoded-url",
+        "category": "network",
+        "severity": "low",
+        "pattern": "Hardcoded URL",
+        "file": "SKILL.md",
+        "line_start": 11,
+        "line_end": 11,
+        "snippet": "Search the web and extract content via [inference.sh](https://inference.sh) CLI."
+      },
+      {
+        "id": "network:SKILL.md:13:hardcoded-url",
+        "category": "network",
+        "severity": "low",
+        "pattern": "Hardcoded URL",
+        "file": "SKILL.md",
+        "line_start": 13,
+        "line_end": 13,
+        "snippet": "![Web Search & Extraction](https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgndq"
+      },
+      {
+        "id": "network:SKILL.md:17:hardcoded-url",
+        "category": "network",
+        "severity": "low",
+        "pattern": "Hardcoded URL",
+        "file": "SKILL.md",
+        "line_start": 17,
+        "line_end": 17,
+        "snippet": "> Requires inference.sh CLI (`belt`). [Install instructions](https://raw.githubusercontent.com/infer"
+      },
+      {
+        "id": "network:SKILL.md:60:hardcoded-url",
+        "category": "network",
+        "severity": "low",
+        "pattern": "Hardcoded URL",
+        "file": "SKILL.md",
+        "line_start": 60,
+        "line_end": 60,
+        "snippet": "\"urls\": [\"https://example.com/article1\", \"https://example.com/article2\"]"
+      },
+      {
+        "id": "network:SKILL.md:90:hardcoded-url",
+        "category": "network",
+        "severity": "low",
+        "pattern": "Hardcoded URL",
+        "file": "SKILL.md",
+        "line_start": 90,
+        "line_end": 90,
+        "snippet": "\"url\": \"https://example.com/research-paper\""
+      },
+      {
+        "id": "network:SKILL.md:115:hardcoded-url",
+        "category": "network",
+        "severity": "low",
+        "pattern": "Hardcoded URL",
+        "file": "SKILL.md",
+        "line_start": 115,
+        "line_end": 115,
+        "snippet": "\"urls\": [\"https://example.com/long-article\"]"
+      },
+      {
+        "id": "network:SKILL.md:149:hardcoded-url",
+        "category": "network",
+        "severity": "low",
+        "pattern": "Hardcoded URL",
+        "file": "SKILL.md",
+        "line_start": 149,
+        "line_end": 149,
+        "snippet": "- [Adding Tools to Agents](https://inference.sh/docs/agents/adding-tools) - Equip agents with search"
+      },
+      {
+        "id": "network:SKILL.md:150:hardcoded-url",
+        "category": "network",
+        "severity": "low",
+        "pattern": "Hardcoded URL",
+        "file": "SKILL.md",
+        "line_start": 150,
+        "line_end": 150,
+        "snippet": "- [Building a Research Agent](https://inference.sh/blog/guides/research-agent) - LLM + search integr"
+      },
+      {
+        "id": "network:SKILL.md:151:hardcoded-url",
+        "category": "network",
+        "severity": "low",
+        "pattern": "Hardcoded URL",
+        "file": "SKILL.md",
+        "line_start": 151,
+        "line_end": 151,
+        "snippet": "- [Tool Integration Tax](https://inference.sh/blog/tools/integration-tax) - Why pre-built tools matt"
       }
     ],
     "finding_verdicts": [
       {
-        "id": "external_commands:SKILL.md:9:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:7:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.65,
+        "reason": "The line instructs users to run npx skills add for another CLI skill, which can install external marketplace code. It is visible documentation, so confidence is moderate.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:17:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "Line 9 uses Markdown inline backticks around the gemini command name. It is not Ruby or shell backtick execution at that location."
+        "confidence": 0.9,
+        "reason": "The inline belt token and install link are documentation, not backtick execution. No command is executed by this line."
       },
       {
         "id": "external_commands:SKILL.md:19:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.78,
+        "reason": "The quick start block includes belt login and belt app run commands. These are intentional commands, but they execute an external CLI against hosted services.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.92,
+        "reason": "This finding points at a Markdown code fence or nearby prose rather than an executable backtick expression. The span does not introduce hidden command execution."
+      },
+      {
+        "id": "external_commands:SKILL.md:33:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.94,
+        "reason": "This is Markdown formatting or an app identifier, not Ruby or shell backtick execution. No command is executed automatically by this text."
+      },
+      {
+        "id": "external_commands:SKILL.md:34:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.94,
+        "reason": "This is Markdown formatting or an app identifier, not Ruby or shell backtick execution. No command is executed automatically by this text."
+      },
+      {
+        "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.94,
+        "reason": "This is Markdown formatting or an app identifier, not Ruby or shell backtick execution. No command is executed automatically by this text."
+      },
+      {
+        "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.94,
+        "reason": "This is Markdown formatting or an app identifier, not Ruby or shell backtick execution. No command is executed automatically by this text."
+      },
+      {
+        "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.93,
+        "reason": "This finding points at a Markdown code fence or nearby prose rather than an executable backtick expression. The span does not introduce hidden command execution."
+      },
+      {
+        "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.78,
+        "reason": "This range contains a visible belt CLI command that sends user input to hosted services. The workflow is intentional, but it still represents external command execution.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.92,
+        "reason": "This finding points at a Markdown code fence or nearby prose rather than an executable backtick expression. The span does not introduce hidden command execution."
+      },
+      {
+        "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.78,
+        "reason": "This range contains a visible belt CLI command that sends user input to hosted services. The workflow is intentional, but it still represents external command execution.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:62:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.92,
+        "reason": "This finding points at a Markdown code fence or nearby prose rather than an executable backtick expression. The span does not introduce hidden command execution."
+      },
+      {
+        "id": "external_commands:SKILL.md:68:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.78,
+        "reason": "This range contains a visible belt CLI command that sends user input to hosted services. The workflow is intentional, but it still represents external command execution.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:72:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.92,
+        "reason": "This finding points at a Markdown code fence or nearby prose rather than an executable backtick expression. The span does not introduce hidden command execution."
+      },
+      {
+        "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.78,
+        "reason": "This range contains a visible belt CLI command that sends user input to hosted services. The workflow is intentional, but it still represents external command execution.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.92,
+        "reason": "This finding points at a Markdown code fence or nearby prose rather than an executable backtick expression. The span does not introduce hidden command execution."
+      },
+      {
+        "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.78,
+        "reason": "This range contains a visible belt CLI command that sends user input to hosted services. The workflow is intentional, but it still represents external command execution.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:92:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.92,
+        "reason": "This finding points at a Markdown code fence or nearby prose rather than an executable backtick expression. The span does not introduce hidden command execution."
+      },
+      {
+        "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.8,
+        "reason": "The workflow block runs Tavily search and an OpenRouter Claude model through belt. This is intended, but it executes external commands and sends research data to hosted apps.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:108:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.92,
+        "reason": "This finding points at a Markdown code fence or nearby prose rather than an executable backtick expression. The span does not introduce hidden command execution."
+      },
+      {
+        "id": "external_commands:SKILL.md:112:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.8,
+        "reason": "The workflow block runs extraction and summarization through hosted belt apps. This is intended, but it sends URL content to external services.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:122:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.92,
+        "reason": "This finding points at a Markdown code fence or nearby prose rather than an executable backtick expression. The span does not introduce hidden command execution."
+      },
+      {
+        "id": "external_commands:SKILL.md:134:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.7,
+        "reason": "The related skills block includes npx skills add commands for external skills. These are visible install instructions, but they still create supply-chain exposure if followed.",
+        "severity": "medium"
+      },
+      {
+        "id": "external_commands:SKILL.md:143:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.58,
+        "reason": "The range includes an inline belt app store command. It is low impact and visible, but it still encourages use of the external CLI command surface.",
+        "severity": "medium"
+      },
+      {
+        "id": "network:SKILL.md:11:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.88,
-        "reason": "Lines 19-21 are a Markdown fenced Bash example, not shell backtick substitution. The external execution risk is better represented by the bundled script behavior."
+        "reason": "This is a normal documentation link in Markdown, not an automatic data transfer by the skill. It does not show covert network behavior."
       },
       {
-        "id": "external_commands:SKILL.md:21:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The finding starts on a closing Markdown fence and spans prose guidance. I found no shell backtick execution in this documented section."
+        "id": "network:SKILL.md:13:hardcoded-url",
+        "verdict": "confirmed",
+        "confidence": 0.68,
+        "reason": "The Markdown image points to a remote cloud.inference.sh asset that may be fetched when rendered. This is visible and low severity, but it is a real external request.",
+        "severity": "low"
       },
       {
-        "id": "external_commands:SKILL.md:83:ruby-shell-backtick-execution",
+        "id": "network:SKILL.md:17:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.87,
-        "reason": "Lines 83-101 are a fenced block of example commands, not Ruby or shell backtick execution. They document intended use rather than executable package code."
+        "confidence": 0.84,
+        "reason": "The raw.githubusercontent.com URL is a visible install-instructions link, not an automatic download by the skill. The install command risk is covered separately."
       },
       {
-        "id": "external_commands:SKILL.md:101:ruby-shell-backtick-execution",
+        "id": "network:SKILL.md:60:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding starts on the closing Markdown fence and continues into related-skill prose. No backtick-based command execution is present there."
+        "confidence": 0.95,
+        "reason": "The URL is an example.com placeholder inside sample input. It does not identify a real outbound endpoint controlled by the skill author."
+      },
+      {
+        "id": "network:SKILL.md:90:hardcoded-url",
+        "verdict": "false_positive",
+        "confidence": 0.95,
+        "reason": "The URL is an example.com placeholder inside sample input. It does not identify a real outbound endpoint controlled by the skill author."
+      },
+      {
+        "id": "network:SKILL.md:115:hardcoded-url",
+        "verdict": "false_positive",
+        "confidence": 0.95,
+        "reason": "The URL is an example.com placeholder inside sample input. It does not identify a real outbound endpoint controlled by the skill author."
+      },
+      {
+        "id": "network:SKILL.md:149:hardcoded-url",
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "This is a normal documentation link in Markdown, not an automatic data transfer by the skill. It does not show covert network behavior."
+      },
+      {
+        "id": "network:SKILL.md:150:hardcoded-url",
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "This is a normal documentation link in Markdown, not an automatic data transfer by the skill. It does not show covert network behavior."
+      },
+      {
+        "id": "network:SKILL.md:151:hardcoded-url",
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "This is a normal documentation link in Markdown, not an automatic data transfer by the skill. It does not show covert network behavior."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Gemini CLI Auto-Approval Mode",
-        "description": "The helper script embeds the user search query into a Gemini prompt and runs gemini with --yolo. Auto-approval mode can allow model actions without interactive confirmation while processing arbitrary prompts or web content.",
-        "severity": "high",
+        "title": "Broad Belt CLI Permission",
+        "description": "The frontmatter grants Bash(belt *), which allows any belt subcommand. This is broader than the documented Tavily and Exa workflows.",
+        "severity": "medium",
         "locations": [
           {
-            "file": "scripts/executable_web-search.sh",
-            "line_start": 23,
-            "line_end": 39
+            "file": "SKILL.md",
+            "line_start": 4,
+            "line_end": 4
           }
         ],
-        "confidence": 0.9,
-        "confidence_reasoning": "Line 23 stores the user query and lines 26-39 pass it to gemini with --yolo. Exact impact depends on local Gemini CLI permissions, but the unsafe auto-approval mode is explicit."
+        "confidence": 0.86,
+        "confidence_reasoning": "The wildcard permission is explicit in the skill frontmatter. The risk is permission breadth rather than hidden malicious intent."
+      },
+      {
+        "title": "Third-Party Research Data Disclosure",
+        "description": "The examples submit queries, URLs, search results, and page content to Tavily, Exa, and OpenRouter Claude apps. Users could send confidential material by mistake.",
+        "severity": "low",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 23,
+            "line_end": 23
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 49,
+            "line_end": 60
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 100,
+            "line_end": 120
+          }
+        ],
+        "confidence": 0.88,
+        "confidence_reasoning": "The command examples clearly pass user queries, URLs, and prompts to hosted belt apps. The behavior is documented and aligned with the skill purpose."
       }
     ],
     "critical_findings": [],
-    "high_findings": [
+    "high_findings": [],
+    "medium_findings": [
       {
-        "title": "Gemini CLI Auto-Approval Mode",
-        "description": "The helper script embeds the user search query into a Gemini prompt and runs gemini with --yolo. Auto-approval mode can allow model actions without interactive confirmation while processing arbitrary prompts or web content.",
+        "title": "Ruby/shell backtick execution",
+        "description": "> **Install the belt CLI skill:** `npx skills add belt-sh/cli`",
         "locations": [
           {
-            "file": "scripts/executable_web-search.sh",
-            "line_start": 23,
-            "line_end": 39
+            "file": "SKILL.md",
+            "line_start": 7,
+            "line_end": 7
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.65,
+        "confidence_reasoning": "The line instructs users to run npx skills add for another CLI skill, which can install external marketplace code. It is visible documentation, so confidence is moderate."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 19,
+            "line_end": 24
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.78,
+        "confidence_reasoning": "The quick start block includes belt login and belt app run commands. These are intentional commands, but they execute an external CLI against hosted services."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 48,
+            "line_end": 52
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.78,
+        "confidence_reasoning": "This range contains a visible belt CLI command that sends user input to hosted services. The workflow is intentional, but it still represents external command execution."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 58,
+            "line_end": 62
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.78,
+        "confidence_reasoning": "This range contains a visible belt CLI command that sends user input to hosted services. The workflow is intentional, but it still represents external command execution."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 68,
+            "line_end": 72
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.78,
+        "confidence_reasoning": "This range contains a visible belt CLI command that sends user input to hosted services. The workflow is intentional, but it still represents external command execution."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 78,
+            "line_end": 82
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.78,
+        "confidence_reasoning": "This range contains a visible belt CLI command that sends user input to hosted services. The workflow is intentional, but it still represents external command execution."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 88,
+            "line_end": 92
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.78,
+        "confidence_reasoning": "This range contains a visible belt CLI command that sends user input to hosted services. The workflow is intentional, but it still represents external command execution."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 98,
+            "line_end": 108
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.8,
+        "confidence_reasoning": "The workflow block runs Tavily search and an OpenRouter Claude model through belt. This is intended, but it executes external commands and sends research data to hosted apps."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 112,
+            "line_end": 122
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.8,
+        "confidence_reasoning": "The workflow block runs extraction and summarization through hosted belt apps. This is intended, but it sends URL content to external services."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 134,
+            "line_end": 143
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.7,
+        "confidence_reasoning": "The related skills block includes npx skills add commands for external skills. These are visible install instructions, but they still create supply-chain exposure if followed."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 143,
+            "line_end": 145
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.58,
+        "confidence_reasoning": "The range includes an inline belt app store command. It is low impact and visible, but it still encourages use of the external CLI command surface."
+      },
+      {
+        "title": "Broad Belt CLI Permission",
+        "description": "The frontmatter grants Bash(belt *), which allows any belt subcommand. This is broader than the documented Tavily and Exa workflows.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 4,
+            "line_end": 4
           }
         ],
         "review_kind": "security",
         "source_category": "semantic",
-        "source_severity": "high",
-        "confidence": 0.9,
-        "confidence_reasoning": "Line 23 stores the user query and lines 26-39 pass it to gemini with --yolo. Exact impact depends on local Gemini CLI permissions, but the unsafe auto-approval mode is explicit."
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "The wildcard permission is explicit in the skill frontmatter. The risk is permission breadth rather than hidden malicious intent."
       }
     ],
-    "medium_findings": [],
-    "low_findings": [],
+    "low_findings": [
+      {
+        "title": "Hardcoded URL",
+        "description": "![Web Search & Extraction](https://cloud.inference.sh/app/files/u/4mg21r6ta37mpaz6ktzwtt8krr/01kgndq",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 13,
+            "line_end": 13
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.68,
+        "confidence_reasoning": "The Markdown image points to a remote cloud.inference.sh asset that may be fetched when rendered. This is visible and low severity, but it is a real external request."
+      },
+      {
+        "title": "Third-Party Research Data Disclosure",
+        "description": "The examples submit queries, URLs, search results, and page content to Tavily, Exa, and OpenRouter Claude apps. Users could send confidential material by mistake.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 23,
+            "line_end": 23
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 49,
+            "line_end": 60
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 100,
+            "line_end": 120
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "low",
+        "confidence": 0.88,
+        "confidence_reasoning": "The command examples clearly pass user queries, URLs, and prompts to hosted belt apps. The behavior is documented and aligned with the skill purpose."
+      }
+    ],
     "dangerous_patterns": [],
-    "files_scanned": 3,
-    "total_lines": 389,
+    "files_scanned": 1,
+    "total_lines": 153,
     "audit_model": "codex",
-    "audited_at": "2026-07-06T06:29:15.863Z",
-    "agent_auto_install_policy": "confirmation_required",
+    "audited_at": "2026-07-08T14:30:26.101Z",
+    "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Search the Web with Gemini CLI",
-    "value_statement": "Current technical research can be slow when answers depend on recent sources. This skill runs a Gemini CLI search workflow that returns cited Markdown research.",
+    "user_title": "Search and Extract Web Content",
+    "value_statement": "Research tasks need current sources and clean page content. This skill connects Claude, Codex, and Claude Code to Tavily and Exa through belt.",
     "seo_keywords": [
-      "Claude web search",
-      "Codex web research",
-      "Claude Code search skill",
-      "Gemini CLI search",
+      "Claude",
+      "Codex",
+      "Claude Code",
+      "web search skill",
+      "Tavily search",
+      "Exa search",
+      "content extraction",
       "AI research assistant",
-      "current documentation search",
-      "technical web research",
-      "cited search results",
-      "developer research workflow"
+      "RAG research",
+      "inference.sh belt CLI"
     ],
     "actual_capabilities": [
-      "Runs a Bash wrapper that sends a user-provided search query to the Gemini CLI.",
-      "Requests current web research with source URLs and Markdown-formatted answers.",
-      "Supports queries for official documentation, error messages, release notes, and technology comparisons.",
-      "Encourages synthesis across multiple sources when the answer benefits from comparison.",
-      "Provides example query patterns for technical research, debugging, news, and migration planning."
+      "Run Tavily Search Assistant queries through the belt CLI.",
+      "Extract clean text and images from one or more URLs with Tavily Extract.",
+      "Run Exa search for relevant links with context.",
+      "Ask Exa Answer for direct factual answers.",
+      "Extract and analyze a single web page with Exa Extract.",
+      "Chain search or extraction results into Claude models through OpenRouter apps."
     ],
     "limitations": [
-      "Requires the Gemini CLI to be installed, configured, and authenticated before use.",
-      "Depends on external web results, so users must verify source quality and recency.",
-      "Does not replace local code inspection for questions already answerable from the repository.",
-      "The packaged script uses Gemini auto-approval mode unless the author removes --yolo."
+      "Requires the inference.sh belt CLI and any needed service authentication.",
+      "Search quality and availability depend on Tavily, Exa, and inference.sh services.",
+      "Queries, URLs, and extracted content may leave the local environment.",
+      "It does not independently verify facts returned by search providers."
     ],
     "use_cases": [
       {
-        "title": "Research Framework Updates",
-        "description": "Find recent release notes, migration guidance, and official documentation for fast-moving developer tools.",
-        "target_user": "Software developers"
+        "title": "Prepare Research Briefs",
+        "description": "Collect current source links and summaries before writing a market, policy, or technical brief.",
+        "target_user": "Research analyst"
       },
       {
-        "title": "Resolve Error Messages",
-        "description": "Search public discussions and documentation for likely causes and fixes for specific build or runtime errors.",
-        "target_user": "Debugging engineers"
+        "title": "Prototype RAG Retrieval",
+        "description": "Fetch web context for RAG prototypes without building a custom search integration.",
+        "target_user": "Application developer"
       },
       {
-        "title": "Compare Technical Options",
-        "description": "Gather cited advantages, trade-offs, and adoption signals before choosing a library, framework, or workflow.",
-        "target_user": "Technical leads"
+        "title": "Compare Source Coverage",
+        "description": "Extract article content and compare source coverage for editorial planning.",
+        "target_user": "Content strategist"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Find Official Guidance",
-        "scenario": "Beginner search for current documentation.",
-        "prompt": "Search for the latest official documentation about [topic]. Summarize the key points and include source URLs."
+        "title": "Search for Recent Sources",
+        "scenario": "Basic research",
+        "prompt": "Search the web for recent reliable sources about [topic]. Return the main answer, source links, and publication dates when available."
       },
       {
-        "title": "Investigate an Error",
-        "scenario": "Intermediate debugging research.",
-        "prompt": "Search for this exact error: [error message]. Explain common causes, reliable fixes, and sources from documentation or trusted discussions."
+        "title": "Extract a Web Page",
+        "scenario": "Content review",
+        "prompt": "Extract the main content from [URL]. Summarize the key points and include any source title or image information returned."
       },
       {
-        "title": "Compare Options",
-        "scenario": "Intermediate technology selection.",
-        "prompt": "Compare [option A] and [option B] for [use case]. Include strengths, weaknesses, current maintenance status, and cited sources."
+        "title": "Compare Search Providers",
+        "scenario": "Source validation",
+        "prompt": "Search Tavily and Exa for [topic]. Compare the strongest sources, note disagreements, and identify gaps for manual review."
       },
       {
-        "title": "Build an Evidence Brief",
-        "scenario": "Advanced research for a decision record.",
-        "prompt": "Research [decision topic] using recent primary sources. Separate facts, trade-offs, risks, and recommendations, with source URLs for each claim."
+        "title": "Build a RAG Brief",
+        "scenario": "Advanced research workflow",
+        "prompt": "Search for [topic], extract the most relevant pages, then prepare a source brief for a RAG ingestion workflow."
       }
     ],
     "output_examples": [
       {
-        "input": "Search for the latest Next.js release notes and migration guidance.",
-        "output": "A concise research summary with release highlights, migration risks, official documentation links, and dated source references."
+        "input": "Search for current AI agent evaluation methods.",
+        "output": "A short answer with source links, context snippets, and notes on evaluation frameworks mentioned across results."
       },
       {
-        "input": "Find causes of a TypeScript assignment error and trusted fixes.",
-        "output": "An explanation of likely causes, several repair strategies, and links to relevant documentation or public issue discussions."
+        "input": "Extract the article at a public URL.",
+        "output": "Clean page text, detected images, and a concise summary of the article content."
       },
       {
-        "input": "Compare Vite and Webpack for a large React application.",
-        "output": "A structured comparison covering performance, ecosystem support, configuration complexity, migration cost, and source URLs."
+        "input": "Compare Tavily and Exa results for a technical topic.",
+        "output": [
+          "Overlapping sources and unique sources from each provider.",
+          "A short synthesis of agreements, conflicts, and follow-up questions."
+        ]
       }
     ],
     "best_practices": [
-      "Prefer official documentation and primary sources when asking for current technical facts.",
-      "Include versions, dates, error text, and project constraints in the search query.",
-      "Verify important claims across more than one source before acting on the result."
+      "Review returned source links before using results in final work.",
+      "Do not send secrets, private documents, or internal URLs to external search tools.",
+      "Use extraction after search when you need full article context."
     ],
     "anti_patterns": [
-      "Do not use this skill for information already available in the local repository.",
-      "Do not treat generated search summaries as authoritative without checking cited sources.",
-      "Do not send secrets, private code, or sensitive business details in search queries."
+      "Treating generated answers as verified facts without checking sources.",
+      "Submitting sensitive customer data or unreleased work as search queries.",
+      "Using broad web results as a substitute for domain-specific databases."
     ],
     "faq": [
       {
-        "question": "What does this skill use for search?",
-        "answer": "It uses a Bash helper that calls the Gemini CLI with a structured web-research prompt."
+        "question": "What services does this skill use?",
+        "answer": "It uses Tavily and Exa through the inference.sh belt CLI."
       },
       {
-        "question": "Does it require external credentials?",
-        "answer": "Yes. The Gemini CLI must be installed and configured with valid access before the skill can work."
+        "question": "Does it require setup?",
+        "answer": "Yes. You need the belt CLI, service access, and login where required."
       },
       {
-        "question": "Can it cite sources?",
-        "answer": "Yes. The prompt asks Gemini to include source URLs and synthesize information from multiple sources."
+        "question": "Can it browse any web page?",
+        "answer": "No. Provider limits, robots rules, paywalls, and page access can affect extraction."
       },
       {
-        "question": "Is it suitable for private data?",
-        "answer": "No. Search queries may leave the local environment, so sensitive data should not be included."
+        "question": "Does it store search results locally?",
+        "answer": "The examples may redirect results to local files, but the skill itself is documentation."
       },
       {
-        "question": "When should I use local file search instead?",
-        "answer": "Use local search when the answer depends on files already present in the current repository."
+        "question": "Is it safe for confidential research?",
+        "answer": "Use caution. Queries, URLs, and extracted text may be sent to third-party services."
       },
       {
-        "question": "What is the main security concern?",
-        "answer": "The bundled script uses Gemini auto-approval mode, which should be removed before broad publication."
+        "question": "Can I use it with Claude Code and Codex?",
+        "answer": "Yes. The skill declares support for Claude, Codex, and Claude Code."
       }
     ]
   },
   "file_structure": [
     {
-      "name": "scripts",
-      "type": "dir",
-      "path": "scripts",
-      "children": [
-        {
-          "name": "executable_web-search.sh",
-          "type": "file",
-          "path": "scripts/executable_web-search.sh",
-          "lines": 41
-        }
-      ]
-    },
-    {
-      "name": "examples.md",
-      "type": "file",
-      "path": "examples.md",
-      "lines": 236
-    },
-    {
       "name": "SKILL.md",
       "type": "file",
       "path": "SKILL.md",
-      "lines": 112
+      "lines": 153
     }
   ]
 }

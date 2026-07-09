@@ -1,104 +1,94 @@
 ---
 name: background-removal
-description: AI Background Removal - Remove background from images, create transparent PNG. Supports JPG, PNG, WebP local files and remote URLs. One credit per image.
-version: 1.2.0
-author: verging.ai
-category: media
-user-invocable: true
-metadata:
-  openclaw:
-    requires:
-      env:
-        - VERGING_API_KEY
-      bins:
-        - curl
-    primaryEnv: VERGING_API_KEY
+description: "Remove backgrounds from images with BiRefNet via inference.sh CLI. Model: BiRefNet (high accuracy background removal). Use for: product photos, portraits, e-commerce, transparent PNGs, photo editing. Triggers: remove background, background removal, remove bg, transparent background, cut out image, background remover, rembg, product photo editing, cutout, transparent png, bg removal, photo cutout"
+allowed-tools: Bash(belt *)
 ---
 
-# background-removal - AI Background Removal
+> **Install the belt CLI skill:** `npx skills add belt-sh/cli`
 
-Remove image backgrounds with AI via verging.ai. Returns transparent PNG.
+# Background Removal
 
-## Command Format
+Remove backgrounds from images via [inference.sh](https://inference.sh) CLI.
 
-```
-/background-removal --image <image file or URL> [options]
-```
+![Background Removal](https://cloud.inference.sh/u/33sqbmzt3mrg2xxphnhw5g5ear/01k8d7y07rpmnv85hz2xvhjvbb.png)
 
-## Options
+## Quick Start
 
-| Option | Short | Description | Default |
-|--------|-------|-------------|---------|
-| --image | -i | Image file path or URL | Required |
-| --api-key | -k | API Key | $VERGING_API_KEY |
-| --output | -o | Save path for result | Current directory |
-| --download | -d | Auto download result | false |
-
-## Authentication
-
-**Recommended:** `Authorization: ApiKey <your_key>`
+> Requires inference.sh CLI (`belt`). [Install instructions](https://raw.githubusercontent.com/inference-sh/skills/refs/heads/main/cli-install.md)
 
 ```bash
-# ✅ Recommended (canonical form)
-curl -H "Authorization: ApiKey vrg_sk_your_key_here" https://verging.ai/api/v1/auth/me
+belt login
 
-# ✅ Also works (Bearer with API key is supported)
-curl -H "Authorization: Bearer vrg_sk_your_key_here" https://verging.ai/api/v1/auth/me
+belt app run infsh/birefnet --input '{"image_url": "https://your-photo.jpg"}'
 ```
 
-Get your API key: https://verging.ai → Login → Avatar → API Keys
 
-## API Reference (Exact Formats)
+## How To
 
-### 1. Check Credits
+Use Reve for image editing including background changes:
+
 ```bash
-curl -H "Authorization: ApiKey $VERGING_API_KEY" \
-  https://verging.ai/api/v1/auth/me
+belt app run falai/reve --input '{
+  "prompt": "remove the background, make it transparent",
+  "image_url": "https://portrait.jpg"
+}'
 ```
-Response: `{"email":"...","name":"...","credits":100}`
 
-### 2. Create Background Removal Job (Multipart with file — direct upload)
+Or change background directly:
+
 ```bash
-# ⚠️ image is a FILE upload (@path) — server handles R2 upload internally
-# ⚠️ You do NOT need to use /upload-video separately for background removal
-curl -X POST https://verging.ai/api/v1/background-removal/create-job \
-  -H "Authorization: ApiKey $VERGING_API_KEY" \
-  -F "image=@/tmp/verging-bg-removal/photo.jpg" \
-  -F "file_name=photo.jpg" \
-  -F "job_type=background-removal"
+belt app run falai/reve --input '{
+  "prompt": "change the background to a beach",
+  "image_url": "https://product-photo.jpg"
+}'
 ```
-Response: `{"code":10000,"result":{"job_id":"456"},"message":{"en":"Request Success","zh":"提交任务成功"}}`
 
-### 3. Poll Job Status
+## Workflow: Generate and Edit
+
 ```bash
-curl -H "Authorization: ApiKey $VERGING_API_KEY" \
-  "https://verging.ai/api/v1/background-removal/jobs?job_ids=456"
+# 1. Generate an image
+belt app run falai/flux-dev-lora --input '{"prompt": "a cute robot mascot"}' > robot.json
+
+# 2. Edit with Reve
+belt app run falai/reve --input '{
+  "prompt": "remove background, transparent",
+  "image_url": "<url-from-step-1>"
+}'
 ```
-Response: `[{"id":456,"status":"COMPLETED","progress":100,"result_url":"https://...","image_url":"https://...","created_at":"...","updated_at":"..."}]`
 
-Status values: `PENDING` → `PROCESSING` → `COMPLETED` (or `FAILED`)
+## Use Cases
 
-## Execution Flow (Follow Exactly)
+- **E-commerce**: Clean product photos
+- **Portraits**: Professional headshots
+- **Marketing**: Assets for design
+- **Social Media**: Profile pictures
+- **Design**: Elements for compositions
 
-1. **Parse args** → extract image path/URL
-2. **Download remote image** (if URL): `curl -L -o /tmp/verging-bg-removal/photo.jpg "URL"`
-3. **Validate** → check file exists, format is JPG/PNG/WebP, size < 10MB
-4. **Check credits** → GET /api/v1/auth/me (needs 1 credit)
-5. **Create job** → POST /background-removal/create-job (Multipart with `image=@path` — server uploads to R2 internally, no separate upload step needed)
-6. **Poll status** → GET /background-removal/jobs?job_ids=X every 5 seconds until COMPLETED
-7. **Return/download result** → show result_url, optionally curl download
+## Output
 
-## Critical Notes
+Returns a PNG with transparent background.
 
-- **Use `Authorization: ApiKey <key>` (recommended)** — `Bearer <key>` also works
-- **No separate upload step needed** — create-job handles R2 upload internally when you provide `image=@path`
-- **`image` must be a file upload (`@path`)** — NOT a URL string
-- **Cost: 1 credit per image (fixed)**
-- **Supported formats:** JPG, PNG, WebP (max 10MB)
-- **Temp directory:** `/tmp/verging-bg-removal/`
+## Related Skills
 
-## Privacy & Security
+```bash
+# Full platform skill (all 250+ apps)
+npx skills add inference-sh/skills@infsh-cli
 
-- Set key via env: `export VERGING_API_KEY="your_key"`
-- Never expose API key in public repos
-- Temp files cleaned up after use
+# Image generation
+npx skills add inference-sh/skills@ai-image-generation
+
+# FLUX models (including inpainting)
+npx skills add inference-sh/skills@flux-image
+
+# Upscaling
+npx skills add inference-sh/skills@image-upscaling
+```
+
+Browse all image apps: `belt app store --category image`
+
+## Documentation
+
+- [Running Apps](https://inference.sh/docs/apps/running) - How to run apps via CLI
+- [Image Generation Example](https://inference.sh/docs/examples/image-generation) - Complete image workflow guide
+- [Apps Overview](https://inference.sh/docs/apps/overview) - Understanding the app ecosystem
+
