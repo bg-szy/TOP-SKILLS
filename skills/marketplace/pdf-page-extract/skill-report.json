@@ -1,20 +1,22 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T20:32:31.188Z",
+    "generated_at": "2026-07-09T03:56:58.171Z",
     "slug": "abejitsu-pdf-page-extract",
     "source_url": "https://github.com/AbeJitsu/Game-Settings-Panel/tree/main/.claude/skills/calypso/pdf-page-extract",
     "source_ref": "main",
-    "model": "codex",
+    "model": "claude",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "6480627fd2d68843191e88f6454709226eabfe15231edf133f92df63559a62ea",
-    "tree_hash": "e7c014ac3ddbe2ca2f0e462d187d5f4d804e338537ed9d20e35de3ec6f4996e5",
+    "content_hash": "f55561487794c139c9767713509d65deb2f6666640679c1af136b0c9cbfd646a",
+    "tree_hash": "7c91bd35eb62cd763615564b85443032858ca95b188246624ba01bd37d0df780",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "claude-sonnet-4.6",
+      "model_effective": "claude:claude-sonnet-4.6",
       "fallback_chain": [
         {
-          "agent": "codex",
+          "agent": "claude",
+          "model": "claude-sonnet-4.6",
           "outcome": "success"
         }
       ],
@@ -23,18 +25,18 @@
   },
   "skill": {
     "name": "pdf-page-extract",
-    "description": "Extract PDF page text metadata, rendered page images, embedded images, and page mapping artifacts for document processing workflows.",
-    "summary": "Prepare PDF pages as structured text and image artifacts for downstream AI document generation.",
+    "description": "Extract PDF page text, metadata, rendered page images, embedded images, and page mappings for downstream document conversion workflows.",
+    "summary": "Create reusable PDF page extraction artifacts for accurate document analysis and HTML generation.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "AbeJitsu",
     "license": "MIT",
     "tags": [
       "pdf",
+      "extraction",
       "document-processing",
-      "page-extraction",
-      "pymupdf",
-      "pdfplumber"
+      "page-rendering",
+      "metadata"
     ],
     "supported_tools": [
       "claude",
@@ -52,21 +54,16 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "No prompt injection or data exfiltration intent was found in SKILL.md. The main confirmed risk is that the skill directs agents to run local Python commands and write extraction artifacts; most other scanner hits are Markdown paths, examples, or validation checklists.",
+    "summary": "Static findings were reviewed against SKILL.md and appear to be documentation examples for a local PDF extraction workflow. The shell command and path traversal flags are false positives caused by Markdown code examples, inline file names, and fixed relative paths within the project layout. No prompt injection, data exfiltration intent, or malicious behavior was found.",
     "remediation": [
       {
-        "issue": "External Python command execution",
-        "suggestion": "Require user confirmation before running local scripts, and document the exact trusted script source and expected arguments.",
-        "severity": "medium"
+        "issue": "Command examples depend on local scripts and fixed project paths.",
+        "suggestion": "Document required tools and advise users to verify PDF and output paths before running extraction commands.",
+        "severity": "low"
       },
       {
-        "issue": "Unpackaged project tool dependency",
-        "suggestion": "Bundle reviewed helper scripts with the skill or link to a pinned revision so users can verify executed code.",
-        "severity": "medium"
-      },
-      {
-        "issue": "Relative parent paths in command examples",
-        "suggestion": "Use workspace-root placeholders and normalized output directories to reduce accidental writes outside the intended project tree.",
+        "issue": "Relative ../ paths in examples may be copied into the wrong working directory.",
+        "suggestion": "Clarify the expected working directory or use project-root-relative paths in examples.",
         "severity": "low"
       }
     ],
@@ -747,523 +744,408 @@
     "finding_verdicts": [
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The skill explicitly instructs the agent to run a Python script from Calypso/tools. This is external command execution and depends on local script trust.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.91,
+        "reason": "This is an inline Markdown command naming a local Python extraction tool. The command is part of the documented PDF workflow and does not show untrusted shell interpolation or exfiltration."
       },
       {
         "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line documents the output file path for page mapping. It does not execute code or invoke a shell."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:30:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The skill explicitly instructs the agent to run rich_extractor.py. The command is expected behavior, but it is still local external command execution.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.91,
+        "reason": "This is an inline Markdown command naming a local Python extraction tool. The command is part of the documented PDF workflow and does not show untrusted shell interpolation or exfiltration."
       },
       {
         "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line documents the rich extraction output path. It is a Markdown path reference, not command execution."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:46:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line documents the rendered PNG output path. It is not executable content."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:49:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.8,
-        "reason": "The skill tells the agent to execute extract_images.py for embedded image extraction. Running repository-local tooling is a real external command risk.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.91,
+        "reason": "This is an inline Markdown command naming a local Python extraction tool. The command is part of the documented PDF workflow and does not show untrusted shell interpolation or exfiltration."
       },
       {
         "id": "external_commands:SKILL.md:51:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line documents the embedded image output pattern. It does not run a command."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line documents an image metadata filename. It is not shell execution."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:62:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is the opening of a fenced input-parameter block. The block lists parameters and contains no executable shell command."
+        "confidence": 0.94,
+        "reason": "This is a Markdown code fence or sample data block. It is documentation structure rather than an instruction that creates command execution risk."
       },
       {
         "id": "external_commands:SKILL.md:69:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is Markdown fence syntax around parameter documentation. No command is executed from this line."
+        "confidence": 0.94,
+        "reason": "This is a Markdown code fence or sample data block. It is documentation structure rather than an instruction that creates command execution risk."
       },
       {
         "id": "external_commands:SKILL.md:75:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line uses backticks for a directory name. It is documentation, not Ruby or shell execution."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:76:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line names a JSON artifact. It does not contain executable instructions."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:77:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line names a PNG artifact. It does not invoke a shell."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line names the page mapping artifact. The backticks are Markdown formatting only."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:80:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line documents an analysis directory. It is a path reference only."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:81:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line documents the rich extraction JSON file. It is not command execution."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line documents an optional pattern analysis file. It is not executable content."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:84:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line documents an image output directory. It does not run code."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:85:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line documents an image file naming pattern. It is not a shell command."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:86:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line documents an image metadata file. It does not execute code."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:90:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is the opening of a JSON example block. It is sample data, not shell execution."
+        "confidence": 0.94,
+        "reason": "This is a Markdown code fence or sample data block. It is documentation structure rather than an instruction that creates command execution risk."
       },
       {
         "id": "external_commands:SKILL.md:143:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "This is Markdown fence syntax closing the JSON example before the command section. It is not itself executable."
+        "reason": "This is a Markdown code fence or sample data block. It is documentation structure rather than an instruction that creates command execution risk."
       },
       {
         "id": "external_commands:SKILL.md:149:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "This Bash block changes directory and runs read_page_footers.py against a PDF. It is direct command execution, although the example arguments are fixed.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "This line starts a fenced bash example for local PDF processing. The commands are documented workflow steps, not hidden execution logic or dynamic command construction."
       },
       {
         "id": "external_commands:SKILL.md:156:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This line closes a Bash example block. The executable command in that example is already covered by the line 149 finding."
+        "confidence": 0.9,
+        "reason": "This line closes or belongs to a command example block. It does not execute code by itself and does not add a command injection vector."
       },
       {
         "id": "external_commands:SKILL.md:165:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "This Bash block runs rich_extractor.py and writes an analysis artifact. It is legitimate for the skill, but still executes local code.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "This line starts a fenced bash example for local PDF processing. The commands are documented workflow steps, not hidden execution logic or dynamic command construction."
       },
       {
         "id": "external_commands:SKILL.md:172:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This line closes a Bash example block. The executable command in that example is already covered by the line 165 finding."
+        "confidence": 0.9,
+        "reason": "This line closes or belongs to a command example block. It does not execute code by itself and does not add a command injection vector."
       },
       {
         "id": "external_commands:SKILL.md:182:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
+        "verdict": "false_positive",
         "confidence": 0.88,
-        "reason": "This block runs inline Python through python3 -c and writes PNG files. Inline command execution has security impact even with fixed example paths.",
-        "severity": "medium"
+        "reason": "This line starts a fenced bash example for local PDF processing. The commands are documented workflow steps, not hidden execution logic or dynamic command construction."
       },
       {
         "id": "external_commands:SKILL.md:193:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This line closes the inline Python example block. The executable command in that example is already covered by the line 182 finding."
+        "confidence": 0.9,
+        "reason": "This line closes or belongs to a command example block. It does not execute code by itself and does not add a command injection vector."
       },
       {
         "id": "external_commands:SKILL.md:197:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "This Bash block runs extract_images.py with PDF, output, and mapping arguments. It is direct external command execution in the skill workflow.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "This line starts a fenced bash example for local PDF processing. The commands are documented workflow steps, not hidden execution logic or dynamic command construction."
       },
       {
         "id": "external_commands:SKILL.md:205:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This line closes the extract_images.py example block. The executable command in that example is already covered by the line 197 finding."
+        "confidence": 0.9,
+        "reason": "This line closes or belongs to a command example block. It does not execute code by itself and does not add a command injection vector."
       },
       {
         "id": "external_commands:SKILL.md:212:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This checklist item names an expected JSON artifact. It is not code execution."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:213:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This checklist item names an expected PNG artifact. It does not execute a command."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "external_commands:SKILL.md:214:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This checklist item names the page mapping file. It is documentation only."
+        "confidence": 0.96,
+        "reason": "This is a Markdown inline path or artifact name flagged because it uses backticks. It documents expected files and does not represent shell execution."
       },
       {
         "id": "filesystem:SKILL.md:154:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The parent-directory path is a fixed example used after cd Calypso/tools to reach the project PDF. It is not user-controlled traversal in the skill text."
+        "confidence": 0.84,
+        "reason": "The ../ path appears in examples after changing into Calypso/tools, where it refers back to sibling project directories. It is a fixed documented relative path, not user-controlled traversal."
       },
       {
         "id": "filesystem:SKILL.md:155:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The parent-directory path is a fixed project output location for analysis. It writes within the documented Calypso project layout, not an arbitrary destination."
+        "confidence": 0.84,
+        "reason": "The ../ path appears in examples after changing into Calypso/tools, where it refers back to sibling project directories. It is a fixed documented relative path, not user-controlled traversal."
       },
       {
         "id": "filesystem:SKILL.md:168:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The parent-directory path is a fixed example PDF path relative to Calypso/tools. No malicious traversal intent is evident."
+        "confidence": 0.84,
+        "reason": "The ../ path appears in examples after changing into Calypso/tools, where it refers back to sibling project directories. It is a fixed documented relative path, not user-controlled traversal."
       },
       {
         "id": "filesystem:SKILL.md:171:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The parent-directory path is a fixed analysis artifact path in the project structure. It is not shown as attacker-controlled input."
+        "confidence": 0.84,
+        "reason": "The ../ path appears in examples after changing into Calypso/tools, where it refers back to sibling project directories. It is a fixed documented relative path, not user-controlled traversal."
       },
       {
         "id": "filesystem:SKILL.md:186:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.76,
-        "reason": "The inline Python opens a fixed PDF path relative to the tools directory. This is project-relative file access, not arbitrary traversal."
+        "confidence": 0.84,
+        "reason": "The ../ path appears in examples after changing into Calypso/tools, where it refers back to sibling project directories. It is a fixed documented relative path, not user-controlled traversal."
       },
       {
         "id": "filesystem:SKILL.md:190:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.74,
-        "reason": "The inline Python saves PNG files to a fixed project output path. It writes files, but the parent-directory component follows the documented layout."
+        "confidence": 0.84,
+        "reason": "The ../ path appears in examples after changing into Calypso/tools, where it refers back to sibling project directories. It is a fixed documented relative path, not user-controlled traversal."
       },
       {
         "id": "filesystem:SKILL.md:202:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The parent-directory path is a fixed example PDF argument. It is not a demonstrated traversal payload."
+        "confidence": 0.84,
+        "reason": "The ../ path appears in examples after changing into Calypso/tools, where it refers back to sibling project directories. It is a fixed documented relative path, not user-controlled traversal."
       },
       {
         "id": "filesystem:SKILL.md:203:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The parent-directory path points to the documented project output directory. It is not used to escape to an arbitrary sensitive path."
+        "confidence": 0.84,
+        "reason": "The ../ path appears in examples after changing into Calypso/tools, where it refers back to sibling project directories. It is a fixed documented relative path, not user-controlled traversal."
       },
       {
         "id": "filesystem:SKILL.md:204:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The parent-directory path points to the documented mapping file. It is a project-relative reference, not malicious traversal."
+        "confidence": 0.84,
+        "reason": "The ../ path appears in examples after changing into Calypso/tools, where it refers back to sibling project directories. It is a fixed documented relative path, not user-controlled traversal."
       },
       {
         "id": "blocker:SKILL.md:56:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The line asks the user to validate generated JSON files. That is output quality checking, not system reconnaissance."
+        "confidence": 0.93,
+        "reason": "The text is a quality check for validating generated JSON or PNG artifacts. It does not perform system reconnaissance or collect host information."
       },
       {
         "id": "blocker:SKILL.md:213:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The line is a checklist item for verifying a generated PNG file. It does not inspect host system state beyond expected artifacts."
+        "confidence": 0.93,
+        "reason": "The text is a quality check for validating generated JSON or PNG artifacts. It does not perform system reconnaissance or collect host information."
       },
       {
         "id": "blocker:SKILL.md:270:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The line is a success criterion for valid extraction output. It is not reconnaissance or host enumeration."
+        "confidence": 0.93,
+        "reason": "The text is a quality check for validating generated JSON or PNG artifacts. It does not perform system reconnaissance or collect host information."
       }
     ],
     "semantic_findings": [],
     "critical_findings": [],
     "high_findings": [],
-    "medium_findings": [
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "- Run: `python3 Calypso/tools/read_page_footers.py`",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 25,
-            "line_end": 25
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The skill explicitly instructs the agent to run a Python script from Calypso/tools. This is external command execution and depends on local script trust."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "- Run: `python3 Calypso/tools/rich_extractor.py`",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 30,
-            "line_end": 30
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The skill explicitly instructs the agent to run rich_extractor.py. The command is expected behavior, but it is still local external command execution."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "- Run: `python3 Calypso/tools/extract_images.py`",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 49,
-            "line_end": 49
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.8,
-        "confidence_reasoning": "The skill tells the agent to execute extract_images.py for embedded image extraction. Running repository-local tooling is a real external command risk."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 149,
-            "line_end": 156
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "This Bash block changes directory and runs read_page_footers.py against a PDF. It is direct command execution, although the example arguments are fixed."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 165,
-            "line_end": 172
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "This Bash block runs rich_extractor.py and writes an analysis artifact. It is legitimate for the skill, but still executes local code."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 182,
-            "line_end": 193
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "This block runs inline Python through python3 -c and writes PNG files. Inline command execution has security impact even with fixed example paths."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 197,
-            "line_end": 205
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "This Bash block runs extract_images.py with PDF, output, and mapping arguments. It is direct external command execution in the skill workflow."
-      }
-    ],
+    "medium_findings": [],
     "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 297,
-    "audit_model": "codex",
-    "audited_at": "2026-07-07T20:32:31.188Z",
+    "audit_model": "claude",
+    "audited_at": "2026-07-09T03:56:58.171Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Extract PDF Page Artifacts",
-    "value_statement": "PDF-to-HTML pipelines need page text, images, and page mapping before generation can start. This skill guides Claude, Codex, or Claude Code through deterministic extraction artifacts.",
+    "value_statement": "PDF conversion often fails when text, layout, and images are extracted separately. This skill creates traceable page artifacts that combine text metadata, rendered images, and page mappings.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
-      "PDF page extraction",
-      "PyMuPDF workflow",
-      "pdfplumber tables",
-      "document AI preparation",
-      "page mapping",
-      "HTML generation inputs",
-      "render PDF pages"
+      "PDF extraction",
+      "PDF page rendering",
+      "document processing",
+      "PyMuPDF",
+      "pdfplumber",
+      "page metadata",
+      "HTML generation"
     ],
     "actual_capabilities": [
-      "Guides page mapping from PDF indexes to book page numbers.",
       "Extracts text spans with font, style, position, and color metadata.",
-      "Renders selected PDF pages as high-resolution PNG reference images.",
-      "Extracts embedded page images and stores image metadata.",
-      "Defines validation checks for JSON artifacts, images, and page coverage."
+      "Builds PDF index to book page mappings from page footers.",
+      "Renders selected PDF pages to high-resolution PNG images.",
+      "Extracts embedded page images and related image metadata.",
+      "Writes persistent JSON and PNG artifacts for later processing.",
+      "Defines quality checks for extracted text, images, and mappings."
     ],
     "limitations": [
-      "Requires the expected Calypso project tools and Python dependencies.",
+      "Requires local Python tools that are not included in this skill file.",
+      "Assumes a Calypso project directory and specific output layout.",
       "Does not perform OCR for image-only pages.",
-      "Writes artifacts to local analysis and output directories.",
-      "Uses documented example paths that may need adjustment per workspace."
+      "Examples use one source PDF name and must be adapted for other documents."
     ],
     "use_cases": [
       {
-        "title": "Prepare Chapter Assets",
-        "description": "Extract text metadata and images before converting a textbook chapter into HTML.",
-        "target_user": "Document conversion engineer"
+        "title": "Prepare pages for HTML conversion",
+        "target_user": "Document automation engineer",
+        "description": "Generate text metadata and page images before transforming PDF pages into faithful HTML layouts."
       },
       {
-        "title": "Audit PDF Layout Data",
-        "description": "Create persistent artifacts that let reviewers compare extracted structure with rendered pages.",
-        "target_user": "Quality assurance analyst"
+        "title": "Audit extracted document content",
+        "target_user": "Content quality reviewer",
+        "description": "Review saved JSON, PNG, and mapping artifacts to confirm extraction quality before downstream use."
       },
       {
-        "title": "Feed Downstream Generation",
-        "description": "Produce page images, mapping data, and text spans for later AI-assisted layout generation.",
-        "target_user": "AI workflow builder"
+        "title": "Create reproducible PDF processing inputs",
+        "target_user": "Data pipeline maintainer",
+        "description": "Persist extraction parameters and artifacts so later processing steps can be repeated and debugged."
       }
     ],
     "prompt_templates": [
       {
-        "title": "Extract One Page",
-        "scenario": "Beginner extraction for a single known PDF page.",
-        "prompt": "Use the PDF page extract skill for chapter 2, PDF index 15. Create the rich extraction file, rendered page image, and page mapping artifact."
+        "title": "Extract one page",
+        "scenario": "Beginner single-page extraction",
+        "prompt": "Use this skill to extract page 17 from my PDF. Create the text metadata, rendered PNG, and page mapping artifacts."
       },
       {
-        "title": "Extract Page Range",
-        "scenario": "Standard chapter workflow for several pages.",
-        "prompt": "Extract chapter 2 from PDF indexes 15 through 28. Save the rich extraction data, page images, embedded images, and mapping files in the documented folders."
+        "title": "Extract a chapter range",
+        "scenario": "Process multiple PDF pages",
+        "prompt": "Extract chapter 2 from PDF indices 15 through 28. Save rich extraction data, page PNG files, embedded images, and mapping data."
       },
       {
-        "title": "Validate Existing Artifacts",
-        "scenario": "Check whether prior extraction output is complete.",
-        "prompt": "Review the existing extraction artifacts for chapter 2. Confirm the mapping file, rich extraction data, rendered PNG files, and embedded image metadata are complete."
+        "title": "Validate existing artifacts",
+        "scenario": "Check extraction completeness",
+        "prompt": "Review the extraction artifacts for chapter 2. Confirm that JSON files parse, PNG files render, and every page has text span data."
       },
       {
-        "title": "Prepare Generation Inputs",
-        "scenario": "Advanced handoff into an HTML generation pipeline.",
-        "prompt": "Extract the requested PDF page range and summarize which artifacts are ready for downstream HTML generation. Flag missing text spans, invalid images, or mapping gaps."
+        "title": "Prepare downstream conversion inputs",
+        "scenario": "Advanced document workflow",
+        "prompt": "Run the full extraction workflow for a chapter and organize the artifacts so another skill can generate HTML from the saved data."
       }
     ],
     "output_examples": [
       {
-        "input": "Extract PDF indexes 15 through 28 for chapter 2.",
-        "output": "Creates a chapter extraction dataset with page text metadata, rendered page images, embedded image files, and a page mapping file."
+        "input": "Extract PDF indices 15 through 28 for chapter 2.",
+        "output": "The skill produces a chapter extraction file, per-page rendered PNG files, page mapping data, and embedded image artifacts."
       },
       {
-        "input": "Validate extraction results before HTML generation.",
-        "output": "Reports whether required artifacts exist, whether page coverage is complete, and whether rendered images can be opened."
+        "input": "Validate the extraction output for one page.",
+        "output": [
+          "Confirms the rich extraction file exists and parses.",
+          "Confirms the rendered page image is readable.",
+          "Confirms page mapping data is present."
+        ]
       },
       {
-        "input": "Prepare one image-only PDF page for later processing.",
-        "output": "Marks the page as image-only, keeps the rendered page reference, and preserves metadata for downstream OCR or review."
+        "input": "Prepare page assets for HTML generation.",
+        "output": "The skill saves text positions, font metadata, visual page references, and image metadata for later layout reconstruction."
       }
     ],
     "best_practices": [
-      "Review the target PDF path and output folder before running extraction commands.",
-      "Validate generated JSON and PNG artifacts before starting downstream generation.",
-      "Keep page mapping files with each extraction run for reproducible results."
+      "Validate the source PDF path and output directory before running commands.",
+      "Keep page mapping files with the generated page artifacts.",
+      "Check JSON validity and PNG readability before starting downstream conversion."
     ],
     "anti_patterns": [
-      "Do not run the commands against untrusted helper scripts.",
-      "Do not assume example paths match every workspace layout.",
-      "Do not skip validation when extraction output feeds another automated step."
+      "Do not run extraction against untrusted paths without reviewing the target directories.",
+      "Do not assume page numbers match PDF indices without a mapping file.",
+      "Do not treat image-only pages as text extraction failures without checking OCR needs."
     ],
     "faq": [
       {
         "question": "What does this skill extract from a PDF?",
-        "answer": "It extracts text metadata, rendered page images, embedded images, and page mapping artifacts."
+        "answer": "It extracts text spans, font metadata, page images, embedded images, and page mapping data."
       },
       {
-        "question": "Does it include OCR?",
-        "answer": "No. It can mark image-only pages, but OCR must be handled by another workflow."
+        "question": "Does this skill include the Python tools it runs?",
+        "answer": "No. It documents commands that depend on local Calypso Python tools."
       },
       {
-        "question": "Which tools does it expect?",
-        "answer": "It expects Python tooling that uses PyMuPDF and pdfplumber inside the documented Calypso project layout."
+        "question": "Can it process image-only PDF pages?",
+        "answer": "It can mark image-only pages, but it does not perform OCR by itself."
       },
       {
-        "question": "Can I change the PDF path?",
-        "answer": "Yes. Review and adjust the PDF, output, and mapping paths before running commands."
+        "question": "Why does it render pages to PNG?",
+        "answer": "Rendered pages provide a visual reference for later layout analysis and HTML generation."
       },
       {
-        "question": "Is it safe to run automatically?",
-        "answer": "Use confirmation for command execution because the skill runs local Python scripts and writes files."
+        "question": "Can I use it with Claude Code?",
+        "answer": "Yes. The report lists Claude, Codex, and Claude Code as supported tools."
       },
       {
-        "question": "What happens after extraction?",
-        "answer": "The artifacts can support review, ASCII previews, or later AI-assisted HTML generation."
+        "question": "What should I check after extraction?",
+        "answer": "Check that JSON files parse, PNG images open, page mappings exist, and text spans are complete."
       }
     ]
   },

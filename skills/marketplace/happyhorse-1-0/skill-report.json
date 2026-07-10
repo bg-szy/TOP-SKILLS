@@ -1,20 +1,23 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T23:42:37.171Z",
+    "generated_at": "2026-07-09T07:58:59.699Z",
     "slug": "agentspace-so-happyhorse-1-0",
     "source_url": "https://github.com/agentspace-so/runcomfy-agent-skills/tree/main/happyhorse-1-0/",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "eaca8bb73e047efd0d2ab742a82dad5d52a0bda073e4fb301b3a651046475e00",
-    "tree_hash": "72563048675db8e29704ddaeabdeea5f8a387d4fa452f6936c2b908332df09e5",
+    "content_hash": "fc16c7b8ebd1cebe54721c03f870a5bb6225cb1af1428f0c44fe2de11c7207bb",
+    "tree_hash": "992e6e5d08128a3800901427ec865ca55016005e1a7cf4b8242e2424230ce60f",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
       "fallback_chain": [
         {
           "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -23,18 +26,18 @@
   },
   "skill": {
     "name": "happyhorse-1-0",
-    "description": "Generate short text-to-video clips with HappyHorse 1.0 through the RunComfy CLI. The skill documents model options, prompt guidance, supported aspect ratios, RunComfy setup, and output handling.",
-    "summary": "Run HappyHorse 1.0 text-to-video jobs on RunComfy with model-specific prompt guidance.",
+    "description": "Use HappyHorse 1.0 through the RunComfy CLI to generate short text-to-video clips. The skill documents supported inputs, output handling, prompting guidance, and when to choose related RunComfy video models.",
+    "summary": "Generate short HappyHorse 1.0 videos through the RunComfy CLI.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "agentspace-so",
     "license": "MIT",
     "tags": [
       "text-to-video",
-      "runcomfy",
-      "happyhorse",
-      "video-generation",
-      "ai-video"
+      "RunComfy",
+      "HappyHorse",
+      "AI video",
+      "prompting"
     ],
     "supported_tools": [
       "claude",
@@ -49,25 +52,30 @@
     "category": "design"
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "medium",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The real risks are the intended RunComfy CLI executions, global setup commands, and the disclosed POST to the RunComfy Model API. Most other static findings are Markdown backtick, REST ellipsis, documentation link, or standard credential-store false positives.",
+    "summary": "The skill has expected external-command and network behavior because it runs the RunComfy CLI to submit video jobs. Most static hits are false positives from Markdown backticks and ellipsis in documentation, but CLI execution and bearer-token API submission remain confirmed risks. No evidence found of prompt injection text in the skill file.",
     "remediation": [
       {
-        "issue": "Local CLI and package-manager commands are part of normal use.",
-        "suggestion": "Require clear user confirmation before install, login, or generation commands, and document how to verify the RunComfy CLI package.",
+        "issue": "External CLI execution and installer commands",
+        "suggestion": "Require explicit user confirmation before installing or running npx, npm, or runcomfy commands, and display the exact arguments before execution.",
         "severity": "medium"
       },
       {
-        "issue": "Prompts and bearer-token authenticated requests are sent to RunComfy.",
-        "suggestion": "Keep the outbound endpoint disclosure prominent and remind users not to submit sensitive prompt data unless approved.",
+        "issue": "Third-party prompt and credential transmission",
+        "suggestion": "Clearly disclose that prompts and bearer tokens are sent to RunComfy, recommend scoped tokens, and warn users not to submit sensitive prompts.",
         "severity": "medium"
       },
       {
-        "issue": "Generated files are downloaded into a user-selected output directory.",
-        "suggestion": "Recommend a dedicated output directory and preserve the documented host whitelist and file-size cap.",
+        "issue": "Local token storage",
+        "suggestion": "Document the token file path, expected permissions, token revocation steps, and the RUNCOMFY_TOKEN alternative for CI environments.",
+        "severity": "low"
+      },
+      {
+        "issue": "Generated output downloads",
+        "suggestion": "Keep the host allowlist and file-size cap, sanitize output filenames, and constrain downloads to the requested output directory.",
         "severity": "low"
       }
     ],
@@ -839,314 +847,335 @@
       {
         "id": "external_commands:SKILL.md:10:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The front matter states the skill calls the local RunComfy CLI. That is an intended external command execution path, even though the command target is specific.",
+        "confidence": 0.84,
+        "reason": "The skill explicitly says it calls the local RunComfy CLI. This is expected behavior, but it is still local external command execution against a third-party service.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.78,
-        "reason": "The fenced block contains an npx command that installs the skill globally. Running package-manager installation commands is a real supply-chain and system-modification risk.",
+        "confidence": 0.82,
+        "reason": "The fenced setup example includes an npx install command that installs a skill globally from a GitHub source. Running installer commands from community documentation is a real external command risk.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The flagged text is a Markdown fence boundary, not executable shell content. The nearby install command is handled by a separate verdict."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:44:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.8,
-        "reason": "The prerequisite tells users to run a global npm install for the RunComfy CLI. This is legitimate setup guidance but still executes external package-manager code.",
+        "confidence": 0.83,
+        "reason": "The prerequisite instructs users to run npm to install the RunComfy CLI globally. This is expected setup, but it executes package-manager code on the local machine.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.72,
-        "reason": "The prerequisite tells users to run runcomfy login, which invokes a local CLI authentication flow. This is expected behavior but involves local command execution and credential handling.",
+        "confidence": 0.8,
+        "reason": "The prerequisite instructs users to run the RunComfy login command. The command initiates authentication and can affect local credential state.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:46:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents a token environment variable and repeats the login command reference. It does not introduce a separate shell execution path beyond the login finding already covered."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The backticked text is a RunComfy endpoint identifier in documentation. It is not a shell command or dynamic execution surface."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticked value is a schema field name in a Markdown table. It is not executable code."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticked values are aspect-ratio enum names in documentation. They are not shell commands."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticked values are resolution enum names in documentation. They are not executable commands."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The backticked value is a duration field name in the input schema. It does not execute code."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The backticked value is a seed field name in documentation. It is not shell execution."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The backticked value is a watermark field name in the schema table. It is not executable code."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:65:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "The example invokes runcomfy run with user-supplied prompt data and an output directory. The command is hardcoded, but it still executes a local CLI process.",
+        "confidence": 0.88,
+        "reason": "The example runs the RunComfy CLI with user-supplied prompt content and writes outputs to a local directory. Arguments are structured, but the command still executes locally and contacts a third-party API.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:69:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is a Markdown fence boundary after a command example. It does not add an independent execution path."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:73:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "The vertical short example invokes runcomfy run with generation settings and user prompt data. This is intended external command execution through the local CLI.",
+        "confidence": 0.88,
+        "reason": "The vertical video example runs the RunComfy CLI and disables the watermark option. It is a legitimate workflow, but it remains local command execution with network submission.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is a Markdown fence boundary between examples. The actual command example is adjudicated separately."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:86:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "The cheaper test-pass example invokes runcomfy run with user prompt data. The command target is fixed, but it remains a real external command surface.",
+        "confidence": 0.88,
+        "reason": "The cheaper test example runs the RunComfy CLI with prompt input and output directory arguments. This confirms expected local command execution rather than a pure documentation-only skill.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:90:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The flagged text is a Markdown fence boundary before explanatory prose. It is not a command invocation."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:92:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticked text describes allowed output URL host patterns. It is not shell syntax or code execution."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The backticked examples are quoted prompt phrases for camera direction. They are not commands."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:102:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The backticked text is a natural-language sample prompt. It is not executable shell content."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:104:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The backticked text is a natural-language audio prompt example. It is not code execution."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:126:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This fenced block contains a sample video prompt, not shell commands. It is documentation for model prompting."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:133:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged fence boundary separates sample prompt content. It is not executable code."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This fenced block contains a multi-shot text prompt. It is not a shell command."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:143:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged fence boundary separates natural-language prompt examples. It is not executable content."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:147:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This fenced block contains a vertical video prompt example. It does not execute code."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:152:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged fence boundary follows a sample prompt and precedes limitations. It is not a command."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:158:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backticked value is an input parameter name for a different model. It is not shell execution."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:163:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.92,
-        "reason": "The backticked word names the RunComfy CLI while explaining exit codes. It is documentation, not a command invocation."
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:169:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The backticked duration value appears in an exit-code example. It is not executable shell content."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:178:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The how-it-works section explicitly says the skill invokes runcomfy run with a JSON body. That confirms the intended local CLI execution behavior.",
+        "confidence": 0.9,
+        "reason": "The implementation notes state that the skill invokes the RunComfy CLI with a JSON body. This directly confirms the external command behavior described by the skill.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:179:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticked text is an HTTPS API URL, not a shell command. The outbound network behavior is adjudicated under the network finding for this line."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:180:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.92,
-        "reason": "The backticked strings are request identifiers and HTTP method examples. They do not execute local commands."
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:181:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.92,
-        "reason": "The backticked strings describe HTTP result fetching and host suffixes. They are not shell commands."
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:182:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticked strings describe Ctrl-C behavior and an HTTP cancel request. They are not a shell execution path."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:191:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents token storage and credential options for the CLI. The login command itself is already covered, and this text is not a new execution path."
+        "verdict": "confirmed",
+        "confidence": 0.76,
+        "reason": "The security section references runcomfy login as the command that writes the API token. The command is legitimate setup, but it changes local credential state and should be treated as a real command risk.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:192:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The backticked input flag appears in a statement that the prompt is sent as JSON without shell expansion. This is documentation of an injection mitigation, not execution."
+        "confidence": 0.92,
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "external_commands:SKILL.md:194:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.92,
-        "reason": "The backticked text lists allowed outbound endpoint hosts. It is not a shell command."
+        "reason": "This hit is caused by Markdown inline code, a code fence marker, schema text, or prose examples. It does not by itself execute shell code or create a command injection path."
       },
       {
         "id": "network:SKILL.md:14:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a public homepage URL in front matter. It does not cause network access by itself."
+        "confidence": 0.92,
+        "reason": "This URL is documentation or marketplace metadata for RunComfy, not an undisclosed callback or data-exfiltration endpoint."
       },
       {
         "id": "network:SKILL.md:20:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "These are documentation links to RunComfy and GitHub. They are not hidden callbacks or runtime network requests."
+        "confidence": 0.92,
+        "reason": "This URL is documentation or marketplace metadata for RunComfy, not an undisclosed callback or data-exfiltration endpoint."
       },
       {
         "id": "network:SKILL.md:174:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.92,
-        "reason": "This is a troubleshooting documentation link. It does not transmit user data or trigger runtime network access."
+        "reason": "This URL is documentation or marketplace metadata for RunComfy, not an undisclosed callback or data-exfiltration endpoint."
       },
       {
         "id": "network:SKILL.md:179:hardcoded-url",
         "verdict": "confirmed",
-        "confidence": 0.88,
-        "reason": "The documented CLI POST sends the user bearer token and prompt data to the RunComfy Model API. This is disclosed and expected, but it is a real outbound data flow.",
+        "confidence": 0.86,
+        "reason": "The skill documents a hardcoded RunComfy Model API endpoint that receives the user bearer token. The endpoint is expected for this skill, but it is a real third-party network and credential transmission risk.",
         "severity": "medium"
       },
       {
         "id": "filesystem:SKILL.md:180:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The ... text is an ellipsis in a REST API path example, not a filesystem traversal sequence."
+        "confidence": 0.88,
+        "reason": "The apparent path traversal is only an ellipsis inside documented HTTP routes, or the hidden-path reference is standard RunComfy token storage with mode 0600. No arbitrary filesystem traversal is shown."
       },
       {
         "id": "filesystem:SKILL.md:181:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The ... text is an ellipsis in a REST API path example. No local filesystem path traversal is present."
+        "confidence": 0.88,
+        "reason": "The apparent path traversal is only an ellipsis inside documented HTTP routes, or the hidden-path reference is standard RunComfy token storage with mode 0600. No arbitrary filesystem traversal is shown."
       },
       {
         "id": "filesystem:SKILL.md:182:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The ... text is an ellipsis in a REST API path example. It is not used as a local file path."
+        "confidence": 0.88,
+        "reason": "The apparent path traversal is only an ellipsis inside documented HTTP routes, or the hidden-path reference is standard RunComfy token storage with mode 0600. No arbitrary filesystem traversal is shown."
       },
       {
         "id": "filesystem:SKILL.md:191:hidden-file-in-home-directory",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The path is documented token storage under the standard user config directory with mode 0600. There is no evidence of hidden persistence or unauthorized file access."
+        "confidence": 0.88,
+        "reason": "The apparent path traversal is only an ellipsis inside documented HTTP routes, or the hidden-path reference is standard RunComfy token storage with mode 0600. No arbitrary filesystem traversal is shown."
       },
       {
         "id": "filesystem:SKILL.md:191:hidden-file-access",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The hidden path is a documented CLI credential store, not arbitrary hidden-file reads. The text also offers an environment-token alternative for CI."
+        "confidence": 0.88,
+        "reason": "The apparent path traversal is only an ellipsis inside documented HTTP routes, or the hidden-path reference is standard RunComfy token storage with mode 0600. No arbitrary filesystem traversal is shown."
       },
       {
         "id": "blocker:SKILL.md:40:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a routing rule for explicit HappyHorse user requests. It does not ask the model to inspect system details or perform reconnaissance."
+        "confidence": 0.92,
+        "reason": "The text is a routing rule for choosing this video model when the user explicitly asks for it. It is not system reconnaissance and does not inspect the host environment."
       }
     ],
-    "semantic_findings": [],
+    "semantic_findings": [
+      {
+        "title": "Third-Party Prompt and Token Transmission",
+        "description": "The skill documents that the CLI posts to the RunComfy Model API with the user bearer token and sends the prompt through the CLI input boundary. This is required for the workflow, but users should treat prompts and credentials as third-party data exposure.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 179,
+            "line_end": 179
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 192,
+            "line_end": 192
+          }
+        ],
+        "confidence": 0.87,
+        "confidence_reasoning": "The documentation explicitly states that requests use the user bearer token and that user prompts are passed through the CLI to the Model API. The behavior is transparent, but the data-flow risk is real."
+      }
+    ],
     "critical_findings": [],
     "high_findings": [],
     "medium_findings": [
@@ -1163,8 +1192,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The front matter states the skill calls the local RunComfy CLI. That is an intended external command execution path, even though the command target is specific."
+        "confidence": 0.84,
+        "confidence_reasoning": "The skill explicitly says it calls the local RunComfy CLI. This is expected behavior, but it is still local external command execution against a third-party service."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1179,8 +1208,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The fenced block contains an npx command that installs the skill globally. Running package-manager installation commands is a real supply-chain and system-modification risk."
+        "confidence": 0.82,
+        "confidence_reasoning": "The fenced setup example includes an npx install command that installs a skill globally from a GitHub source. Running installer commands from community documentation is a real external command risk."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1195,8 +1224,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.8,
-        "confidence_reasoning": "The prerequisite tells users to run a global npm install for the RunComfy CLI. This is legitimate setup guidance but still executes external package-manager code."
+        "confidence": 0.83,
+        "confidence_reasoning": "The prerequisite instructs users to run npm to install the RunComfy CLI globally. This is expected setup, but it executes package-manager code on the local machine."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1211,8 +1240,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The prerequisite tells users to run runcomfy login, which invokes a local CLI authentication flow. This is expected behavior but involves local command execution and credential handling."
+        "confidence": 0.8,
+        "confidence_reasoning": "The prerequisite instructs users to run the RunComfy login command. The command initiates authentication and can affect local credential state."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1227,8 +1256,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "The example invokes runcomfy run with user-supplied prompt data and an output directory. The command is hardcoded, but it still executes a local CLI process."
+        "confidence": 0.88,
+        "confidence_reasoning": "The example runs the RunComfy CLI with user-supplied prompt content and writes outputs to a local directory. Arguments are structured, but the command still executes locally and contacts a third-party API."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1243,8 +1272,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "The vertical short example invokes runcomfy run with generation settings and user prompt data. This is intended external command execution through the local CLI."
+        "confidence": 0.88,
+        "confidence_reasoning": "The vertical video example runs the RunComfy CLI and disables the watermark option. It is a legitimate workflow, but it remains local command execution with network submission."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1259,8 +1288,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "The cheaper test-pass example invokes runcomfy run with user prompt data. The command target is fixed, but it remains a real external command surface."
+        "confidence": 0.88,
+        "confidence_reasoning": "The cheaper test example runs the RunComfy CLI with prompt input and output directory arguments. This confirms expected local command execution rather than a pure documentation-only skill."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1275,8 +1304,24 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The how-it-works section explicitly says the skill invokes runcomfy run with a JSON body. That confirms the intended local CLI execution behavior."
+        "confidence": 0.9,
+        "confidence_reasoning": "The implementation notes state that the skill invokes the RunComfy CLI with a JSON body. This directly confirms the external command behavior described by the skill."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- **Token storage**: `runcomfy login` writes the API token to `~/.config/runcomfy/token.json` with m",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 191,
+            "line_end": 191
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.76,
+        "confidence_reasoning": "The security section references runcomfy login as the command that writes the API token. The command is legitimate setup, but it changes local credential state and should be treated as a real command risk."
       },
       {
         "title": "Hardcoded URL",
@@ -1291,8 +1336,29 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.88,
-        "confidence_reasoning": "The documented CLI POST sends the user bearer token and prompt data to the RunComfy Model API. This is disclosed and expected, but it is a real outbound data flow."
+        "confidence": 0.86,
+        "confidence_reasoning": "The skill documents a hardcoded RunComfy Model API endpoint that receives the user bearer token. The endpoint is expected for this skill, but it is a real third-party network and credential transmission risk."
+      },
+      {
+        "title": "Third-Party Prompt and Token Transmission",
+        "description": "The skill documents that the CLI posts to the RunComfy Model API with the user bearer token and sends the prompt through the CLI input boundary. This is required for the workflow, but users should treat prompts and credentials as third-party data exposure.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 179,
+            "line_end": 179
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 192,
+            "line_end": 192
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.87,
+        "confidence_reasoning": "The documentation explicitly states that requests use the user bearer token and that user prompts are passed through the CLI to the Model API. The behavior is transparent, but the data-flow risk is real."
       }
     ],
     "low_findings": [],
@@ -1300,13 +1366,13 @@
     "files_scanned": 1,
     "total_lines": 196,
     "audit_model": "codex",
-    "audited_at": "2026-07-07T23:42:37.171Z",
+    "audited_at": "2026-07-09T07:58:59.699Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Generate HappyHorse Videos on RunComfy",
-    "value_statement": "Creating short AI videos requires model-specific prompt structure and CLI setup. This skill guides Claude, Codex, and Claude Code through HappyHorse 1.0 text-to-video generation on RunComfy.",
+    "value_statement": "Video teams need a repeatable way to turn prompts into short AI videos. This skill guides Claude, Codex, or Claude Code through the HappyHorse 1.0 RunComfy workflow.",
     "seo_keywords": [
       "Claude",
       "Codex",
@@ -1315,122 +1381,111 @@
       "RunComfy",
       "text-to-video",
       "AI video generation",
-      "video prompts",
+      "synchronized audio",
       "1080p video",
-      "synchronized audio"
+      "video prompting"
     ],
     "actual_capabilities": [
-      "Routes explicit HappyHorse video requests to the RunComfy text-to-video endpoint.",
-      "Documents supported aspect ratios, resolution choices, duration limits, seeds, and watermark options.",
-      "Provides RunComfy CLI examples for default, vertical, and lower-cost test generations.",
-      "Explains prompt tactics for motion, camera direction, multi-shot consistency, and audio direction.",
-      "Documents RunComfy setup, exit codes, token storage, network endpoints, and output downloads."
+      "Invokes the HappyHorse 1.0 text-to-video endpoint through the RunComfy CLI.",
+      "Documents prompt, aspect ratio, resolution, duration, seed, and watermark inputs.",
+      "Supports 3 to 15 second clips at 720P or 1080P.",
+      "Provides prompt guidance for motion, camera framing, audio, and multi-shot consistency.",
+      "Explains output download behavior and RunComfy CLI exit codes.",
+      "Identifies when related RunComfy video models may be a better fit."
     ],
     "limitations": [
-      "Requires the RunComfy CLI, a RunComfy account, and valid authentication.",
-      "Uses a hosted RunComfy Model API, so prompts and outputs leave the local machine.",
-      "Supports text-to-video only in this template, not image-to-video or reference-video input.",
-      "Limits clips to 15 seconds and the five documented aspect ratios."
+      "Requires a RunComfy account, CLI installation, and authentication token.",
+      "The included endpoint is text-to-video only and does not accept source video or external audio.",
+      "Clip duration is limited to 15 seconds.",
+      "Prompts and generated media metadata are sent to RunComfy infrastructure."
     ],
     "use_cases": [
       {
-        "title": "Create Brand Story Clips",
-        "description": "Build short product or brand scenes with consistent characters, camera direction, and synchronized ambience.",
-        "target_user": "Brand designer"
+        "title": "Marketing Short Creation",
+        "description": "Create vertical or widescreen product clips with prompt guidance for motion, audio, and brand consistency.",
+        "target_user": "Marketing teams"
       },
       {
-        "title": "Produce Vertical Social Videos",
-        "description": "Prepare platform-native 9:16 clips with duration, watermark, resolution, and audio guidance set before generation.",
-        "target_user": "Social media manager"
+        "title": "Prototype Video Concepts",
+        "description": "Test cinematic ideas before committing production time or agency budget.",
+        "target_user": "Creative directors"
       },
       {
-        "title": "Prototype Cinematic Sequences",
-        "description": "Draft multi-shot video prompts that restate character anchors and keep each visual beat clear.",
-        "target_user": "Filmmaker"
+        "title": "Multilingual Social Assets",
+        "description": "Draft short videos from supported-language prompts for campaign review.",
+        "target_user": "Content producers"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Create a Basic Clip",
-        "scenario": "Beginner request for a simple text-to-video generation.",
-        "prompt": "Create a short HappyHorse 1.0 video prompt for this idea: [idea]. Use default 16:9, 1080P, and five seconds."
+        "title": "Generate a Basic Clip",
+        "scenario": "Beginner request for a default landscape video.",
+        "prompt": "Use HappyHorse 1.0 to create a 5 second 1080P 16:9 video. Prompt: [describe the action, camera, setting, and audio]. Save outputs to [folder]."
       },
       {
-        "title": "Prepare a Vertical Short",
-        "scenario": "Intermediate request for social video settings.",
-        "prompt": "Turn this concept into a vertical HappyHorse 1.0 RunComfy request: [concept]. Include aspect ratio, duration, watermark preference, and audio direction."
+        "title": "Create a Vertical Short",
+        "scenario": "Intermediate request for a social video.",
+        "prompt": "Generate an 8 second 9:16 HappyHorse video with no watermark. Prompt: [vertical scene with motion, camera, and ambient sound]. Save it to [folder]."
       },
       {
-        "title": "Design a Two-Shot Scene",
+        "title": "Compare Prompt Variants",
+        "scenario": "Intermediate request for prompt testing.",
+        "prompt": "Run two 3 second 720P HappyHorse tests with the same seed. Use these prompt variants: [variant A] and [variant B]. Summarize which result has better motion."
+      },
+      {
+        "title": "Plan a Multi-Shot Sequence",
         "scenario": "Advanced request for character consistency across shots.",
-        "prompt": "Create a two-shot HappyHorse 1.0 prompt with strong character consistency for [story]. Keep within 15 seconds and explain the settings."
-      },
-      {
-        "title": "Choose the Right Video Model",
-        "scenario": "Advanced comparison across related RunComfy video models.",
-        "prompt": "Compare HappyHorse 1.0 with Wan 2.7, Seedance 2, and LTX 2 for [project]. Recommend the model, settings, and prompt structure."
+        "prompt": "Create a 12 second HappyHorse clip with two shots. Keep this character anchor consistent: [character]. Include camera, action, and audio for each shot."
       }
     ],
     "output_examples": [
       {
-        "input": "A designer asks for a five-second 16:9 product reveal.",
-        "output": [
-          "Recommended HappyHorse 1.0 with 1080P output and a five-second duration.",
-          "Prompt revised to describe product motion, camera movement, lighting, and ambient audio.",
-          "RunComfy output directory guidance included for the generated video file."
-        ]
+        "input": "Generate a 5 second landscape clip of a courier crossing a rainy street at night.",
+        "output": "A RunComfy job is submitted for a 16:9 1080P HappyHorse clip. The output folder contains the generated video and result details."
       },
       {
-        "input": "A social media manager needs a vertical cafe clip without watermark.",
-        "output": [
-          "Prepared a 9:16 short-form prompt with an eight-second duration.",
-          "Added close-up camera language, cafe ambience, and steam motion details.",
-          "Included the watermark preference as a generation setting."
-        ]
+        "input": "Create a vertical cafe ad with steam, morning light, and soft ambient sound.",
+        "output": "The skill prepares a 9:16 prompt, requests an 8 second video, disables the watermark, and saves the downloaded media to the chosen folder."
       },
       {
-        "input": "A filmmaker wants two connected shots with the same character.",
-        "output": [
-          "Structured the scene into two clear shots with repeated wardrobe and identity anchors.",
-          "Added location, motion, and audio continuity for both shots.",
-          "Flagged the 15-second limit and suggested keeping one visual beat per shot."
-        ]
+        "input": "Compare two short test prompts for a product reveal sequence.",
+        "output": "Two 720P test clips are generated with the same seed, followed by a concise comparison of motion quality and audio fit."
       }
     ],
     "best_practices": [
-      "Describe motion over time, including actions, camera movement, and audio cues.",
-      "Keep each clip focused on one visual beat before adding more shots.",
-      "Reuse clear character and wardrobe anchors when asking for multi-shot consistency."
+      "Describe visible motion over time, not only the scene.",
+      "State camera framing, duration, aspect ratio, and audio direction before generation.",
+      "Use short 720P tests before requesting longer 1080P clips."
     ],
     "anti_patterns": [
-      "Do not submit static image descriptions when the goal is believable video motion.",
-      "Do not mix conflicting visual styles, camera directions, or audio instructions.",
-      "Do not request unsupported durations, aspect ratios, or external audio-driven lip-sync."
+      "Using prompts longer than the documented 2,500 character limit.",
+      "Combining too many unrelated actions in one short clip.",
+      "Requesting unsupported aspect ratios, external audio driving, or image-to-video input through this endpoint."
     ],
     "faq": [
       {
         "question": "Does this skill generate video locally?",
-        "answer": "No. It uses the hosted RunComfy Model API through the local RunComfy CLI."
+        "answer": "No. It uses the RunComfy CLI and hosted HappyHorse 1.0 endpoint."
       },
       {
-        "question": "What setup is required?",
-        "answer": "You need the RunComfy CLI, a RunComfy account, and either login or a RUNCOMFY_TOKEN value."
+        "question": "What credentials are required?",
+        "answer": "A RunComfy login or RUNCOMFY_TOKEN is required before generation."
       },
       {
-        "question": "Can it create longer videos?",
-        "answer": "No. The documented endpoint supports clips from 3 to 15 seconds."
+        "question": "Can I use source images or videos?",
+        "answer": "Not with this text-to-video endpoint. Use another pipeline for image-to-video or video editing."
       },
       {
-        "question": "Can it use images or reference video?",
-        "answer": "No. This template covers text-to-video only. Image-to-video requires a separate pipeline."
+        "question": "What video lengths are supported?",
+        "answer": "The documented duration range is 3 to 15 seconds."
       },
       {
         "question": "Where are generated files saved?",
-        "answer": "The RunComfy CLI downloads generated output files into the output directory chosen for the run."
+        "answer": "The CLI downloads allowed RunComfy output URLs into the output directory you choose."
       },
       {
-        "question": "Does it send prompts to a third party?",
-        "answer": "Yes. Prompts are sent to RunComfy over HTTPS for hosted model processing."
+        "question": "Which tools can use this skill?",
+        "answer": "It is marked compatible with Claude, Codex, and Claude Code."
       }
     ]
   },

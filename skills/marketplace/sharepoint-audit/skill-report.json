@@ -1,20 +1,23 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T23:18:16.834Z",
+    "generated_at": "2026-07-09T08:47:08.234Z",
     "slug": "aqualia-sharepoint-audit",
     "source_url": "https://github.com/Aqualia/Skills-Library/tree/main/sharepoint-audit-agent/wrappers/claude-skill",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "ed50f6806cbbd20b52442710e4a1e888fcee4976595c0597677ea6f215f0fb63",
-    "tree_hash": "e994020d53747d8166a5df2114698b9d39936c8b0148fcb73a1e5a4f5d6f663f",
+    "content_hash": "29108474e7a26caa995ba258e7ac2d29533a6511099c22f571d200a612c6a608",
+    "tree_hash": "fa711efa83e26acd4c01c0efcc5d03b7940e8c406c2cd466ec8d8381d93b9655",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
       "fallback_chain": [
         {
           "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -23,17 +26,17 @@
   },
   "skill": {
     "name": "sharepoint-audit",
-    "description": "Guide and run a SharePoint audit locally. Collect inputs, confirm PowerShell 7.4+ and Python 3.10+ are available, call PowerShell with certificate auth via wrapper, parse audit.json, and render Markdown/HTML. Use only local shell commands.\n",
-    "summary": "Run local SharePoint Online permission audits with certificate authentication and report generation.",
+    "description": "Guides a local SharePoint Online permission audit using PowerShell, Python, certificate authentication, and generated Markdown or HTML reports.",
+    "summary": "Run local SharePoint Online permission audits and produce readable reports.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "Aqualia",
     "license": "MIT",
     "category": "security",
     "tags": [
       "sharepoint",
-      "microsoft-365",
       "permissions",
+      "microsoft-365",
       "audit",
       "powershell"
     ],
@@ -51,21 +54,21 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The skill intentionally guides local PowerShell and Python execution for SharePoint Online auditing. Several Markdown backtick detections are false positives, but the actual command execution findings are confirmed because they can install modules, process credentials, and access tenant data. No prompt injection or malicious exfiltration intent was found in SKILL.md.",
+    "summary": "The skill is legitimate administrative automation, but it instructs agents to execute local PowerShell and Python commands with certificate-authenticated SharePoint access. Direct command execution findings are confirmed, while several Markdown inline-code detections are false positives. No prompt injection attempt or malicious data-exfiltration intent was found.",
     "remediation": [
       {
-        "issue": "The workflow runs local PowerShell and Python commands.",
-        "suggestion": "Require explicit user confirmation before each command, display the exact command and arguments, and document expected side effects.",
+        "issue": "PowerShell and Python commands are run from skill instructions.",
+        "suggestion": "Require explicit user confirmation before each command, display the exact command, and validate all paths and arguments before execution.",
         "severity": "high"
       },
       {
-        "issue": "The module installation step can fetch dependencies from the internet.",
-        "suggestion": "Pin trusted module versions, document the repository source, and let users review dependencies before installation.",
+        "issue": "Module installation can fetch dependencies during setup.",
+        "suggestion": "Pin required module versions, document trusted package sources, and ask users to approve installation before running Install-Modules.ps1.",
         "severity": "high"
       },
       {
-        "issue": "The audit handles certificate credentials and sensitive permission reports.",
-        "suggestion": "Keep secrets in environment variables, avoid logging secret values, and warn users to protect generated reports.",
+        "issue": "The workflow handles PFX credentials and sensitive SharePoint audit reports.",
+        "suggestion": "Keep secrets in environment variables, redact sensitive values from logs, and store generated reports in access-controlled local directories.",
         "severity": "medium"
       }
     ],
@@ -217,60 +220,61 @@
       {
         "id": "external_commands:SKILL.md:16:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backtick usage on line 16 is Markdown inline formatting for PFX_PASS, not Ruby or shell backtick execution. The line collects required audit inputs and does not execute a command."
+        "confidence": 0.9,
+        "reason": "Line 16 uses Markdown inline code to name the PFX_PASS environment variable while listing required inputs. It does not execute shell backticks or instruct dynamic command construction."
       },
       {
         "id": "external_commands:SKILL.md:18:ruby-shell-backtick-execution",
         "verdict": "confirmed",
         "confidence": 0.88,
-        "reason": "Although the backticks are Markdown formatting, the line instructs running a pwsh installer script. That is real local command execution and can install or modify PowerShell modules.",
+        "reason": "Line 18 instructs the agent to run a local pwsh command that installs modules. This is real external command execution and may change the user's environment.",
         "severity": "high"
       },
       {
         "id": "external_commands:SKILL.md:19:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The line instructs running a Python audit agent with user-provided audit parameters. This is legitimate for the skill, but still creates command execution risk.",
+        "confidence": 0.86,
+        "reason": "Line 19 instructs the agent to run a local Python audit agent with user-provided options. This is real external command execution with possible argument and filesystem impact.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:20:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The backticks on line 20 format an output report path in Markdown. The instruction shows where to find generated HTML and does not execute code."
+        "confidence": 0.92,
+        "reason": "Line 20 uses Markdown inline code to show the generated report path. It does not execute a command or invoke a shell."
       },
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.89,
-        "reason": "The backticks format a command-line option name in documentation, not shell execution. The surrounding rule limits Write permission to explicit user authorization."
+        "confidence": 0.84,
+        "reason": "Line 25 uses Markdown inline code to document a CLI option and requires explicit user authorization for Write permission. The finding is not shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:4:powershell-invocation",
         "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The skill description states that it will guide and run a local SharePoint audit using PowerShell. This confirms intended external command execution even though the line itself is prose.",
+        "confidence": 0.78,
+        "reason": "Line 4 describes a workflow that guides and runs a SharePoint audit locally using PowerShell. This confirms the skill's intended behavior includes external command execution.",
         "severity": "high"
       },
       {
         "id": "external_commands:SKILL.md:5:powershell-invocation",
         "verdict": "confirmed",
-        "confidence": 0.83,
-        "reason": "The skill says it will call PowerShell with certificate authentication via a wrapper. Running an authenticated command against SharePoint can expose or modify tenant data if misused.",
+        "confidence": 0.82,
+        "reason": "Line 5 states that the skill calls PowerShell with certificate authentication through a wrapper. That combines external execution with privileged SharePoint access.",
         "severity": "high"
       },
       {
         "id": "external_commands:SKILL.md:13:powershell-invocation",
-        "verdict": "false_positive",
-        "confidence": 0.8,
-        "reason": "This line lists local prerequisites for the operator and does not itself direct execution. The actual PowerShell command risk is covered by the separate line 18 finding."
+        "verdict": "confirmed",
+        "confidence": 0.72,
+        "reason": "Line 13 lists PowerShell 7.4+, Python 3.10+, and PnP.PowerShell as local operator requirements. This supports that the skill depends on external command-line tooling.",
+        "severity": "high"
       },
       {
         "id": "external_commands:SKILL.md:18:powershell-invocation",
         "verdict": "confirmed",
         "confidence": 0.94,
-        "reason": "Line 18 explicitly instructs running pwsh with an Install-Modules.ps1 script. This is direct PowerShell execution with dependency installation side effects.",
+        "reason": "Line 18 directly instructs execution of pwsh against Install-Modules.ps1. This is explicit PowerShell invocation and should require review before use.",
         "severity": "high"
       }
     ],
@@ -291,7 +295,7 @@
         "source_category": "external_commands",
         "source_severity": "medium",
         "confidence": 0.88,
-        "confidence_reasoning": "Although the backticks are Markdown formatting, the line instructs running a pwsh installer script. That is real local command execution and can install or modify PowerShell modules."
+        "confidence_reasoning": "Line 18 instructs the agent to run a local pwsh command that installs modules. This is real external command execution and may change the user's environment."
       },
       {
         "title": "PowerShell invocation",
@@ -306,8 +310,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "high",
-        "confidence": 0.76,
-        "confidence_reasoning": "The skill description states that it will guide and run a local SharePoint audit using PowerShell. This confirms intended external command execution even though the line itself is prose."
+        "confidence": 0.78,
+        "confidence_reasoning": "Line 4 describes a workflow that guides and runs a SharePoint audit locally using PowerShell. This confirms the skill's intended behavior includes external command execution."
       },
       {
         "title": "PowerShell invocation",
@@ -322,8 +326,24 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "high",
-        "confidence": 0.83,
-        "confidence_reasoning": "The skill says it will call PowerShell with certificate authentication via a wrapper. Running an authenticated command against SharePoint can expose or modify tenant data if misused."
+        "confidence": 0.82,
+        "confidence_reasoning": "Line 5 states that the skill calls PowerShell with certificate authentication through a wrapper. That combines external execution with privileged SharePoint access."
+      },
+      {
+        "title": "PowerShell invocation",
+        "description": "- The operator can run PowerShell 7.4+, Python 3.10+, and PnP.PowerShell locally.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 13,
+            "line_end": 13
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "high",
+        "confidence": 0.72,
+        "confidence_reasoning": "Line 13 lists PowerShell 7.4+, Python 3.10+, and PnP.PowerShell as local operator requirements. This supports that the skill depends on external command-line tooling."
       },
       {
         "title": "PowerShell invocation",
@@ -339,7 +359,7 @@
         "source_category": "external_commands",
         "source_severity": "high",
         "confidence": 0.94,
-        "confidence_reasoning": "Line 18 explicitly instructs running pwsh with an Install-Modules.ps1 script. This is direct PowerShell execution with dependency installation side effects."
+        "confidence_reasoning": "Line 18 directly instructs execution of pwsh against Install-Modules.ps1. This is explicit PowerShell invocation and should require review before use."
       }
     ],
     "medium_findings": [
@@ -356,8 +376,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The line instructs running a Python audit agent with user-provided audit parameters. This is legitimate for the skill, but still creates command execution risk."
+        "confidence": 0.86,
+        "confidence_reasoning": "Line 19 instructs the agent to run a local Python audit agent with user-provided options. This is real external command execution with possible argument and filesystem impact."
       }
     ],
     "low_findings": [],
@@ -365,126 +385,126 @@
     "files_scanned": 1,
     "total_lines": 26,
     "audit_model": "codex",
-    "audited_at": "2026-07-07T23:18:16.834Z",
+    "audited_at": "2026-07-09T08:47:08.234Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Audit SharePoint Permissions Locally",
-    "value_statement": "SharePoint permission audits can be hard to run consistently across one site or many sites. This skill guides a local PowerShell and Python workflow that produces Markdown and HTML audit reports.",
+    "value_statement": "SharePoint permission reviews expose sensitive access paths but can be hard to collect consistently. This skill guides a local audit that produces readable reports.",
     "seo_keywords": [
-      "Claude",
-      "Codex",
-      "Claude Code",
       "SharePoint audit",
       "SharePoint permissions",
       "Microsoft 365 security",
       "PnP PowerShell",
       "certificate authentication",
       "Sites.Selected",
-      "audit reports"
+      "Claude",
+      "Codex",
+      "Claude Code",
+      "local audit reports"
     ],
     "actual_capabilities": [
-      "Collects tenant ID, client ID, PFX path, internal domains, and site targets.",
+      "Collects tenant ID, client ID, PFX path, internal domains, and site input before the audit.",
       "Checks that PowerShell 7.4+, Python 3.10+, and PnP.PowerShell are available locally.",
-      "Guides execution of the local module installation and audit agent commands.",
-      "Supports a single SharePoint site URL or a CSV-defined batch of sites.",
-      "Directs users to generated Markdown and HTML reports under the local runs directory.",
-      "Applies safety rules for secret handling and Sites.Selected permission scope."
+      "Runs the local module installation script and Python audit agent when the user approves.",
+      "Uses certificate authentication through the local PowerShell wrapper described by the skill.",
+      "Points users to generated HTML reports and warns that the reports contain sensitive data.",
+      "Defaults Sites.Selected permission guidance to Read unless the user authorizes Write."
     ],
     "limitations": [
-      "Requires the referenced local audit agent files to exist outside the skill file.",
-      "Requires valid Microsoft 365 app registration and certificate authentication setup.",
-      "Does not independently verify tenant permissions or audit report accuracy.",
-      "Generated reports can contain sensitive permission data and need protected storage."
+      "Requires a local checkout that contains the referenced SharePoint audit agent scripts.",
+      "Requires valid Microsoft 365 app registration details and certificate authentication material.",
+      "Runs local shell commands and module installation, so it is not suitable for automatic execution.",
+      "Does not replace administrator approval, legal review, or formal compliance sign-off."
     ],
     "use_cases": [
       {
-        "title": "Audit One SharePoint Site",
-        "description": "Run a focused permission review for a single SharePoint Online site and open the generated report.",
-        "target_user": "Microsoft 365 administrator"
+        "title": "Review Site Access",
+        "description": "Audit one SharePoint Online site and produce a local report for permission review.",
+        "target_user": "IT administrator"
       },
       {
-        "title": "Review Many Sites From CSV",
-        "description": "Use a CSV target list to run repeated audits with the same certificate-based configuration.",
-        "target_user": "Security operations analyst"
+        "title": "Investigate Exposure",
+        "description": "Collect permission evidence for sites that may expose internal or external users.",
+        "target_user": "Security analyst"
       },
       {
-        "title": "Prepare Compliance Evidence",
-        "description": "Generate local HTML and Markdown reports for access review evidence and follow-up remediation planning.",
-        "target_user": "Compliance lead"
+        "title": "Prepare Access Evidence",
+        "description": "Generate readable reports that support recurring access reviews and compliance discussions.",
+        "target_user": "Compliance manager"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Start A Single Site Audit",
-        "scenario": "Beginner",
-        "prompt": "Help me audit one SharePoint Online site. Ask for the required tenant, app, certificate, domain, and site details before running anything."
+        "title": "Audit One Site",
+        "prompt": "Guide me through a local SharePoint audit for one site. Ask for every required value before running any command.",
+        "scenario": "Beginner setup for a single SharePoint site"
       },
       {
-        "title": "Check My Local Prerequisites",
-        "scenario": "Basic preparation",
-        "prompt": "Before the audit, confirm that my local environment has the required PowerShell, Python, and PnP.PowerShell prerequisites."
+        "title": "Check Prerequisites",
+        "prompt": "Confirm whether my local environment is ready for the SharePoint audit. Do not install modules until I approve.",
+        "scenario": "Preflight review before command execution"
       },
       {
-        "title": "Run A CSV-Based Audit",
-        "scenario": "Intermediate",
-        "prompt": "Guide me through auditing SharePoint sites from a CSV file. Keep Sites.Selected permission at Read unless I explicitly approve Write."
+        "title": "Run Batch Audit",
+        "prompt": "Prepare a batch SharePoint permission audit from my CSV input. Show the exact commands and wait for confirmation.",
+        "scenario": "Multiple site audit with controlled execution"
       },
       {
-        "title": "Produce A Secure Audit Report",
-        "scenario": "Advanced",
-        "prompt": "Run the audit workflow with certificate authentication, avoid printing secrets, and summarize where the sensitive report files are saved."
+        "title": "Review Audit Output",
+        "prompt": "Help me interpret the generated SharePoint audit report and identify access review items without exposing secrets.",
+        "scenario": "Advanced review of generated report findings"
       }
     ],
     "output_examples": [
       {
-        "input": "Audit the finance SharePoint site using certificate authentication.",
-        "output": "The assistant asks for tenant ID, client ID, PFX path, internal domains, site URL, and confirmation that the password environment variable is set."
+        "input": "Audit a SharePoint site after I provide tenant, client, certificate, domain, and site details.",
+        "output": "The assistant asks for missing inputs, confirms prerequisites, shows the local commands, and waits for approval before execution."
       },
       {
-        "input": "Run an audit for a CSV list of sites.",
-        "output": "The assistant confirms prerequisites, asks for the CSV path, keeps Sites.Selected permission at Read, and guides local command execution."
+        "input": "The audit finished successfully and created a report folder.",
+        "output": "The assistant points to the generated HTML report and reminds the user that it contains sensitive access data."
       },
       {
-        "input": "Show me the report after the audit finishes.",
-        "output": "The assistant points to the generated local HTML report and reminds the user that the file contains sensitive permission data."
+        "input": "Review whether Write permission is needed for Sites.Selected.",
+        "output": "The assistant keeps Read as the default and asks for explicit authorization before using Write permission."
       }
     ],
     "best_practices": [
-      "Confirm every local command before execution and review all paths and arguments.",
-      "Keep certificate passwords in environment variables and never paste them into chat.",
-      "Store generated reports in a protected location with limited access."
+      "Review every generated command before allowing the assistant to run it.",
+      "Store PFX passwords only in environment variables and avoid printing secret values.",
+      "Keep generated reports in restricted local folders because they contain sensitive permission data."
     ],
     "anti_patterns": [
-      "Do not run the audit with broad write permissions unless there is explicit approval.",
-      "Do not publish generated reports to shared locations without access controls.",
-      "Do not run module installation commands before reviewing the source and dependency trust."
+      "Do not run the skill in an unattended agent session.",
+      "Do not paste certificate passwords or private keys into chat.",
+      "Do not grant Write permission unless the audit workflow truly requires it."
     ],
     "faq": [
       {
-        "question": "Does this skill run commands automatically?",
-        "answer": "It guides local command execution. Users should review and confirm commands before they run."
+        "question": "Does this skill connect to SharePoint directly?",
+        "answer": "It guides local scripts that connect to SharePoint Online through certificate-based authentication."
       },
       {
-        "question": "What tools are required?",
-        "answer": "The workflow requires PowerShell 7.4+, Python 3.10+, and PnP.PowerShell on the local machine."
+        "question": "Can it run without PowerShell?",
+        "answer": "No. The skill requires local PowerShell, Python, and PnP.PowerShell tooling."
       },
       {
-        "question": "Can it audit multiple SharePoint sites?",
-        "answer": "Yes. The instructions support one site URL or a CSV-defined batch of sites."
+        "question": "Does it install anything?",
+        "answer": "It can run a local module installation script, so users should approve that step first."
       },
       {
-        "question": "How are certificate passwords handled?",
-        "answer": "The skill tells users to keep the PFX password in an environment variable and never echo secrets."
+        "question": "Is it safe for automatic execution?",
+        "answer": "No. It runs local commands and handles sensitive Microsoft 365 access data."
       },
       {
-        "question": "Does it need internet access?",
-        "answer": "The skill says to avoid internet access beyond module installation steps."
+        "question": "What outputs does it produce?",
+        "answer": "The skill points users to generated HTML reports under the local runs directory."
       },
       {
-        "question": "Are the generated reports sensitive?",
-        "answer": "Yes. The skill warns that generated reports contain sensitive SharePoint permission data."
+        "question": "Does it use least privilege?",
+        "answer": "The skill instructs users to default Sites.Selected permission to Read unless Write is explicitly authorized."
       }
     ]
   },

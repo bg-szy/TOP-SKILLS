@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T04:45:26.637Z",
+    "generated_at": "2026-07-09T15:28:53.870Z",
     "slug": "davila7-drugbank-database",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/scientific/drugbank-database",
     "source_ref": "main",
@@ -23,8 +23,8 @@
   },
   "skill": {
     "name": "drugbank-database",
-    "description": "Guide DrugBank data access and analysis for drug properties, interactions, targets, pathways, chemical structures, and pharmacology research.",
-    "summary": "Analyze DrugBank data for pharmacology, drug discovery, and interaction research.",
+    "description": "Analyze DrugBank data for drug properties, interactions, targets, pathways, chemical structures, and pharmacology research. Use it for licensed DrugBank workflows that require reproducible Python examples and helper functions.",
+    "summary": "Analyze licensed DrugBank data for pharmacology, interactions, targets, and chemical research.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
@@ -34,7 +34,7 @@
       "pharmacology",
       "drug-discovery",
       "bioinformatics",
-      "cheminformatics"
+      "chemoinformatics"
     ],
     "supported_tools": [
       "claude",
@@ -50,31 +50,26 @@
     "category": "research"
   },
   "security_audit": {
-    "risk_level": "medium",
+    "risk_level": "high",
     "is_blocked": false,
-    "safe_to_publish": true,
+    "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "Most static findings are false positives from XML namespace URLs, DrugBank identifiers, and Markdown backticks. Confirmed issues are expected but real: authenticated network access, hidden credential configuration, package installation, local cache writes, and unsafe pickle cache loading. No prompt injection evidence was found.",
+    "summary": "Static findings were largely false positives from Markdown formatting, DrugBank XML namespace strings, local cache paths, and documented API examples. No prompt injection or malicious exfiltration intent was found. The main issues are documentation patterns that could expose credentials or encourage unsafe pickle cache loading.",
     "remediation": [
       {
-        "issue": "Credential configuration in a hidden file",
-        "suggestion": "Prefer environment variables or document strict file permissions for ~/.config/drugbank.ini, and warn users not to commit it.",
+        "issue": "Command-line examples pass DrugBank credentials as flags.",
+        "suggestion": "Prefer environment variables, interactive prompts, or protected config files with restrictive permissions. Avoid examples that place secrets in shell history.",
+        "severity": "medium"
+      },
+      {
+        "issue": "The cache example uses pickle.load on a local file.",
+        "suggestion": "Use a safer cache format such as JSON, CSV, Parquet, or SQLite. If pickle is required, warn users to load only self-created trusted files.",
         "severity": "high"
       },
       {
-        "issue": "Authenticated DrugBank API requests",
-        "suggestion": "Require explicit user consent before network access and document that bearer tokens are sent only to go.drugbank.com.",
+        "issue": "The config-file credential example lacks file permission guidance.",
+        "suggestion": "Document owner-only permissions for local credential files and recommend secret managers for shared or production environments.",
         "severity": "low"
-      },
-      {
-        "issue": "Package installation commands",
-        "suggestion": "Pin package versions or recommend a virtual environment so users can review dependencies before installation.",
-        "severity": "medium"
-      },
-      {
-        "issue": "Pickle-based local caching",
-        "suggestion": "Use safer cache formats such as JSON, CSV, Parquet, or SQLite, or verify cache provenance before pickle.load.",
-        "severity": "medium"
       }
     ],
     "risk_factor_evidence": [
@@ -1785,813 +1780,821 @@
       {
         "id": "network:references/chemical-analysis.md:23:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/chemical-analysis.md:75:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/chemical-analysis.md:220:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/chemical-analysis.md:339:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/chemical-analysis.md:546:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "blocker:references/chemical-analysis.md:26:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/chemical-analysis.md:27:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/chemical-analysis.md:67:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet is domain documentation text, not host reconnaissance. It does not inspect the system or enumerate files, services, or users."
       },
       {
         "id": "blocker:references/chemical-analysis.md:78:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/chemical-analysis.md:79:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/chemical-analysis.md:232:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/chemical-analysis.md:234:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/chemical-analysis.md:278:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/chemical-analysis.md:283:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/chemical-analysis.md:284:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/chemical-analysis.md:343:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/chemical-analysis.md:349:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/chemical-analysis.md:457:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/chemical-analysis.md:506:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/chemical-analysis.md:551:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "network:references/data-access.md:151:python-http-libraries",
-        "verdict": "confirmed",
+        "verdict": "false_positive",
         "confidence": 0.82,
-        "reason": "This example makes an authenticated request to go.drugbank.com using a bearer token. It is expected for DrugBank access, but it is outbound network activity.",
-        "severity": "low"
+        "reason": "The request is an explicit example call to the documented DrugBank API endpoint. It does not send local files or secrets to an unexpected host."
       },
       {
         "id": "network:references/data-access.md:148:hardcoded-url",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "This example makes an authenticated request to go.drugbank.com using a bearer token. It is expected for DrugBank access, but it is outbound network activity.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.84,
+        "reason": "The URL points to the documented DrugBank API for a requested drug identifier. It is not a hidden destination or arbitrary exfiltration channel."
       },
       {
         "id": "filesystem:references/data-access.md:20:hidden-file-in-home-directory",
-        "verdict": "confirmed",
-        "confidence": 0.88,
-        "reason": "The documentation instructs users to create ~/.config/drugbank.ini for credentials. Hidden credential storage is a real risk unless permissions and safer alternatives are clear.",
-        "severity": "high"
+        "verdict": "false_positive",
+        "confidence": 0.76,
+        "reason": "The path is a documented user-created DrugBank configuration file, not stealth hidden-file access by executable skill code. Credential handling guidance should still be strengthened."
       },
       {
         "id": "filesystem:references/data-access.md:57:hidden-file-in-home-directory",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This documents the downloader cache location under ~/.data, not hidden credential collection or stealth file access. The cache path is expected user data storage."
+        "confidence": 0.87,
+        "reason": "The path is the documented drugbank-downloader cache under the user home data directory. It is normal local cache storage, not hidden data collection."
       },
       {
         "id": "filesystem:references/data-access.md:67:hidden-file-in-home-directory",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This documents the downloader cache location under ~/.data, not hidden credential collection or stealth file access. The cache path is expected user data storage."
+        "confidence": 0.87,
+        "reason": "The path is the documented drugbank-downloader cache under the user home data directory. It is normal local cache storage, not hidden data collection."
       },
       {
         "id": "filesystem:references/data-access.md:20:hidden-file-access",
-        "verdict": "confirmed",
-        "confidence": 0.88,
-        "reason": "The documentation instructs users to create ~/.config/drugbank.ini for credentials. Hidden credential storage is a real risk unless permissions and safer alternatives are clear.",
-        "severity": "high"
+        "verdict": "false_positive",
+        "confidence": 0.76,
+        "reason": "The path is a documented user-created DrugBank configuration file, not stealth hidden-file access by executable skill code. Credential handling guidance should still be strengthened."
       },
       {
         "id": "filesystem:references/data-access.md:57:hidden-file-access",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This documents the downloader cache location under ~/.data, not hidden credential collection or stealth file access. The cache path is expected user data storage."
+        "confidence": 0.87,
+        "reason": "The path is the documented drugbank-downloader cache under the user home data directory. It is normal local cache storage, not hidden data collection."
       },
       {
         "id": "filesystem:references/data-access.md:67:hidden-file-access",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This documents the downloader cache location under ~/.data, not hidden credential collection or stealth file access. The cache path is expected user data storage."
+        "confidence": 0.87,
+        "reason": "The path is the documented drugbank-downloader cache under the user home data directory. It is normal local cache storage, not hidden data collection."
       },
       {
         "id": "filesystem:references/data-access.md:188:python-file-write-append",
-        "verdict": "confirmed",
-        "confidence": 0.72,
-        "reason": "The snippet writes a pickle cache file in the current directory. Local cache writes are expected, but they can persist licensed data or overwrite files if copied unmodified.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.82,
+        "reason": "The example writes a local cache file selected by the user workflow. It does not write arbitrary host files or export data outside the workspace."
       },
       {
         "id": "env_access:references/data-access.md:149:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The string is a placeholder bearer token in documentation, not a real embedded secret or environment read. Users should still replace it with protected credential handling."
+        "confidence": 0.88,
+        "reason": "The value is a placeholder bearer token in documentation, not an actual secret or environment variable read. It shows the DrugBank API authentication format."
       },
       {
         "id": "blocker:references/data-access.md:8:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet is domain documentation text, not host reconnaissance. It does not inspect the system or enumerate files, services, or users."
       },
       {
         "id": "blocker:references/data-access.md:147:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/data-access.md:238:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet is domain documentation text, not host reconnaissance. It does not inspect the system or enumerate files, services, or users."
       },
       {
         "id": "network:references/drug-queries.md:63:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/drug-queries.md:79:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/drug-queries.md:99:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/drug-queries.md:123:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/drug-queries.md:138:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/drug-queries.md:159:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/drug-queries.md:197:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/drug-queries.md:219:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/drug-queries.md:251:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/drug-queries.md:283:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/drug-queries.md:311:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/drug-queries.md:332:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/drug-queries.md:362:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "blocker:references/drug-queries.md:33:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/drug-queries.md:82:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/drug-queries.md:83:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/drug-queries.md:225:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/drug-queries.md:256:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/drug-queries.md:317:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/drug-queries.md:341:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/drug-queries.md:370:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "network:references/interactions.md:38:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/interactions.md:70:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/interactions.md:99:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/interactions.md:275:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "blocker:references/interactions.md:42:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/interactions.md:43:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/interactions.md:75:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/interactions.md:81:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/interactions.md:104:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/interactions.md:250:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/interactions.md:253:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/interactions.md:256:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/interactions.md:257:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/interactions.md:280:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/interactions.md:286:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/interactions.md:321:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "network:references/targets-pathways.md:76:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/targets-pathways.md:126:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/targets-pathways.md:170:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/targets-pathways.md:209:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/targets-pathways.md:274:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/targets-pathways.md:317:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/targets-pathways.md:351:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "network:references/targets-pathways.md:484:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "blocker:references/targets-pathways.md:30:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet is domain documentation text, not host reconnaissance. It does not inspect the system or enumerate files, services, or users."
       },
       {
         "id": "blocker:references/targets-pathways.md:79:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:80:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:129:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:130:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:175:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:181:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:186:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:193:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:215:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:277:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:278:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:322:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:327:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:330:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:356:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:358:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:487:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/targets-pathways.md:488:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "network:scripts/drugbank_helper.py:26:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the DrugBank XML namespace used for local element lookup, not an HTTP request. The surrounding examples parse DrugBank XML data."
+        "confidence": 0.96,
+        "reason": "The URL is the DrugBank XML namespace used by ElementTree lookups. It is an identifier string and does not perform a network request."
       },
       {
         "id": "blocker:scripts/drugbank_helper.py:59:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/drugbank_helper.py:64:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/drugbank_helper.py:65:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/drugbank_helper.py:286:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/drugbank_helper.py:293:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet parses DrugBank XML identifiers or iterates drug identifiers in a local dataset. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "external_commands:SKILL.md:18:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:43:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:62:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:81:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:102:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:107:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:108:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:109:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:111:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:114:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:115:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:116:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:117:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:118:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:121:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:122:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:123:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:124:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:127:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:128:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:129:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:130:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:136:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.74,
-        "reason": "The Markdown block provides uv pip install commands that users may execute. This is legitimate setup, but it runs an external package manager.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:144:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:150:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:156:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This match comes from Markdown backticks, file references, or Python examples, not shell backtick execution. No dynamic command construction is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet is Markdown inline code or a fenced example in the skill instructions, not Ruby backtick execution. It does not run commands by itself or interpolate user input."
       },
       {
         "id": "blocker:SKILL.md:167:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is a DrugBank identifier, XML field, or caching note in research examples. It does not gather host, user, network, or environment reconnaissance data."
+        "confidence": 0.95,
+        "reason": "The snippet is domain documentation text, not host reconnaissance. It does not inspect the system or enumerate files, services, or users."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Unsafe Pickle Cache Loading in Documentation",
-        "description": "references/data-access.md shows loading drugbank_parsed.pkl with pickle.load before rebuilding the cache. Copying this pattern can execute code if an attacker controls or replaces the cache file.",
+        "title": "Command-Line Credential Exposure Guidance",
+        "description": "The data-access guide shows passing DrugBank username and password values through command-line flags. Command-line secrets can be captured in shell history or visible to local process inspection tools.",
         "severity": "medium",
+        "locations": [
+          {
+            "file": "references/data-access.md",
+            "line_start": 102,
+            "line_end": 105
+          }
+        ],
+        "confidence": 0.84,
+        "confidence_reasoning": "The cited CLI example directly includes username and password flags. This is a documentation pattern, not active malware, so medium severity is appropriate."
+      },
+      {
+        "title": "Unsafe Pickle Cache Deserialization Example",
+        "description": "The caching example loads local pickle data when the cache file exists. If that file is replaced by an attacker or copied from an untrusted source, pickle deserialization can execute arbitrary Python code.",
+        "severity": "high",
         "locations": [
           {
             "file": "references/data-access.md",
@@ -2599,81 +2602,15 @@
             "line_end": 181
           }
         ],
-        "confidence": 0.82,
-        "confidence_reasoning": "The file directly documents pickle.load on a local cache file. The risk depends on cache file control, so confidence is high but not absolute."
+        "confidence": 0.78,
+        "confidence_reasoning": "The example directly uses pickle loading from a file path. The risk depends on local file trust, so confidence is high but not absolute."
       }
     ],
     "critical_findings": [],
     "high_findings": [
       {
-        "title": "Hidden file in home directory",
-        "description": "Create `~/.config/drugbank.ini`:",
-        "locations": [
-          {
-            "file": "references/data-access.md",
-            "line_start": 20,
-            "line_end": 20
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "high",
-        "confidence": 0.88,
-        "confidence_reasoning": "The documentation instructs users to create ~/.config/drugbank.ini for credentials. Hidden credential storage is a real risk unless permissions and safer alternatives are clear."
-      },
-      {
-        "title": "Hidden file access",
-        "description": "Create `~/.config/drugbank.ini`:",
-        "locations": [
-          {
-            "file": "references/data-access.md",
-            "line_start": 20,
-            "line_end": 20
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The documentation instructs users to create ~/.config/drugbank.ini for credentials. Hidden credential storage is a real risk unless permissions and safer alternatives are clear."
-      }
-    ],
-    "medium_findings": [
-      {
-        "title": "Python file write/append",
-        "description": "with open(cache_file, 'wb') as f:",
-        "locations": [
-          {
-            "file": "references/data-access.md",
-            "line_start": 188,
-            "line_end": 188
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The snippet writes a pickle cache file in the current directory. Local cache writes are expected, but they can persist licensed data or overwrite files if copied unmodified."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 136,
-            "line_end": 144
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The Markdown block provides uv pip install commands that users may execute. This is legitimate setup, but it runs an external package manager."
-      },
-      {
-        "title": "Unsafe Pickle Cache Loading in Documentation",
-        "description": "references/data-access.md shows loading drugbank_parsed.pkl with pickle.load before rebuilding the cache. Copying this pattern can execute code if an attacker controls or replaces the cache file.",
+        "title": "Unsafe Pickle Cache Deserialization Example",
+        "description": "The caching example loads local pickle data when the cache file exists. If that file is replaced by an attacker or copied from an untrusted source, pickle deserialization can execute arbitrary Python code.",
         "locations": [
           {
             "file": "references/data-access.md",
@@ -2683,172 +2620,158 @@
         ],
         "review_kind": "security",
         "source_category": "semantic",
+        "source_severity": "high",
+        "confidence": 0.78,
+        "confidence_reasoning": "The example directly uses pickle loading from a file path. The risk depends on local file trust, so confidence is high but not absolute."
+      }
+    ],
+    "medium_findings": [
+      {
+        "title": "Command-Line Credential Exposure Guidance",
+        "description": "The data-access guide shows passing DrugBank username and password values through command-line flags. Command-line secrets can be captured in shell history or visible to local process inspection tools.",
+        "locations": [
+          {
+            "file": "references/data-access.md",
+            "line_start": 102,
+            "line_end": 105
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The file directly documents pickle.load on a local cache file. The risk depends on cache file control, so confidence is high but not absolute."
+        "confidence": 0.84,
+        "confidence_reasoning": "The cited CLI example directly includes username and password flags. This is a documentation pattern, not active malware, so medium severity is appropriate."
       }
     ],
-    "low_findings": [
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.get(url, headers=headers)",
-        "locations": [
-          {
-            "file": "references/data-access.md",
-            "line_start": 151,
-            "line_end": 151
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.82,
-        "confidence_reasoning": "This example makes an authenticated request to go.drugbank.com using a bearer token. It is expected for DrugBank access, but it is outbound network activity."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "url = f\"https://go.drugbank.com/drugs/{drug_id}.json\"",
-        "locations": [
-          {
-            "file": "references/data-access.md",
-            "line_start": 148,
-            "line_end": 148
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.82,
-        "confidence_reasoning": "This example makes an authenticated request to go.drugbank.com using a bearer token. It is expected for DrugBank access, but it is outbound network activity."
-      }
-    ],
+    "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 7,
     "total_lines": 2702,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T04:45:26.637Z",
-    "agent_auto_install_policy": "allowed",
+    "audited_at": "2026-07-09T15:28:53.870Z",
+    "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Analyze DrugBank Data for Research",
-    "value_statement": "Drug research often needs structured access to DrugBank properties, interactions, targets, and pathways. This skill guides Claude, Codex, and Claude Code through DrugBank setup, querying, and analysis workflows.",
+    "value_statement": "DrugBank research often needs careful XML parsing, versioned data access, and structured pharmacology queries. This skill provides focused guidance and helper patterns for DrugBank analysis in Claude, Codex, and Claude Code.",
     "seo_keywords": [
+      "DrugBank skill",
       "Claude",
       "Codex",
       "Claude Code",
-      "DrugBank database",
-      "drug interactions",
-      "pharmacology research",
+      "drug interaction analysis",
+      "pharmacology data",
       "drug discovery",
-      "cheminformatics",
-      "ADMET analysis",
-      "drug target analysis"
+      "ADMET prediction",
+      "chemical similarity",
+      "DrugBank XML"
     ],
     "actual_capabilities": [
-      "Guides DrugBank account setup, downloader installation, and credential configuration.",
-      "Shows how to parse DrugBank XML with namespaces and query drug records.",
-      "Provides workflows for drug-drug interaction checks and polypharmacy summaries.",
-      "Explains target, enzyme, transporter, and pathway extraction from DrugBank entries.",
-      "Includes chemical property, similarity, fingerprint, and ADMET analysis examples.",
-      "Provides a Python helper class for common DrugBank lookups."
+      "Guides DrugBank account setup, versioned downloads, XML parsing, and local cache usage.",
+      "Provides helper methods for drug profiles, interactions, targets, and chemical properties.",
+      "Explains XML namespace navigation for DrugBank IDs, names, properties, and external identifiers.",
+      "Supports drug-drug interaction checks, interaction matrices, and polypharmacy risk summaries.",
+      "Covers target, enzyme, transporter, pathway, and repurposing analysis workflows.",
+      "Documents chemical similarity, fingerprint, substructure, and ADMET analysis patterns."
     ],
     "limitations": [
-      "Requires DrugBank access rights and user-supplied credentials.",
-      "Does not include the DrugBank dataset or licensed content.",
-      "Clinical outputs require expert review and are not medical advice.",
-      "Some examples require optional packages such as RDKit, pandas, and networkx."
+      "Users must provide their own DrugBank account, license, credentials, and allowed data access.",
+      "The skill does not include DrugBank database files or replace DrugBank license terms.",
+      "Clinical findings require review by qualified medical or pharmacy professionals.",
+      "Some workflows require optional packages such as RDKit, pandas, NetworkX, or scikit-learn."
     ],
     "use_cases": [
       {
-        "title": "Profile Drug Candidates",
-        "description": "Build structured profiles with indications, mechanisms, targets, and chemical properties for candidate compounds.",
-        "target_user": "Drug discovery researcher"
+        "title": "Build a Drug Profile Dataset",
+        "description": "Extract names, identifiers, indications, pharmacology fields, and chemical properties from licensed DrugBank XML.",
+        "target_user": "Pharmaceutical researcher"
       },
       {
-        "title": "Review Interaction Risk",
-        "description": "Check medication lists for DrugBank interaction records and summarize pairwise concerns for expert review.",
-        "target_user": "Clinical pharmacist or safety analyst"
+        "title": "Review Polypharmacy Interactions",
+        "description": "Check patient medication lists against DrugBank interaction records and summarize possible interaction mechanisms.",
+        "target_user": "Clinical informatics team"
       },
       {
-        "title": "Create Local Query Workflows",
-        "description": "Set up reproducible XML parsing, caching, and export steps for internal pharmacology datasets.",
-        "target_user": "Bioinformatics engineer"
+        "title": "Compare Repurposing Candidates",
+        "description": "Find drugs with shared targets, similar structures, related pathways, and relevant safety considerations.",
+        "target_user": "Computational chemist"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Look Up a Drug",
-        "scenario": "Beginner drug profile",
-        "prompt": "Use the DrugBank database skill to summarize aspirin by DrugBank ID or name. Include identifiers, indication, mechanism, and key properties."
+        "title": "Find Drug Details",
+        "scenario": "Beginner lookup for one DrugBank identifier.",
+        "prompt": "Use the DrugBank skill to summarize DB00001. Include name, type, indication, mechanism, and main chemical identifiers."
       },
       {
-        "title": "Compare Interactions",
-        "scenario": "Medication safety review",
-        "prompt": "Analyze these medications for DrugBank drug-drug interactions: [list]. Return pairs, descriptions, and severity notes for expert review."
+        "title": "Check Drug Interactions",
+        "scenario": "Basic interaction review for a small medication list.",
+        "prompt": "Use the interaction workflow to check these DrugBank IDs for pairwise interactions: DB00001, DB00002, and DB00005. Summarize mechanisms and risks."
       },
       {
-        "title": "Map Targets and Pathways",
-        "scenario": "Mechanism research",
-        "prompt": "Use DrugBank to compare targets, enzymes, transporters, and pathways for [drug A] and [drug B]. Highlight shared biology."
+        "title": "Build a Target Profile",
+        "scenario": "Intermediate target and pathway analysis.",
+        "prompt": "Use DrugBank target guidance to profile DB01050. List targets, actions, enzymes, transporters, pathway links, and useful external identifiers."
       },
       {
-        "title": "Build a Reproducible Analysis Plan",
-        "scenario": "Advanced research workflow",
-        "prompt": "Create a reproducible DrugBank analysis plan for [research question]. Include versioning, credential handling, extraction, validation, caching, and review steps."
+        "title": "Compare Repurposing Candidates",
+        "scenario": "Advanced research workflow across multiple evidence types.",
+        "prompt": "Use the DrugBank workflows to compare five candidate drugs for repurposing. Combine target overlap, chemical similarity, indications, interactions, and ADMET concerns."
       }
     ],
     "output_examples": [
       {
-        "input": "Summarize DB00001.",
-        "output": "A concise drug profile with primary identifiers, therapeutic context, mechanism, chemical properties, and source version notes."
+        "input": "Summarize one DrugBank ID for a research note.",
+        "output": "A concise drug profile with identifiers, indication, mechanism, pharmacology fields, chemical identifiers, and cited DrugBank version guidance."
       },
       {
-        "input": "Check warfarin, aspirin, and ibuprofen for interaction concerns.",
+        "input": "Check a three-drug regimen for interaction concerns.",
         "output": [
-          "Pairwise interaction findings with plain-language descriptions and source caveats.",
-          "A reminder that clinical interpretation requires qualified review."
+          "Pairwise interaction summary for each drug pair.",
+          "Plain-language mechanism notes where DrugBank provides descriptions.",
+          "A recommendation to verify results with clinical pharmacy review."
         ]
       },
       {
-        "input": "Find target overlap for two candidate drugs.",
-        "output": "A target comparison with shared proteins, actions, pathway connections, and evidence gaps for follow-up."
+        "input": "Find structurally similar drugs for a lead compound.",
+        "output": "A ranked research summary with similarity rationale, shared targets, pathway overlap, and follow-up validation steps."
       }
     ],
     "best_practices": [
-      "Confirm DrugBank license and version before every analysis.",
-      "Use environment variables or protected config files for credentials.",
-      "Have qualified experts review clinical or safety interpretations."
+      "Use environment variables or protected secret stores for DrugBank credentials.",
+      "Record the exact DrugBank version used in every analysis.",
+      "Validate chemical structures and clinical conclusions with domain experts."
     ],
     "anti_patterns": [
-      "Do not hardcode real DrugBank credentials or API keys in notebooks.",
-      "Do not treat interaction scores as medical advice.",
-      "Do not mix results from different DrugBank versions without noting the source."
+      "Do not hardcode real usernames, passwords, or API keys in notebooks or scripts.",
+      "Do not treat DrugBank interaction records as direct medical advice.",
+      "Do not mix DrugBank versions without documenting the source version for each result."
     ],
     "faq": [
       {
         "question": "Does this skill include DrugBank data?",
-        "answer": "No. It provides guidance and helper code for users who already have valid DrugBank access."
+        "answer": "No. Users must access DrugBank through their own account and license."
       },
       {
-        "question": "Which AI tools can use it?",
-        "answer": "It is prepared for Claude, Codex, and Claude Code workflows."
+        "question": "Can it download the latest DrugBank release?",
+        "answer": "It explains use of drugbank-downloader for versioned or latest downloads when credentials and licenses allow access."
       },
       {
-        "question": "Can it check drug-drug interactions?",
-        "answer": "Yes. It explains how to extract DrugBank interaction records and compare medication pairs."
+        "question": "Can it analyze drug-drug interactions?",
+        "answer": "Yes. It provides examples for extracting interactions, checking pairs, and summarizing regimen-level concerns."
       },
       {
-        "question": "Can it support clinical decisions?",
-        "answer": "It can organize evidence, but clinical decisions require qualified professional review."
+        "question": "Can it perform chemical similarity searches?",
+        "answer": "Yes. The references describe SMILES extraction, fingerprints, Tanimoto similarity, and substructure search workflows."
       },
       {
-        "question": "Does it require external packages?",
-        "answer": "Yes. Some workflows use drugbank-downloader, pandas, RDKit, networkx, or scikit-learn."
+        "question": "Is it suitable for clinical decisions?",
+        "answer": "No. It can support research and review, but clinical decisions require qualified professional judgment."
       },
       {
-        "question": "How should credentials be handled?",
-        "answer": "Use environment variables or protected configuration files. Do not commit real credentials."
+        "question": "Which tools can use this skill?",
+        "answer": "The report lists support for Claude, Codex, and Claude Code."
       }
     ]
   },

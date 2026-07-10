@@ -1,23 +1,20 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-05T10:04:46.434Z",
+    "generated_at": "2026-07-09T17:41:51.806Z",
     "slug": "davila7-senior-fullstack",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/development/senior-fullstack",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "9ba4f163336198a07f9f1aefa640cbee7295f45213d41cf0903d41fa21f60750",
-    "tree_hash": "8dac41d5cc145dda00817ffa33db7269ef71ee42476e491a5f81c851d99fce88",
+    "content_hash": "0c3156f38215b792e032abf5708b33b572448837346e5ec110a5c74522ed2c5a",
+    "tree_hash": "9271724657aeb61a460e1677ab6fad7b0f8bff8ce06fdc75c0b1fafe56ca5811",
     "provenance": {
-      "model_requested": "gpt-5.5:high",
-      "model_effective": "codex:gpt-5.5:high",
+      "model_effective": "codex",
       "fallback_chain": [
         {
           "agent": "codex",
-          "model": "gpt-5.5",
-          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -26,10 +23,10 @@
   },
   "skill": {
     "name": "senior-fullstack",
-    "description": "Fullstack development guidance for React, Next.js, Node.js, GraphQL, PostgreSQL, and common delivery workflows. Includes reference material plus simple Python scripts for scaffolding-style checks and JSON quality reports.",
-    "summary": "Guide fullstack project setup, architecture choices, workflows, and basic quality reporting.",
+    "description": "Fullstack development guidance for React, Next.js, Node.js, GraphQL, and PostgreSQL projects. Includes generic reference guides and Python helpers for target validation, report output, and quality workflow checks.",
+    "summary": "Guides fullstack planning, setup, and quality checks with lightweight helper scripts.",
     "icon": "📦",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "author": "davila7",
     "license": "MIT",
     "tags": [
@@ -51,21 +48,16 @@
     "category": "coding"
   },
   "security_audit": {
-    "risk_level": "medium",
+    "risk_level": "safe",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "I found no evidence of prompt injection, credential exfiltration, or malicious command execution. Most detections are Markdown examples or file references; the remaining concern is that three scripts can overwrite a user-selected output file.",
+    "summary": "Most static command findings are false positives from Markdown code fences and local file references. The only confirmed issue is unrestricted optional report output in the Python helper scripts. No prompt injection, exfiltration intent, or malicious behavior was found.",
     "remediation": [
       {
-        "issue": "Scripts overwrite a user-supplied --output path without checking existing files.",
-        "suggestion": "Resolve output paths inside the current workspace, refuse sensitive paths, and ask before overwriting existing files.",
+        "issue": "Unrestricted report output path",
+        "suggestion": "Resolve --output under the project directory, reject absolute paths, and ask before overwriting existing files.",
         "severity": "medium"
-      },
-      {
-        "issue": "Documentation shows setup and deployment commands without safety warnings.",
-        "suggestion": "Add notes that users should verify targets, credentials, and environments before install or deployment commands run.",
-        "severity": "low"
       }
     ],
     "risk_factor_evidence": [
@@ -541,197 +533,197 @@
       {
         "id": "blocker:references/architecture_patterns.md:81:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited lines are an \"Anti-Patterns to Avoid\" documentation heading with generic examples. There is no system reconnaissance instruction or collection of host details."
+        "confidence": 0.95,
+        "reason": "The text is an Anti-Patterns heading in documentation. It does not request host enumeration or system reconnaissance."
       },
       {
         "id": "blocker:references/development_workflows.md:81:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited lines are a generic anti-patterns section in a reference document. They do not direct the agent to inspect the host, enumerate files, or gather system data."
+        "confidence": 0.95,
+        "reason": "The text is an Anti-Patterns heading in documentation. It does not request host enumeration or system reconnaissance."
       },
       {
         "id": "blocker:references/tech_stack_guide.md:81:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The finding points to a documentation heading about anti-patterns. No reconnaissance behavior, shell probing, or environment discovery appears at that location."
+        "confidence": 0.95,
+        "reason": "The text is an Anti-Patterns heading in documentation. It does not request host enumeration or system reconnaissance."
       },
       {
         "id": "filesystem:scripts/code_quality_analyzer.py:107:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.72,
+        "confidence": 0.66,
         "severity": "medium",
-        "reason": "The script writes JSON output to a user-supplied --output path without checking for existing files or restricting the destination. This can overwrite files if an agent or user supplies a sensitive path."
+        "reason": "The script writes JSON output to args.output without path limits or overwrite checks. This can overwrite files if invoked with an unsafe path."
       },
       {
         "id": "filesystem:scripts/fullstack_scaffolder.py:107:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.72,
+        "confidence": 0.66,
         "severity": "medium",
-        "reason": "The script writes report output to an arbitrary --output path and opens it with write mode. The behavior is visible and not malicious, but it can clobber files without confirmation."
+        "reason": "The script writes JSON output to args.output without path limits or overwrite checks. This can overwrite files if invoked with an unsafe path."
       },
       {
         "id": "filesystem:scripts/project_scaffolder.py:107:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.72,
+        "confidence": 0.66,
         "severity": "medium",
-        "reason": "The script accepts an output path and overwrites that file with generated JSON. It should guard against accidental overwrite or paths outside the intended workspace."
+        "reason": "The script writes JSON output to args.output without path limits or overwrite checks. This can overwrite files if invoked with an unsafe path."
       },
       {
         "id": "external_commands:SKILL.md:16:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The cited block is Markdown showing how to run the included Python scripts. It is not Ruby backtick execution and contains no shell interpolation or hidden command."
+        "confidence": 0.93,
+        "reason": "This is a Markdown bash fence listing local helper script commands. It is documentation, not embedded shell execution."
       },
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The location is the closing Markdown fence after documented script commands. It is not executable code and does not create a command execution vector."
+        "confidence": 0.94,
+        "reason": "This line closes a Markdown code fence. No command execution mechanism or dynamic shell call is present."
       },
       {
         "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is a Markdown bash fence before a usage example for the local fullstack script. The text documents a command but does not execute it or inject dynamic input."
+        "confidence": 0.93,
+        "reason": "This is a Markdown bash fence for a documented local script invocation. It is not executable code in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The cited line is the closing fence for a documented usage example. There is no Ruby shell backtick execution or command construction."
+        "confidence": 0.94,
+        "reason": "This line closes a Markdown code fence. No command execution mechanism or dynamic shell call is present."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is a Markdown bash fence introducing a usage example for the project scaffolder. It is documentation, not executable skill code."
+        "confidence": 0.93,
+        "reason": "This is a Markdown bash fence for a documented local script invocation. It is not executable code in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The finding points to a Markdown fence closing a command example. No command is executed from this line."
+        "confidence": 0.94,
+        "reason": "This line closes a Markdown code fence. No command execution mechanism or dynamic shell call is present."
       },
       {
         "id": "external_commands:SKILL.md:70:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The cited line opens a Markdown bash example for the code quality analyzer. It does not execute code and does not include unsafe shell syntax."
+        "confidence": 0.93,
+        "reason": "This is a Markdown bash fence for a documented local script invocation. It is not executable code in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:72:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The cited line closes a Markdown command example. It is not a shell execution primitive."
+        "confidence": 0.94,
+        "reason": "This line closes a Markdown code fence. No command execution mechanism or dynamic shell call is present."
       },
       {
         "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The backticks wrap a local reference filename in prose. Inline Markdown around a file path is not command execution."
+        "confidence": 0.94,
+        "reason": "This is an inline reference to a local Markdown file. It does not invoke Ruby, a shell, or an external command."
       },
       {
         "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The backticks identify a local Markdown file path for documentation. There is no shell command or execution context."
+        "confidence": 0.94,
+        "reason": "This is an inline reference to a local Markdown file. It does not invoke Ruby, a shell, or an external command."
       },
       {
         "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is an inline Markdown reference to a local workflow document. It is not an executable command."
+        "confidence": 0.94,
+        "reason": "This is an inline reference to a local Markdown file. It does not invoke Ruby, a shell, or an external command."
       },
       {
         "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This Markdown block documents ordinary setup commands such as dependency installation and copying an example env file. The commands can have operational impact, but the block does not show malicious execution or hidden shell behavior."
+        "confidence": 0.88,
+        "reason": "This is a setup command example in Markdown. The commands are ordinary dependency and environment setup guidance."
       },
       {
         "id": "external_commands:SKILL.md:127:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The finding points to the closing fence of the setup command block. The line itself is Markdown formatting, not execution."
+        "confidence": 0.94,
+        "reason": "This line closes a Markdown code fence. No command execution mechanism or dynamic shell call is present."
       },
       {
         "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The cited Markdown block contains a simple local script invocation for quality checks. It does not use Ruby backticks, command substitution, or untrusted command construction."
+        "confidence": 0.9,
+        "reason": "This is a Markdown example for running a local analyzer script. It is not hidden execution or command injection."
       },
       {
         "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The location is a Markdown fence after comments about reviewing recommendations. It is not code execution."
+        "confidence": 0.94,
+        "reason": "This line closes a Markdown code fence. No command execution mechanism or dynamic shell call is present."
       },
       {
         "id": "external_commands:SKILL.md:142:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The backticks format a local documentation path in a bullet list. This is not an instruction to execute a command."
+        "confidence": 0.94,
+        "reason": "This is an inline reference to a local Markdown file. It does not invoke Ruby, a shell, or an external command."
       },
       {
         "id": "external_commands:SKILL.md:143:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is an inline Markdown file reference. It contains no shell execution behavior."
+        "confidence": 0.94,
+        "reason": "This is an inline reference to a local Markdown file. It does not invoke Ruby, a shell, or an external command."
       },
       {
         "id": "external_commands:SKILL.md:144:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line references a local Markdown file using inline formatting. It is not a shell command or executable expression."
+        "confidence": 0.94,
+        "reason": "This is an inline reference to a local Markdown file. It does not invoke Ruby, a shell, or an external command."
       },
       {
         "id": "external_commands:SKILL.md:174:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The cited block lists common development and deployment commands for user review. These commands have normal operational risk, but there is no malicious payload, command injection, or hidden execution."
+        "confidence": 0.86,
+        "reason": "This is a Markdown list of common development commands. No obfuscation, unauthorized network access, or shell wrapper is present."
       },
       {
         "id": "external_commands:SKILL.md:189:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The finding points to the closing Markdown fence of the common commands section. It is formatting, not executable code."
+        "confidence": 0.94,
+        "reason": "This line closes a Markdown code fence. No command execution mechanism or dynamic shell call is present."
       },
       {
         "id": "external_commands:SKILL.md:195:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The backticks format a local troubleshooting document path. Inline Markdown around a file path is not shell execution."
+        "confidence": 0.94,
+        "reason": "This is an inline reference to a local Markdown file. It does not invoke Ruby, a shell, or an external command."
       },
       {
         "id": "external_commands:SKILL.md:206:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The location is a resource list entry pointing to a local reference file. It does not instruct command execution."
+        "confidence": 0.94,
+        "reason": "This is an inline reference to a local Markdown file. It does not invoke Ruby, a shell, or an external command."
       },
       {
         "id": "external_commands:SKILL.md:207:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited line is an inline Markdown path to a local document. There is no shell syntax or command execution."
+        "confidence": 0.94,
+        "reason": "This is an inline reference to a local Markdown file. It does not invoke Ruby, a shell, or an external command."
       },
       {
         "id": "external_commands:SKILL.md:208:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The finding is triggered by backticks around a documentation path. That is safe Markdown formatting, not Ruby backtick execution."
+        "confidence": 0.94,
+        "reason": "This is an inline reference to a local Markdown file. It does not invoke Ruby, a shell, or an external command."
       },
       {
         "id": "sensitive:SKILL.md:126:environment-file-access",
         "verdict": "false_positive",
         "confidence": 0.88,
-        "reason": "The command copies .env.example to .env as a local setup step and does not read or exfiltrate secrets. It should still be paired with standard guidance not to commit real credentials."
+        "reason": "The command copies an example environment file to a local .env file. It does not read, print, or transmit secrets."
       },
       {
         "id": "blocker:SKILL.md:83:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The cited line is the phrase \"Anti-patterns to avoid\" in a documentation feature list. It is unrelated to host reconnaissance or data collection."
+        "confidence": 0.96,
+        "reason": "The text is a bullet about avoiding anti-patterns. It does not instruct the agent to inspect host or system details."
       }
     ],
     "semantic_findings": [],
@@ -751,8 +743,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The script writes JSON output to a user-supplied --output path without checking for existing files or restricting the destination. This can overwrite files if an agent or user supplies a sensitive path."
+        "confidence": 0.66,
+        "confidence_reasoning": "The script writes JSON output to args.output without path limits or overwrite checks. This can overwrite files if invoked with an unsafe path."
       },
       {
         "title": "Python file write/append",
@@ -767,8 +759,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The script writes report output to an arbitrary --output path and opens it with write mode. The behavior is visible and not malicious, but it can clobber files without confirmation."
+        "confidence": 0.66,
+        "confidence_reasoning": "The script writes JSON output to args.output without path limits or overwrite checks. This can overwrite files if invoked with an unsafe path."
       },
       {
         "title": "Python file write/append",
@@ -783,8 +775,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The script accepts an output path and overwrites that file with generated JSON. It should guard against accidental overwrite or paths outside the intended workspace."
+        "confidence": 0.66,
+        "confidence_reasoning": "The script writes JSON output to args.output without path limits or overwrite checks. This can overwrite files if invoked with an unsafe path."
       }
     ],
     "low_findings": [],
@@ -792,125 +784,125 @@
     "files_scanned": 7,
     "total_lines": 867,
     "audit_model": "codex",
-    "audited_at": "2026-07-05T10:04:46.434Z",
+    "audited_at": "2026-07-09T17:41:51.806Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Build Fullstack Apps With Senior Guidance",
-    "value_statement": "Teams need consistent structure when building fullstack applications. This skill provides scaffolding guidance, stack references, workflow notes, and simple quality reports for AI-assisted development.",
+    "user_title": "Build Fullstack Apps With Senior Patterns",
+    "value_statement": "Teams often lose time aligning stack choices, project setup, and quality checks. This skill gives Claude, Codex, and Claude Code reusable fullstack guidance and helper scripts.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "fullstack development",
-      "Next.js scaffolding",
-      "React architecture",
-      "Node.js workflow",
-      "PostgreSQL apps",
-      "code quality analysis",
-      "developer productivity"
+      "Next.js",
+      "React",
+      "Node.js",
+      "GraphQL",
+      "PostgreSQL",
+      "code quality"
     ],
     "actual_capabilities": [
-      "Provides Python scripts for project scaffolding, fullstack checks, and code quality reporting.",
-      "Validates target paths before running analysis or report generation.",
-      "Can print JSON results or write them to a chosen output file.",
-      "Documents React, Next.js, Node.js, GraphQL, PostgreSQL, Docker, Kubernetes, and cloud workflow topics.",
-      "Provides reference sections for architecture patterns, development workflows, security practices, and troubleshooting."
+      "Documents a modern React, Next.js, Node.js, GraphQL, and PostgreSQL stack.",
+      "Provides generic architecture, tech stack, and workflow reference guides.",
+      "Includes Python helpers that validate a target path and print a status report.",
+      "Supports optional JSON output for script results when requested.",
+      "Lists common setup, quality, build, Docker, and Kubernetes commands."
     ],
     "limitations": [
-      "The included scripts are lightweight templates and do not generate a complete application by themselves.",
-      "The scripts only write output files when a user or agent provides an output path.",
-      "Reference files contain generic guidance and should be adapted to the project.",
-      "It does not replace security review, dependency auditing, or production readiness testing."
+      "The scaffolder scripts do not generate a complete application structure.",
+      "The reference guides contain generic placeholder examples in several sections.",
+      "Command examples require local tools and project dependencies to be installed.",
+      "The skill does not verify cloud credentials, deployment settings, or production safety."
     ],
     "use_cases": [
       {
-        "title": "Plan a New Product Build",
-        "description": "Create an initial fullstack project plan and choose a practical stack for a new web product.",
-        "target_user": "Startup engineer"
+        "title": "Plan a fullstack project baseline",
+        "description": "Define stack choices, setup steps, and quality checks before implementation starts.",
+        "target_user": "Solo developer"
       },
       {
-        "title": "Review Project Direction",
-        "description": "Check project structure, workflows, and quality practices before expanding a team codebase.",
-        "target_user": "Technical lead"
+        "title": "Review project readiness",
+        "description": "Use the helper scripts and references to identify setup gaps and next actions.",
+        "target_user": "Engineering team lead"
       },
       {
-        "title": "Standardize Delivery Workflows",
-        "description": "Align setup, quality checks, and deployment references across multiple application teams.",
+        "title": "Standardize workflow documentation",
+        "description": "Create a shared checklist for testing, linting, builds, deployment, and troubleshooting.",
         "target_user": "Platform engineer"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Start a Fullstack Project",
-        "scenario": "Beginner project setup",
-        "prompt": "Use the senior-fullstack skill to outline a React, Next.js, Node.js, GraphQL, and PostgreSQL project setup for [product]. Include folder structure, setup commands, and first tasks."
+        "title": "Review my project setup",
+        "scenario": "Beginner project review",
+        "prompt": "Use this skill to review my fullstack app structure. Identify setup gaps, missing quality checks, and practical next steps."
       },
       {
-        "title": "Review My App Structure",
-        "scenario": "Intermediate codebase review",
-        "prompt": "Analyze [path] with the code quality analyzer and summarize structure, missing tests, security gaps, and practical next steps."
+        "title": "Choose a stack plan",
+        "scenario": "Intermediate architecture planning",
+        "prompt": "Use this skill to compare my stack options for a new product. Recommend a simple fullstack baseline and explain trade-offs."
       },
       {
-        "title": "Design a Production Workflow",
-        "scenario": "Advanced delivery planning",
-        "prompt": "Using the development workflow references, create a CI, deployment, monitoring, and rollback workflow for [application]. Match it to [cloud provider] and [team size]."
+        "title": "Prepare a quality workflow",
+        "scenario": "Team workflow setup",
+        "prompt": "Use this skill to design a development workflow for linting, testing, builds, local setup, and deployment readiness."
       },
       {
-        "title": "Plan a Multi-Service Architecture",
-        "scenario": "Advanced architecture decision",
-        "prompt": "Use the architecture and tech stack references to compare monolith, modular monolith, and service-based options for [system]. Include data ownership, API contracts, risks, and migration steps."
+        "title": "Audit fullstack delivery risks",
+        "scenario": "Advanced release planning",
+        "prompt": "Use this skill to review architecture, tooling, performance, security, and deployment risks before a production release."
       }
     ],
     "output_examples": [
       {
-        "input": "Plan a new customer portal with React, Next.js, Node.js, GraphQL, and PostgreSQL.",
-        "output": "A structured build plan with recommended folders, core services, database concerns, setup commands, and first implementation tasks."
+        "input": "Review a new Next.js and Node.js project before the first sprint.",
+        "output": "A prioritized checklist covering stack choices, setup gaps, quality checks, documentation needs, and next implementation steps."
       },
       {
-        "input": "Review my existing app before adding payments and admin workflows.",
-        "output": "A practical review covering project structure, missing quality checks, likely security concerns, and prioritized next steps."
+        "input": "Create a workflow for a team adding GraphQL and PostgreSQL.",
+        "output": "A workflow plan with setup tasks, review checkpoints, test coverage goals, and deployment readiness notes."
       },
       {
-        "input": "Create a deployment workflow for a small team using Docker and Kubernetes.",
-        "output": "A delivery workflow covering local setup, CI checks, image build steps, deployment review, monitoring, and rollback planning."
+        "input": "Assess whether an existing project is ready for production.",
+        "output": "A risk summary covering architecture, dependencies, performance monitoring, security practices, and operational follow-up items."
       }
     ],
     "best_practices": [
-      "Run scripts against a project copy or review outputs before applying recommendations.",
-      "Use the references as checklists, then adapt stack choices to team experience and operational constraints.",
-      "Pair generated recommendations with tests, dependency review, and human code review."
+      "Review generated recommendations before changing project files.",
+      "Run helper scripts from the project root with clear target paths.",
+      "Pair workflow guidance with tests, dependency review, and deployment checks."
     ],
     "anti_patterns": [
-      "Do not run setup or deployment commands in production without confirming targets and credentials.",
-      "Do not treat placeholder reference content as a complete architecture decision.",
-      "Do not let the agent overwrite important files through an output path without review."
+      "Do not treat placeholder reference sections as complete architecture guidance.",
+      "Do not run deployment commands without reviewing the target environment first.",
+      "Do not write script output over important files without checking the path."
     ],
     "faq": [
       {
-        "question": "What does this skill help build?",
-        "answer": "It helps plan and review fullstack web applications using common React, Next.js, Node.js, GraphQL, and PostgreSQL patterns."
+        "question": "Does this skill create a complete application?",
+        "answer": "No. The included scripts are lightweight helpers and do not scaffold a full production app."
       },
       {
-        "question": "Does it create a complete application?",
-        "answer": "No. The included scripts are simple templates, so users should expect guidance and lightweight reports, not a finished product."
+        "question": "Which tools can use this skill?",
+        "answer": "It declares support for Claude, Codex, and Claude Code."
       },
       {
-        "question": "Can it analyze an existing repository?",
-        "answer": "Yes. The scripts accept a target path and produce a basic status report for the selected project."
+        "question": "What stack does it focus on?",
+        "answer": "It focuses on React, Next.js, Node.js, GraphQL, PostgreSQL, Docker, Kubernetes, and common cloud workflows."
       },
       {
-        "question": "Can it write files?",
-        "answer": "Yes. The scripts can write JSON output when an output path is provided, so users should review the destination first."
+        "question": "Can it analyze code quality?",
+        "answer": "It can run a basic helper that validates a target path and reports placeholder findings."
       },
       {
-        "question": "Which AI tools can use it?",
-        "answer": "The report lists support for Claude, Codex, and Claude Code."
+        "question": "Is it safe to run the scripts?",
+        "answer": "Review arguments first. The JSON output option can write to a user-provided file path."
       },
       {
-        "question": "Should teams still run security checks?",
-        "answer": "Yes. This skill provides guidance, but teams still need dependency audits, secret scanning, tests, and production security review."
+        "question": "How should teams use the references?",
+        "answer": "Use them as starting checklists, then replace placeholders with project-specific standards and examples."
       }
     ]
   },

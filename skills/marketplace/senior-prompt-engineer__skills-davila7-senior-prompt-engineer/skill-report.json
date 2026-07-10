@@ -1,23 +1,20 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-06T10:24:01.928Z",
+    "generated_at": "2026-07-09T17:49:49.813Z",
     "slug": "davila7-senior-prompt-engineer",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/development/senior-prompt-engineer",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "4a167292edfd9290ed49048fa86b79c6b8c36da6b26d8233891bd1184b341bdb",
-    "tree_hash": "160cfc4066fd6a1e42f17fa3e780edb1a3043fd8f65f2daa17a688746842af73",
+    "content_hash": "504c1ee82323d26fc07ba9ef5c954e08ba18f77340dd1c77c4bae97a23aa98c6",
+    "tree_hash": "12c53950f3be42d607bde7ad6d45eb4ed3f0b4af3730e84e4cbf9035c4009401",
     "provenance": {
-      "model_requested": "gpt-5.5:high",
-      "model_effective": "codex:gpt-5.5:high",
+      "model_effective": "codex",
       "fallback_chain": [
         {
           "agent": "codex",
-          "model": "gpt-5.5",
-          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -26,10 +23,10 @@
   },
   "skill": {
     "name": "senior-prompt-engineer",
-    "description": "Prompt engineering guidance for production LLM systems, including prompt patterns, structured outputs, LLM evaluation, RAG evaluation, and agentic system design. The skill includes reference notes and example CLI wrappers for teams building AI products with Claude, Codex, and Claude Code.",
-    "summary": "Design, evaluate, and improve production prompts and LLM workflows.",
+    "description": "Prompt engineering guidance for LLM optimization, RAG evaluation, structured outputs, and agentic AI system design.",
+    "summary": "Improve production prompts, evaluation plans, and AI system designs with structured guidance.",
     "icon": "📦",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "author": "davila7",
     "license": "MIT",
     "tags": [
@@ -37,7 +34,7 @@
       "llm-evaluation",
       "rag",
       "agent-design",
-      "ai-products"
+      "ai-systems"
     ],
     "supported_tools": [
       "claude",
@@ -50,20 +47,20 @@
     "category": "coding"
   },
   "security_audit": {
-    "risk_level": "medium",
+    "risk_level": "safe",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Two external command findings are confirmed because SKILL.md includes runnable shell examples, including local script execution and deployment commands. The network reconnaissance detections and most backtick detections are false positives from generic prose, Markdown file references, or code fences. No prompt injection or data exfiltration intent was found.",
+    "summary": "Static findings are false positives from Markdown code fences, inline path formatting, and generic resource-awareness language. I found no evidence of prompt injection, malware intent, network reconnaissance, credential access, or automatic command execution.",
     "remediation": [
       {
-        "issue": "Runnable command examples may be executed against a user environment.",
-        "suggestion": "State that every command requires explicit user approval, especially deployment commands such as kubectl and Helm.",
-        "severity": "medium"
+        "issue": "Markdown command examples triggered external-command detection.",
+        "suggestion": "Label command blocks as examples and state that users must review commands before running them.",
+        "severity": "low"
       },
       {
-        "issue": "The deployment-oriented quick start example is not clearly separated from safe read-only workflows.",
-        "suggestion": "Move deployment commands to a clearly labeled advanced section and provide a dry-run or preview-first workflow.",
+        "issue": "Quick-start commands do not fully match the included script arguments.",
+        "suggestion": "Align SKILL.md examples with the script CLI options or update the scripts to support the documented flags.",
         "severity": "low"
       }
     ],
@@ -260,257 +257,222 @@
       {
         "id": "blocker:references/agentic_system_design.md:21:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The cited line says \"Resource awareness\" in a performance design checklist. It does not describe host discovery, port scanning, network probing, or any reconnaissance behavior."
+        "confidence": 0.97,
+        "reason": "The referenced lines only list performance ideas like resource awareness and caching. There is no network scanning, host discovery, or reconnaissance instruction."
       },
       {
         "id": "blocker:references/llm_evaluation_frameworks.md:21:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The cited line says \"Resource awareness\" in generic optimization guidance. I found no network request, socket usage, host enumeration, or scanning instruction at this location."
+        "confidence": 0.97,
+        "reason": "The referenced lines describe resource awareness as a performance practice. They do not instruct network probing, enumeration, or reconnaissance."
       },
       {
         "id": "blocker:references/prompt_engineering_patterns.md:21:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The cited line is a non-network performance checklist item. It is not evidence of network reconnaissance or discovery activity."
+        "confidence": 0.97,
+        "reason": "The referenced text is a generic performance guideline about resource use and caching. No network reconnaissance behavior is present."
       },
       {
         "id": "external_commands:SKILL.md:14:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.64,
-        "severity": "medium",
-        "reason": "The Markdown block contains runnable shell commands that invoke local Python scripts, including a deploy-oriented example. The scripts appear non-malicious, but an agent following the skill could execute local code."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "This is a Markdown bash code fence with example local Python commands. It is not Ruby backtick execution and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:23:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The cited line is only the closing Markdown fence for an example block. It is not Ruby backtick execution, shell interpolation, or executable code by itself."
+        "confidence": 0.88,
+        "reason": "The finding points to the closing Markdown fence for command examples. No executable interpolation, shell backtick expression, or command injection vector appears there."
       },
       {
         "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This line uses Markdown backticks around a reference file path. It does not execute a command or interpolate shell input."
+        "confidence": 0.94,
+        "reason": "The inline backticks mark a documentation path for a reference file. They are Markdown formatting, not shell or Ruby command execution."
       },
       {
         "id": "external_commands:SKILL.md:65:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This line uses inline Markdown code formatting for a documentation path. No external command or shell execution behavior is present."
+        "confidence": 0.94,
+        "reason": "The inline backticks only format a local reference document path. There is no execution primitive or user-controlled command construction."
       },
       {
         "id": "external_commands:SKILL.md:75:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This is a Markdown reference to a local documentation file. The backticks are formatting, not Ruby or shell execution."
+        "confidence": 0.94,
+        "reason": "The inline backticks identify a local Markdown reference file. This is documentation text, not a shell execution mechanism."
       },
       {
         "id": "external_commands:SKILL.md:167:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "severity": "medium",
-        "reason": "The Markdown block lists runnable pytest, Docker, kubectl, and Helm commands. The deployment commands could change infrastructure state if an agent executed them without explicit user approval."
+        "verdict": "false_positive",
+        "confidence": 0.82,
+        "reason": "This is a Markdown bash fence containing common development and deployment examples. The commands are not executed by the skill and no injection sink is present."
       },
       {
         "id": "external_commands:SKILL.md:185:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The cited line is a closing Markdown fence after an example command block. It is not an executable statement or command substitution."
+        "reason": "The finding points to the closing Markdown fence after example commands. It is formatting text, not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:189:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This line formats a reference file path with Markdown backticks. It does not contain shell syntax or dynamic command execution."
+        "confidence": 0.94,
+        "reason": "The inline backticks format a local reference path in a resources list. No command execution or command substitution appears on this line."
       },
       {
         "id": "external_commands:SKILL.md:190:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This line is a documentation link to a local Markdown file. The backticks are presentation markup only."
+        "confidence": 0.94,
+        "reason": "The line uses Markdown backticks around a local documentation path. It does not execute a command or expose an injection vector."
       },
       {
         "id": "external_commands:SKILL.md:191:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This line is a Markdown-formatted reference to a local file. It provides no command execution or shell interpolation vector."
+        "confidence": 0.94,
+        "reason": "The inline backticks are only formatting for a local reference file path. There is no dynamic command execution in this context."
       }
     ],
     "semantic_findings": [],
     "critical_findings": [],
     "high_findings": [],
-    "medium_findings": [
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 14,
-            "line_end": 23
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.64,
-        "confidence_reasoning": "The Markdown block contains runnable shell commands that invoke local Python scripts, including a deploy-oriented example. The scripts appear non-malicious, but an agent following the skill could execute local code."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 167,
-            "line_end": 185
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "The Markdown block lists runnable pytest, Docker, kubectl, and Helm commands. The deployment commands could change infrastructure state if an agent executed them without explicit user approval."
-      }
-    ],
+    "medium_findings": [],
     "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 7,
     "total_lines": 773,
     "audit_model": "codex",
-    "audited_at": "2026-07-06T10:24:01.928Z",
+    "audited_at": "2026-07-09T17:49:49.813Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Optimize Production Prompts",
-    "value_statement": "Teams need prompts that are reliable, measurable, and safe in production. This skill guides prompt design, evaluation, RAG tuning, and agent architecture for Claude, Codex, and Claude Code.",
+    "user_title": "Optimize LLM Prompts for Production",
+    "value_statement": "Teams often ship prompts without clear evaluation, structure, or operating guidance. This skill provides practical patterns for prompt design, RAG review, and agent planning.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "prompt engineering",
-      "LLM evaluation",
+      "LLM optimization",
       "RAG evaluation",
-      "agentic systems",
-      "structured outputs",
+      "agent design",
       "AI product development",
-      "prompt optimization"
+      "prompt templates",
+      "LLM evaluation"
     ],
     "actual_capabilities": [
-      "Explains prompt engineering patterns for production LLM workflows.",
-      "Provides reference guidance for LLM evaluation and RAG evaluation.",
-      "Covers agentic system design, observability, reliability, and security topics.",
-      "Lists production targets for latency, throughput, availability, and error rates.",
-      "Includes example CLI wrappers for prompt optimization, RAG evaluation, and agent orchestration."
+      "Documents prompt engineering patterns for production LLM workflows.",
+      "Provides references for LLM evaluation, RAG review, and agentic system design.",
+      "Includes placeholder Python CLI scripts for optimization, evaluation, and orchestration workflows.",
+      "Lists production concerns such as monitoring, security, reliability, and cost.",
+      "Supports Claude, Codex, and Claude Code assisted development workflows."
     ],
     "limitations": [
-      "The included Python scripts are lightweight wrappers and do not implement full optimization logic.",
-      "It does not connect to model providers or evaluation platforms by itself.",
-      "Some command examples require project files, tests, or infrastructure that may not exist.",
-      "It does not replace a security review for prompts, datasets, or deployment workflows."
+      "The included Python scripts are scaffold examples and need project-specific implementation.",
+      "Some documented command examples require adaptation before use.",
+      "The skill does not call model APIs or run evaluations automatically.",
+      "Results depend on the user providing task goals, constraints, and evaluation criteria."
     ],
     "use_cases": [
       {
-        "title": "Design a Reliable Prompt Workflow",
-        "description": "Create reusable prompts with clear inputs, outputs, checks, and evaluation criteria.",
+        "title": "Improve Product Prompts",
+        "description": "Turn loose feature prompts into structured instructions with goals, constraints, examples, and acceptance criteria.",
+        "target_user": "AI product manager"
+      },
+      {
+        "title": "Design Evaluation Plans",
+        "description": "Create practical checks for prompt quality, RAG behavior, failure modes, and production readiness.",
         "target_user": "Prompt engineer"
       },
       {
-        "title": "Plan LLM Evaluation Coverage",
-        "description": "Define quality, safety, latency, and regression checks before releasing an AI feature.",
-        "target_user": "AI product engineer"
-      },
-      {
-        "title": "Review Agent Architecture",
-        "description": "Assess agent workflows for observability, reliability, resource use, and deployment readiness.",
-        "target_user": "ML platform lead"
+        "title": "Plan Agent Workflows",
+        "description": "Outline agent roles, tool boundaries, observability needs, and deployment considerations for AI systems.",
+        "target_user": "Platform engineer"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Improve a Prompt",
+        "title": "Clarify a Prompt Goal",
         "scenario": "Beginner prompt cleanup",
-        "prompt": "Review this prompt for clarity, missing context, and output structure. Suggest a revised version and explain each change briefly."
+        "prompt": "Review this prompt for clarity. Identify the user goal, missing context, confusing wording, and three concrete improvements: [paste prompt]."
       },
       {
-        "title": "Create an Evaluation Plan",
-        "scenario": "Intermediate quality review",
-        "prompt": "Build an evaluation plan for this LLM workflow. Include success criteria, failure modes, sample test cases, and release gates."
+        "title": "Create a Structured Prompt",
+        "scenario": "Intermediate prompt drafting",
+        "prompt": "Build a production prompt for [task]. Include role, inputs, output format, constraints, examples, and refusal boundaries."
       },
       {
-        "title": "Optimize a RAG Workflow",
-        "scenario": "Advanced retrieval tuning",
-        "prompt": "Analyze this RAG workflow. Recommend improvements for retrieval quality, grounding, citation behavior, latency, and regression testing."
+        "title": "Design an Evaluation Plan",
+        "scenario": "Advanced quality review",
+        "prompt": "Design an evaluation plan for [LLM feature]. Include success criteria, test cases, edge cases, scoring guidance, and review cadence."
       },
       {
-        "title": "Design an Agent System",
-        "scenario": "Advanced production architecture",
-        "prompt": "Design a production agent workflow for this task. Cover tools, state, safety controls, observability, evaluation, rollback, and cost controls."
+        "title": "Architect an Agentic Workflow",
+        "scenario": "Advanced system planning",
+        "prompt": "Plan an agent workflow for [business process]. Define agent responsibilities, tool access, memory policy, monitoring, and failure recovery."
       }
     ],
     "output_examples": [
       {
-        "input": "A support team wants a prompt that gives consistent refund policy answers.",
+        "input": "A support chatbot prompt needs better consistency and safer answers.",
         "output": [
-          "Clarify the policy source and required customer context.",
-          "Add a structured answer format with policy citation and next action.",
-          "Test edge cases for expired orders, missing receipts, and regional rules."
+          "A revised prompt with clear role, tone, allowed sources, and escalation rules.",
+          "A test plan covering policy questions, ambiguous requests, and unsupported claims.",
+          "A short checklist for measuring answer accuracy and refusal quality."
         ]
       },
       {
-        "input": "A product team needs an evaluation plan for a document question answering feature.",
+        "input": "A RAG assistant returns answers that are detailed but poorly grounded.",
         "output": [
-          "Measure answer accuracy, citation coverage, refusal quality, and latency.",
-          "Use representative documents and adversarial queries in every release check.",
-          "Block release when unsupported answers exceed the agreed threshold."
+          "A diagnosis of retrieval, context selection, citation, and answer synthesis risks.",
+          "A prompt structure that separates evidence review from final response writing.",
+          "Evaluation cases for missing context, conflicting sources, and low-confidence answers."
         ]
       },
       {
-        "input": "An engineering lead wants to assess an agent that updates project tasks.",
+        "input": "A team wants to plan a multi-step agent for internal operations.",
         "output": [
-          "Separate read-only planning from actions that change state.",
-          "Require confirmation before writes, assignments, or status changes.",
-          "Log tool calls, user approvals, failures, and rollback steps."
+          "A workflow map with agent responsibilities, tool boundaries, and approval points.",
+          "Operational requirements for logging, monitoring, access control, and fallback handling.",
+          "A risk checklist for unwanted actions, stale context, and unclear ownership."
         ]
       }
     ],
     "best_practices": [
-      "Define task inputs, allowed tools, output format, and evaluation criteria before optimizing wording.",
-      "Use small test sets with expected behavior before expanding to larger automated evaluations.",
-      "Separate read-only analysis from actions that change files, systems, or customer data."
+      "Start with the task goal, user context, constraints, and evaluation criteria.",
+      "Use examples that reflect real edge cases and expected output quality.",
+      "Review tool access, data handling, and fallback behavior before deployment."
     ],
     "anti_patterns": [
-      "Do not use vague role prompts without task context, constraints, or success criteria.",
-      "Do not treat one good model response as proof that a prompt is production ready.",
-      "Do not let agents run deployment or mutation commands without explicit user approval."
+      "Do not rely on vague role prompts without measurable success criteria.",
+      "Do not expose broad tool access without clear approval and logging rules.",
+      "Do not treat one successful model response as proof of production readiness."
     ],
     "faq": [
       {
-        "question": "What does this skill help with?",
-        "answer": "It helps design prompts, evaluation plans, RAG workflows, and agent systems for production LLM applications."
+        "question": "What does this skill help me create?",
+        "answer": "It helps create structured prompts, evaluation plans, RAG review guidance, and agent workflow plans."
       },
       {
-        "question": "Does it work with Claude, Codex, and Claude Code?",
-        "answer": "Yes. The guidance is compatible with Claude, Codex, and Claude Code workflows."
+        "question": "Does it run prompt evaluations automatically?",
+        "answer": "No. It provides guidance and scaffold scripts, but users must implement project-specific evaluation logic."
       },
       {
-        "question": "Does it run LLM evaluations automatically?",
-        "answer": "No. It provides guidance and lightweight script wrappers, but full evaluation logic must be implemented by the user."
+        "question": "Can I use it with Claude Code or Codex?",
+        "answer": "Yes. The report declares support for Claude, Codex, and Claude Code workflows."
       },
       {
-        "question": "Can it improve existing prompts?",
-        "answer": "Yes. It can review prompts for clarity, context, output structure, safety checks, and measurable success criteria."
+        "question": "Is this only for prompt engineers?",
+        "answer": "No. Product managers, AI engineers, and platform teams can use it for planning and review."
       },
       {
-        "question": "Is it suitable for agent design?",
-        "answer": "Yes. It includes guidance for tools, state, reliability, observability, safety controls, and deployment readiness."
+        "question": "Does it include production security guidance?",
+        "answer": "Yes. It references access control, data handling, audit logging, monitoring, and deployment review topics."
       },
       {
-        "question": "What should users check before running command examples?",
-        "answer": "Users should review each command, confirm the target environment, and approve any action that changes files or infrastructure."
+        "question": "What should I provide before using it?",
+        "answer": "Provide the target task, user needs, model constraints, example inputs, and quality requirements."
       }
     ]
   },

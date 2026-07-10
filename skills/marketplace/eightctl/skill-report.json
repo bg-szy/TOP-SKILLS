@@ -1,20 +1,23 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T01:39:04.868Z",
+    "generated_at": "2026-07-09T08:57:52.268Z",
     "slug": "eightctl",
     "source_url": "https://github.com/aiskillstore/marketplace/tree/main/skills/mylukin/eightctl/",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "official",
-    "content_hash": "89c97eb8607bc68c0f883cb7f35413632f9dc0946281f341946d024006f8e53d",
-    "tree_hash": "0802c9be65a73e2e0e1a4f5f3d328e680e27e7018d01a5bf1a21ec3209604ad6",
+    "content_hash": "ba499aa7f46d431e11a82fd1d1331b69ebb9beadc532b17a864ebed8bec0d69e",
+    "tree_hash": "d4b57d3f65e314789b0248773c99ae823a83772d63023c0d2237ba31ddebd7a6",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
       "fallback_chain": [
         {
           "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -23,18 +26,19 @@
   },
   "skill": {
     "name": "eightctl",
-    "description": "Control Eight Sleep pods with the eightctl CLI for status, temperature, alarms, schedules, audio, and base settings.",
-    "summary": "Use eightctl to inspect and control Eight Sleep pod settings from an AI-assisted workflow.",
+    "description": "Control Eight Sleep pods (status, temperature, alarms, schedules).",
+    "summary": "Control Eight Sleep pods (status, temperature, alarms, schedules).",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "aiskillstore",
     "license": "MIT",
+    "category": "productivity",
     "tags": [
       "eight-sleep",
-      "smart-home",
+      "smart-bed",
       "cli",
-      "sleep",
-      "device-control"
+      "home-automation",
+      "sleep"
     ],
     "supported_tools": [
       "claude",
@@ -45,34 +49,28 @@
       "external_commands",
       "network",
       "filesystem"
-    ],
-    "category": "productivity"
+    ]
   },
   "security_audit": {
     "risk_level": "medium",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The static Ruby backtick and system reconnaissance findings are false positives from Markdown examples. The audit confirms sensitive hidden config usage and adds semantic findings for mutable remote installation, credential environment variables, and physical device control side effects.",
+    "summary": "The skill intentionally directs the assistant to use the eightctl CLI for Eight Sleep pod operations, including temperature, alarms, schedules, audio, and base controls. Static findings for Markdown command examples are partly valid because they describe external command use, while the system reconnaissance and homepage URL findings are false positives. No prompt injection attempt was found, but the install metadata uses a mutable Go module target.",
     "remediation": [
       {
-        "issue": "Mutable install source",
-        "suggestion": "Pin the Go install target to a reviewed version tag instead of @latest.",
+        "issue": "The install metadata uses a mutable Go module target.",
+        "suggestion": "Pin the eightctl Go module to a reviewed version instead of using the latest target.",
         "severity": "medium"
       },
       {
-        "issue": "Sensitive authentication material",
-        "suggestion": "Tell users to avoid exposing EIGHTCTL_PASSWORD in shared shells, logs, or checked-in scripts.",
+        "issue": "The skill references credential-based authentication through config files and environment variables.",
+        "suggestion": "Add guidance to avoid exposing passwords in shell history, logs, shared terminals, or process listings.",
         "severity": "medium"
       },
       {
-        "issue": "Hidden credential config path",
-        "suggestion": "Avoid reading or displaying raw config file contents. Use the CLI auth flow and redact secrets in all output.",
-        "severity": "high"
-      },
-      {
-        "issue": "Physical device changes",
-        "suggestion": "Require explicit user confirmation before changing temperature, alarms, audio, power, or base angle.",
+        "issue": "The skill can change connected sleep device state.",
+        "suggestion": "Keep the existing confirmation requirement before temperature, alarm, schedule, audio, or base changes.",
         "severity": "medium"
       }
     ],
@@ -303,138 +301,113 @@
     "finding_verdicts": [
       {
         "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is Markdown inline command text, not Ruby code or shell backtick execution inside the skill."
+        "verdict": "confirmed",
+        "confidence": 0.86,
+        "reason": "The Markdown backticks are not Ruby execution, but the line explicitly instructs use of the external eightctl CLI.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.95,
-        "reason": "This is Markdown inline command text, not Ruby code or shell backtick execution inside the skill."
+        "reason": "This is a Markdown reference to a standard configuration file path, not command execution."
       },
       {
         "id": "external_commands:SKILL.md:32:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.95,
-        "reason": "This is Markdown inline command text, not Ruby code or shell backtick execution inside the skill."
+        "reason": "This is a Markdown reference to environment variable names, not command execution."
       },
       {
         "id": "external_commands:SKILL.md:36:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is Markdown inline command text, not Ruby code or shell backtick execution inside the skill."
+        "verdict": "confirmed",
+        "confidence": 0.94,
+        "reason": "The line provides an external eightctl command that the assistant may run to check pod status.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is Markdown inline command text, not Ruby code or shell backtick execution inside the skill."
+        "verdict": "confirmed",
+        "confidence": 0.94,
+        "reason": "The line provides external eightctl commands that can change the pod power state.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:38:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is Markdown inline command text, not Ruby code or shell backtick execution inside the skill."
+        "verdict": "confirmed",
+        "confidence": 0.94,
+        "reason": "The line provides an external eightctl command that can change the pod temperature.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is Markdown inline command text, not Ruby code or shell backtick execution inside the skill."
+        "verdict": "confirmed",
+        "confidence": 0.94,
+        "reason": "The line provides external eightctl commands for alarm management.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:43:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is Markdown inline command text, not Ruby code or shell backtick execution inside the skill."
+        "verdict": "confirmed",
+        "confidence": 0.94,
+        "reason": "The line provides external eightctl commands for schedule management.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:44:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is Markdown inline command text, not Ruby code or shell backtick execution inside the skill."
+        "verdict": "confirmed",
+        "confidence": 0.94,
+        "reason": "The line provides external eightctl commands for audio control.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is Markdown inline command text, not Ruby code or shell backtick execution inside the skill."
+        "verdict": "confirmed",
+        "confidence": 0.94,
+        "reason": "The line provides external eightctl commands for base information and angle control.",
+        "severity": "medium"
       },
       {
         "id": "network:SKILL.md:4:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The URL is a homepage metadata field. It does not instruct the agent to call a network endpoint."
+        "confidence": 0.9,
+        "reason": "The hardcoded URL is metadata for the project homepage, not a hidden network endpoint or active request."
       },
       {
         "id": "filesystem:SKILL.md:31:hidden-file-in-home-directory",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "reason": "The skill documents an auth config path under ~/.config, which can contain sensitive Eight Sleep credentials or tokens.",
+        "confidence": 0.88,
+        "reason": "The skill documents use of a hidden home-directory config path that may contain authentication material.",
         "severity": "high"
       },
       {
         "id": "filesystem:SKILL.md:31:hidden-file-access",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "reason": "The skill references a hidden config file used for authentication. Access should be limited and credentials should be redacted.",
+        "confidence": 0.88,
+        "reason": "The skill documents access to the eightctl config under the user's home configuration directory.",
         "severity": "medium"
       },
       {
         "id": "blocker:SKILL.md:49:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The line warns that the unofficial API is rate-limited. It is not system reconnaissance or host enumeration."
+        "confidence": 0.96,
+        "reason": "The line warns about an unofficial rate-limited API and repeated logins; it does not perform or request system reconnaissance."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Unpinned Remote Binary Install Source",
-        "description": "The install metadata uses github.com/steipete/eightctl/cmd/eightctl@latest. This mutable version can install future code that was not reviewed with the skill.",
+        "title": "Mutable Go Install Target",
+        "description": "The install metadata uses github.com/steipete/eightctl/cmd/eightctl@latest, which can resolve to different code over time.",
         "severity": "medium",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 11,
+            "line_start": 14,
             "line_end": 18
           }
         ],
         "confidence": 0.92,
-        "confidence_reasoning": "The source file directly specifies a Go install module ending in @latest."
-      },
-      {
-        "title": "Sensitive Credential Environment Variables",
-        "description": "The skill documents EIGHTCTL_EMAIL and EIGHTCTL_PASSWORD for authentication. Password environment variables can leak through shell history, logs, or process environments.",
-        "severity": "medium",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 31,
-            "line_end": 32
-          }
-        ],
-        "confidence": 0.88,
-        "confidence_reasoning": "The file explicitly lists an email and password environment variable for authentication."
-      },
-      {
-        "title": "Physical Device State Changes",
-        "description": "The skill exposes commands that change pod power, temperature, alarms, audio, and base angle. These actions should require explicit user confirmation.",
-        "severity": "medium",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 36,
-            "line_end": 45
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 49,
-            "line_end": 50
-          }
-        ],
-        "confidence": 0.86,
-        "confidence_reasoning": "The command list includes state-changing device controls, and the notes require confirmation for some changes."
+        "confidence_reasoning": "The metadata explicitly declares a Go module install using the latest target rather than a pinned version."
       }
     ],
     "critical_findings": [],
@@ -452,11 +425,139 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "high",
-        "confidence": 0.9,
-        "confidence_reasoning": "The skill documents an auth config path under ~/.config, which can contain sensitive Eight Sleep credentials or tokens."
+        "confidence": 0.88,
+        "confidence_reasoning": "The skill documents use of a hidden home-directory config path that may contain authentication material."
       }
     ],
     "medium_findings": [
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "Use `eightctl` for Eight Sleep pod control. Requires auth.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 27,
+            "line_end": 27
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "The Markdown backticks are not Ruby execution, but the line explicitly instructs use of the external eightctl CLI."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- `eightctl status`",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 36,
+            "line_end": 36
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.94,
+        "confidence_reasoning": "The line provides an external eightctl command that the assistant may run to check pod status."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- `eightctl on|off`",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 37,
+            "line_end": 37
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.94,
+        "confidence_reasoning": "The line provides external eightctl commands that can change the pod power state."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- `eightctl temp 20`",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 38,
+            "line_end": 38
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.94,
+        "confidence_reasoning": "The line provides an external eightctl command that can change the pod temperature."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- Alarms: `eightctl alarm list|create|dismiss`",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 42,
+            "line_end": 42
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.94,
+        "confidence_reasoning": "The line provides external eightctl commands for alarm management."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- Schedules: `eightctl schedule list|create|update`",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 43,
+            "line_end": 43
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.94,
+        "confidence_reasoning": "The line provides external eightctl commands for schedule management."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- Audio: `eightctl audio state|play|pause`",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 44,
+            "line_end": 44
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.94,
+        "confidence_reasoning": "The line provides external eightctl commands for audio control."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- Base: `eightctl base info|angle`",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 45,
+            "line_end": 45
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.94,
+        "confidence_reasoning": "The line provides external eightctl commands for base information and angle control."
+      },
       {
         "title": "Hidden file access",
         "description": "- Config: `~/.config/eightctl/config.yaml`",
@@ -470,16 +571,16 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The skill references a hidden config file used for authentication. Access should be limited and credentials should be redacted."
+        "confidence": 0.88,
+        "confidence_reasoning": "The skill documents access to the eightctl config under the user's home configuration directory."
       },
       {
-        "title": "Unpinned Remote Binary Install Source",
-        "description": "The install metadata uses github.com/steipete/eightctl/cmd/eightctl@latest. This mutable version can install future code that was not reviewed with the skill.",
+        "title": "Mutable Go Install Target",
+        "description": "The install metadata uses github.com/steipete/eightctl/cmd/eightctl@latest, which can resolve to different code over time.",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 11,
+            "line_start": 14,
             "line_end": 18
           }
         ],
@@ -487,44 +588,7 @@
         "source_category": "semantic",
         "source_severity": "medium",
         "confidence": 0.92,
-        "confidence_reasoning": "The source file directly specifies a Go install module ending in @latest."
-      },
-      {
-        "title": "Sensitive Credential Environment Variables",
-        "description": "The skill documents EIGHTCTL_EMAIL and EIGHTCTL_PASSWORD for authentication. Password environment variables can leak through shell history, logs, or process environments.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 31,
-            "line_end": 32
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "semantic",
-        "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The file explicitly lists an email and password environment variable for authentication."
-      },
-      {
-        "title": "Physical Device State Changes",
-        "description": "The skill exposes commands that change pod power, temperature, alarms, audio, and base angle. These actions should require explicit user confirmation.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 36,
-            "line_end": 45
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 49,
-            "line_end": 50
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "semantic",
-        "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "The command list includes state-changing device controls, and the notes require confirmation for some changes."
+        "confidence_reasoning": "The metadata explicitly declares a Go module install using the latest target rather than a pinned version."
       }
     ],
     "low_findings": [],
@@ -532,126 +596,126 @@
     "files_scanned": 1,
     "total_lines": 51,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T01:39:04.868Z",
+    "audited_at": "2026-07-09T08:57:52.268Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Control Eight Sleep Pods with eightctl",
-    "value_statement": "Managing pod settings through a terminal can be error-prone and repetitive. This skill helps Claude, Codex, and Claude Code use eightctl safely for common Eight Sleep tasks.",
+    "user_title": "Control Eight Sleep Pods with CLI Commands",
+    "value_statement": "Eight Sleep users need quick access to pod status and common controls without switching tools. This skill guides Claude, Codex, or Claude Code through eightctl commands for safe device management.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "Eight Sleep",
       "eightctl",
-      "sleep pod control",
-      "temperature control",
-      "smart bed automation",
-      "CLI device control",
+      "smart bed control",
+      "pod temperature",
+      "sleep automation",
+      "CLI home automation",
       "bed alarm management"
     ],
     "actual_capabilities": [
-      "Check Eight Sleep pod status through the eightctl CLI.",
-      "Turn the pod on or off when the user approves the action.",
-      "Set pod temperature with the eightctl temp command.",
-      "List, create, update, or dismiss alarms and schedules supported by eightctl.",
-      "Control supported audio and base angle commands exposed by eightctl.",
-      "Use documented config or environment credentials for eightctl authentication."
+      "Checks Eight Sleep pod status through the eightctl CLI.",
+      "Turns the pod on or off with user confirmation.",
+      "Sets pod temperature values through eightctl.",
+      "Lists, creates, and dismisses alarms.",
+      "Lists, creates, and updates sleep schedules.",
+      "Controls supported audio and base functions."
     ],
     "limitations": [
-      "Requires the eightctl binary and valid Eight Sleep account credentials.",
-      "Uses an unofficial and rate-limited API, so frequent logins should be avoided.",
-      "Needs user confirmation before changing temperature, alarms, power, audio, or base angle.",
-      "Does not replace Eight Sleep support, safety guidance, or device warranty terms."
+      "Requires the eightctl binary to be installed.",
+      "Requires valid Eight Sleep authentication through config or environment variables.",
+      "Uses an unofficial API that may be rate-limited or change.",
+      "Should confirm before changing temperature, alarms, schedules, audio, or base angle."
     ],
     "use_cases": [
       {
-        "title": "Check Bed Readiness",
-        "description": "Review pod status before sleep and confirm whether the device is online and configured as expected.",
-        "target_user": "Eight Sleep owner"
+        "title": "Check Bed Status",
+        "description": "Review current pod state before making temperature or power changes.",
+        "target_user": "Eight Sleep owners"
       },
       {
-        "title": "Prepare Night Settings",
-        "description": "Set a target temperature and verify the active schedule before bedtime.",
-        "target_user": "Night routine planner"
+        "title": "Adjust Night Settings",
+        "description": "Set pod temperature, alarms, and schedules from an assistant workflow.",
+        "target_user": "Home automation users"
       },
       {
-        "title": "Manage Shared Schedules",
-        "description": "Review alarms and schedule changes with confirmation before updating household sleep settings.",
-        "target_user": "Shared bedroom user"
+        "title": "Debug Pod Setup",
+        "description": "Verify authentication, command availability, and API limits during setup.",
+        "target_user": "Developers and support users"
       }
     ],
     "prompt_templates": [
       {
         "title": "Check Pod Status",
         "scenario": "Beginner status check",
-        "prompt": "Use eightctl to check my Eight Sleep pod status. Summarize the current state without changing any settings."
+        "prompt": "Check my Eight Sleep pod status with eightctl and summarize the result."
       },
       {
-        "title": "Set Bedtime Temperature",
-        "scenario": "Basic temperature adjustment",
-        "prompt": "Set my Eight Sleep pod temperature to 20 only after confirming with me. Show the planned command before running it."
+        "title": "Set Pod Temperature",
+        "scenario": "Basic device control",
+        "prompt": "Set my Eight Sleep pod temperature to 20 after confirming the change with me."
       },
       {
         "title": "Review Alarms",
-        "scenario": "Alarm management",
-        "prompt": "List my Eight Sleep alarms and identify any active wake alarms. Ask before creating, updating, or dismissing anything."
+        "scenario": "Routine management",
+        "prompt": "List my Eight Sleep alarms and tell me which ones are active."
       },
       {
-        "title": "Audit Sleep Routine Controls",
-        "scenario": "Advanced multi-step review",
-        "prompt": "Review pod status, schedules, alarms, audio state, and base settings. Recommend changes, but wait for approval before any device action."
+        "title": "Audit Sleep Schedule",
+        "scenario": "Advanced schedule review",
+        "prompt": "Review my Eight Sleep schedule, identify tomorrow's settings, and ask before making any updates."
       }
     ],
     "output_examples": [
       {
-        "input": "Check whether my pod is ready for tonight.",
-        "output": "The pod status was checked. It is online, and no settings were changed."
+        "input": "Check my pod status.",
+        "output": "Your pod is reachable, powered on, and reporting current settings. No change was made."
       },
       {
-        "input": "Set my pod to 20 degrees.",
-        "output": "I will change the pod temperature to 20 after your confirmation. No command has been run yet."
+        "input": "Set my bed to 20.",
+        "output": "I will confirm first because this changes your device temperature. After approval, I will apply the requested setting."
       },
       {
-        "input": "Review my wake alarms.",
-        "output": "The current alarms were listed. I found active alarms and will ask before making any changes."
+        "input": "Show my alarms.",
+        "output": "I found your configured alarms and summarized their active days, times, and current state."
       }
     ],
     "best_practices": [
-      "Confirm every state-changing command before execution.",
-      "Use secure credential storage and redact secrets from terminal output.",
-      "Avoid repeated logins because the unofficial API is rate-limited."
+      "Confirm every command that changes pod state.",
+      "Use a dedicated eightctl config file with protected file permissions.",
+      "Avoid repeated login attempts because the API is unofficial and rate-limited."
     ],
     "anti_patterns": [
-      "Do not run temperature, alarm, audio, power, or base commands without approval.",
-      "Do not print config files or credential environment variables in chat.",
-      "Do not build polling loops that repeatedly log in or hammer the API."
+      "Do not expose Eight Sleep passwords in chat, logs, or shell history.",
+      "Do not run schedule or alarm changes without user approval.",
+      "Do not retry failing API commands in tight loops."
     ],
     "faq": [
       {
-        "question": "Does this skill require eightctl to be installed?",
-        "answer": "Yes. The skill expects the eightctl binary to be available before commands can run."
+        "question": "What does this skill control?",
+        "answer": "It controls supported Eight Sleep pod functions through the eightctl CLI."
       },
       {
-        "question": "Can it control pod temperature?",
-        "answer": "Yes. It can use eightctl temp, but it should ask before changing temperature."
+        "question": "Does it install eightctl automatically?",
+        "answer": "The skill metadata declares a Go install option, but the binary must be available before use."
       },
       {
-        "question": "How does authentication work?",
-        "answer": "The skill documents a config file and EIGHTCTL_EMAIL and EIGHTCTL_PASSWORD environment variables for eightctl authentication."
+        "question": "What authentication is needed?",
+        "answer": "eightctl needs valid Eight Sleep credentials through its config file or supported environment variables."
       },
       {
-        "question": "Does it use the official Eight Sleep API?",
+        "question": "Can it change my bed temperature?",
+        "answer": "Yes. It should ask for confirmation before applying any temperature change."
+      },
+      {
+        "question": "Does it use an official Eight Sleep API?",
         "answer": "No. The skill notes that the API is unofficial and rate-limited."
       },
       {
         "question": "Can it manage alarms and schedules?",
-        "answer": "Yes. It can list and modify supported alarms and schedules through eightctl commands."
-      },
-      {
-        "question": "Should commands run automatically?",
-        "answer": "Status checks can run directly. Device changes should wait for explicit user confirmation."
+        "answer": "Yes. It can guide listing, creating, updating, and dismissing supported alarms and schedules."
       }
     ]
   },

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-04T13:25:18.958Z",
+    "generated_at": "2026-07-09T11:05:55.685Z",
     "slug": "0xdarkmatter-tool-discovery",
     "source_url": "https://github.com/0xDarkMatter/claude-mods/tree/main/skills/tool-discovery",
     "source_ref": "main",
@@ -23,16 +23,16 @@
   },
   "skill": {
     "name": "tool-discovery",
-    "description": "Recommend the right agent, skill, or reference tool for a task. The skill compares lightweight skills with heavier subagents and points users to relevant catalogs.",
-    "summary": "Routes tasks to the right AI skill, agent, or tool reference.",
+    "description": "Recommend the best Claude, Codex, or Claude Code skill or agent for a task, using curated catalogs and simple routing rules.",
+    "summary": "Choose the right skill or agent for a task with clear routing guidance.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "0xDarkMatter",
     "license": "MIT",
     "tags": [
       "tool-discovery",
-      "agent-selection",
-      "skill-selection",
+      "agents",
+      "skills",
       "workflow",
       "claude-code"
     ],
@@ -53,16 +53,11 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static findings are false positives from Markdown references, catalog entries, and code-fence markers. The anti-bot bypass and blocked-site access entries are confirmed low-risk content issues because they can guide evasion of site controls. No evidence found for prompt injection or hidden data exfiltration intent.",
+    "summary": "Most static findings are documentation-only false positives, including archive tool names, worker_threads references, and Markdown backticks. I confirmed the anti-bot and blocked-site recommendations as low-severity dual-use guidance because they may encourage bypassing access controls.",
     "remediation": [
       {
-        "issue": "Anti-bot bypass capability wording",
-        "suggestion": "Replace bypass language with guidance limited to authorized scraping, site terms, and robots.txt compliance.",
-        "severity": "low"
-      },
-      {
-        "issue": "Blocked-site access recommendation",
-        "suggestion": "Avoid routing users to access blocked sites unless the task states clear authorization and lawful purpose.",
+        "issue": "Dual-use scraping recommendations",
+        "suggestion": "Reword anti-bot and blocked-site guidance to focus on compliant scraping, public APIs, and owner-approved access.",
         "severity": "low"
       }
     ],
@@ -304,94 +299,94 @@
       {
         "id": "filesystem:reference.md:41:python-archive-libraries",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line is a Markdown table recommending zipfile and unzip for archive handling. It does not include extraction code, file writes, or untrusted archive processing."
+        "confidence": 0.93,
+        "reason": "This line is a reference table listing ZIP libraries and a CLI tool. It does not extract archives or handle untrusted filesystem paths."
       },
       {
         "id": "filesystem:reference.md:42:python-archive-libraries",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line only lists tarfile and tar as reference tools for TAR/GZ files. No code path reads or extracts archives."
+        "confidence": 0.93,
+        "reason": "This line only names TAR/GZ tooling in documentation. There is no archive extraction logic or path handling behavior in the skill."
       },
       {
         "id": "filesystem:reference.md:43:python-archive-libraries",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The py7zr and 7z names appear in a static format catalog. There is no executable script or instruction to process attacker-controlled archives."
+        "confidence": 0.93,
+        "reason": "This line documents 7z library and CLI options. It does not execute those tools or process archive contents."
       },
       {
         "id": "filesystem:reference.md:44:python-archive-libraries",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The rarfile and unrar entries are reference recommendations only. They do not create a filesystem access risk by themselves."
+        "confidence": 0.93,
+        "reason": "This line documents RAR library and CLI options. It contains no filesystem operation, extraction workflow, or user-controlled path handling."
       },
       {
         "id": "blocker:references/agents-catalog.md:30:network-reconnaissance",
         "verdict": "confirmed",
-        "confidence": 0.86,
+        "confidence": 0.88,
         "severity": "low",
-        "reason": "The catalog lists anti-bot bypass as a capability for a scraping agent. This can guide evasion of site controls, even though no exploit code is present."
+        "reason": "Line 30 lists anti-bot bypass as a capability. This is dual-use guidance that may encourage evading site controls, although no code executes."
       },
       {
         "id": "blocker:references/agents-catalog.md:37:network-reconnaissance",
         "verdict": "confirmed",
         "confidence": 0.86,
         "severity": "low",
-        "reason": "The catalog recommends blocked site access as a best-fit task. That wording creates misuse risk by directing users toward bypassing access restrictions."
+        "reason": "Line 37 recommends help for blocked site access. This can promote bypassing access restrictions, even though it is only catalog text."
       },
       {
         "id": "scripts:references/skills-catalog.md:224:node-js-worker-threads-module",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "worker_threads appears as a topic in the JavaScript skill catalog. The file contains no Node.js code, worker creation, or script execution."
+        "confidence": 0.94,
+        "reason": "The worker_threads reference appears in a JavaScript skill catalog entry. It is documentation about Node.js topics, not executable script code."
       },
       {
         "id": "external_commands:SKILL.md:17:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The line opens a Markdown flowchart fence. It is formatting text, not shell backtick execution or a command invocation."
+        "reason": "The flagged text is a Markdown code fence starting a decision flowchart. It is not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:23:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The line closes a Markdown flowchart fence. There is no Ruby, shell command, or dynamic execution behavior."
+        "reason": "The flagged text closes a Markdown flowchart block. It contains no command invocation or executable backtick expression."
       },
       {
         "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The line uses backticks around skill names such as cloudflare-ops and bash-ops. These are catalog labels, not executable commands."
+        "confidence": 0.95,
+        "reason": "Line 82 uses inline backticks around skill names and mentions shell scripting as a task domain. It does not run a shell command."
       },
       {
         "id": "external_commands:SKILL.md:87:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The line opens a Markdown example block for the Skill tool. It is documentation formatting, not command execution."
+        "reason": "The flagged line is a Markdown fence for a non-executable usage example. It does not contain command execution behavior."
       },
       {
         "id": "external_commands:SKILL.md:89:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The line closes the Skill tool example block. The snippet is a human-readable launch example, not runnable code."
+        "reason": "The flagged line closes a Markdown example block. It is formatting text, not Ruby backtick or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:92:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The line opens a Markdown example block for the Task tool. It does not execute a shell or invoke an external process."
+        "reason": "The flagged line opens a Markdown block showing Task tool syntax. It is documentation and not an external command."
       },
       {
         "id": "external_commands:SKILL.md:95:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The line closes the Task tool example block. It is documentation syntax with no command execution semantics."
+        "reason": "The flagged line closes a Markdown usage example. The surrounding content describes tool routing and does not execute commands."
       },
       {
         "id": "external_commands:SKILL.md:123:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The line references local catalog files in backticks for reading. The skill allows Read and Glob only, so this is bounded documentation access."
+        "confidence": 0.95,
+        "reason": "Line 123 wraps a local reference file path in Markdown backticks. It is a documentation link target, not command execution."
       }
     ],
     "semantic_findings": [],
@@ -412,8 +407,8 @@
         "review_kind": "security",
         "source_category": "blocker",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "The catalog lists anti-bot bypass as a capability for a scraping agent. This can guide evasion of site controls, even though no exploit code is present."
+        "confidence": 0.88,
+        "confidence_reasoning": "Line 30 lists anti-bot bypass as a capability. This is dual-use guidance that may encourage evading site controls, although no code executes."
       },
       {
         "title": "Network reconnaissance",
@@ -429,7 +424,7 @@
         "source_category": "blocker",
         "source_severity": "low",
         "confidence": 0.86,
-        "confidence_reasoning": "The catalog recommends blocked site access as a best-fit task. That wording creates misuse risk by directing users toward bypassing access restrictions."
+        "confidence_reasoning": "Line 37 recommends help for blocked site access. This can promote bypassing access restrictions, even though it is only catalog text."
       }
     ],
     "dangerous_patterns": [
@@ -446,8 +441,8 @@
         "review_kind": "security",
         "source_category": "blocker",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "The catalog lists anti-bot bypass as a capability for a scraping agent. This can guide evasion of site controls, even though no exploit code is present."
+        "confidence": 0.88,
+        "confidence_reasoning": "Line 30 lists anti-bot bypass as a capability. This is dual-use guidance that may encourage evading site controls, although no code executes."
       },
       {
         "title": "Network reconnaissance",
@@ -463,131 +458,131 @@
         "source_category": "blocker",
         "source_severity": "low",
         "confidence": 0.86,
-        "confidence_reasoning": "The catalog recommends blocked site access as a best-fit task. That wording creates misuse risk by directing users toward bypassing access restrictions."
+        "confidence_reasoning": "Line 37 recommends help for blocked site access. This can promote bypassing access restrictions, even though it is only catalog text."
       }
     ],
     "files_scanned": 6,
     "total_lines": 1124,
     "audit_model": "codex",
-    "audited_at": "2026-07-04T13:25:18.958Z",
+    "audited_at": "2026-07-09T11:05:55.685Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Choose the Right Agent or Skill",
-    "value_statement": "Selecting an AI helper can slow work when agent and skill catalogs overlap. This skill maps task intent to the most suitable Claude, Codex, or Claude Code tool.",
+    "value_statement": "Choosing between agents and skills can slow AI-assisted work. This skill maps task types to the right Claude, Codex, or Claude Code tool.",
     "seo_keywords": [
-      "Claude",
-      "Codex",
-      "Claude Code",
-      "tool discovery",
-      "agent selection",
-      "skill selection",
-      "AI assistant workflow",
-      "Task tool",
-      "Skill tool",
-      "developer productivity"
+      "Claude tool discovery",
+      "Codex skill routing",
+      "Claude Code agents",
+      "AI agent selection",
+      "skill recommendations",
+      "task routing",
+      "workflow automation",
+      "developer productivity",
+      "subagent selection",
+      "Claude skills catalog"
     ],
     "actual_capabilities": [
-      "Explains when to use a lightweight skill instead of a heavier agent.",
-      "Maps common developer tasks to named skills and agents.",
-      "Provides quick references for file formats, CLI tools, and domain libraries.",
-      "Points users to detailed agent and skill catalogs for deeper selection.",
-      "Recommends skill-first routing for common language, framework, and infrastructure work."
+      "Maps common tasks to lightweight skills or heavyweight agents.",
+      "Provides quick references for coding, DevOps, data, and content tools.",
+      "Explains when to use the Skill tool or Task tool.",
+      "Links to detailed catalogs for agents and skills.",
+      "Limits recommendations to a small set of relevant tools."
     ],
     "limitations": [
-      "It recommends tools but does not execute agents or skills directly.",
-      "Catalog entries may not match every local Codex or Claude Code installation.",
-      "It does not verify whether suggested CLI tools or packages are installed.",
-      "Scraping recommendations need authorization checks before use."
+      "Does not install, execute, or configure the recommended tools.",
+      "Catalog accuracy depends on the included reference files.",
+      "Some recommendations assume named skills or agents are available.",
+      "Web scraping guidance may require policy and legal review."
     ],
     "use_cases": [
       {
-        "title": "Start a Coding Task",
-        "description": "Choose a focused skill before asking an agent to inspect a repository.",
+        "title": "Route Development Tasks",
+        "description": "Find the right skill for language, framework, database, or DevOps questions before starting implementation.",
         "target_user": "Software developer"
       },
       {
-        "title": "Route Support Questions",
-        "description": "Select a reference skill for quick answers about formats, commands, or frameworks.",
-        "target_user": "Technical support lead"
+        "title": "Standardize Assistant Workflows",
+        "description": "Create consistent guidance for when a team should use a skill, agent, or general task prompt.",
+        "target_user": "Engineering lead"
       },
       {
-        "title": "Plan Agent Workflows",
-        "description": "Decide when a multi-step investigation needs a subagent instead of a static reference.",
-        "target_user": "AI workflow designer"
+        "title": "Review Tool Choices",
+        "description": "Check whether a requested AI workflow uses the narrowest useful tool for the task.",
+        "target_user": "Marketplace reviewer"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Pick a Tool",
-        "scenario": "Beginner task routing",
-        "prompt": "Use tool-discovery to recommend the best skill or agent for this task: [describe task]."
+        "title": "Find a Tool for a Task",
+        "scenario": "Beginner routing request",
+        "prompt": "Use tool-discovery to recommend the best skill or agent for this task: [task]. Explain the choice in one paragraph."
       },
       {
-        "title": "Compare Options",
-        "scenario": "Choosing between a skill and an agent",
-        "prompt": "Use tool-discovery to compare skill-first and agent-first approaches for: [describe workflow]."
+        "title": "Compare Two Options",
+        "scenario": "Intermediate selection request",
+        "prompt": "Use tool-discovery to compare [skill or agent A] and [skill or agent B] for [task]. Recommend one option."
       },
       {
-        "title": "Build a Workflow",
-        "scenario": "Multi-step project planning",
-        "prompt": "Use tool-discovery to design a sequence of skills and agents for this project: [project summary]."
+        "title": "Plan a Tool Workflow",
+        "scenario": "Advanced multi-step request",
+        "prompt": "Use tool-discovery to plan which skills and agents should handle each step of this workflow: [workflow]. Keep the list short."
       },
       {
-        "title": "Audit Tool Choice",
-        "scenario": "Advanced routing review",
-        "prompt": "Use tool-discovery to review this tool plan, identify overuse of agents, and suggest simpler skill alternatives."
+        "title": "Audit a Routing Strategy",
+        "scenario": "Advanced review request",
+        "prompt": "Use tool-discovery to review this proposed tool-routing plan: [plan]. Identify overuse, missing skills, and safer alternatives."
       }
     ],
     "output_examples": [
       {
-        "input": "I need to find files by name and inspect matching code paths.",
-        "output": "Use file-search first for fast discovery. Use Explore only if the search results need broader investigation."
+        "input": "I need help finding files named config and then explaining a React hook.",
+        "output": "Recommended path: use file-search for locating files, then react-ops for the hook explanation. No agent is needed unless analysis becomes broad."
       },
       {
-        "input": "I need help with React Server Components behavior.",
-        "output": "Use react-ops first because this is framework reference work. Use a general subagent only for repository-specific diagnosis."
+        "input": "I need to optimize a PostgreSQL query and prepare a pull request.",
+        "output": "Recommended path: use postgres-ops for query analysis, then git-ops for commit and pull request workflow guidance."
       },
       {
-        "input": "I need to reorganize a large project directory.",
-        "output": "Use project-organizer because the task requires decisions about structure, ownership, and cleanup scope."
+        "input": "I need a plan for migrating a Node project to modern modules.",
+        "output": "Recommended path: use javascript-ops first. Use Plan only if the migration requires architectural tradeoffs across many packages."
       }
     ],
     "best_practices": [
-      "Start with the narrowest relevant skill before using a subagent.",
-      "Use agents for decisions, trade-offs, and multi-step investigations.",
-      "Check catalog references when the task spans more than one domain."
+      "Start with a skill for lookup, syntax, or reference tasks.",
+      "Use an agent when the task needs judgment, planning, or optimization.",
+      "Confirm the recommended tool exists in the current environment before invoking it."
     ],
     "anti_patterns": [
-      "Do not launch a broad agent for a simple lookup task.",
-      "Do not recommend more than two or three tools for one request.",
-      "Do not use scraping guidance without confirming authorization."
+      "Do not dispatch multiple agents for simple reference lookups.",
+      "Do not treat catalog suggestions as permission to bypass site restrictions.",
+      "Do not assume unavailable skills can be loaded without installation or confirmation."
     ],
     "faq": [
       {
-        "question": "What does this skill do?",
-        "answer": "It recommends the best skill, agent, or reference tool for a user task."
+        "question": "When should I use this skill?",
+        "answer": "Use it when you need to choose a Claude, Codex, or Claude Code skill or agent for a task."
       },
       {
-        "question": "Does it run other tools automatically?",
-        "answer": "No. It provides routing guidance and catalog references only."
+        "question": "Does it run the recommended tools?",
+        "answer": "No. It provides routing guidance and reference catalogs only."
       },
       {
-        "question": "When should I use a skill?",
-        "answer": "Use a skill for reference material, patterns, commands, and focused domain guidance."
+        "question": "Can it recommend more than one tool?",
+        "answer": "Yes. It should keep recommendations to the smallest useful set."
       },
       {
-        "question": "When should I use an agent?",
-        "answer": "Use an agent for complex decisions, planning, optimization, or multi-step investigation."
+        "question": "Does it replace domain-specific skills?",
+        "answer": "No. It helps select those skills, then the selected skill provides domain guidance."
       },
       {
-        "question": "Does it support Claude Code?",
-        "answer": "Yes. The catalog is written for Claude and Claude Code style skill and agent routing."
+        "question": "Does it require internet access?",
+        "answer": "No. The core guidance comes from local skill and agent catalog files."
       },
       {
-        "question": "Can Codex users benefit from it?",
-        "answer": "Yes. Codex users can apply the same routing logic to choose focused references before broader automation."
+        "question": "Is web scraping guidance always safe?",
+        "answer": "No. Users must follow site terms, laws, and authorization requirements."
       }
     ]
   },

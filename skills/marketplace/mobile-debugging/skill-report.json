@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-05T04:54:10.352Z",
+    "generated_at": "2026-07-09T07:22:57.828Z",
     "slug": "babakbar-mobile-debugging",
     "source_url": "https://github.com/BabakBar/VibeKeeper/tree/main/.claude/skills/debugging",
     "source_ref": "main",
@@ -9,7 +9,7 @@
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "ab49480fad15eeba3921fabda3e0fb66d7835467fdd8c43086c28a5b8451fc47",
-    "tree_hash": "b87445d10ed20234cee02dbe1c6fae648c7c53394410b8c246238c522558378f",
+    "tree_hash": "c4a6d0c1a2cc24d94ed66e253fad517fbbc66375734c8ae25d9780867e25755e",
     "provenance": {
       "model_requested": "gpt-5.5:high",
       "model_effective": "codex:gpt-5.5:high",
@@ -26,8 +26,8 @@
   },
   "skill": {
     "name": "mobile-debugging",
-    "description": "Guides debugging for React Native and Expo apps, including Metro cache issues, native module errors, device logs, performance checks, and crash investigation.",
-    "summary": "Troubleshoot React Native and Expo app issues with focused diagnostics and cautious command guidance.",
+    "description": "Debug React Native and Expo app issues with Metro, native builds, logs, performance checks, crash analysis, and troubleshooting commands.",
+    "summary": "Troubleshoot React Native and Expo crashes, build errors, Metro issues, logs, and performance problems.",
     "icon": "📦",
     "version": "1.0.0",
     "author": "BabakBar",
@@ -35,9 +35,9 @@
     "tags": [
       "react-native",
       "expo",
-      "debugging",
-      "mobile",
-      "performance"
+      "mobile-debugging",
+      "metro-bundler",
+      "crash-analysis"
     ],
     "supported_tools": [
       "claude",
@@ -52,25 +52,25 @@
     "category": "coding"
   },
   "security_audit": {
-    "risk_level": "critical",
-    "is_blocked": true,
-    "safe_to_publish": false,
+    "risk_level": "safe",
+    "is_blocked": false,
+    "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static backtick findings are Markdown fences or TypeScript template literals, not executable backtick execution. Real risk remains from Bash-enabled troubleshooting commands that delete caches, reset simulators, inspect device logs, and force-kill Metro processes. No prompt injection, credential exfiltration, or malicious network behavior was found.",
+    "summary": "Most static findings are Markdown fences, official resource links, or local diagnostic steps, not hidden execution or exfiltration. I confirmed the cache deletion commands and force-kill command substitution as medium operational risks because the skill allows Bash. No prompt injection or malicious intent evidence was found.",
     "remediation": [
       {
-        "issue": "Destructive cleanup commands are shown without approval steps.",
-        "suggestion": "Add explicit user confirmation before deleting caches, reinstalling dependencies, resetting simulators, or stopping emulators.",
+        "issue": "Destructive cache deletion examples",
+        "suggestion": "Add explicit user confirmation before deleting Metro or Haste cache directories under /tmp, and explain the expected files first.",
         "severity": "medium"
       },
       {
-        "issue": "The Metro port command force-kills processes selected by command substitution.",
-        "suggestion": "Show the process first, ask the user to confirm the PID, and prefer graceful termination before force kill.",
+        "issue": "Force-kill process command",
+        "suggestion": "Prefer a graceful process stop, or ask the user to confirm the PID before running a kill -9 command on port 8081.",
         "severity": "medium"
       },
       {
-        "issue": "Device log commands may expose private application data.",
-        "suggestion": "Tell users to redact tokens, customer data, and private API responses before sharing logs with an AI assistant.",
+        "issue": "Bash-heavy troubleshooting guidance",
+        "suggestion": "Tell agents to inspect errors and explain command effects before simulator resets, dependency reinstalls, global installs, or build cleans.",
         "severity": "low"
       }
     ],
@@ -558,26 +558,6 @@
         "snippet": "rm -rf /tmp/haste-*"
       },
       {
-        "id": "blocker:SKILL.md:31:recursive-delete-on-root-home",
-        "category": "blocker",
-        "severity": "critical",
-        "pattern": "Recursive delete on root/home",
-        "file": "SKILL.md",
-        "line_start": 31,
-        "line_end": 31,
-        "snippet": "rm -rf /tmp/metro-*"
-      },
-      {
-        "id": "blocker:SKILL.md:32:recursive-delete-on-root-home",
-        "category": "blocker",
-        "severity": "critical",
-        "pattern": "Recursive delete on root/home",
-        "file": "SKILL.md",
-        "line_start": 32,
-        "line_end": 32,
-        "snippet": "rm -rf /tmp/haste-*"
-      },
-      {
         "id": "blocker:SKILL.md:42:system-reconnaissance",
         "category": "blocker",
         "severity": "low",
@@ -631,403 +611,228 @@
     "finding_verdicts": [
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.72,
-        "reason": "The Bash block contains cache-clearing commands that remove node_modules and temporary Metro data. These are legitimate troubleshooting steps, but they can delete local project state if run automatically.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:33:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "Line 33 is only a Markdown code fence closing marker. It is not Ruby backtick execution or an executable command."
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.7,
-        "reason": "The block runs pod, Gradle, and Expo cleanup commands that modify native build state. The commands are expected for mobile debugging but need user approval before execution.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:46:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "Line 46 is a Markdown fence closing marker. It does not execute code or invoke a shell."
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The simulator commands can erase all iOS simulator data or stop an Android emulator. This is destructive local device state change even though it is a valid debugging action.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "Line 57 is only the closing fence for the command example. It is not executable shell or Ruby backtick syntax."
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:63:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.68,
-        "reason": "The block installs a global npm package and starts React DevTools. This is legitimate tooling, but it changes the developer environment through external commands.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:71:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "Line 71 is a Markdown fence closing marker. It does not represent command execution."
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:75:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.74,
-        "reason": "The block runs Metro and device log commands, including adb logcat. These commands can expose local device or application logs to the assistant.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:85:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "Line 85 is the closing marker for a Markdown code block. It is not shell execution by itself."
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:89:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The section is a TypeScript example for enabling a network inspector during development. It is not Ruby or shell backtick execution."
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "Line 98 is a Markdown fence closing marker. No executable command is present on that line."
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:104:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.92,
-        "reason": "The block is TypeScript code for measuring render duration in an app. It does not invoke a shell or run external commands."
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:114:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "Line 114 is a JavaScript template literal used inside console.warn. It logs text and does not perform command substitution or shell execution."
+        "reason": "This is a TypeScript template string used to format a local console warning. It does not execute a shell command or invoke an external process."
       },
       {
         "id": "external_commands:SKILL.md:124:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "Line 124 is only the closing marker for a TypeScript code fence. It is not executable code."
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:128:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The block shows React cleanup logic for subscriptions and timers. It does not call a shell or execute external commands."
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:140:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "Line 140 is a Markdown code fence closing marker. It has no execution behavior."
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:146:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The fenced Bash section contains only checklist comments about JavaScript errors. No shell command is provided for execution."
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:151:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "Line 151 is the closing marker for a Markdown code block. It is not command execution."
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:155:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The fenced Bash section contains only comments that tell users where to inspect native errors. It does not execute a command."
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:160:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "Line 160 is only a Markdown code fence closing marker. It does not run a shell command."
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:164:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.8,
-        "reason": "The commands are hardcoded diagnostics for package and runtime versions. They do not take untrusted input, delete files, or contact unknown services."
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:174:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "Line 174 is the closing marker for the diagnostic command block. It is not an executable shell construct."
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:178:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.83,
-        "reason": "The block includes process lookup, force kill, simulator listing, and adb server commands. These commands can affect local processes and reveal connected device details.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.92,
+        "reason": "This is a Markdown fenced example in a debugging guide, not Ruby backtick execution in runnable code. The skill text does not interpolate untrusted input or hide automatic execution at this location."
       },
       {
         "id": "external_commands:SKILL.md:184:shell-command-substitution",
         "verdict": "confirmed",
-        "confidence": 0.88,
-        "reason": "The command substitutes lsof output directly into kill -9 for port 8081. If run blindly, it can terminate any process bound to that port without user confirmation.",
-        "severity": "medium"
+        "confidence": 0.86,
+        "severity": "medium",
+        "reason": "The command uses shell command substitution to pass any PID listening on port 8081 to kill -9. In a Bash-enabled skill this can terminate an unrelated local process if run without confirmation."
       },
       {
         "id": "external_commands:SKILL.md:178:template-literal-with-command-substitution",
-        "verdict": "confirmed",
-        "confidence": 0.78,
-        "reason": "The line range contains shell command substitution used to select a PID for force termination. The risk is local process disruption, not template literal execution.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.91,
+        "reason": "This finding points at a Markdown bash fence, not a JavaScript template literal. The actual shell substitution in this block is handled by the separate line 184 finding."
       },
       {
         "id": "network:SKILL.md:220:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The URL is a documentation link to the React Native debugging guide. It is not a network call or data exfiltration path."
+        "confidence": 0.95,
+        "reason": "This is a Markdown resource link to debugging documentation, not code that performs a network request or sends data. No credentials or local files are transmitted by the skill text."
       },
       {
         "id": "network:SKILL.md:221:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The URL points to Expo debugging documentation. The skill only references the link and does not send data to it."
+        "confidence": 0.95,
+        "reason": "This is a Markdown resource link to debugging documentation, not code that performs a network request or sends data. No credentials or local files are transmitted by the skill text."
       },
       {
         "id": "network:SKILL.md:222:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The URL is a Flipper debugger resource link. It is not invoked by code and no payload or credential is transmitted."
+        "confidence": 0.95,
+        "reason": "This is a Markdown resource link to debugging documentation, not code that performs a network request or sends data. No credentials or local files are transmitted by the skill text."
       },
       {
         "id": "filesystem:SKILL.md:31:temp-directory-access",
         "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The command recursively deletes temporary Metro cache paths. It is a valid cache reset step, but it is still destructive filesystem access.",
-        "severity": "medium"
+        "confidence": 0.78,
+        "severity": "medium",
+        "reason": "The command deletes matching directories under /tmp with rm -rf as part of Metro cache cleanup. This is legitimate debugging guidance, but it can remove local files if run automatically or with an unexpected wildcard match."
       },
       {
         "id": "filesystem:SKILL.md:32:temp-directory-access",
         "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The command recursively deletes temporary Haste cache paths. It should require confirmation because a globbed rm -rf can remove matching local data.",
-        "severity": "medium"
-      },
-      {
-        "id": "blocker:SKILL.md:31:recursive-delete-on-root-home",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The command targets /tmp/metro-* cache paths, not the filesystem root or a home directory. The destructive temp cleanup risk is covered by the filesystem finding."
-      },
-      {
-        "id": "blocker:SKILL.md:32:recursive-delete-on-root-home",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The command targets /tmp/haste-* cache paths, not root or home. It is temp cache cleanup rather than a critical root deletion pattern."
+        "confidence": 0.78,
+        "severity": "medium",
+        "reason": "The command deletes matching directories under /tmp with rm -rf as part of Haste cache cleanup. This is legitimate debugging guidance, but it can remove local files if run automatically or with an unexpected wildcard match."
       },
       {
         "id": "blocker:SKILL.md:42:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.87,
-        "reason": "The command runs a Gradle clean inside the Android project. It cleans build artifacts and does not enumerate system information."
+        "confidence": 0.9,
+        "reason": "This is a normal React Native or Android troubleshooting step used for local diagnostics. It does not show stealthy reconnaissance, credential access, or data exfiltration."
       },
       {
         "id": "blocker:SKILL.md:82:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 82 is a comment label for Android logs. It performs no discovery or command execution."
+        "confidence": 0.9,
+        "reason": "This is a normal React Native or Android troubleshooting step used for local diagnostics. It does not show stealthy reconnaissance, credential access, or data exfiltration."
       },
       {
         "id": "blocker:SKILL.md:83:system-reconnaissance",
-        "verdict": "confirmed",
-        "confidence": 0.7,
-        "reason": "The commands collect Android device logs through React Native and adb. This is legitimate debugging, but it can expose local device and application data.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "This is a normal React Native or Android troubleshooting step used for local diagnostics. It does not show stealthy reconnaissance, credential access, or data exfiltration."
       },
       {
         "id": "blocker:SKILL.md:157:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "Line 157 is only a comment telling users to check Android Studio Logcat. It does not run a reconnaissance command."
+        "confidence": 0.9,
+        "reason": "This is a normal React Native or Android troubleshooting step used for local diagnostics. It does not show stealthy reconnaissance, credential access, or data exfiltration."
       },
       {
         "id": "blocker:SKILL.md:190:system-reconnaissance",
-        "verdict": "confirmed",
-        "confidence": 0.7,
-        "reason": "The cited range includes adb devices, which enumerates connected Android devices. This is expected debugging but still local device discovery.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "This is a normal React Native or Android troubleshooting step used for local diagnostics. It does not show stealthy reconnaissance, credential access, or data exfiltration."
       }
     ],
-    "semantic_findings": [
-      {
-        "title": "Destructive Debug Commands Need Confirmation",
-        "description": "The skill presents deletion, simulator reset, emulator stop, and force-kill commands without requiring confirmation before execution.",
-        "severity": "medium",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 28,
-            "line_end": 32
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 52,
-            "line_end": 56
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 184,
-            "line_end": 184
-          }
-        ],
-        "confidence": 0.86,
-        "confidence_reasoning": "The cited lines contain concrete destructive commands and no nearby instruction to ask before running them. The intent is troubleshooting, so the severity is medium rather than high."
-      }
-    ],
-    "critical_findings": [
-      {
-        "title": "Recursive delete on root/home",
-        "description": "rm -rf /tmp/metro-*",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 31,
-            "line_end": 31
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "blocker",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed blocker/critical static finding; AI dismissal overridden."
-      },
-      {
-        "title": "Recursive delete on root/home",
-        "description": "rm -rf /tmp/haste-*",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 32,
-            "line_end": 32
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "blocker",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed blocker/critical static finding; AI dismissal overridden."
-      }
-    ],
+    "semantic_findings": [],
+    "critical_findings": [],
     "high_findings": [],
     "medium_findings": [
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 24,
-            "line_end": 33
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The Bash block contains cache-clearing commands that remove node_modules and temporary Metro data. These are legitimate troubleshooting steps, but they can delete local project state if run automatically."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 37,
-            "line_end": 46
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.7,
-        "confidence_reasoning": "The block runs pod, Gradle, and Expo cleanup commands that modify native build state. The commands are expected for mobile debugging but need user approval before execution."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 50,
-            "line_end": 57
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The simulator commands can erase all iOS simulator data or stop an Android emulator. This is destructive local device state change even though it is a valid debugging action."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 63,
-            "line_end": 71
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.68,
-        "confidence_reasoning": "The block installs a global npm package and starts React DevTools. This is legitimate tooling, but it changes the developer environment through external commands."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 75,
-            "line_end": 85
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The block runs Metro and device log commands, including adb logcat. These commands can expose local device or application logs to the assistant."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 178,
-            "line_end": 196
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.83,
-        "confidence_reasoning": "The block includes process lookup, force kill, simulator listing, and adb server commands. These commands can affect local processes and reveal connected device details."
-      },
       {
         "title": "Shell command substitution",
         "description": "kill -9 $(lsof -ti:8081)",
@@ -1041,40 +846,24 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The command substitutes lsof output directly into kill -9 for port 8081. If run blindly, it can terminate any process bound to that port without user confirmation."
+        "confidence": 0.86,
+        "confidence_reasoning": "The command uses shell command substitution to pass any PID listening on port 8081 to kill -9. In a Bash-enabled skill this can terminate an unrelated local process if run without confirmation."
       },
       {
-        "title": "Template literal with command substitution",
-        "description": "```bash",
+        "title": "Temp directory access",
+        "description": "rm -rf /tmp/metro-*",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 178,
-            "line_end": 196
+            "line_start": 31,
+            "line_end": 31
           }
         ],
         "review_kind": "capability",
-        "source_category": "external_commands",
+        "source_category": "filesystem",
         "source_severity": "medium",
         "confidence": 0.78,
-        "confidence_reasoning": "The line range contains shell command substitution used to select a PID for force termination. The risk is local process disruption, not template literal execution."
-      },
-      {
-        "title": "Temp directory access",
-        "description": "rm -rf /tmp/metro-*",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 31,
-            "line_end": 31
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The command recursively deletes temporary Metro cache paths. It is a valid cache reset step, but it is still destructive filesystem access."
+        "confidence_reasoning": "The command deletes matching directories under /tmp with rm -rf as part of Metro cache cleanup. This is legitimate debugging guidance, but it can remove local files if run automatically or with an unexpected wildcard match."
       },
       {
         "title": "Temp directory access",
@@ -1089,270 +878,143 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The command recursively deletes temporary Haste cache paths. It should require confirmation because a globbed rm -rf can remove matching local data."
-      },
-      {
-        "title": "Destructive Debug Commands Need Confirmation",
-        "description": "The skill presents deletion, simulator reset, emulator stop, and force-kill commands without requiring confirmation before execution.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 28,
-            "line_end": 32
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 52,
-            "line_end": 56
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 184,
-            "line_end": 184
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "semantic",
-        "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "The cited lines contain concrete destructive commands and no nearby instruction to ask before running them. The intent is troubleshooting, so the severity is medium rather than high."
+        "confidence": 0.78,
+        "confidence_reasoning": "The command deletes matching directories under /tmp with rm -rf as part of Haste cache cleanup. This is legitimate debugging guidance, but it can remove local files if run automatically or with an unexpected wildcard match."
       }
     ],
-    "low_findings": [
-      {
-        "title": "System reconnaissance",
-        "description": "npx react-native log-android",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 83,
-            "line_end": 84
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "blocker",
-        "source_severity": "low",
-        "confidence": 0.7,
-        "confidence_reasoning": "The commands collect Android device logs through React Native and adb. This is legitimate debugging, but it can expose local device and application data."
-      },
-      {
-        "title": "System reconnaissance",
-        "description": "# Android",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 190,
-            "line_end": 191
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "blocker",
-        "source_severity": "low",
-        "confidence": 0.7,
-        "confidence_reasoning": "The cited range includes adb devices, which enumerates connected Android devices. This is expected debugging but still local device discovery."
-      }
-    ],
-    "dangerous_patterns": [
-      {
-        "title": "Recursive delete on root/home",
-        "description": "rm -rf /tmp/metro-*",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 31,
-            "line_end": 31
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "blocker",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed blocker/critical static finding; AI dismissal overridden."
-      },
-      {
-        "title": "Recursive delete on root/home",
-        "description": "rm -rf /tmp/haste-*",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 32,
-            "line_end": 32
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "blocker",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed blocker/critical static finding; AI dismissal overridden."
-      },
-      {
-        "title": "System reconnaissance",
-        "description": "npx react-native log-android",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 83,
-            "line_end": 84
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "blocker",
-        "source_severity": "low",
-        "confidence": 0.7,
-        "confidence_reasoning": "The commands collect Android device logs through React Native and adb. This is legitimate debugging, but it can expose local device and application data."
-      },
-      {
-        "title": "System reconnaissance",
-        "description": "# Android",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 190,
-            "line_end": 191
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "blocker",
-        "source_severity": "low",
-        "confidence": 0.7,
-        "confidence_reasoning": "The cited range includes adb devices, which enumerates connected Android devices. This is expected debugging but still local device discovery."
-      }
-    ],
+    "low_findings": [],
+    "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 223,
     "audit_model": "codex",
-    "audited_at": "2026-07-05T04:54:10.352Z",
-    "agent_auto_install_policy": "blocked",
-    "manual_install_policy": "allowed_with_warning"
+    "audited_at": "2026-07-09T07:22:57.828Z",
+    "agent_auto_install_policy": "allowed",
+    "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Debug React Native and Expo Apps",
-    "value_statement": "Mobile app debugging often wastes time across Metro, native builds, logs, and device tooling. This skill gives Claude, Codex, and Claude Code a focused checklist for React Native and Expo issues.",
+    "user_title": "Debug React Native Mobile Apps",
+    "value_statement": "Mobile app debugging often stalls when logs, caches, native builds, and platform tools are mixed together. This skill gives Claude, Codex, and Claude Code a focused React Native and Expo troubleshooting workflow.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "React Native debugging",
       "Expo debugging",
-      "Metro bundler",
-      "mobile app debugging",
-      "native module errors",
-      "Android Logcat",
-      "iOS simulator"
+      "Metro bundler errors",
+      "mobile crash analysis",
+      "native module troubleshooting",
+      "Logcat debugging",
+      "iOS simulator debugging"
     ],
     "actual_capabilities": [
-      "Guides Metro cache and module resolution troubleshooting.",
-      "Lists checks for iOS simulators and Android emulators.",
-      "Explains how to gather Metro, Xcode, and Logcat evidence.",
-      "Provides patterns for render performance and memory leak checks.",
-      "Maps common React Native errors to likely causes."
+      "Troubleshoots Metro cache, dependency, and module resolution issues.",
+      "Guides iOS pod resets, Android Gradle cleans, and Expo prebuild cleanup.",
+      "Lists commands for Metro logs, iOS logs, Android logs, and ADB checks.",
+      "Provides a checklist for reproduction, recent changes, errors, dependencies, and platform scope.",
+      "Shows basic performance timing and memory cleanup patterns.",
+      "Links to React Native, Expo, and Flipper debugging resources."
     ],
     "limitations": [
-      "Does not replace platform documentation or vendor support.",
-      "May require Expo, Watchman, Xcode, Android Studio, or adb.",
-      "Some commands can delete caches or reset devices and need approval.",
-      "Cannot diagnose production crashes without logs and reproduction steps."
+      "Requires user-provided error logs, platform details, and recent change context.",
+      "Some commands can modify local files, caches, simulators, devices, or processes.",
+      "Focuses on React Native and Expo, not all native mobile applications.",
+      "Does not replace current vendor documentation or project-specific release procedures."
     ],
     "use_cases": [
       {
-        "title": "Resolve Local Build Failures",
-        "description": "Diagnose Metro, native module, and simulator problems during React Native development.",
-        "target_user": "Mobile engineers"
+        "title": "Resolve Metro Startup Failures",
+        "description": "Use the checklist to isolate cache, dependency, import, and package compatibility problems before clearing state.",
+        "target_user": "React Native developer"
       },
       {
-        "title": "Prepare Reproducible Bug Reports",
-        "description": "Collect symptoms, platform details, and safe log excerpts for mobile defects.",
-        "target_user": "QA engineers"
+        "title": "Collect Mobile Crash Evidence",
+        "description": "Gather platform logs, reproduction steps, recent changes, and environment details before assigning a crash fix.",
+        "target_user": "QA engineer"
       },
       {
-        "title": "Triage Crash And Performance Reports",
-        "description": "Review crash patterns, slow renders, and memory cleanup issues before assigning fixes.",
-        "target_user": "Technical leads"
+        "title": "Prepare Build Failure Triage",
+        "description": "Separate Expo, iOS pod, Android Gradle, and native module causes during release troubleshooting.",
+        "target_user": "Release engineer"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Diagnose A Metro Error",
-        "scenario": "Beginner troubleshooting",
-        "prompt": "Use the mobile-debugging skill to diagnose a Metro bundler error. Ask for the exact error before suggesting commands."
+        "title": "Diagnose a Metro Error",
+        "scenario": "Beginner troubleshooting for local startup failures.",
+        "prompt": "I am seeing a Metro bundler error in a React Native or Expo app. Ask for the key error text, recent changes, package manager, platform, and project type. Then suggest safe first checks before any cleanup commands."
       },
       {
-        "title": "Check Native Module Setup",
-        "scenario": "Intermediate build debugging",
-        "prompt": "Use the mobile-debugging skill to review a native module failure. Compare iOS and Android symptoms before proposing cleanup steps."
+        "title": "Investigate a Native Build Failure",
+        "scenario": "Intermediate triage for iOS or Android build errors.",
+        "prompt": "Help me investigate an iOS or Android native build failure. Separate likely dependency, pod, Gradle, and native module causes. Explain which logs to collect before recommending clean or rebuild commands."
       },
       {
-        "title": "Investigate Slow Screens",
-        "scenario": "Performance debugging",
-        "prompt": "Use the mobile-debugging skill to trace a slow React Native screen. Focus on render time, memory cleanup, and recent changes."
+        "title": "Trace a Performance Problem",
+        "scenario": "Advanced debugging for slow screens or memory symptoms.",
+        "prompt": "Review this React Native screen performance issue. Identify likely slow renders, memory leaks, and logging points. Prioritize changes that do not alter app behavior."
       },
       {
-        "title": "Plan A Cross-Platform Crash Review",
-        "scenario": "Advanced incident triage",
-        "prompt": "Use the mobile-debugging skill to plan a crash investigation for iOS and Android. Include safe log collection and approval checkpoints."
+        "title": "Build a Crash Debug Plan",
+        "scenario": "Advanced incident planning for production mobile failures.",
+        "prompt": "Create a structured debugging plan for a production mobile crash. Include reproduction steps, log sources, platform differences, dependency checks, and risk notes before any destructive command."
       }
     ],
     "output_examples": [
       {
-        "input": "Metro cannot resolve a module after files were moved.",
+        "input": "An Expo app reports an unresolved module after package updates.",
         "output": [
-          "Likely causes include a stale cache, changed import path, or missing dependency.",
-          "First verify the file path and package version.",
-          "Ask before deleting caches or reinstalling dependencies."
+          "Checks recent dependency changes and import paths.",
+          "Suggests reading the full Metro stack trace and verifying package compatibility.",
+          "Recommends cache cleanup only after simpler checks fail."
         ]
       },
       {
-        "input": "The Android app crashes after adding a native package.",
-        "output": [
-          "Compare the Android error with recent dependency changes.",
-          "Check native module compatibility and Gradle build output.",
-          "Collect only the relevant Logcat excerpt and redact private data."
-        ]
+        "input": "Android build fails after adding a native module.",
+        "output": "Separates Gradle, SDK, and module compatibility checks. It asks for Logcat or build output and recommends a clean rebuild only after evidence supports it."
       },
       {
-        "input": "A screen feels slow after a navigation change.",
+        "input": "A screen feels slow while scrolling.",
         "output": [
-          "Review recent component changes and repeated renders.",
-          "Check cleanup for timers, subscriptions, and async work.",
-          "Use performance evidence before changing architecture."
+          "Points to render timing, expensive state updates, and memory cleanup.",
+          "Suggests measuring affected components before changing architecture.",
+          "Calls out platform differences between iOS and Android."
         ]
       }
     ],
     "best_practices": [
-      "Share exact errors, platform, device type, and recent changes first.",
-      "Ask before deleting caches, resetting simulators, or killing processes.",
-      "Redact tokens, user data, and private API responses from logs."
+      "Share exact error text, platform, project type, and recent changes before asking for command suggestions.",
+      "Review every shell command before execution, especially cleanup, reinstall, simulator reset, and process kill steps.",
+      "Keep a clean reproduction path and compare iOS and Android behavior separately."
     ],
     "anti_patterns": [
-      "Running every cleanup command before reading the error message.",
-      "Pasting full device logs that contain secrets or customer data.",
-      "Resetting simulators or dependencies without checking local impact."
+      "Do not run destructive cache or simulator reset commands before saving work and checking the error.",
+      "Do not mix multiple cleanup steps in one attempt when you need to identify the root cause.",
+      "Do not ignore native logs when JavaScript stack traces are incomplete."
     ],
     "faq": [
       {
-        "question": "What apps does this skill support?",
-        "answer": "It supports React Native and Expo apps during local debugging and triage."
+        "question": "Can this skill run debugging commands?",
+        "answer": "It can guide tools that support Bash, but users should approve commands that modify files, caches, devices, or processes."
       },
       {
-        "question": "Can it fix Metro bundler issues?",
-        "answer": "It can guide diagnosis for cache, dependency, and module resolution problems."
+        "question": "Does it support Expo and bare React Native?",
+        "answer": "Yes. It covers Expo, Metro, native modules, iOS pods, Android Gradle, and device logs at a high level."
       },
       {
-        "question": "Does it run commands automatically?",
-        "answer": "The skill lists commands, but destructive steps should require user approval."
+        "question": "Can it fix crashes automatically?",
+        "answer": "No. It helps collect context and choose steps, but code changes and native fixes still require user review."
       },
       {
-        "question": "Can it analyze mobile crash logs?",
-        "answer": "It can help interpret relevant logs when sensitive data is redacted first."
+        "question": "Is it safe for production apps?",
+        "answer": "Use it for investigation and planning. Avoid cleanup or reset commands against production environments without a backup."
       },
       {
-        "question": "Does it cover performance debugging?",
-        "answer": "Yes. It includes render timing, memory cleanup, and common slow screen checks."
+        "question": "Does it replace React Native documentation?",
+        "answer": "No. It includes documentation links and should be used with current project-specific and vendor guidance."
       },
       {
-        "question": "Which AI tools can use it?",
-        "answer": "The report lists compatibility with Claude, Codex, and Claude Code."
+        "question": "Which AI tools does it support?",
+        "answer": "The report lists Claude, Codex, and Claude Code as supported tools."
       }
     ]
   },

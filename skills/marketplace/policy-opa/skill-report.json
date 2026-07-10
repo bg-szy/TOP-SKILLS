@@ -1,20 +1,22 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T21:18:31.674Z",
+    "generated_at": "2026-07-09T03:58:17.163Z",
     "slug": "agentsecops-policy-opa",
     "source_url": "https://github.com/AgentSecOps/SecOpsAgentKit/tree/main/skills/compliance/policy-opa",
     "source_ref": "main",
-    "model": "codex",
+    "model": "claude",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "bc107c143166724ccae318bc80891a60e8559f7b1fa09be9d064f24a8326014b",
-    "tree_hash": "5be64a0a357d1aa175e683438d877743bcb21446c461b4175d8fdef902078888",
+    "content_hash": "7dec1c56076189612084399db1a7fed3ce0196f6bd54b52fb44de8f041b64514",
+    "tree_hash": "b7e69580654c673e54ac449ff097b699825397d31289c90fce0596eacf245dd3",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "claude-sonnet-4.6",
+      "model_effective": "claude:claude-sonnet-4.6",
       "fallback_chain": [
         {
-          "agent": "codex",
+          "agent": "claude",
+          "model": "claude-sonnet-4.6",
           "outcome": "success"
         }
       ],
@@ -23,10 +25,10 @@
   },
   "skill": {
     "name": "policy-opa",
-    "description": "Build, test, and integrate Open Policy Agent policies for Kubernetes, Terraform, and compliance workflows.",
-    "summary": "Create and validate OPA Rego policies for infrastructure security and compliance checks.",
+    "description": "Create, test, and integrate Open Policy Agent policies for Kubernetes, infrastructure-as-code, and compliance workflows.",
+    "summary": "Build and validate OPA Rego policies for security, compliance, Kubernetes admission control, and CI/CD enforcement.",
     "icon": "📦",
-    "version": "0.1.1",
+    "version": "0.1.0",
     "author": "AgentSecOps",
     "license": "MIT",
     "category": "security",
@@ -48,26 +50,26 @@
     ]
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "high",
     "is_blocked": false,
-    "safe_to_publish": true,
+    "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "Most static findings are benign documentation examples, Rego imports, or policy checks for unsafe infrastructure patterns. I confirmed three supply-chain risks where examples download or apply mutable remote resources without pinning or verification. No prompt injection, credential exfiltration, or malicious command execution intent was found.",
+    "summary": "The skill is a legitimate OPA policy-as-code guide with many static false positives caused by Markdown code blocks, Rego keywords, and examples that intentionally detect insecure infrastructure patterns. Confirmed residual risks are limited to unpinned external download or apply commands and CI examples that evaluate Terraform plan JSON, which can contain sensitive values if users print or archive outputs carelessly.",
     "remediation": [
       {
-        "issue": "Mutable OPA binary downloads",
-        "suggestion": "Pin an OPA release version and verify checksums in SKILL.md and CI examples before installation.",
-        "severity": "medium"
-      },
-      {
-        "issue": "Remote Gatekeeper manifest applied from master",
-        "suggestion": "Use a pinned Gatekeeper release URL or vendored manifest, then review it before kubectl apply.",
-        "severity": "medium"
-      },
-      {
-        "issue": "Terraform plan sensitivity is not documented clearly",
-        "suggestion": "Warn users that tfplan.json can contain sensitive values and should not be stored in public logs or artifacts.",
+        "issue": "Unpinned remote install and deployment examples",
+        "suggestion": "Pin OPA and Gatekeeper versions, prefer official setup actions, and document checksum or signature verification for downloaded binaries and manifests.",
         "severity": "low"
+      },
+      {
+        "issue": "Terraform plan JSON may include sensitive values",
+        "suggestion": "Warn users not to print full plan-derived outputs in CI logs and to redact or restrict artifacts created from Terraform plan evaluation.",
+        "severity": "high"
+      },
+      {
+        "issue": "Documentation examples rely on local shell and cluster commands",
+        "suggestion": "State that commands should be run only in authorized repositories, clusters, and CI environments with least-privilege credentials.",
+        "severity": "medium"
       }
     ],
     "risk_factor_evidence": [
@@ -323,86 +325,6 @@
             "file": "SKILL.md",
             "line_start": 329,
             "line_end": 338
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 338,
-            "line_end": 343
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 343,
-            "line_end": 351
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 351,
-            "line_end": 356
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 356,
-            "line_end": 376
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 376,
-            "line_end": 382
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 382,
-            "line_end": 392
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 392,
-            "line_end": 395
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 395,
-            "line_end": 400
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 400,
-            "line_end": 401
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 401,
-            "line_end": 402
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 402,
-            "line_end": 408
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 408,
-            "line_end": 411
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 411,
-            "line_end": 416
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 416,
-            "line_end": 419
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 212,
-            "line_end": 212
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 198,
-            "line_end": 217
           }
         ]
       },
@@ -1668,701 +1590,771 @@
       {
         "id": "external_commands:assets/ci-cd-pipeline.yaml:31:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.83,
-        "reason": "The shell substitution appears inside documentation or CI examples that parse local OPA and jq output. I found no untrusted command construction or automatic execution by the skill."
+        "confidence": 0.84,
+        "reason": "The shell substitution is part of an explicit CI/CD example for counting coverage or policy violations. It does not take untrusted input into a shell command or execute hidden code."
       },
       {
         "id": "external_commands:assets/ci-cd-pipeline.yaml:166:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.83,
-        "reason": "The shell substitution appears inside documentation or CI examples that parse local OPA and jq output. I found no untrusted command construction or automatic execution by the skill."
+        "confidence": 0.84,
+        "reason": "The shell substitution is part of an explicit CI/CD example for counting coverage or policy violations. It does not take untrusted input into a shell command or execute hidden code."
       },
       {
         "id": "network:assets/ci-cd-pipeline.yaml:214:hardcoded-url",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "This CI example downloads an executable from a mutable latest URL and installs it on PATH without checksum verification. That creates a supply-chain risk if the remote asset changes or is compromised.",
-        "severity": "medium"
+        "confidence": 0.72,
+        "severity": "low",
+        "reason": "This is a user-visible install or deployment example that downloads or applies content from an external URL. It is legitimate OPA usage, but users should pin versions and verify sources before executing it."
       },
       {
         "id": "sensitive:assets/ci-cd-pipeline.yaml:107:terraform-state-may-contain-secrets",
-        "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The line evaluates a local Terraform plan JSON with OPA for policy checks. I found no Terraform state access, credential output, upload, or external transmission."
+        "verdict": "confirmed",
+        "confidence": 0.63,
+        "severity": "high",
+        "reason": "The example evaluates Terraform plan JSON, which can include sensitive values depending on provider output. No exfiltration is shown, but CI logs and generated reports should avoid printing secrets."
       },
       {
         "id": "sensitive:assets/ci-cd-pipeline.yaml:220:terraform-state-may-contain-secrets",
-        "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The line evaluates a local Terraform plan JSON with OPA for policy checks. I found no Terraform state access, credential output, upload, or external transmission."
+        "verdict": "confirmed",
+        "confidence": 0.63,
+        "severity": "high",
+        "reason": "The example evaluates Terraform plan JSON, which can include sensitive values depending on provider output. No exfiltration is shown, but CI logs and generated reports should avoid printing secrets."
       },
       {
         "id": "sensitive:assets/gdpr-compliance.rego:3:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The snippet is a Rego import of future.keywords syntax, not certificate material or a private key file. No secret value is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet contains Rego syntax using the word key or keywords, not certificate material, private keys, or secret file access. No sensitive value is embedded."
       },
       {
         "id": "sensitive:assets/k8s-constraint-template.yaml:32:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The snippet is a Rego import of future.keywords syntax, not certificate material or a private key file. No secret value is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet contains Rego syntax using the word key or keywords, not certificate material, private keys, or secret file access. No sensitive value is embedded."
       },
       {
         "id": "sensitive:assets/k8s-constraint-template.yaml:33:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The snippet is a Rego import of future.keywords syntax, not certificate material or a private key file. No secret value is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet contains Rego syntax using the word key or keywords, not certificate material, private keys, or secret file access. No sensitive value is embedded."
       },
       {
         "id": "sensitive:assets/k8s-pod-security.rego:3:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The snippet is a Rego import of future.keywords syntax, not certificate material or a private key file. No secret value is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet contains Rego syntax using the word key or keywords, not certificate material, private keys, or secret file access. No sensitive value is embedded."
       },
       {
         "id": "sensitive:assets/k8s-pod-security.rego:4:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The snippet is a Rego import of future.keywords syntax, not certificate material or a private key file. No secret value is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet contains Rego syntax using the word key or keywords, not certificate material, private keys, or secret file access. No sensitive value is embedded."
       },
       {
         "id": "sensitive:assets/pci-dss-compliance.rego:3:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The snippet is a Rego import of future.keywords syntax, not certificate material or a private key file. No secret value is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet contains Rego syntax using the word key or keywords, not certificate material, private keys, or secret file access. No sensitive value is embedded."
       },
       {
         "id": "sensitive:assets/soc2-compliance.rego:3:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The snippet is a Rego import of future.keywords syntax, not certificate material or a private key file. No secret value is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet contains Rego syntax using the word key or keywords, not certificate material, private keys, or secret file access. No sensitive value is embedded."
       },
       {
         "id": "blocker:assets/soc2-compliance.rego:43:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The text is remediation guidance to configure TLS certificates for a policy violation. It is not system reconnaissance or an instruction to probe a host."
+        "confidence": 0.9,
+        "reason": "The snippet is policy or compliance prose about remediation, ownership, or exceptions. It is not system or network reconnaissance and does not instruct unauthorized discovery."
       },
       {
         "id": "network:assets/terraform-security.rego:193:hardcoded-ip-address",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The address is used as a Rego match condition for detecting public ingress in infrastructure policy examples. It is not a network destination contacted by the skill."
+        "confidence": 0.93,
+        "reason": "The hardcoded IP range is the insecure network condition the Rego policy is designed to detect. It is not a destination contacted by the skill or a hidden network operation."
       },
       {
         "id": "sensitive:assets/terraform-security.rego:3:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The snippet is a Rego import of future.keywords syntax, not certificate material or a private key file. No secret value is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet contains Rego syntax using the word key or keywords, not certificate material, private keys, or secret file access. No sensitive value is embedded."
       },
       {
         "id": "blocker:references/compliance-frameworks.md:73:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The text is remediation guidance to configure TLS certificates for a policy violation. It is not system reconnaissance or an instruction to probe a host."
+        "confidence": 0.9,
+        "reason": "The snippet is policy or compliance prose about remediation, ownership, or exceptions. It is not system or network reconnaissance and does not instruct unauthorized discovery."
       },
       {
         "id": "blocker:references/EXAMPLE.md:38:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The line is a MITRE ATT&CK reference in a documentation template. It does not describe or execute network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The snippet is policy or compliance prose about remediation, ownership, or exceptions. It is not system or network reconnaissance and does not instruct unauthorized discovery."
       },
       {
         "id": "network:references/iac-policies.md:215:hardcoded-ip-address",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The address is used as a Rego match condition for detecting public ingress in infrastructure policy examples. It is not a network destination contacted by the skill."
+        "confidence": 0.93,
+        "reason": "The hardcoded IP range is the insecure network condition the Rego policy is designed to detect. It is not a destination contacted by the skill or a hidden network operation."
       },
       {
         "id": "network:references/iac-policies.md:320:hardcoded-ip-address",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The address is used as a Rego match condition for detecting public ingress in infrastructure policy examples. It is not a network destination contacted by the skill."
+        "confidence": 0.93,
+        "reason": "The hardcoded IP range is the insecure network condition the Rego policy is designed to detect. It is not a destination contacted by the skill or a hidden network operation."
       },
       {
         "id": "network:references/iac-policies.md:330:hardcoded-ip-address",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The address is used as a Rego match condition for detecting public ingress in infrastructure policy examples. It is not a network destination contacted by the skill."
+        "confidence": 0.93,
+        "reason": "The hardcoded IP range is the insecure network condition the Rego policy is designed to detect. It is not a destination contacted by the skill or a hidden network operation."
       },
       {
         "id": "network:references/iac-policies.md:520:hardcoded-ip-address",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The address is used as a Rego match condition for detecting public ingress in infrastructure policy examples. It is not a network destination contacted by the skill."
+        "confidence": 0.93,
+        "reason": "The hardcoded IP range is the insecure network condition the Rego policy is designed to detect. It is not a destination contacted by the skill or a hidden network operation."
       },
       {
         "id": "network:references/iac-policies.md:531:hardcoded-ip-address",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The address is used as a Rego match condition for detecting public ingress in infrastructure policy examples. It is not a network destination contacted by the skill."
+        "confidence": 0.93,
+        "reason": "The hardcoded IP range is the insecure network condition the Rego policy is designed to detect. It is not a destination contacted by the skill or a hidden network operation."
       },
       {
         "id": "sensitive:references/iac-policies.md:595:terraform-state-may-contain-secrets",
-        "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The line evaluates a local Terraform plan JSON with OPA for policy checks. I found no Terraform state access, credential output, upload, or external transmission."
+        "verdict": "confirmed",
+        "confidence": 0.63,
+        "severity": "high",
+        "reason": "The example evaluates Terraform plan JSON, which can include sensitive values depending on provider output. No exfiltration is shown, but CI logs and generated reports should avoid printing secrets."
       },
       {
         "id": "sensitive:references/iac-policies.md:612:terraform-state-may-contain-secrets",
-        "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The line evaluates a local Terraform plan JSON with OPA for policy checks. I found no Terraform state access, credential output, upload, or external transmission."
+        "verdict": "confirmed",
+        "confidence": 0.63,
+        "severity": "high",
+        "reason": "The example evaluates Terraform plan JSON, which can include sensitive values depending on provider output. No exfiltration is shown, but CI logs and generated reports should avoid printing secrets."
       },
       {
         "id": "sensitive:references/iac-policies.md:620:terraform-state-may-contain-secrets",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The line evaluates a local Terraform plan JSON with OPA for policy checks. I found no Terraform state access, credential output, upload, or external transmission."
+        "confidence": 0.95,
+        "reason": "The snippet is a reference link to Terraform Sentinel documentation. It does not access Terraform state or contain secrets."
       },
       {
         "id": "sensitive:references/kubernetes-security.md:448:environment-file-access",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The Rego example inspects Kubernetes manifest environment-variable fields to detect hard-coded secrets. It does not read process environment variables or environment files."
+        "confidence": 0.92,
+        "reason": "The policy example inspects Kubernetes environment variable declarations to enforce security rules. It does not read local environment files or expose host secrets."
       },
       {
         "id": "sensitive:references/rego-patterns.md:152:environment-file-access",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The Rego example inspects Kubernetes manifest environment-variable fields to detect hard-coded secrets. It does not read process environment variables or environment files."
+        "confidence": 0.92,
+        "reason": "The policy example inspects Kubernetes environment variable declarations to enforce security rules. It does not read local environment files or expose host secrets."
       },
       {
         "id": "blocker:references/rego-patterns.md:41:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged text is an authorization or policy-exception example in Rego documentation. It contains no system probing, command execution, or reconnaissance workflow."
+        "confidence": 0.9,
+        "reason": "The snippet is policy or compliance prose about remediation, ownership, or exceptions. It is not system or network reconnaissance and does not instruct unauthorized discovery."
       },
       {
         "id": "blocker:references/rego-patterns.md:356:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged text is an authorization or policy-exception example in Rego documentation. It contains no system probing, command execution, or reconnaissance workflow."
+        "confidence": 0.9,
+        "reason": "The snippet is policy or compliance prose about remediation, ownership, or exceptions. It is not system or network reconnaissance and does not instruct unauthorized discovery."
       },
       {
         "id": "blocker:references/rego-patterns.md:366:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged text is an authorization or policy-exception example in Rego documentation. It contains no system probing, command execution, or reconnaissance workflow."
+        "confidence": 0.9,
+        "reason": "The snippet is policy or compliance prose about remediation, ownership, or exceptions. It is not system or network reconnaissance and does not instruct unauthorized discovery."
       },
       {
         "id": "blocker:references/rego-patterns.md:373:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged text is an authorization or policy-exception example in Rego documentation. It contains no system probing, command execution, or reconnaissance workflow."
+        "confidence": 0.9,
+        "reason": "The snippet is policy or compliance prose about remediation, ownership, or exceptions. It is not system or network reconnaissance and does not instruct unauthorized discovery."
       },
       {
         "id": "external_commands:SKILL.md:36:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:46:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:74:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:77:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:96:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:99:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:118:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:124:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:162:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:165:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:167:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:173:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:182:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:185:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:191:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:198:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:217:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:220:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:229:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:235:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:247:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:253:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:259:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:273:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:275:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:276:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:277:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:279:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:281:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:282:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:283:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:284:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:286:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:288:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:289:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:290:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:291:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:292:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:293:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:294:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:295:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:302:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:310:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:315:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:324:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:329:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:338:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:343:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:351:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:356:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:376:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:382:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:392:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:395:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:400:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:401:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:402:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:408:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:411:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:416:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown code-fence or inline-code formatting in SKILL.md, not Ruby backtick execution. It is instructional content and is not executed by the skill."
+        "confidence": 0.91,
+        "reason": "This hit is caused by Markdown code fences, inline command examples, or resource lists in SKILL.md. The skill documents commands for users to run and does not execute them automatically."
       },
       {
         "id": "external_commands:SKILL.md:212:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.83,
-        "reason": "The shell substitution appears inside documentation or CI examples that parse local OPA and jq output. I found no untrusted command construction or automatic execution by the skill."
+        "confidence": 0.86,
+        "reason": "The command substitution is inside a visible GitHub Actions example that checks the size of an OPA result file. It is normal CI control flow, not concealed command execution."
       },
       {
         "id": "external_commands:SKILL.md:198:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.83,
-        "reason": "The shell substitution appears inside documentation or CI examples that parse local OPA and jq output. I found no untrusted command construction or automatic execution by the skill."
+        "confidence": 0.9,
+        "reason": "The finding points to a YAML code fence containing a CI example. No template literal execution or dynamic shell construction is present in the skill content."
       },
       {
         "id": "network:SKILL.md:19:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The URL is a documentation or standards reference link. It does not cause automatic network access or transmit user data."
+        "confidence": 0.88,
+        "reason": "The URL appears in documentation or reference material for OPA, Gatekeeper, Conftest, or compliance resources. There is no hidden network request or data exfiltration behavior."
       },
       {
         "id": "network:SKILL.md:20:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The URL is a documentation or standards reference link. It does not cause automatic network access or transmit user data."
+        "confidence": 0.88,
+        "reason": "The URL appears in documentation or reference material for OPA, Gatekeeper, Conftest, or compliance resources. There is no hidden network request or data exfiltration behavior."
       },
       {
         "id": "network:SKILL.md:21:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The URL is a documentation or standards reference link. It does not cause automatic network access or transmit user data."
+        "confidence": 0.88,
+        "reason": "The URL appears in documentation or reference material for OPA, Gatekeeper, Conftest, or compliance resources. There is no hidden network request or data exfiltration behavior."
       },
       {
         "id": "network:SKILL.md:41:hardcoded-url",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "The quick-start command downloads an OPA binary from a mutable latest URL without checksum verification. This is a supply-chain risk when users copy the command.",
-        "severity": "medium"
+        "confidence": 0.72,
+        "severity": "low",
+        "reason": "This is a user-visible install or deployment example that downloads or applies content from an external URL. It is legitimate OPA usage, but users should pin versions and verify sources before executing it."
       },
       {
         "id": "network:SKILL.md:237:hardcoded-url",
         "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The example applies a live Kubernetes manifest from the GitHub master branch without pinning a release or verifying the content. Applying mutable remote YAML can introduce cluster supply-chain risk.",
-        "severity": "medium"
+        "confidence": 0.72,
+        "severity": "low",
+        "reason": "This is a user-visible install or deployment example that downloads or applies content from an external URL. It is legitimate OPA usage, but users should pin versions and verify sources before executing it."
       },
       {
         "id": "network:SKILL.md:424:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The URL is a documentation or standards reference link. It does not cause automatic network access or transmit user data."
+        "confidence": 0.88,
+        "reason": "The URL appears in documentation or reference material for OPA, Gatekeeper, Conftest, or compliance resources. There is no hidden network request or data exfiltration behavior."
       },
       {
         "id": "network:SKILL.md:425:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The URL is a documentation or standards reference link. It does not cause automatic network access or transmit user data."
+        "confidence": 0.88,
+        "reason": "The URL appears in documentation or reference material for OPA, Gatekeeper, Conftest, or compliance resources. There is no hidden network request or data exfiltration behavior."
       },
       {
         "id": "network:SKILL.md:426:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The URL is a documentation or standards reference link. It does not cause automatic network access or transmit user data."
+        "confidence": 0.88,
+        "reason": "The URL appears in documentation or reference material for OPA, Gatekeeper, Conftest, or compliance resources. There is no hidden network request or data exfiltration behavior."
       },
       {
         "id": "network:SKILL.md:427:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The URL is a documentation or standards reference link. It does not cause automatic network access or transmit user data."
+        "confidence": 0.88,
+        "reason": "The URL appears in documentation or reference material for OPA, Gatekeeper, Conftest, or compliance resources. There is no hidden network request or data exfiltration behavior."
       },
       {
         "id": "network:SKILL.md:428:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The URL is a documentation or standards reference link. It does not cause automatic network access or transmit user data."
+        "confidence": 0.88,
+        "reason": "The URL appears in documentation or reference material for OPA, Gatekeeper, Conftest, or compliance resources. There is no hidden network request or data exfiltration behavior."
       },
       {
         "id": "network:SKILL.md:429:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The URL is a documentation or standards reference link. It does not cause automatic network access or transmit user data."
+        "confidence": 0.88,
+        "reason": "The URL appears in documentation or reference material for OPA, Gatekeeper, Conftest, or compliance resources. There is no hidden network request or data exfiltration behavior."
       },
       {
         "id": "network:SKILL.md:430:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The URL is a documentation or standards reference link. It does not cause automatic network access or transmit user data."
+        "confidence": 0.88,
+        "reason": "The URL appears in documentation or reference material for OPA, Gatekeeper, Conftest, or compliance resources. There is no hidden network request or data exfiltration behavior."
       },
       {
         "id": "network:SKILL.md:431:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The URL is a documentation or standards reference link. It does not cause automatic network access or transmit user data."
+        "confidence": 0.88,
+        "reason": "The URL appears in documentation or reference material for OPA, Gatekeeper, Conftest, or compliance resources. There is no hidden network request or data exfiltration behavior."
       },
       {
         "id": "sensitive:SKILL.md:80:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The snippet is a Rego import of future.keywords syntax, not certificate material or a private key file. No secret value is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet contains Rego syntax using the word key or keywords, not certificate material, private keys, or secret file access. No sensitive value is embedded."
       },
       {
         "id": "sensitive:SKILL.md:81:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The snippet is a Rego import of future.keywords syntax, not certificate material or a private key file. No secret value is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet contains Rego syntax using the word key or keywords, not certificate material, private keys, or secret file access. No sensitive value is embedded."
       },
       {
         "id": "sensitive:SKILL.md:102:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The snippet is a Rego import of future.keywords syntax, not certificate material or a private key file. No secret value is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet contains Rego syntax using the word key or keywords, not certificate material, private keys, or secret file access. No sensitive value is embedded."
       },
       {
         "id": "sensitive:SKILL.md:359:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The snippet is a Rego import of future.keywords syntax, not certificate material or a private key file. No secret value is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet contains Rego syntax using the word key or keywords, not certificate material, private keys, or secret file access. No sensitive value is embedded."
       },
       {
         "id": "sensitive:SKILL.md:419:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The snippet is a Rego import of future.keywords syntax, not certificate material or a private key file. No secret value is present at this location."
+        "confidence": 0.96,
+        "reason": "The snippet contains Rego syntax using the word key or keywords, not certificate material, private keys, or secret file access. No sensitive value is embedded."
       },
       {
         "id": "blocker:SKILL.md:265:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged text is an authorization or policy-exception example in Rego documentation. It contains no system probing, command execution, or reconnaissance workflow."
+        "confidence": 0.9,
+        "reason": "The snippet is policy or compliance prose about remediation, ownership, or exceptions. It is not system or network reconnaissance and does not instruct unauthorized discovery."
       },
       {
         "id": "blocker:SKILL.md:374:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged text is an authorization or policy-exception example in Rego documentation. It contains no system probing, command execution, or reconnaissance workflow."
+        "confidence": 0.9,
+        "reason": "The snippet is policy or compliance prose about remediation, ownership, or exceptions. It is not system or network reconnaissance and does not instruct unauthorized discovery."
       }
     ],
     "semantic_findings": [],
     "critical_findings": [],
-    "high_findings": [],
-    "medium_findings": [
+    "high_findings": [
+      {
+        "title": "Terraform state (may contain secrets)",
+        "description": "--format pretty 'data.terraform.security.deny' \\",
+        "locations": [
+          {
+            "file": "assets/ci-cd-pipeline.yaml",
+            "line_start": 107,
+            "line_end": 107
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.63,
+        "confidence_reasoning": "The example evaluates Terraform plan JSON, which can include sensitive values depending on provider output. No exfiltration is shown, but CI logs and generated reports should avoid printing secrets."
+      },
+      {
+        "title": "Terraform state (may contain secrets)",
+        "description": "- opa eval --data policies/terraform/ --input tfplan.json 'data.terraform.security.deny'",
+        "locations": [
+          {
+            "file": "assets/ci-cd-pipeline.yaml",
+            "line_start": 220,
+            "line_end": 220
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.63,
+        "confidence_reasoning": "The example evaluates Terraform plan JSON, which can include sensitive values depending on provider output. No exfiltration is shown, but CI logs and generated reports should avoid printing secrets."
+      },
+      {
+        "title": "Terraform state (may contain secrets)",
+        "description": "--format pretty 'data.terraform.deny' > violations.txt",
+        "locations": [
+          {
+            "file": "references/iac-policies.md",
+            "line_start": 595,
+            "line_end": 595
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.63,
+        "confidence_reasoning": "The example evaluates Terraform plan JSON, which can include sensitive values depending on provider output. No exfiltration is shown, but CI logs and generated reports should avoid printing secrets."
+      },
+      {
+        "title": "Terraform state (may contain secrets)",
+        "description": "- opa eval --data policies/ --input tfplan.json 'data.terraform.deny'",
+        "locations": [
+          {
+            "file": "references/iac-policies.md",
+            "line_start": 612,
+            "line_end": 612
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.63,
+        "confidence_reasoning": "The example evaluates Terraform plan JSON, which can include sensitive values depending on provider output. No exfiltration is shown, but CI logs and generated reports should avoid printing secrets."
+      }
+    ],
+    "medium_findings": [],
+    "low_findings": [
       {
         "title": "Hardcoded URL",
         "description": "- curl -L -o /usr/local/bin/opa https://openpolicyagent.org/downloads/latest/opa_linux_amd64",
@@ -2376,8 +2368,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "This CI example downloads an executable from a mutable latest URL and installs it on PATH without checksum verification. That creates a supply-chain risk if the remote asset changes or is compromised."
+        "confidence": 0.72,
+        "confidence_reasoning": "This is a user-visible install or deployment example that downloads or applies content from an external URL. It is legitimate OPA usage, but users should pin versions and verify sources before executing it."
       },
       {
         "title": "Hardcoded URL",
@@ -2392,8 +2384,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "The quick-start command downloads an OPA binary from a mutable latest URL without checksum verification. This is a supply-chain risk when users copy the command."
+        "confidence": 0.72,
+        "confidence_reasoning": "This is a user-visible install or deployment example that downloads or applies content from an external URL. It is legitimate OPA usage, but users should pin versions and verify sources before executing it."
       },
       {
         "title": "Hardcoded URL",
@@ -2408,22 +2400,21 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The example applies a live Kubernetes manifest from the GitHub master branch without pinning a release or verifying the content. Applying mutable remote YAML can introduce cluster supply-chain risk."
+        "confidence": 0.72,
+        "confidence_reasoning": "This is a user-visible install or deployment example that downloads or applies content from an external URL. It is legitimate OPA usage, but users should pin versions and verify sources before executing it."
       }
     ],
-    "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 15,
     "total_lines": 3731,
-    "audit_model": "codex",
-    "audited_at": "2026-07-07T21:18:31.674Z",
-    "agent_auto_install_policy": "allowed",
+    "audit_model": "claude",
+    "audited_at": "2026-07-09T03:58:17.163Z",
+    "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Enforce OPA Policy-as-Code Controls",
-    "value_statement": "Security teams need repeatable checks for infrastructure and compliance drift. This skill guides OPA Rego policy creation, testing, and CI/CD integration.",
+    "user_title": "Enforce OPA Policy as Code",
+    "value_statement": "Security teams need repeatable policy checks across clusters, infrastructure, and compliance controls. This skill guides Claude, Codex, and Claude Code through OPA Rego policy creation, testing, and CI/CD enforcement.",
     "seo_keywords": [
       "Claude",
       "Codex",
@@ -2432,110 +2423,115 @@
       "OPA Rego",
       "policy as code",
       "Kubernetes admission control",
-      "Terraform policy validation",
-      "SOC2 compliance",
-      "PCI DSS compliance"
+      "OPA Gatekeeper",
+      "compliance automation",
+      "CI/CD policy validation"
     ],
     "actual_capabilities": [
-      "Drafts Rego policies for Kubernetes admission control and pod security.",
-      "Provides OPA evaluation and test commands for local and CI use.",
-      "Maps example controls to SOC2, PCI-DSS, GDPR, and HIPAA themes.",
-      "Includes Terraform and cloud infrastructure policy examples.",
-      "Shows GitHub Actions and GitLab CI patterns for policy validation."
+      "Explains OPA and Rego workflows for security and compliance policy enforcement.",
+      "Provides Kubernetes admission control policy patterns and Gatekeeper examples.",
+      "Shows Terraform and infrastructure-as-code validation patterns for pre-deployment checks.",
+      "Maps policies to compliance frameworks such as SOC2, PCI-DSS, GDPR, HIPAA, NIST, and ISO27001.",
+      "Includes CI/CD examples for testing policies and failing builds on violations.",
+      "Covers troubleshooting, monitoring, reporting, and performance guidance for OPA deployments."
     ],
     "limitations": [
-      "Does not include executable helper scripts referenced in the documentation.",
-      "Does not verify live cluster or cloud account settings by itself.",
-      "Requires users to install OPA, kubectl, Terraform, jq, or CI tooling separately.",
-      "Compliance mappings are examples and do not replace legal or audit review."
+      "It does not prove that generated policies satisfy legal or auditor requirements.",
+      "It assumes users have authorized access to the target repository, cluster, or CI system.",
+      "Some examples require external tools such as OPA, kubectl, Terraform, jq, or yq.",
+      "Remote install examples should be pinned and verified before production use."
     ],
     "use_cases": [
       {
-        "title": "Validate Kubernetes Deployments",
-        "target_user": "Platform engineer",
-        "description": "Create Gatekeeper and Rego checks that block privileged pods, host namespaces, and unsafe volume settings."
+        "title": "Kubernetes admission control",
+        "description": "Create Rego policies and Gatekeeper constraints that block privileged pods, missing labels, or unsafe runtime settings.",
+        "target_user": "Platform engineers"
       },
       {
-        "title": "Review Terraform Plans",
-        "target_user": "Cloud security engineer",
-        "description": "Evaluate Terraform plan output for public databases, broad IAM permissions, and open management ports."
+        "title": "Infrastructure policy validation",
+        "description": "Check Terraform or CloudFormation changes before deployment and fail CI when insecure network, storage, or IAM patterns appear.",
+        "target_user": "DevOps engineers"
       },
       {
-        "title": "Prepare Compliance Evidence",
-        "target_user": "GRC analyst",
-        "description": "Map policy checks to SOC2, PCI-DSS, GDPR, and HIPAA control examples for audit discussions."
+        "title": "Compliance control automation",
+        "description": "Map SOC2, PCI-DSS, GDPR, HIPAA, NIST, or ISO27001 controls into testable OPA policies and reports.",
+        "target_user": "Security and compliance teams"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Create a Basic Policy",
-        "scenario": "Beginner policy drafting",
-        "prompt": "Create an OPA Rego policy that denies Kubernetes pods using privileged containers. Explain the expected input fields."
+        "title": "Create a basic policy",
+        "scenario": "Beginner policy authoring",
+        "prompt": "Use the policy-opa skill to write a simple Rego policy that denies Kubernetes pods running as privileged containers."
       },
       {
-        "title": "Add Policy Tests",
-        "scenario": "Basic validation",
-        "prompt": "Write unit test scenarios for this Rego policy. Include allowed and denied Kubernetes pod cases."
+        "title": "Test an existing policy",
+        "scenario": "Policy testing",
+        "prompt": "Use the policy-opa skill to create unit tests for this Rego policy and explain what each test proves."
       },
       {
-        "title": "Integrate with CI",
-        "scenario": "Deployment pipeline",
-        "prompt": "Design a CI policy validation step for Terraform plan output. Include failure behavior and secret-handling precautions."
+        "title": "Add CI policy validation",
+        "scenario": "CI/CD integration",
+        "prompt": "Use the policy-opa skill to design a CI workflow that tests OPA policies and blocks deployment when violations exist."
       },
       {
-        "title": "Map Controls to Compliance",
-        "scenario": "Advanced compliance review",
-        "prompt": "Review these OPA policies against SOC2 and PCI-DSS goals. Identify gaps, overlapping checks, and evidence outputs."
+        "title": "Map controls to policies",
+        "scenario": "Advanced compliance automation",
+        "prompt": "Use the policy-opa skill to map these compliance requirements to OPA policies, tests, and audit report outputs."
       }
     ],
     "output_examples": [
       {
-        "input": "A Kubernetes deployment allows privileged containers and lacks a seccomp profile.",
-        "output": "The response identifies both violations, explains the affected fields, and suggests safer pod security settings."
+        "input": "Ask for a Kubernetes pod security policy.",
+        "output": "A Rego policy outline that denies privileged containers, requires non-root execution, and explains the matching Gatekeeper deployment steps."
       },
       {
-        "input": "A Terraform plan contains a public RDS instance and SSH open to the internet.",
-        "output": "The response lists the policy failures, ranks their severity, and recommends private networking changes."
+        "input": "Ask for Terraform policy validation in CI.",
+        "output": [
+          "A policy validation workflow plan.",
+          "Guidance for creating Terraform plan JSON safely.",
+          "Recommendations for redacting sensitive CI output."
+        ]
       },
       {
-        "input": "A team needs PCI-DSS evidence for container and network controls.",
-        "output": "The response maps policy checks to relevant control themes and notes evidence that auditors may request."
+        "input": "Ask for SOC2 control mapping.",
+        "output": "A control-to-policy plan that connects each requirement to Rego rules, tests, evidence collection, and audit reporting."
       }
     ],
     "best_practices": [
-      "Pin OPA, Gatekeeper, and CI action versions before production use.",
-      "Keep Terraform plans and policy outputs out of public logs and artifacts.",
-      "Pair each policy with unit tests and documented control ownership."
+      "Run policy checks in least-privilege CI and cluster contexts.",
+      "Write unit tests for every policy rule before enforcement.",
+      "Pin external tool and manifest versions before production use."
     ],
     "anti_patterns": [
-      "Do not copy remote installation commands without checksum or release verification.",
-      "Do not treat example compliance mappings as complete audit evidence.",
-      "Do not evaluate sensitive plans in shared runners without retention controls."
+      "Do not paste secrets or full Terraform plan outputs into prompts or public logs.",
+      "Do not apply remote Kubernetes manifests without version pinning and review.",
+      "Do not treat generated policy text as auditor-approved evidence without validation."
     ],
     "faq": [
       {
-        "question": "What does this skill help build?",
-        "answer": "It helps build OPA Rego policies for Kubernetes, Terraform, and compliance-oriented configuration checks."
+        "question": "What is this skill for?",
+        "answer": "It helps create, test, and operate Open Policy Agent policies for security, compliance, Kubernetes, and infrastructure workflows."
       },
       {
-        "question": "Does it run OPA automatically?",
-        "answer": "No. It provides commands and examples that users run in their own environment."
+        "question": "Does it execute OPA commands automatically?",
+        "answer": "No. It provides examples and guidance. Users choose which commands to run in their own authorized environment."
       },
       {
-        "question": "Can it replace a compliance audit?",
-        "answer": "No. It supports control validation, but auditors and legal reviewers decide compliance scope."
+        "question": "Can it create Kubernetes admission policies?",
+        "answer": "Yes. It includes Rego and Gatekeeper patterns for enforcing pod and workload security requirements."
       },
       {
-        "question": "Which AI tools are supported?",
-        "answer": "The report lists support for Claude, Codex, and Claude Code."
+        "question": "Can it help with compliance frameworks?",
+        "answer": "Yes. It maps policy examples to frameworks such as SOC2, PCI-DSS, GDPR, HIPAA, NIST, and ISO27001."
       },
       {
-        "question": "Does it include ready-made scripts?",
-        "answer": "The documentation references helper scripts, but this package does not include a scripts directory."
+        "question": "What tools are usually required?",
+        "answer": "Common workflows use OPA, kubectl, Terraform, jq, yq, and CI/CD runners."
       },
       {
-        "question": "What should users verify before production use?",
-        "answer": "Users should pin external downloads, test policies, and protect Terraform plan files from log exposure."
+        "question": "What should I review before production use?",
+        "answer": "Review generated policies, test coverage, CI permissions, external downloads, and any logs that may include sensitive plan data."
       }
     ]
   },
@@ -2545,12 +2541,6 @@
       "type": "dir",
       "path": "assets",
       "children": [
-        {
-          "name": ".gitkeep",
-          "type": "file",
-          "path": "assets/.gitkeep",
-          "lines": 10
-        },
         {
           "name": "ci-cd-pipeline.yaml",
           "type": "file",

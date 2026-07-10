@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T03:35:43.860Z",
+    "generated_at": "2026-07-09T16:56:23.197Z",
     "slug": "davila7-peer-review",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/scientific/peer-review",
     "source_ref": "main",
@@ -23,18 +23,18 @@
   },
   "skill": {
     "name": "peer-review",
-    "description": "Structured peer review toolkit for scientific manuscripts, grants, presentations, methods, statistics, reproducibility, ethics, figures, and reporting standards.",
-    "summary": "Review scientific work with structured checklists for methods, statistics, reproducibility, ethics, figures, and reporting standards.",
+    "description": "Evaluate scientific manuscripts, grant proposals, and presentations with structured checks for methods, statistics, reproducibility, ethics, figures, and reporting standards.",
+    "summary": "Structured peer review guidance for scientific manuscripts, grants, and presentations.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
     "license": "MIT",
     "tags": [
-      "peer-review",
-      "scientific-writing",
-      "research-methods",
+      "peer review",
+      "scientific writing",
+      "research methods",
       "statistics",
-      "reporting-standards"
+      "reproducibility"
     ],
     "supported_tools": [
       "claude",
@@ -51,19 +51,8 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static findings are false positives from scientific review language or Markdown fences. Two examples intentionally invoke Python helpers through Bash, so external command execution should require confirmation and safe handling of user-provided files or text. No prompt injection, credential access, network exfiltration, or malicious intent was found.",
-    "remediation": [
-      {
-        "issue": "External Python helper commands appear in default review workflows.",
-        "suggestion": "Require explicit user confirmation before running Bash commands, and pass user text or file paths as safely quoted arguments.",
-        "severity": "medium"
-      },
-      {
-        "issue": "The skill references helper scripts outside this package.",
-        "suggestion": "Document required script locations and verify the expected helper before execution to reduce path spoofing or accidental failures.",
-        "severity": "low"
-      }
-    ],
+    "summary": "The static matches are false positives from Markdown prose, code fences, and peer-review reference text. The only command-like content is user-visible documentation for optional local diagram or PDF conversion workflows, with no hidden execution, exfiltration, or prompt injection found.",
+    "remediation": [],
     "risk_factor_evidence": [
       {
         "factor": "external_commands",
@@ -297,270 +286,235 @@
       {
         "id": "blocker:references/common_issues.md:28:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text recommends pre-registration to reduce p-hacking in scientific analysis. It does not request host, user, process, or environment reconnaissance."
+        "confidence": 0.98,
+        "reason": "The line recommends preregistration to avoid p-hacking in statistical analysis. It is scientific review guidance, not system reconnaissance."
       },
       {
         "id": "blocker:references/common_issues.md:387:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The cited text advises against dual y-axes in figures. It is data visualization guidance, not system reconnaissance."
+        "confidence": 0.98,
+        "reason": "The line advises against dual y-axes in figures. It contains no instruction to inspect the host system or gather environment details."
       },
       {
         "id": "blocker:references/common_issues.md:82:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text discusses reporting missing data patterns in research studies. It does not ask to probe networks or enumerate services."
+        "confidence": 0.98,
+        "reason": "The text discusses reporting the extent and pattern of missing data. This is research-methods guidance, not network probing."
       },
       {
         "id": "blocker:references/common_issues.md:95:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text recommends reporting missingness patterns for statistical transparency. This is methodological advice, not network reconnaissance."
+        "confidence": 0.98,
+        "reason": "The text recommends reporting patterns of missingness in study data. It does not describe network scanning or remote host discovery."
       },
       {
         "id": "blocker:references/common_issues.md:255:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text flags unavailable custom research pipelines as a reproducibility issue. It does not instruct access attempts or network discovery."
+        "confidence": 0.97,
+        "reason": "The line flags custom computational pipelines that are not shared for reproducibility. It is about research transparency, not accessing networks."
       },
       {
         "id": "blocker:references/reporting_standards.md:44:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The cited text names study selection as a PRISMA reporting requirement. It has no network scanning or service discovery content."
+        "confidence": 0.98,
+        "reason": "The line is part of a PRISMA checklist item about study selection. It has no network reconnaissance behavior or intent."
       },
       {
         "id": "external_commands:SKILL.md:36:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "This fenced bash example directs the agent to run a Python helper with a user-supplied diagram description. It is intentional external command execution and should require user confirmation and safe argument handling."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The match is a Markdown code fence around a visible example command. It is not Ruby backtick execution or hidden shell execution."
       },
       {
         "id": "external_commands:SKILL.md:38:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is the closing Markdown fence after the schematic command example, not a separate executable instruction. The nearby command risk is covered by the line 36 verdict."
+        "confidence": 0.9,
+        "reason": "The match is the closing Markdown fence for the example schematic command. No code is executed by the skill content itself."
       },
       {
         "id": "external_commands:SKILL.md:194:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.95,
-        "reason": "The cited text is an inline Markdown reference to a local documentation file. It is not shell execution or Ruby backtick execution."
+        "reason": "The line uses inline Markdown backticks to reference a local documentation file. It does not invoke a shell or evaluate dynamic input."
       },
       {
         "id": "external_commands:SKILL.md:398:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.78,
-        "severity": "medium",
-        "reason": "The presentation workflow instructs running a Python conversion helper against a user-provided PDF. That external command processes untrusted input and should be gated by confirmation or sandboxing."
+        "verdict": "false_positive",
+        "confidence": 0.84,
+        "reason": "The match is a Markdown Bash fence before a visible PDF-to-image conversion example. The command is documented for user review workflow and is not hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:401:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.89,
-        "reason": "This is a closing Markdown code fence following the PDF conversion example. It is not separate code execution."
+        "confidence": 0.9,
+        "reason": "The match is the closing Markdown fence for a documented conversion command. It is formatting text, not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:407:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "The cited block contains status text that the reviewer should print. It is not a command invocation or dynamic code execution."
+        "reason": "The fenced block contains example status messages to print during presentation review. It does not contain an executable command."
       },
       {
         "id": "external_commands:SKILL.md:410:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is the closing Markdown fence for a status-message example. It does not execute commands."
+        "confidence": 0.94,
+        "reason": "The match is a Markdown fence around example status output. There is no shell invocation, data access, or command injection path."
       },
       {
         "id": "external_commands:SKILL.md:497:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited fenced block is a plain-text example of slide-specific review feedback. It contains no shell commands or executable syntax."
+        "confidence": 0.94,
+        "reason": "The fenced block contains sample slide feedback text. It is an output-format example, not executable code."
       },
       {
         "id": "external_commands:SKILL.md:502:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "This is the closing Markdown fence for the review feedback example. It is not executable content."
+        "reason": "The match is the closing Markdown fence for sample review comments. It does not execute commands or process untrusted input."
       },
       {
         "id": "external_commands:SKILL.md:524:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited fenced block is an example log of an image-based review process. It does not instruct shell execution or contain runnable code."
+        "confidence": 0.94,
+        "reason": "The fenced block shows example review progress logs. These are illustrative messages and do not create a shell execution behavior."
       },
       {
         "id": "blocker:SKILL.md:344:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The cited text tells reviewers to write clear criticism. It has no system discovery, host enumeration, or security-relevant reconnaissance instruction."
+        "confidence": 0.99,
+        "reason": "The line is a writing guideline that says to avoid vague criticism. It has no system reconnaissance instruction or sensitive data collection intent."
       }
     ],
     "semantic_findings": [],
     "critical_findings": [],
     "high_findings": [],
-    "medium_findings": [
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 36,
-            "line_end": 38
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "This fenced bash example directs the agent to run a Python helper with a user-supplied diagram description. It is intentional external command execution and should require user confirmation and safe argument handling."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 398,
-            "line_end": 401
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The presentation workflow instructs running a Python conversion helper against a user-provided PDF. That external command processes untrusted input and should be gated by confirmation or sandboxing."
-      }
-    ],
+    "medium_findings": [],
     "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 3,
     "total_lines": 1410,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T03:35:43.860Z",
+    "audited_at": "2026-07-09T16:56:23.197Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Review Scientific Manuscripts Systematically",
-    "value_statement": "Scientific reviews can miss methodological, statistical, and reporting problems when they rely on memory alone. This skill provides a structured review workflow with targeted checklists and constructive feedback formats.",
+    "user_title": "Evaluate Scientific Manuscripts Rigorously",
+    "value_statement": "Scientific reviews can miss methodology, statistics, reproducibility, and reporting gaps. This skill provides a structured workflow for constructive manuscript, grant, and presentation review.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "peer review skill",
       "scientific manuscript review",
-      "grant review",
-      "research methods evaluation",
-      "statistics review",
-      "reporting standards",
-      "reproducibility checklist"
+      "research methods audit",
+      "statistical reporting",
+      "reproducibility review",
+      "grant proposal review",
+      "reporting standards"
     ],
     "actual_capabilities": [
-      "Guides section-by-section manuscript and grant review.",
-      "Checks study design, methods, statistics, ethics, and reproducibility.",
-      "Evaluates figures, tables, accessibility, and data presentation quality.",
-      "Maps manuscripts to reporting standards such as CONSORT, PRISMA, ARRIVE, and STROBE.",
-      "Provides structured review formats with major, minor, and recommendation sections.",
-      "Includes presentation review guidance with slide-level visual inspection criteria."
+      "Guides section-by-section review across abstracts, methods, results, discussion, and references.",
+      "Checks statistical reporting, study design, sample size, controls, and missing data handling.",
+      "Assesses reproducibility items such as data availability, code sharing, protocols, and reporting checklists.",
+      "Flags figure, table, image integrity, accessibility, and presentation slide issues.",
+      "Structures feedback into summaries, major comments, minor comments, author questions, and recommendations.",
+      "Maps reviews to standards such as CONSORT, PRISMA, STROBE, ARRIVE, MIAME, and MINSEQE."
     ],
     "limitations": [
-      "It does not replace expert domain judgment or editorial policy.",
-      "It cannot verify claims without access to the manuscript, data, or supporting materials.",
-      "Some workflows reference external helper scripts that may not be installed.",
-      "It does not perform automated statistical recalculation unless supporting data are provided."
+      "Does not replace a qualified human reviewer or editor.",
+      "Requires the manuscript, proposal, or slide content to be provided by the user.",
+      "Cannot verify raw data, hidden analyses, or laboratory records unless supplied.",
+      "May require field-specific expert judgment for specialized methods."
     ],
     "use_cases": [
       {
-        "title": "Journal Manuscript Review",
-        "description": "Assess a submitted manuscript for novelty, design rigor, statistical reporting, reproducibility, ethics, and publication readiness.",
+        "title": "Review Journal Manuscripts",
+        "description": "Create balanced peer review reports with clear major concerns, minor comments, and author questions.",
         "target_user": "Journal reviewers"
       },
       {
-        "title": "Grant Proposal Evaluation",
-        "description": "Review a research application for scientific premise, feasibility, innovation, methods, risks, and missing evidence.",
-        "target_user": "Grant panelists"
+        "title": "Improve Pre-Submission Drafts",
+        "description": "Find methodology, statistics, reporting, and reproducibility gaps before submitting a paper.",
+        "target_user": "Research teams"
       },
       {
-        "title": "Internal Pre-Submission Check",
-        "description": "Find gaps before submission by checking reporting standards, figures, data availability, and revision priorities.",
-        "target_user": "Research teams"
+        "title": "Assess Grant Applications",
+        "description": "Evaluate research aims, feasibility, methods, rigor, ethics, and expected impact in proposals.",
+        "target_user": "Grant reviewers"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Basic Manuscript Review",
-        "scenario": "Beginner review of a full manuscript.",
-        "prompt": "Review this manuscript for overall scientific quality. Summarize the main contribution, major concerns, minor concerns, and a publication recommendation."
+        "title": "Start a Manuscript Review",
+        "scenario": "Beginner review planning",
+        "prompt": "Review this manuscript for scope, novelty, and main strengths. Provide a short initial assessment before detailed comments."
       },
       {
-        "title": "Methods and Statistics Check",
-        "scenario": "Focused review of study design and analysis.",
-        "prompt": "Evaluate the methods and statistical analysis. Check design fit, assumptions, sample size, missing data, effect sizes, and reporting clarity."
+        "title": "Check Methods and Statistics",
+        "scenario": "Intermediate technical review",
+        "prompt": "Assess the methods and statistical reporting in this manuscript. Identify major validity risks, missing details, and suggested fixes."
       },
       {
-        "title": "Reporting Standards Audit",
-        "scenario": "Compliance review before submission.",
-        "prompt": "Audit this manuscript against relevant reporting standards. Identify missing checklist items, unclear methods, incomplete results, and required author actions."
+        "title": "Review Reproducibility and Ethics",
+        "scenario": "Advanced transparency review",
+        "prompt": "Evaluate reproducibility, data availability, code sharing, ethics approvals, consent, conflicts, and reporting guideline compliance for this study."
       },
       {
-        "title": "Advanced Reproducibility Review",
-        "scenario": "Deep review of transparency and replication support.",
-        "prompt": "Perform a reproducibility-focused review. Assess data availability, code access, protocol detail, materials, figure integrity, ethics, and exact revision requests."
+        "title": "Produce a Full Peer Review Report",
+        "scenario": "Advanced journal report",
+        "prompt": "Create a journal-style peer review report. Include summary, recommendation, major comments, minor comments, questions for authors, and required revisions."
       }
     ],
     "output_examples": [
       {
-        "input": "A clinical trial manuscript with unclear allocation concealment and missing confidence intervals.",
-        "output": "The review identifies allocation concealment as a major concern and asks for confidence intervals with effect sizes."
+        "input": "Review a biomedical manuscript with unclear randomization and no power analysis.",
+        "output": "The report identifies randomization detail and power justification as major concerns, then suggests specific methods revisions."
       },
       {
-        "input": "A systematic review draft that lacks protocol registration and study selection details.",
-        "output": "The output flags PRISMA gaps, requests protocol details, and asks for a transparent study selection process."
+        "input": "Assess a systematic review draft for reporting completeness.",
+        "output": "The review checks PRISMA-related items, including protocol registration, search strategy, selection process, extraction methods, and bias assessment."
       },
       {
-        "input": "A slide deck with small figure labels and crowded methods slides.",
-        "output": "The feedback lists slide-level readability issues, recommends larger labels, and suggests simplifying methods content."
+        "input": "Evaluate a scientific slide deck before a conference talk.",
+        "output": "The feedback lists slide-level readability, layout, contrast, citation, timing, and content issues with practical revision priorities."
       }
     ],
     "best_practices": [
-      "Provide the manuscript, target venue, review criteria, and any required checklist.",
-      "Ask for separate major concerns, minor concerns, strengths, and recommendation sections.",
-      "Verify sensitive or high-impact claims with domain experts before sending the review."
+      "Provide the manuscript, target venue, article type, and review criteria.",
+      "Ask for separate passes on methods, statistics, ethics, and figures for complex work.",
+      "Keep final comments evidence-based and tied to specific manuscript sections."
     ],
     "anti_patterns": [
-      "Do not use the skill to produce vague criticism without evidence.",
-      "Do not request experiments that are unrelated to the manuscript claims.",
-      "Do not treat the generated review as a substitute for ethical or statistical expertise."
+      "Using the skill to invent reviewer claims without manuscript evidence.",
+      "Requesting extra experiments that are outside the stated research question.",
+      "Treating the output as a final editorial decision without expert review."
     ],
     "faq": [
       {
         "question": "Can this skill review grant proposals?",
-        "answer": "Yes. It includes guidance for evaluating premise, feasibility, innovation, methods, and risks in research applications."
+        "answer": "Yes. It can assess aims, methods, feasibility, significance, and reproducibility concerns in grant applications."
       },
       {
-        "question": "Does it support reporting standards?",
-        "answer": "Yes. It references standards such as CONSORT, PRISMA, ARRIVE, MIAME, MINSEQE, and STROBE."
+        "question": "Does it perform statistical calculations?",
+        "answer": "It can review reported statistical choices and flag concerns. It does not compute new analyses unless data and instructions are provided."
       },
       {
-        "question": "Can it check statistical reporting?",
-        "answer": "Yes. It prompts review of tests, assumptions, sample size, missing data, effect sizes, and uncertainty reporting."
+        "question": "Can it check reporting guidelines?",
+        "answer": "Yes. It references common guidelines such as CONSORT, PRISMA, STROBE, ARRIVE, MIAME, and MINSEQE."
       },
       {
-        "question": "Can it inspect figures and slides?",
-        "answer": "Yes. It includes criteria for figure integrity, accessibility, labels, layout, contrast, and slide-level formatting."
+        "question": "Can it review slide decks?",
+        "answer": "Yes. It gives image-based review guidance for scientific presentations and slide formatting."
       },
       {
-        "question": "Does it automatically verify data or code?",
-        "answer": "No. It can review availability and documentation, but verification requires access to the actual materials."
+        "question": "Does it replace domain experts?",
+        "answer": "No. It supports structured review, but specialized claims need qualified expert judgment."
       },
       {
-        "question": "Which tools can use this skill?",
-        "answer": "The report lists support for Claude, Codex, and Claude Code."
+        "question": "Which tools can use it?",
+        "answer": "The skill is structured for Claude, Codex, and Claude Code workflows."
       }
     ]
   },

@@ -1,20 +1,23 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T20:37:26.459Z",
+    "generated_at": "2026-07-09T07:33:49.412Z",
     "slug": "bityoungjae-omarchy-theming",
     "source_url": "https://github.com/BitYoungjae/marketplace/tree/main/plugins/omarchy/skills/omarchy-theming",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "342220f4a9d4454bed0c9afa951fe2df704423aaae073c169d10250e87a52d41",
-    "tree_hash": "3a69e6518c94471197527f8f612da0e612366fc202b78462220beec47c566cb7",
+    "content_hash": "6f89d0afb37dce891174533b24d40ec9bee0369e0416005ec64d18c587a8af8c",
+    "tree_hash": "c0bcf82158de44d8706b82923bd762a824fa58b366c57027bd297e6bce5a94f7",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
       "fallback_chain": [
         {
           "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -23,18 +26,18 @@
   },
   "skill": {
     "name": "omarchy-theming",
-    "description": "Create and manage Omarchy desktop themes with color palettes, app templates, wallpaper folders, and theme commands.",
-    "summary": "Build Omarchy themes that apply consistent colors across terminals, Hyprland, Waybar, btop, and supported apps.",
+    "description": "Create and manage Omarchy desktop themes across colors.toml, terminal themes, Hyprland, Waybar, btop, and related theme files.",
+    "summary": "Build complete Omarchy themes from a shared color palette and supporting desktop theme files.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "BitYoungjae",
     "license": "MIT",
     "tags": [
       "omarchy",
       "themes",
       "desktop-customization",
-      "hyprland",
-      "terminal-colors"
+      "terminal-themes",
+      "hyprland"
     ],
     "supported_tools": [
       "claude",
@@ -52,17 +55,17 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static findings are false positives caused by Markdown code fences and inline code in documentation. The only confirmed issue is a troubleshooting instruction to install yq with sudo, which requires explicit user approval before use.",
+    "summary": "Most static findings are markdown backticks, code fences, or scoped Omarchy configuration paths. The only confirmed security issue is a troubleshooting command that installs yq with sudo. No prompt injection, credential access, or data exfiltration intent was found.",
     "remediation": [
       {
-        "issue": "Privileged package installation command in troubleshooting documentation.",
-        "suggestion": "Replace sudo pacman -S yq with guidance to ask the user before installing packages, or link to Omarchy dependency documentation.",
+        "issue": "Privileged package installation appears in troubleshooting.",
+        "suggestion": "Replace the direct sudo command with guidance to ask the user before installing yq and to use trusted package sources.",
         "severity": "high"
       },
       {
-        "issue": "Theme commands are shown without explicit approval guidance.",
-        "suggestion": "State that commands which modify ~/.config/omarchy or change active themes should be reviewed by the user before execution.",
-        "severity": "low"
+        "issue": "Remote theme installation is shown as a generic git URL command.",
+        "suggestion": "Add a warning to install themes only from trusted repositories and review theme files before applying them.",
+        "severity": "medium"
       }
     ],
     "risk_factor_evidence": [
@@ -668,237 +671,237 @@
       {
         "id": "filesystem:reference.md:384:hidden-file-in-home-directory",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The command creates the documented light.mode marker inside the Omarchy theme directory. This is expected theme metadata, not a hidden persistence or exfiltration path."
+        "confidence": 0.9,
+        "reason": "The path is the documented Omarchy theme directory under ~/.config and creates a light-mode marker for the selected theme. It is scoped to user theme configuration and does not hide unrelated data."
       },
       {
         "id": "filesystem:reference.md:384:hidden-file-access",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The hidden path is the standard ~/.config location for Omarchy themes. The referenced touch command creates only an empty light-theme marker."
+        "confidence": 0.9,
+        "reason": "The access is a documented touch command for ~/.config/omarchy/themes/my-theme/light.mode. It only creates an expected theme marker file, not a covert hidden file."
       },
       {
         "id": "external_commands:SKILL.md:8:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 8 uses Markdown inline code around colors.toml. There is no Ruby code, shell backtick execution, or dynamic command construction."
+        "confidence": 0.96,
+        "reason": "Line 8 uses markdown inline backticks around colors.toml. There is no Ruby shell backtick execution or executable command on this line."
       },
       {
         "id": "external_commands:SKILL.md:14:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is a Markdown bash fence for a documented mkdir example. It is not Ruby backtick execution, and the command targets the expected Omarchy theme path."
+        "confidence": 0.86,
+        "reason": "This is a markdown bash fence for a documented theme directory command. It is not Ruby backtick execution or dynamic shell evaluation."
       },
       {
         "id": "external_commands:SKILL.md:16:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "This line closes a Markdown code fence. It does not execute a command or interpolate user-controlled shell text."
+        "confidence": 0.96,
+        "reason": "This line closes a markdown code fence. It does not execute a shell command."
       },
       {
         "id": "external_commands:SKILL.md:18:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The text uses Markdown inline code for colors.toml. No executable Ruby or shell construct appears at this location."
+        "confidence": 0.95,
+        "reason": "The line uses markdown inline backticks around colors.toml. It describes a required file and contains no executable shell syntax."
       },
       {
         "id": "external_commands:SKILL.md:20:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The text uses Markdown inline code for the backgrounds directory name. It is documentation, not command execution."
+        "confidence": 0.94,
+        "reason": "The line uses markdown inline backticks around a backgrounds directory name. It is file-structure documentation, not command execution."
       },
       {
         "id": "external_commands:SKILL.md:23:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown bash fence for a hardcoded Omarchy theme command. It documents manual use and contains no Ruby backticks or command injection vector."
+        "confidence": 0.86,
+        "reason": "This is a markdown bash fence before a legitimate Omarchy theme command example. It is not Ruby backtick execution or untrusted shell interpolation."
       },
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "This line closes a Markdown code fence. It does not execute a command or contain shell syntax."
+        "confidence": 0.96,
+        "reason": "This line closes a markdown code fence. It does not execute commands or evaluate shell text."
       },
       {
         "id": "external_commands:SKILL.md:32:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The finding is triggered by Markdown inline code around colors.toml. This is not executable shell or Ruby code."
+        "confidence": 0.94,
+        "reason": "The line uses markdown inline backticks to name colors.toml. It gives validation guidance and contains no executable code."
       },
       {
         "id": "external_commands:SKILL.md:33:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The finding is triggered by Markdown inline formatting for #RRGGBB. It is a color-format note, not command execution."
+        "confidence": 0.95,
+        "reason": "The backticks wrap the literal color format #RRGGBB for documentation. There is no shell command or code execution path."
       },
       {
         "id": "external_commands:SKILL.md:34:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The finding is triggered by Markdown inline code around backgrounds/. It describes a directory name and does not run a command."
+        "confidence": 0.94,
+        "reason": "The backticks wrap a directory name used by Omarchy themes. This is documentation of expected files, not executable shell syntax."
       },
       {
         "id": "external_commands:SKILL.md:35:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The finding is triggered by Markdown inline code around light.mode. It names a marker file and contains no executable shell construct."
+        "confidence": 0.94,
+        "reason": "The backticks wrap the light.mode marker filename. The line documents theme structure and does not execute commands."
       },
       {
         "id": "external_commands:SKILL.md:36:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line recommends testing with a standard Omarchy command. It is a documented manual command, not Ruby backtick execution or untrusted command construction."
+        "confidence": 0.88,
+        "reason": "The inline command is a legitimate Omarchy theme test command. It is documented for user-invoked theme regeneration, not hidden or dynamic execution."
       },
       {
         "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "This is a Markdown fence for an example directory tree. It contains no executable command at the flagged line."
+        "confidence": 0.97,
+        "reason": "This line starts a markdown code block showing theme folder structure. It is not executable Ruby or shell syntax."
       },
       {
         "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "This line closes a Markdown example block. It is not code execution."
+        "confidence": 0.97,
+        "reason": "This line closes a markdown code block. It has no execution semantics."
       },
       {
         "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "This is a Markdown TOML fence for a color schema example. TOML palette data is not shell or Ruby execution."
+        "confidence": 0.97,
+        "reason": "This is a markdown TOML fence for a colors.toml schema example. It is static documentation, not shell execution."
       },
       {
         "id": "external_commands:SKILL.md:87:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "This line closes a Markdown TOML block. It does not execute a command."
+        "confidence": 0.97,
+        "reason": "This line closes a markdown TOML fence. It does not run code."
       },
       {
         "id": "external_commands:SKILL.md:96:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The line documents template variable syntax inside Markdown inline code. It is not shell backtick execution."
+        "confidence": 0.95,
+        "reason": "The backticks wrap template variable examples in a markdown table. They are documentation tokens, not executable shell input."
       },
       {
         "id": "external_commands:SKILL.md:97:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The line documents template variable syntax and a Hyprland rgb format. It contains no executable shell command."
+        "confidence": 0.95,
+        "reason": "The backticks wrap template variable examples and Hyprland rgb notation. The line does not invoke a shell."
       },
       {
         "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The line documents template variable syntax for RGB values. It is reference text, not command execution."
+        "confidence": 0.95,
+        "reason": "The backticks wrap template variable examples for RGB output. There is no command execution."
       },
       {
         "id": "external_commands:SKILL.md:103:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "This is a Markdown TOML fence for a theme palette example. Palette data is not executable shell or Ruby code."
+        "confidence": 0.97,
+        "reason": "This is a markdown TOML fence for a theme palette example. It is static sample content, not executable code."
       },
       {
         "id": "external_commands:SKILL.md:127:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "This line closes a Markdown TOML example. It does not execute a command."
+        "confidence": 0.97,
+        "reason": "This line closes a markdown TOML example. It has no execution behavior."
       },
       {
         "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "This is a Markdown TOML fence for a light theme example. It is static configuration content, not shell execution."
+        "confidence": 0.97,
+        "reason": "This is a markdown TOML fence for a light theme example. It is sample configuration, not shell execution."
       },
       {
         "id": "external_commands:SKILL.md:156:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "This line closes a Markdown TOML block. It contains no executable code."
+        "confidence": 0.97,
+        "reason": "This line closes a markdown TOML example. It does not execute commands."
       },
       {
         "id": "external_commands:SKILL.md:160:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is a Markdown Lua fence for a Neovim configuration example. It is not Ruby backtick execution and does not run during skill loading."
+        "confidence": 0.93,
+        "reason": "This is a markdown Lua fence for Neovim theme configuration. It is illustrative config content and not Ruby shell execution."
       },
       {
         "id": "external_commands:SKILL.md:165:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "This line closes a Markdown Lua block. It does not execute a command."
+        "confidence": 0.97,
+        "reason": "This line closes a markdown Lua example. It does not run code."
       },
       {
         "id": "external_commands:SKILL.md:169:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "This is a Markdown JSON fence for VS Code theme metadata. JSON metadata is not shell or Ruby execution."
+        "confidence": 0.97,
+        "reason": "This is a markdown JSON fence for VS Code theme metadata. It is static metadata documentation, not command execution."
       },
       {
         "id": "external_commands:SKILL.md:171:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "This line closes a Markdown JSON block. It does not execute a command."
+        "confidence": 0.97,
+        "reason": "This line closes a markdown JSON example. It has no execution semantics."
       },
       {
         "id": "external_commands:SKILL.md:176:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is a Markdown bash fence listing standard Omarchy theme management commands. It documents manual commands and does not include a hardcoded third-party URL or automated execution."
+        "confidence": 0.8,
+        "reason": "This is a markdown bash fence introducing Omarchy command examples. The commands are documented user actions and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:184:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "This line closes a Markdown bash block. It is not executable by itself."
+        "confidence": 0.96,
+        "reason": "This line closes the documented Omarchy command block. It does not execute shell code."
       },
       {
         "id": "external_commands:SKILL.md:191:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The line uses Markdown inline code to show the HEX color format. It contains no shell or Ruby execution."
+        "confidence": 0.95,
+        "reason": "The backticks wrap the literal HEX format #RRGGBB. The line is troubleshooting text and contains no command execution."
       },
       {
         "id": "external_commands:SKILL.md:192:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line recommends running the standard Omarchy theme regeneration command. It is documentation, not dynamic command execution or a command injection sink."
+        "confidence": 0.88,
+        "reason": "The inline command is a legitimate Omarchy regeneration command. It is a user-facing troubleshooting step, not Ruby backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:199:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is only the Markdown bash fence before a troubleshooting command. The privileged command risk is covered by the separate sudo finding."
+        "confidence": 0.82,
+        "reason": "This is a markdown bash fence before a dependency installation example. The privilege risk is captured separately by the sudo finding."
       },
       {
         "id": "external_commands:SKILL.md:200:sudo-privilege-escalation",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The troubleshooting section instructs sudo pacman -S yq, which installs software with elevated privileges. The context is legitimate, but a community skill should require explicit user confirmation before privileged package installation.",
+        "confidence": 0.92,
+        "reason": "The troubleshooting section instructs running sudo pacman -S yq, which invokes the system package manager with elevated privileges. This is a legitimate dependency step but requires explicit user approval and safety guidance.",
         "severity": "high"
       },
       {
         "id": "filesystem:SKILL.md:15:hidden-file-in-home-directory",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The path is the normal ~/.config/omarchy themes directory used by the skill purpose. Creating a theme folder there is expected desktop configuration behavior."
+        "confidence": 0.88,
+        "reason": "The mkdir command targets the documented Omarchy theme directory under ~/.config. It creates user-scoped theme folders, not covert persistence or unrelated hidden files."
       },
       {
         "id": "filesystem:SKILL.md:43:hidden-file-in-home-directory",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line shows the documented Omarchy theme directory structure under ~/.config. It is not a hidden persistence mechanism or unauthorized file access."
+        "confidence": 0.92,
+        "reason": "The line is a folder structure example for ~/.config/omarchy/themes/{theme-name}. It documents the expected Omarchy config location and does not perform hidden-file writes."
       },
       {
         "id": "filesystem:SKILL.md:15:hidden-file-access",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The command creates an Omarchy theme directory in the standard user configuration area. It does not read secrets or access unrelated hidden files."
+        "confidence": 0.88,
+        "reason": "The hidden-path access is the expected Omarchy configuration directory used for local themes. The command is scoped to creating a theme background folder."
       },
       {
         "id": "filesystem:SKILL.md:43:hidden-file-access",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The path is a documentation example for where Omarchy stores themes. It does not access hidden files outside the intended theme scope."
+        "confidence": 0.92,
+        "reason": "The line only documents the expected theme path under ~/.config. It is not an instruction to access sensitive hidden files outside Omarchy themes."
       }
     ],
     "semantic_findings": [],
@@ -917,8 +920,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "high",
-        "confidence": 0.82,
-        "confidence_reasoning": "The troubleshooting section instructs sudo pacman -S yq, which installs software with elevated privileges. The context is legitimate, but a community skill should require explicit user confirmation before privileged package installation."
+        "confidence": 0.92,
+        "confidence_reasoning": "The troubleshooting section instructs running sudo pacman -S yq, which invokes the system package manager with elevated privileges. This is a legitimate dependency step but requires explicit user approval and safety guidance."
       }
     ],
     "medium_findings": [],
@@ -927,52 +930,53 @@
     "files_scanned": 2,
     "total_lines": 811,
     "audit_model": "codex",
-    "audited_at": "2026-07-07T20:37:26.459Z",
+    "audited_at": "2026-07-09T07:33:49.412Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Create Omarchy Desktop Themes",
-    "value_statement": "Omarchy themes require consistent colors across many desktop apps. This skill guides palette creation, file structure, and theme commands for reliable results.",
+    "value_statement": "Omarchy themes require coordinated colors across terminals, Hyprland, Waybar, and applications. This skill guides complete theme files from one palette.",
     "seo_keywords": [
+      "Claude",
+      "Codex",
+      "Claude Code",
       "Omarchy theming",
-      "Omarchy themes",
       "colors.toml",
-      "Hyprland colors",
+      "Hyprland themes",
       "Waybar styling",
       "terminal themes",
       "desktop customization",
-      "Claude",
-      "Codex",
-      "Claude Code"
+      "Linux themes"
     ],
     "actual_capabilities": [
-      "Defines the required 22 color variables for Omarchy colors.toml files.",
-      "Explains theme folder structure under the Omarchy user configuration path.",
-      "Maps theme colors to Alacritty, Kitty, Ghostty, Hyprland, Waybar, btop, and app templates.",
-      "Provides dark and light palette examples, including light.mode marker guidance.",
-      "Lists common Omarchy theme commands for applying, listing, updating, and removing themes."
+      "Defines the required 22 colors.toml variables for Omarchy themes.",
+      "Explains how colors propagate to terminals, Hyprland, Waybar, btop, and applications.",
+      "Provides dark and light theme palette examples with correct HEX values.",
+      "Documents optional theme files such as light.mode, icons.theme, neovim.lua, and vscode.json.",
+      "Lists Omarchy commands for applying, listing, installing, removing, and updating themes.",
+      "Provides troubleshooting checks for missing colors, HEX format errors, and theme regeneration."
     ],
     "limitations": [
-      "Does not generate wallpaper images or preview screenshots by itself.",
-      "Does not validate contrast ratios with an automated accessibility tool.",
-      "Assumes Omarchy commands and theme paths are available on the target system.",
-      "Privileged package installation guidance must be confirmed by the user before execution."
+      "It does not include an automated validator for colors.toml files.",
+      "It does not generate wallpaper images or preview screenshots by itself.",
+      "It assumes Omarchy theme commands are already installed on the system.",
+      "It includes package installation guidance that should require user confirmation."
     ],
     "use_cases": [
       {
         "title": "Build a New Theme",
-        "description": "Create a complete colors.toml palette and theme folder plan for a new Omarchy desktop theme.",
+        "description": "Create a complete Omarchy theme directory with colors.toml, backgrounds, and optional app files.",
         "target_user": "Linux desktop customizer"
       },
       {
         "title": "Port an Existing Palette",
-        "description": "Convert an existing color palette into Omarchy variables and related app template values.",
-        "target_user": "Theme designer"
+        "description": "Translate a known color palette into Omarchy variables for terminals and desktop components.",
+        "target_user": "Theme maintainer"
       },
       {
-        "title": "Troubleshoot Theme Output",
-        "description": "Check missing variables, invalid HEX values, light mode markers, and app-specific template behavior.",
+        "title": "Debug Theme Application",
+        "description": "Check missing variables, invalid HEX values, and regeneration steps when a theme does not apply.",
         "target_user": "Omarchy user"
       }
     ],
@@ -980,72 +984,72 @@
       {
         "title": "Create a Basic Theme",
         "scenario": "Beginner theme creation",
-        "prompt": "Create an Omarchy dark theme named my-theme. Include all required colors.toml variables and explain the needed files."
+        "prompt": "Create an Omarchy theme named ocean-mist. Include all required colors.toml variables and explain where each file belongs."
       },
       {
         "title": "Convert a Palette",
         "scenario": "Palette migration",
-        "prompt": "Convert this color palette into Omarchy colors.toml values. Keep terminal ANSI colors clear and consistent: [paste palette]."
+        "prompt": "Convert this color palette into an Omarchy colors.toml file. Keep the contrast readable for terminal text and Waybar labels."
       },
       {
-        "title": "Design a Light Theme",
+        "title": "Add Light Theme Support",
         "scenario": "Light mode setup",
-        "prompt": "Design an Omarchy light theme. Include colors.toml guidance, light.mode placement, and app-specific considerations."
+        "prompt": "Review my Omarchy theme plan and tell me what changes are needed for a complete light theme setup."
       },
       {
-        "title": "Audit Theme Integration",
-        "scenario": "Advanced troubleshooting",
-        "prompt": "Review my Omarchy theme files for missing variables, invalid HEX values, and app template issues. Ask before suggesting commands."
+        "title": "Audit Theme Coverage",
+        "scenario": "Advanced theme review",
+        "prompt": "Analyze this Omarchy theme structure for missing files, weak contrast, unsupported color formats, and application coverage gaps."
       }
     ],
     "output_examples": [
       {
-        "input": "Create a calm dark Omarchy theme for coding.",
-        "output": "A complete palette plan with 22 named color roles, a theme folder checklist, and notes for terminals, Hyprland, Waybar, and btop."
+        "input": "I want a dark Tokyo-inspired Omarchy theme.",
+        "output": "A complete theme plan with all required color variables, background placement, and optional editor metadata."
       },
       {
-        "input": "Make my light theme work correctly in Omarchy.",
-        "output": "Guidance to add the light mode marker, choose light-friendly foreground and background values, and verify browser and GTK behavior."
+        "input": "My light theme is still opening dark applications.",
+        "output": "A troubleshooting checklist covering the light marker file, theme regeneration, and application-specific overrides."
       },
       {
-        "input": "Find why my Omarchy theme does not apply to every app.",
-        "output": "A troubleshooting checklist for required color variables, HEX formatting, static app files, template variable names, and theme regeneration."
+        "input": "Check whether this palette is suitable for Waybar and terminal use.",
+        "output": "A contrast-focused review with suggested accent, foreground, background, and warning color adjustments."
       }
     ],
     "best_practices": [
-      "Define all 22 required colors before applying a theme.",
-      "Use HEX values for colors.toml and the documented suffix formats for templates.",
-      "Review file changes and commands before modifying the active Omarchy theme."
+      "Define every required color variable before applying the theme.",
+      "Use only #RRGGBB HEX values in colors.toml.",
+      "Test theme changes with Omarchy commands after reviewing file paths."
     ],
     "anti_patterns": [
-      "Using named colors, RGB strings, or HSL values in colors.toml.",
-      "Omitting the backgrounds directory or the light.mode marker for light themes.",
-      "Running privileged package installation commands without explicit user approval."
+      "Do not omit backgrounds or required color variables.",
+      "Do not mix RGB, HSL, or named colors in colors.toml.",
+      "Do not run privileged package commands without explicit user approval."
     ],
     "faq": [
       {
         "question": "What does this skill help create?",
-        "answer": "It helps create and manage Omarchy desktop themes using colors.toml, theme folders, and app-specific color templates."
+        "answer": "It helps create Omarchy desktop themes using colors.toml and related theme files."
       },
       {
-        "question": "Which applications are covered?",
-        "answer": "It covers terminals, Hyprland, Hyprlock, Waybar, Walker, Mako, SwayOSD, btop, Obsidian, Chromium, Neovim, and VS Code metadata."
+        "question": "Which applications can it cover?",
+        "answer": "It documents terminals, Hyprland, Waybar, btop, notifications, browser settings, Neovim, and VS Code metadata."
       },
       {
-        "question": "How many color variables are required?",
-        "answer": "Omarchy themes require 22 variables: 6 core UI colors and 16 ANSI terminal colors."
+        "question": "Does it create wallpapers?",
+        "answer": "No. It explains where wallpapers belong, but it does not generate image assets."
       },
       {
-        "question": "Can it create light themes?",
-        "answer": "Yes. It explains light palettes and the empty light.mode marker that tells Omarchy to use light theme behavior."
+        "question": "Can it help with light themes?",
+        "answer": "Yes. It explains the light.mode marker file and light theme structure."
       },
       {
-        "question": "Does it install themes automatically?",
-        "answer": "No. It documents theme commands, but users should approve commands before files or active themes are changed."
+        "question": "Does it install system packages?",
+        "answer": "It includes a troubleshooting package command. Users should approve privileged installation before it runs."
       },
       {
-        "question": "Is sudo required to use this skill?",
-        "answer": "No. One troubleshooting command mentions installing yq with sudo, but privileged installs must be confirmed by the user first."
+        "question": "Can Claude, Codex, or Claude Code use it?",
+        "answer": "Yes. The metadata lists support for Claude, Codex, and Claude Code."
       }
     ]
   },

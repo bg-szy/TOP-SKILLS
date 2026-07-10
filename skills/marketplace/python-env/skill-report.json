@@ -1,15 +1,15 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-04T13:09:31.582Z",
+    "generated_at": "2026-07-09T10:55:40.770Z",
     "slug": "0xdarkmatter-python-env",
     "source_url": "https://github.com/0xDarkMatter/claude-mods/tree/main/skills/python-env",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "8a5104891710808b98ff91204d8aa406bdfaea331d194217774a92f2baf6e3c0",
-    "tree_hash": "027d271da3576f2e310dbad7fdf7776814bbb17da5da09d2037ac5213ec78b5a",
+    "content_hash": "3d541fb0623ffc58c96eb5000f40392086dcbcf98251931e325ec6f482ad4c25",
+    "tree_hash": "6d4b914c8da5c9883af4b9fdb5a4b807c25bcfe922a7344d38916650a604de4d",
     "provenance": {
       "model_effective": "codex",
       "fallback_chain": [
@@ -23,8 +23,8 @@
   },
   "skill": {
     "name": "python-env",
-    "description": "Manage Python projects with uv for fast setup, dependency locking, local execution, and package publishing workflows.",
-    "summary": "Guides uv-based Python environment setup, dependency management, execution, and publishing.",
+    "description": "Guides Python environment setup, dependency management, project commands, and package publishing with uv.",
+    "summary": "Manage Python environments, dependencies, lock files, and package publishing with uv.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "0xDarkMatter",
@@ -33,8 +33,8 @@
       "python",
       "uv",
       "dependencies",
-      "pyproject",
-      "packaging"
+      "packaging",
+      "virtual-environments"
     ],
     "supported_tools": [
       "claude",
@@ -54,27 +54,17 @@
     "is_blocked": true,
     "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "Most static command findings are Markdown examples and inline command names, not executable Ruby shell backticks. I confirmed the curl-to-shell installer as critical, confirmed plaintext PyPI token guidance, and noted low supply-chain risks in extra index and unpinned Git dependency examples. No prompt injection text was found.",
+    "summary": "Most static findings are markdown examples for uv, pyproject.toml, publishing, or CI workflows, not executable behavior by the skill. I found no evidence of prompt injection, credential exfiltration, or malicious intent. The unsafe curl-to-shell uv installer instruction in SKILL.md line 5 is a real supply-chain risk and should be replaced.",
     "remediation": [
       {
-        "issue": "Pipe-to-shell installer in skill metadata",
-        "suggestion": "Replace curl-to-shell setup with package-manager instructions, verified download steps, or a link to official uv installation documentation.",
+        "issue": "Remote installer is piped directly into a shell.",
+        "suggestion": "Replace the curl-to-shell compatibility command with a link to official uv installation documentation or safer package-manager instructions. Require users to inspect installers before execution.",
         "severity": "critical"
       },
       {
-        "issue": "Plaintext PyPI token configuration example",
-        "suggestion": "Prefer trusted publishing and add warnings before any token-based .pypirc example.",
-        "severity": "high"
-      },
-      {
-        "issue": "Unsafe dependency source examples",
-        "suggestion": "Warn about dependency confusion for extra indexes and avoid unpinned Git branch examples.",
+        "issue": "Executable installer URL is embedded in skill metadata.",
+        "suggestion": "State uv as a prerequisite in metadata and keep installation guidance in documentation with verification steps. Avoid commands that fetch and execute remote content.",
         "severity": "low"
-      },
-      {
-        "issue": "Broad shell tool permission",
-        "suggestion": "State that commands must be user-approved, project-scoped, and reviewed before execution.",
-        "severity": "high"
       }
     ],
     "risk_factor_evidence": [
@@ -384,36 +374,31 @@
           {
             "file": "SKILL.md",
             "line_start": 99,
-            "line_end": 102
+            "line_end": 103
           },
           {
             "file": "SKILL.md",
-            "line_start": 102,
-            "line_end": 106
+            "line_start": 103,
+            "line_end": 107
           },
           {
             "file": "SKILL.md",
-            "line_start": 106,
-            "line_end": 116
+            "line_start": 107,
+            "line_end": 117
           },
           {
             "file": "SKILL.md",
-            "line_start": 116,
-            "line_end": 123
+            "line_start": 117,
+            "line_end": 124
           },
           {
             "file": "SKILL.md",
-            "line_start": 123,
-            "line_end": 125
+            "line_start": 124,
+            "line_end": 126
           },
           {
             "file": "SKILL.md",
-            "line_start": 125,
-            "line_end": 127
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 127,
+            "line_start": 126,
             "line_end": 128
           },
           {
@@ -424,32 +409,32 @@
           {
             "file": "SKILL.md",
             "line_start": 129,
-            "line_end": 129
+            "line_end": 130
           },
           {
             "file": "SKILL.md",
-            "line_start": 132,
-            "line_end": 137
+            "line_start": 130,
+            "line_end": 130
           },
           {
             "file": "SKILL.md",
-            "line_start": 137,
-            "line_end": 143
+            "line_start": 133,
+            "line_end": 138
           },
           {
             "file": "SKILL.md",
-            "line_start": 143,
+            "line_start": 138,
             "line_end": 144
           },
           {
             "file": "SKILL.md",
             "line_start": 144,
-            "line_end": 144
+            "line_end": 145
           },
           {
             "file": "SKILL.md",
             "line_start": 145,
-            "line_end": 146
+            "line_end": 145
           },
           {
             "file": "SKILL.md",
@@ -459,52 +444,17 @@
           {
             "file": "SKILL.md",
             "line_start": 147,
-            "line_end": 152
+            "line_end": 148
           },
           {
             "file": "SKILL.md",
-            "line_start": 152,
-            "line_end": 152
+            "line_start": 148,
+            "line_end": 153
           },
           {
             "file": "SKILL.md",
             "line_start": 153,
-            "line_end": 154
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 154,
-            "line_end": 154
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 155,
-            "line_end": 160
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 160,
-            "line_end": 161
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 161,
-            "line_end": 162
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 162,
-            "line_end": 171
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 171,
-            "line_end": 172
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 172,
-            "line_end": 173
+            "line_end": 153
           }
         ]
       },
@@ -1137,68 +1087,58 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 99,
-        "line_end": 102,
+        "line_end": 103,
         "snippet": "```"
       },
       {
-        "id": "external_commands:SKILL.md:102:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:103:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 102,
-        "line_end": 106,
-        "snippet": "is a sensible floor for new projects (TaskGroup, `Self`, faster interpreter)."
+        "line_start": 103,
+        "line_end": 107,
+        "snippet": "(TaskGroup, `Self`, faster interpreter)."
       },
       {
-        "id": "external_commands:SKILL.md:106:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:107:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 106,
-        "line_end": 116,
+        "line_start": 107,
+        "line_end": 117,
         "snippet": "```toml"
       },
       {
-        "id": "external_commands:SKILL.md:116:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:117:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 116,
-        "line_end": 123,
+        "line_start": 117,
+        "line_end": 124,
         "snippet": "# Dev deps live here; `uv add --dev <pkg>` manages this group."
       },
       {
-        "id": "external_commands:SKILL.md:123:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:124:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 123,
-        "line_end": 125,
+        "line_start": 124,
+        "line_end": 126,
         "snippet": "```"
       },
       {
-        "id": "external_commands:SKILL.md:125:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:126:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 125,
-        "line_end": 127,
-        "snippet": "## Compatibility Layer (`uv pip`) — last resort"
-      },
-      {
-        "id": "external_commands:SKILL.md:127:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 127,
+        "line_start": 126,
         "line_end": 128,
-        "snippet": "`uv pip` mirrors pip's interface for environments uv doesn't manage (a hand-made"
+        "snippet": "## Compatibility Layer (`uv pip`) — last resort"
       },
       {
         "id": "external_commands:SKILL.md:128:ruby-shell-backtick-execution",
@@ -1208,7 +1148,7 @@
         "file": "SKILL.md",
         "line_start": 128,
         "line_end": 129,
-        "snippet": "venv, a legacy `requirements.txt`, CI that isn't uv-native). It does **not**"
+        "snippet": "`uv pip` mirrors pip's interface for environments uv doesn't manage (a hand-made"
       },
       {
         "id": "external_commands:SKILL.md:129:ruby-shell-backtick-execution",
@@ -1217,38 +1157,38 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 129,
-        "line_end": 129,
+        "line_end": 130,
+        "snippet": "venv, a legacy `requirements.txt`, CI that isn't uv-native). It does **not**"
+      },
+      {
+        "id": "external_commands:SKILL.md:130:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 130,
+        "line_end": 130,
         "snippet": "update `pyproject.toml` or the lockfile — prefer `uv add` / `uv sync` whenever"
       },
       {
-        "id": "external_commands:SKILL.md:132:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:133:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 132,
-        "line_end": 137,
+        "line_start": 133,
+        "line_end": 138,
         "snippet": "```bash"
       },
       {
-        "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:138:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 137,
-        "line_end": 143,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:143:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 143,
+        "line_start": 138,
         "line_end": 144,
-        "snippet": "| \"No Python found\" | `uv python install 3.12` |"
+        "snippet": "```"
       },
       {
         "id": "external_commands:SKILL.md:144:ruby-shell-backtick-execution",
@@ -1257,8 +1197,8 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 144,
-        "line_end": 144,
-        "snippet": "| Pin project Python | `uv init --python 3.12` or edit `requires-python` |"
+        "line_end": 145,
+        "snippet": "| \"No Python found\" | `uv python install 3.12` |"
       },
       {
         "id": "external_commands:SKILL.md:145:ruby-shell-backtick-execution",
@@ -1267,8 +1207,8 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 145,
-        "line_end": 146,
-        "snippet": "| Lock/resolve conflict | `uv lock --resolution=lowest-direct` to probe, then loosen bounds |"
+        "line_end": 145,
+        "snippet": "| Pin project Python | `uv init --python 3.12` or edit `requires-python` |"
       },
       {
         "id": "external_commands:SKILL.md:146:ruby-shell-backtick-execution",
@@ -1278,7 +1218,7 @@
         "file": "SKILL.md",
         "line_start": 146,
         "line_end": 147,
-        "snippet": "| Stale env after pull | `uv sync` |"
+        "snippet": "| Lock/resolve conflict | `uv lock --resolution=lowest-direct` to probe, then loosen bounds |"
       },
       {
         "id": "external_commands:SKILL.md:147:ruby-shell-backtick-execution",
@@ -1287,18 +1227,18 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 147,
-        "line_end": 152,
-        "snippet": "| Cache issues | `uv cache clean` |"
+        "line_end": 148,
+        "snippet": "| Stale env after pull | `uv sync` |"
       },
       {
-        "id": "external_commands:SKILL.md:152:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:148:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 152,
-        "line_end": 152,
-        "snippet": "- `uv add` / `uv remove` / `uv sync` for project dependencies (not `uv pip install`)"
+        "line_start": 148,
+        "line_end": 153,
+        "snippet": "| Cache issues | `uv cache clean` |"
       },
       {
         "id": "external_commands:SKILL.md:153:ruby-shell-backtick-execution",
@@ -1307,8 +1247,8 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 153,
-        "line_end": 154,
-        "snippet": "- `uv run` to execute anything inside the project env"
+        "line_end": 153,
+        "snippet": "- `uv add` / `uv remove` / `uv sync` for project dependencies (not `uv pip install`)"
       },
       {
         "id": "external_commands:SKILL.md:154:ruby-shell-backtick-execution",
@@ -1317,8 +1257,8 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 154,
-        "line_end": 154,
-        "snippet": "- `uv tool install` / `uvx` for standalone developer CLIs"
+        "line_end": 155,
+        "snippet": "- `uv run` to execute anything inside the project env"
       },
       {
         "id": "external_commands:SKILL.md:155:ruby-shell-backtick-execution",
@@ -1327,18 +1267,18 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 155,
-        "line_end": 160,
-        "snippet": "- `uv pip` only for environments uv doesn't manage"
+        "line_end": 155,
+        "snippet": "- `uv tool install` / `uvx` for standalone developer CLIs"
       },
       {
-        "id": "external_commands:SKILL.md:160:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:156:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 160,
+        "line_start": 156,
         "line_end": 161,
-        "snippet": "- `./references/pyproject-patterns.md` - Full pyproject.toml examples, tool configs"
+        "snippet": "- `uv pip` only for environments uv doesn't manage"
       },
       {
         "id": "external_commands:SKILL.md:161:ruby-shell-backtick-execution",
@@ -1348,7 +1288,7 @@
         "file": "SKILL.md",
         "line_start": 161,
         "line_end": 162,
-        "snippet": "- `./references/dependency-management.md` - Lock files, workspaces, private packages"
+        "snippet": "- `./references/pyproject-patterns.md` - Full pyproject.toml examples, tool configs"
       },
       {
         "id": "external_commands:SKILL.md:162:ruby-shell-backtick-execution",
@@ -1357,18 +1297,18 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 162,
-        "line_end": 171,
-        "snippet": "- `./references/publishing.md` - PyPI publishing, versioning, CI/CD"
+        "line_end": 163,
+        "snippet": "- `./references/dependency-management.md` - Lock files, workspaces, private packages"
       },
       {
-        "id": "external_commands:SKILL.md:171:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:163:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 171,
+        "line_start": 163,
         "line_end": 172,
-        "snippet": "- `python-typing-ops` - Type hints for projects"
+        "snippet": "- `./references/publishing.md` - PyPI publishing, versioning, CI/CD"
       },
       {
         "id": "external_commands:SKILL.md:172:ruby-shell-backtick-execution",
@@ -1378,6 +1318,16 @@
         "file": "SKILL.md",
         "line_start": 172,
         "line_end": 173,
+        "snippet": "- `python-typing-ops` - Type hints for projects"
+      },
+      {
+        "id": "external_commands:SKILL.md:173:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 173,
+        "line_end": 174,
         "snippet": "- `python-pytest-ops` - Testing infrastructure"
       },
       {
@@ -1405,554 +1355,535 @@
       {
         "id": "network:references/dependency-management.md:175:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a placeholder private index URL inside a pyproject.toml example. It does not send data or hide an external destination."
+        "confidence": 0.93,
+        "reason": "The URL at references/dependency-management.md:175 is an example dependency, private index, or Git dependency syntax in documentation. The skill does not contact that endpoint automatically."
       },
       {
         "id": "network:references/dependency-management.md:194:hardcoded-url",
-        "verdict": "confirmed",
-        "confidence": 0.66,
-        "reason": "The requirements example uses --extra-index-url with public and private packages, which can create dependency confusion if copied without safeguards. It is legitimate documentation, but the supply-chain risk is real.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.93,
+        "reason": "The URL at references/dependency-management.md:194 is an example dependency, private index, or Git dependency syntax in documentation. The skill does not contact that endpoint automatically."
       },
       {
         "id": "network:references/dependency-management.md:205:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is a placeholder GitHub dependency URL in documentation. It is not an automatic network request or credential exfiltration path."
+        "confidence": 0.93,
+        "reason": "The URL at references/dependency-management.md:205 is an example dependency, private index, or Git dependency syntax in documentation. The skill does not contact that endpoint automatically."
       },
       {
         "id": "network:references/dependency-management.md:206:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This example uses a version-tagged GitHub dependency URL, which is expected packaging documentation. No hidden or automatic network action is present."
+        "confidence": 0.93,
+        "reason": "The URL at references/dependency-management.md:206 is an example dependency, private index, or Git dependency syntax in documentation. The skill does not contact that endpoint automatically."
       },
       {
         "id": "network:references/dependency-management.md:207:hardcoded-url",
-        "verdict": "confirmed",
-        "confidence": 0.63,
-        "reason": "The Git dependency example pins to the main branch, so installs can change without a reviewed version tag or commit. This is a low supply-chain risk in documentation.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.93,
+        "reason": "The URL at references/dependency-management.md:207 is an example dependency, private index, or Git dependency syntax in documentation. The skill does not contact that endpoint automatically."
       },
       {
         "id": "network:references/dependency-management.md:214:hardcoded-url",
-        "verdict": "confirmed",
-        "confidence": 0.63,
-        "reason": "The requirements example installs a Git dependency from the main branch, which is not reproducible. This is a low supply-chain risk if copied directly.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.93,
+        "reason": "The URL at references/dependency-management.md:214 is an example dependency, private index, or Git dependency syntax in documentation. The skill does not contact that endpoint automatically."
       },
       {
         "id": "network:references/dependency-management.md:208:ssh-protocol-url",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "This is a standard SSH Git dependency example for private repositories. It does not expose credentials or force execution by itself."
+        "confidence": 0.93,
+        "reason": "The URL at references/dependency-management.md:208 is an example dependency, private index, or Git dependency syntax in documentation. The skill does not contact that endpoint automatically."
       },
       {
         "id": "filesystem:references/dependency-management.md:228:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The parent-directory path appears in a local dependency example, not in code that reads arbitrary paths. It is a normal workspace packaging pattern."
+        "confidence": 0.93,
+        "reason": "The relative path is a local dependency example in pyproject.toml documentation. It is not unsanitized file access or traversal in executable code."
       },
       {
         "id": "filesystem:references/dependency-management.md:293:hidden-file-in-home-directory",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The ~/.cache/uv path is used as a GitHub Actions cache example. It is not a hidden secret file or local file access instruction."
+        "confidence": 0.93,
+        "reason": "The ~/.cache/uv path is a GitHub Actions cache example for uv dependencies. It is not local hidden-file access performed by the skill."
       },
       {
         "id": "filesystem:references/dependency-management.md:293:hidden-file-access",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The line documents caching uv artifacts in CI. It does not read, write, or exfiltrate a hidden user file."
+        "confidence": 0.93,
+        "reason": "The ~/.cache/uv path is a GitHub Actions cache example for uv dependencies. It is not local hidden-file access performed by the skill."
       },
       {
         "id": "blocker:references/dependency-management.md:310:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The line says to pin the Python version as a best practice. It is not system reconnaissance."
+        "confidence": 0.93,
+        "reason": "The flagged line is a best-practice statement about pinning a Python version. It does not probe host state or collect system information."
       },
       {
         "id": "external_commands:references/publishing.md:62:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticks are Markdown formatting around the word build and a bash code fence. There is no Ruby backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at references/publishing.md:62 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "network:references/publishing.md:47:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is a placeholder project homepage URL in package metadata. It is documentation, not an active network call."
+        "reason": "The URL at references/publishing.md:47 is sample project metadata, changelog text, or TestPyPI documentation. It is not an unauthorized network request by the skill."
       },
       {
         "id": "network:references/publishing.md:48:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is a placeholder documentation URL in package metadata. It does not perform a network request."
+        "reason": "The URL at references/publishing.md:48 is sample project metadata, changelog text, or TestPyPI documentation. It is not an unauthorized network request by the skill."
       },
       {
         "id": "network:references/publishing.md:49:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is a placeholder repository URL in package metadata. It is expected package metadata documentation."
+        "reason": "The URL at references/publishing.md:49 is sample project metadata, changelog text, or TestPyPI documentation. It is not an unauthorized network request by the skill."
       },
       {
         "id": "network:references/publishing.md:50:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is a placeholder changelog URL in package metadata. It is not a suspicious outbound connection."
+        "reason": "The URL at references/publishing.md:50 is sample project metadata, changelog text, or TestPyPI documentation. It is not an unauthorized network request by the skill."
       },
       {
         "id": "network:references/publishing.md:77:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The URL is the official TestPyPI index in a section that tells users to test installation in a throwaway environment. The network use is explicit and expected."
+        "confidence": 0.93,
+        "reason": "The URL at references/publishing.md:77 is sample project metadata, changelog text, or TestPyPI documentation. It is not an unauthorized network request by the skill."
       },
       {
         "id": "network:references/publishing.md:165:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is a changelog comparison link template. It is not code and does not initiate network access."
+        "reason": "The URL at references/publishing.md:165 is sample project metadata, changelog text, or TestPyPI documentation. It is not an unauthorized network request by the skill."
       },
       {
         "id": "network:references/publishing.md:166:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is a release link template in changelog documentation. It is not an active network operation."
+        "reason": "The URL at references/publishing.md:166 is sample project metadata, changelog text, or TestPyPI documentation. It is not an unauthorized network request by the skill."
       },
       {
         "id": "network:references/publishing.md:209:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "This is the official TestPyPI legacy repository URL in a sample .pypirc. It is visible documentation, not a hidden exfiltration endpoint."
+        "confidence": 0.93,
+        "reason": "The URL at references/publishing.md:209 is sample project metadata, changelog text, or TestPyPI documentation. It is not an unauthorized network request by the skill."
       },
       {
         "id": "filesystem:references/publishing.md:201:hidden-file-in-home-directory",
         "verdict": "false_positive",
-        "confidence": 0.62,
-        "reason": "The line is a documentation heading for ~/.pypirc, not code that accesses a hidden file. Credential risk is handled by the separate sensitive finding."
+        "confidence": 0.93,
+        "reason": "The ~/.pypirc reference is a documentation heading for optional publishing configuration. No code reads or writes the hidden file, and the following section recommends trusted publishing."
       },
       {
         "id": "filesystem:references/publishing.md:201:hidden-file-access",
         "verdict": "false_positive",
-        "confidence": 0.62,
-        "reason": "The line does not read or write ~/.pypirc. It introduces a configuration example, with credential concerns covered separately."
+        "confidence": 0.93,
+        "reason": "The ~/.pypirc reference is a documentation heading for optional publishing configuration. No code reads or writes the hidden file, and the following section recommends trusted publishing."
       },
       {
         "id": "sensitive:references/publishing.md:201:pypi-config-file-may-contain-tokens",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The section documents ~/.pypirc and nearby lines show token-style password placeholders, which encourages plaintext credential storage. The tokens are placeholders, but the guidance still carries credential handling risk.",
-        "severity": "high"
+        "verdict": "false_positive",
+        "confidence": 0.86,
+        "reason": "The .pypirc section shows placeholder token text for publishing documentation, not a real secret. No code accesses or exfiltrates PyPI credentials."
       },
       {
         "id": "blocker:references/publishing.md:77:non-standard-pypi-index",
         "verdict": "false_positive",
-        "confidence": 0.87,
-        "reason": "The command uses the official TestPyPI index for release validation in a throwaway environment. This is a normal publishing workflow, not a hidden package source."
+        "confidence": 0.93,
+        "reason": "The TestPyPI index appears in publishing documentation as a validation step before production release. It is not hidden dependency redirection or an automatic install path."
       },
       {
         "id": "external_commands:references/pyproject-patterns.md:52:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The backticks are Markdown inline code around uv add. There is no Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at references/pyproject-patterns.md:52 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:references/pyproject-patterns.md:53:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The backticks are Markdown inline code around uv sync. The file is documentation, not executable Ruby or shell code."
+        "confidence": 0.93,
+        "reason": "The match at references/pyproject-patterns.md:53 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:references/pyproject-patterns.md:63:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The backticks are Markdown inline code in a pyproject example. No shell interpolation or execution is present."
+        "confidence": 0.93,
+        "reason": "The match at references/pyproject-patterns.md:63 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "network:references/pyproject-patterns.md:74:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is a placeholder project homepage URL in package metadata. It is expected documentation."
+        "reason": "The URL at references/pyproject-patterns.md:74 is sample project metadata inside a pyproject.toml example. It is placeholder documentation, not runtime network behavior."
       },
       {
         "id": "network:references/pyproject-patterns.md:75:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is a placeholder documentation URL in package metadata. It does not cause network access."
+        "reason": "The URL at references/pyproject-patterns.md:75 is sample project metadata inside a pyproject.toml example. It is placeholder documentation, not runtime network behavior."
       },
       {
         "id": "network:references/pyproject-patterns.md:76:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is a placeholder repository URL in package metadata. It is not a hidden endpoint."
+        "reason": "The URL at references/pyproject-patterns.md:76 is sample project metadata inside a pyproject.toml example. It is placeholder documentation, not runtime network behavior."
       },
       {
         "id": "network:references/pyproject-patterns.md:77:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is a placeholder issue tracker URL in package metadata. It is normal package metadata documentation."
+        "reason": "The URL at references/pyproject-patterns.md:77 is sample project metadata inside a pyproject.toml example. It is placeholder documentation, not runtime network behavior."
       },
       {
         "id": "env_access:references/pyproject-patterns.md:120:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "python-dotenv appears as a dependency in a web application pyproject example. There is no environment variable exfiltration or secret access logic."
+        "confidence": 0.93,
+        "reason": "python-dotenv appears as an example FastAPI dependency in a pyproject.toml template. The skill does not read environment files or secrets."
       },
       {
         "id": "external_commands:SKILL.md:14:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:14 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:15:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:15 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:21:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:21 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:22:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:22 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:23:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:23 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:24 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:25 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:26 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:27 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:28 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:29 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:33:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:33 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:40 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:42 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:43:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:43 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:48 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:66:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:66 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:68:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:68 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:69:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:69 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:73:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:73 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:76:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:76 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:77:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:77 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:79:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:79 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:80:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:80 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:84:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:84 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:88 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:90:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:90 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:91:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:91 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:95:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:95 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:99:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:99 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
-        "id": "external_commands:SKILL.md:102:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:103:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:103 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
-        "id": "external_commands:SKILL.md:106:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:107:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:107 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
-        "id": "external_commands:SKILL.md:116:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:117:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:117 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
-        "id": "external_commands:SKILL.md:123:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:124:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:124 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
-        "id": "external_commands:SKILL.md:125:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:126:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
-      },
-      {
-        "id": "external_commands:SKILL.md:127:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:126 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:128:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:128 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:129:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:129 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
-        "id": "external_commands:SKILL.md:132:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:130:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:130 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
-        "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:133:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:133 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
-        "id": "external_commands:SKILL.md:143:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:138:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:138 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:144:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:144 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:145:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:145 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:146:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:146 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:147:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:147 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
-        "id": "external_commands:SKILL.md:152:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:148:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:148 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:153:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:153 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:154:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:154 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:155:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:155 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
-        "id": "external_commands:SKILL.md:160:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:156:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:156 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:161:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:161 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:162:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:162 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
-        "id": "external_commands:SKILL.md:171:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:163:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:163 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:172:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected backticks are Markdown inline code or fenced command examples for uv usage. They are not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:172 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
+      },
+      {
+        "id": "external_commands:SKILL.md:173:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.93,
+        "reason": "The match at SKILL.md:173 is Markdown inline code or a fenced example for uv commands, not Ruby or shell backtick execution in runnable code. No dynamic command construction or hidden execution path is present."
       },
       {
         "id": "network:SKILL.md:5:hardcoded-url",
         "verdict": "confirmed",
-        "confidence": 0.92,
-        "reason": "The compatibility metadata points to a remote installer URL that is used for executable setup. The domain is the official uv installer, but it is still a network-sourced install path.",
-        "severity": "low"
+        "confidence": 0.9,
+        "severity": "low",
+        "reason": "The hardcoded URL is part of the curl-to-shell install instruction in SKILL.md line 5. The URL is not malicious by itself, but it supports remote code retrieval for shell execution."
       },
       {
         "id": "blocker:SKILL.md:5:pipe-to-shell-pattern",
         "verdict": "confirmed",
-        "confidence": 0.96,
-        "reason": "The metadata instructs users to pipe a downloaded installer script directly into sh. This executes remote code without local review or integrity verification.",
-        "severity": "critical"
+        "confidence": 0.98,
+        "severity": "critical",
+        "reason": "SKILL.md line 5 tells users to run a remote installer through a shell pipeline. That executes network-fetched code without local inspection or integrity verification."
       }
     ],
-    "semantic_findings": [
-      {
-        "title": "Broad Bash Tool Permission",
-        "description": "The skill metadata grants Bash access, and the skill contains many command-oriented workflows. This is useful for uv management, but it increases risk if commands are approved without review.",
-        "severity": "high",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 6,
-            "line_end": 6
-          }
-        ],
-        "confidence": 0.88,
-        "confidence_reasoning": "The allowed-tools metadata explicitly lists Bash. The finding is contextual because Bash is expected for this skill, but broad shell permission is still material for a community skill."
-      }
-    ],
+    "semantic_findings": [],
     "critical_findings": [
       {
         "title": "Pipe to shell pattern",
@@ -1967,110 +1898,13 @@
         "review_kind": "security",
         "source_category": "blocker",
         "source_severity": "critical",
-        "confidence": 0.96,
-        "confidence_reasoning": "The metadata instructs users to pipe a downloaded installer script directly into sh. This executes remote code without local review or integrity verification."
+        "confidence": 0.98,
+        "confidence_reasoning": "SKILL.md line 5 tells users to run a remote installer through a shell pipeline. That executes network-fetched code without local inspection or integrity verification."
       }
     ],
-    "high_findings": [
-      {
-        "title": "PyPI config file (may contain tokens)",
-        "description": "### ~/.pypirc (for twine)",
-        "locations": [
-          {
-            "file": "references/publishing.md",
-            "line_start": 201,
-            "line_end": 201
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "sensitive",
-        "source_severity": "high",
-        "confidence": 0.82,
-        "confidence_reasoning": "The section documents ~/.pypirc and nearby lines show token-style password placeholders, which encourages plaintext credential storage. The tokens are placeholders, but the guidance still carries credential handling risk."
-      },
-      {
-        "title": "Non-standard PyPI index",
-        "description": "uv pip install --index-url https://test.pypi.org/simple/ my-package",
-        "locations": [
-          {
-            "file": "references/publishing.md",
-            "line_start": 77,
-            "line_end": 77
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "blocker",
-        "source_severity": "high",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed blocker/high static finding; AI dismissal overridden."
-      },
-      {
-        "title": "Broad Bash Tool Permission",
-        "description": "The skill metadata grants Bash access, and the skill contains many command-oriented workflows. This is useful for uv management, but it increases risk if commands are approved without review.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 6,
-            "line_end": 6
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "semantic",
-        "source_severity": "high",
-        "confidence": 0.88,
-        "confidence_reasoning": "The allowed-tools metadata explicitly lists Bash. The finding is contextual because Bash is expected for this skill, but broad shell permission is still material for a community skill."
-      }
-    ],
+    "high_findings": [],
     "medium_findings": [],
     "low_findings": [
-      {
-        "title": "Hardcoded URL",
-        "description": "--extra-index-url https://pypi.private.com/simple/",
-        "locations": [
-          {
-            "file": "references/dependency-management.md",
-            "line_start": 194,
-            "line_end": 194
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.66,
-        "confidence_reasoning": "The requirements example uses --extra-index-url with public and private packages, which can create dependency confusion if copied without safeguards. It is legitimate documentation, but the supply-chain risk is real."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "\"my-package @ git+https://github.com/user/repo.git@main\",",
-        "locations": [
-          {
-            "file": "references/dependency-management.md",
-            "line_start": 207,
-            "line_end": 207
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.63,
-        "confidence_reasoning": "The Git dependency example pins to the main branch, so installs can change without a reviewed version tag or commit. This is a low supply-chain risk in documentation."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "git+https://github.com/user/repo.git@main#egg=my-package",
-        "locations": [
-          {
-            "file": "references/dependency-management.md",
-            "line_start": 214,
-            "line_end": 214
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.63,
-        "confidence_reasoning": "The requirements example installs a Git dependency from the main branch, which is not reproducible. This is a low supply-chain risk if copied directly."
-      },
       {
         "title": "Hardcoded URL",
         "description": "compatibility: \"Requires uv CLI tool. Install: curl -LsSf https://astral.sh/uv/install.sh | sh\"",
@@ -2084,27 +1918,11 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.92,
-        "confidence_reasoning": "The compatibility metadata points to a remote installer URL that is used for executable setup. The domain is the official uv installer, but it is still a network-sourced install path."
+        "confidence": 0.9,
+        "confidence_reasoning": "The hardcoded URL is part of the curl-to-shell install instruction in SKILL.md line 5. The URL is not malicious by itself, but it supports remote code retrieval for shell execution."
       }
     ],
     "dangerous_patterns": [
-      {
-        "title": "Non-standard PyPI index",
-        "description": "uv pip install --index-url https://test.pypi.org/simple/ my-package",
-        "locations": [
-          {
-            "file": "references/publishing.md",
-            "line_start": 77,
-            "line_end": 77
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "blocker",
-        "source_severity": "high",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed blocker/high static finding; AI dismissal overridden."
-      },
       {
         "title": "Pipe to shell pattern",
         "description": "compatibility: \"Requires uv CLI tool. Install: curl -LsSf https://astral.sh/uv/install.sh | sh\"",
@@ -2118,133 +1936,144 @@
         "review_kind": "security",
         "source_category": "blocker",
         "source_severity": "critical",
-        "confidence": 0.96,
-        "confidence_reasoning": "The metadata instructs users to pipe a downloaded installer script directly into sh. This executes remote code without local review or integrity verification."
+        "confidence": 0.98,
+        "confidence_reasoning": "SKILL.md line 5 tells users to run a remote installer through a shell pipeline. That executes network-fetched code without local inspection or integrity verification."
       }
     ],
     "files_scanned": 6,
-    "total_lines": 1095,
+    "total_lines": 1096,
     "audit_model": "codex",
-    "audited_at": "2026-07-04T13:09:31.582Z",
+    "audited_at": "2026-07-09T10:55:40.770Z",
     "agent_auto_install_policy": "blocked",
     "manual_install_policy": "allowed_with_warning"
   },
   "content": {
     "user_title": "Manage Python Environments with uv",
-    "value_statement": "Python projects often drift across pip, venv, and pyproject workflows. This skill guides Claude, Codex, and Claude Code through uv-based setup, dependency changes, locking, running, and publishing.",
+    "value_statement": "Python dependency and virtual environment setup can become slow and inconsistent. This skill guides uv workflows for projects, lock files, tools, and publishing.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
-      "Python environment management",
       "uv Python",
+      "Python environment management",
       "pyproject.toml",
-      "dependency locking",
-      "Python packaging",
+      "Python dependencies",
       "virtual environments",
-      "PyPI publishing"
+      "Python packaging",
+      "lock files"
     ],
     "actual_capabilities": [
-      "Creates new app or package projects with uv init guidance.",
-      "Adds, removes, syncs, and locks dependencies with uv project commands.",
-      "Explains pyproject.toml patterns for runtime, dev, optional, and script dependencies.",
-      "Documents uv run, uv tool, and uvx workflows for local execution.",
-      "Provides references for private indexes, workspaces, CI cache patterns, and publishing.",
-      "Covers TestPyPI, PyPI, changelog, version, and trusted publishing workflows."
+      "Explains uv project commands such as init, add, sync, lock, run, tool, and Python install.",
+      "Shows pyproject.toml patterns for applications, CLI packages, FastAPI services, and dependency groups.",
+      "Documents workflows for workspaces, private indexes, Git dependencies, local paths, and lock files.",
+      "Provides publishing guidance for builds, TestPyPI checks, changelogs, GitHub Actions, and trusted publishing.",
+      "Includes troubleshooting guidance for Python versions, lock conflicts, stale environments, and cache problems."
     ],
     "limitations": [
-      "Requires the uv CLI to be installed before commands can run.",
-      "Assumes users approve shell commands and review network package sources.",
-      "Provides documentation patterns; it does not verify package integrity automatically.",
-      "Publishing examples require project-specific credentials, repository settings, and CI permissions."
+      "It is reference guidance, not an automated environment manager by itself.",
+      "It assumes the uv CLI is installed or available.",
+      "It does not verify package safety or dependency provenance.",
+      "Some examples require network access, credentials, or publisher permissions."
     ],
     "use_cases": [
       {
-        "title": "Start a Python project",
-        "description": "Create a new uv-managed application or package with a pyproject.toml file and lockfile workflow.",
-        "target_user": "Solo developer"
+        "title": "Start a uv Project",
+        "description": "Create a Python application or package layout with clear dependency groups and repeatable setup commands.",
+        "target_user": "Python developer"
       },
       {
-        "title": "Standardize team dependencies",
-        "description": "Use uv sync, uv lock, and dependency groups to keep local and CI environments aligned.",
-        "target_user": "Engineering team"
+        "title": "Standardize Team Environments",
+        "description": "Use lock files, uv sync, and CI cache patterns to make local and automated runs consistent.",
+        "target_user": "Platform engineer"
       },
       {
-        "title": "Prepare a package release",
-        "description": "Follow build, TestPyPI, PyPI, changelog, and trusted publishing guidance for a release.",
+        "title": "Prepare Package Releases",
+        "description": "Plan builds, TestPyPI checks, changelog steps, GitHub Actions, and trusted publishing workflows.",
         "target_user": "Package maintainer"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Set up a new project",
-        "scenario": "Beginner project setup",
-        "prompt": "Use the python-env skill to create a uv setup plan for a new Python application named atlas. Include Python version, dependencies, and first test command."
+        "title": "Create a New Project",
+        "scenario": "Beginner setup",
+        "prompt": "Create a new uv project for a Python CLI. Recommend the package layout, dependency groups, and first commands."
       },
       {
-        "title": "Add dependencies safely",
-        "scenario": "Everyday dependency change",
-        "prompt": "Use the python-env skill to add runtime and development dependencies to this project. Explain which uv commands update pyproject.toml and the lockfile."
+        "title": "Add Dependencies Cleanly",
+        "scenario": "Dependency management",
+        "prompt": "Review this pyproject.toml and suggest uv commands to add runtime, dev, and optional dependencies cleanly: [paste file]."
       },
       {
-        "title": "Normalize an existing project",
-        "scenario": "Migration from pip or venv",
-        "prompt": "Use the python-env skill to move this existing Python project toward uv. Review requirements files, pyproject.toml, lockfile needs, and command changes."
+        "title": "Migrate from pip",
+        "scenario": "Workflow migration",
+        "prompt": "Migrate this requirements.txt workflow to uv project management. Preserve version constraints and explain lock file steps: [paste details]."
       },
       {
-        "title": "Plan a package release",
-        "scenario": "Advanced publishing workflow",
-        "prompt": "Use the python-env skill to prepare a release checklist for this package. Include versioning, build checks, TestPyPI validation, and trusted publishing."
+        "title": "Design a Release Workflow",
+        "scenario": "Advanced packaging",
+        "prompt": "Design a release workflow for my Python package with uv, TestPyPI validation, GitHub Actions, and trusted publishing: [project details]."
       }
     ],
     "output_examples": [
       {
-        "input": "Set up a new uv project for a small CLI tool.",
-        "output": "A short setup plan with project initialization, Python version choice, runtime dependencies, dev tools, lockfile sync, and test execution."
+        "input": "Create a new Python CLI package with linting and tests.",
+        "output": [
+          "Recommends an installable package layout for clean imports.",
+          "Separates runtime dependencies from test, lint, and type-check dependencies.",
+          "Explains how to run commands through the uv-managed environment."
+        ]
       },
       {
-        "input": "Review my dependency workflow before CI runs.",
-        "output": "A dependency checklist covering lockfile freshness, dependency groups, uv sync behavior, and commands that should run in CI."
+        "input": "Move an existing requirements.txt workflow to uv.",
+        "output": [
+          "Identifies which dependencies belong in project metadata and development groups.",
+          "Describes how to generate and use a lock file for repeatable installs.",
+          "Calls out legacy cases where uv pip may still be needed."
+        ]
       },
       {
-        "input": "Prepare my package for publishing.",
-        "output": "A release workflow covering metadata, build artifacts, validation, TestPyPI installation, production upload, and trusted publishing setup."
+        "input": "Prepare a package for PyPI release.",
+        "output": [
+          "Outlines build, artifact check, TestPyPI validation, and production publishing steps.",
+          "Recommends trusted publishing to avoid long-lived API tokens in CI.",
+          "Highlights changelog and versioning tasks before release."
+        ]
       }
     ],
     "best_practices": [
-      "Use uv project commands first, and reserve uv pip for legacy or unmanaged environments.",
-      "Review package sources before using private indexes, Git dependencies, or TestPyPI installs.",
-      "Run commands through uv run so tools use the project environment."
+      "Use uv project commands and lock files when you control the project.",
+      "Run tools through uv run so they use the project environment.",
+      "Use trusted publishing for PyPI releases when available."
     ],
     "anti_patterns": [
-      "Do not mix bare python, pytest, or ruff commands with a uv-managed project.",
-      "Do not copy private index or token examples without adding project-specific security controls.",
-      "Do not publish from a dirty or unverified build directory."
+      "Do not use bare python, pytest, or ruff inside a uv project.",
+      "Do not store real package tokens in shared examples or repositories.",
+      "Do not use uv pip when uv can manage the project directly."
     ],
     "faq": [
       {
-        "question": "What does this skill help with?",
-        "answer": "It helps manage Python environments, dependencies, lockfiles, execution, and publishing with uv."
+        "question": "Does this skill install uv for me?",
+        "answer": "No. It explains uv workflows and lists uv as a prerequisite. Installation remains a user-controlled step."
       },
       {
-        "question": "Does this skill install uv automatically?",
-        "answer": "No. The user must install uv and approve any shell commands before use."
+        "question": "Can it help migrate from pip?",
+        "answer": "Yes. It explains when to use uv project commands and when uv pip is only a compatibility option."
       },
       {
-        "question": "Can it replace pip workflows?",
-        "answer": "It recommends uv project workflows for most projects and explains uv pip for legacy cases."
+        "question": "Does it create or modify files automatically?",
+        "answer": "The skill provides commands and patterns. File changes happen only when the user or agent runs those commands."
       },
       {
-        "question": "Does it support pyproject.toml?",
-        "answer": "Yes. It includes examples for dependencies, optional dependencies, scripts, tooling, and project metadata."
+        "question": "Does it support package publishing?",
+        "answer": "Yes. It covers builds, TestPyPI checks, changelogs, GitHub Actions, and trusted publishing."
       },
       {
-        "question": "Can it help with package publishing?",
-        "answer": "Yes. It covers build checks, TestPyPI validation, PyPI upload, changelogs, and trusted publishing."
+        "question": "Can it manage private package indexes?",
+        "answer": "Yes. It documents private index configuration and environment-based credentials. Do not commit credentials."
       },
       {
-        "question": "What should users review before running commands?",
-        "answer": "Users should review package names, indexes, Git sources, credentials, and file paths before approving commands."
+        "question": "What tools does it support?",
+        "answer": "It is marked for Claude, Codex, and Claude Code."
       }
     ]
   },
@@ -2304,7 +2133,7 @@
       "name": "SKILL.md",
       "type": "file",
       "path": "SKILL.md",
-      "lines": 174
+      "lines": 175
     }
   ]
 }

@@ -1,20 +1,23 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T19:31:14.966Z",
+    "generated_at": "2026-07-09T08:32:12.073Z",
     "slug": "am-will-role-creator",
     "source_url": "https://github.com/am-will/codex-skills/tree/main/skills/role-creator/",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "2ab043fb9526aa1f9d5afda47789ba7ae3bc3a75b7baa280a2a5a8a7690c88f0",
-    "tree_hash": "5570dbda6d03784eba707e15f74100f48fbdc088a9ca9acfb9900523e443255c",
+    "content_hash": "fd6579fffe970d2660b89f312b1ce202c2e2fb7e145b48b52ee8f68618bf0186",
+    "tree_hash": "58a1cdbdbcec487074ca3a81e1e15e46b6d4ce56582ecfa3798a9ab2b5c44a39",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
       "fallback_chain": [
         {
           "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -23,10 +26,10 @@
   },
   "skill": {
     "name": "role-creator",
-    "description": "Create and update Codex custom agent TOML files with explicit scope, model, reasoning, and validation steps.",
-    "summary": "Build focused Codex custom agents as standalone TOML role files.",
+    "description": "Create, update, and validate Codex custom agent TOML files with explicit role settings.",
+    "summary": "Build standalone Codex custom agent configuration files with validation guidance.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "am-will",
     "license": "MIT",
     "tags": [
@@ -47,34 +50,29 @@
       "external_commands",
       "network"
     ],
-    "category": "devops"
+    "category": "coding"
   },
   "security_audit": {
-    "risk_level": "medium",
+    "risk_level": "safe",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The skill is a legitimate Codex custom-agent authoring tool, but it intentionally writes persistent Codex configuration under hidden agent paths. Most Markdown command and documentation URL detections are false positives, while hidden config writes, developer-instructions file reads, and MCP filter construction require clear warnings and tighter validation.",
+    "summary": "Static alerts are false positives caused by expected Codex config paths, Markdown code formatting, documentation links, and quoted shell helper calls. I found no prompt injection attempt, credential exfiltration, covert network behavior, or malicious intent in the cited files. The scripts still edit local Codex configuration, so users should review paths before running them.",
     "remediation": [
       {
-        "issue": "Persistent writes to hidden Codex configuration paths",
-        "suggestion": "Require explicit confirmation before writing under ~/.codex or project .codex directories, and show the exact target path before changes.",
-        "severity": "high"
-      },
-      {
-        "issue": "User-controlled MCP names are interpolated into a generated tomlq filter",
-        "suggestion": "Validate MCP server names with a safe identifier regex and bind names through jq or tomlq variables instead of string concatenation.",
+        "issue": "Helper scripts can write to user-selected output and Codex configuration paths.",
+        "suggestion": "Add a dry-run mode and require an explicit confirmation message before modifying global Codex files.",
         "severity": "medium"
       },
       {
-        "issue": "Developer instructions can be loaded from any user-provided file path",
-        "suggestion": "Document that file contents are copied into the agent config and require confirmation for hidden, home, or system paths.",
+        "issue": "MCP server names are inserted into generated tomlq filter text.",
+        "suggestion": "Validate MCP server names against a conservative character allowlist before building the filter expression.",
         "severity": "medium"
       },
       {
-        "issue": "Optional runtime settings can expand agent filesystem and network authority",
-        "suggestion": "Keep minimal defaults and warn before enabling danger-full-access, network access, live web search, or MCP server changes.",
-        "severity": "medium"
+        "issue": "The README examples use an author-specific absolute script path.",
+        "suggestion": "Replace the absolute path with a repository-relative path so users do not copy a stale local path.",
+        "severity": "low"
       }
     ],
     "risk_factor_evidence": [
@@ -1219,1042 +1217,606 @@
     "finding_verdicts": [
       {
         "id": "filesystem:references/role-config-reference.md:10:hidden-file-in-home-directory",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "high"
+        "verdict": "false_positive",
+        "confidence": 0.94,
+        "reason": "This is documentation for expected Codex configuration paths, not runtime access to hidden files. It does not read, write, or hide user data."
       },
       {
         "id": "filesystem:references/role-config-reference.md:15:hidden-file-in-home-directory",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "high"
+        "verdict": "false_positive",
+        "confidence": 0.94,
+        "reason": "This is documentation for expected Codex configuration paths, not runtime access to hidden files. It does not read, write, or hide user data."
       },
       {
         "id": "filesystem:references/role-config-reference.md:10:hidden-file-access",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.94,
+        "reason": "This is documentation for expected Codex configuration paths, not runtime access to hidden files. It does not read, write, or hide user data."
       },
       {
         "id": "filesystem:references/role-config-reference.md:15:hidden-file-access",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.94,
+        "reason": "This is documentation for expected Codex configuration paths, not runtime access to hidden files. It does not read, write, or hide user data."
       },
       {
         "id": "env_access:references/role-config-reference.md:119:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited API key text is a placeholder environment variable name in documentation or an example TOML template. The skill does not read or transmit the secret value at this location."
+        "confidence": 0.95,
+        "reason": "The line names an environment variable for an MCP example and does not include a secret value. No code reads or transmits the variable here."
       },
       {
         "id": "blocker:references/role-config-reference.md:27:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited text is validation wording, documentation, or option help text, not reconnaissance behavior. No system or network enumeration occurs at this location."
+        "confidence": 0.93,
+        "reason": "The text explains valid TOML configuration keys. It does not inspect the host system or enumerate local resources."
       },
       {
         "id": "external_commands:scripts/install_role.sh:53:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The command substitution calls fixed utilities such as dirname, tomlq, date, or mktemp with quoted variables. I did not find shell evaluation of untrusted input in this script."
+        "confidence": 0.89,
+        "reason": "The substitution calls dirname on a quoted config path to create its parent directory. It does not execute user-controlled text as a command."
       },
       {
         "id": "external_commands:scripts/install_role.sh:58:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The command substitution calls fixed utilities such as dirname, tomlq, date, or mktemp with quoted variables. I did not find shell evaluation of untrusted input in this script."
+        "confidence": 0.86,
+        "reason": "The script invokes tomlq with quoted arguments and passes user data through --arg. This is expected TOML inspection, not command injection."
       },
       {
         "id": "external_commands:scripts/install_role.sh:71:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The command substitution calls fixed utilities such as dirname, tomlq, date, or mktemp with quoted variables. I did not find shell evaluation of untrusted input in this script."
+        "confidence": 0.93,
+        "reason": "date is used only to add a timestamp to a local backup path. There is no user-controlled command execution."
       },
       {
         "id": "external_commands:scripts/install_role.sh:74:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The command substitution calls fixed utilities such as dirname, tomlq, date, or mktemp with quoted variables. I did not find shell evaluation of untrusted input in this script."
+        "confidence": 0.93,
+        "reason": "mktemp is used to create a temporary file for an atomic config update. The pattern is a standard safe helper call."
       },
       {
         "id": "filesystem:scripts/install_role.sh:10:hidden-file-in-home-directory",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "high"
+        "verdict": "false_positive",
+        "confidence": 0.87,
+        "reason": "The hidden path is the documented Codex config location used by this role installer. The script requires explicit arguments and supports a custom config path."
       },
       {
         "id": "filesystem:scripts/install_role.sh:10:hidden-file-access",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.87,
+        "reason": "The hidden path is the documented Codex config location used by this role installer. The script requires explicit arguments and supports a custom config path."
       },
       {
         "id": "filesystem:scripts/install_role.sh:17:hidden-file-access",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.87,
+        "reason": "The hidden path is the documented Codex config location used by this role installer. The script requires explicit arguments and supports a custom config path."
       },
       {
         "id": "filesystem:scripts/install_role.sh:58:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The script redirects tomlq errors to /dev/null while probing whether a role exists. This suppresses expected parse noise and does not expose or overwrite device files."
+        "confidence": 0.92,
+        "reason": "The device access is stderr redirection during a tomlq existence check. It does not access a sensitive device or collect data."
       },
       {
         "id": "filesystem:scripts/install_role.sh:74:temp-file-creation",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "The script uses mktemp to create an unpredictable temporary file before atomically replacing the target config. This is the safer temporary-file pattern, not a predictable path risk."
+        "reason": "The script uses mktemp for a temporary output file before moving it into place. This is a normal local write pattern."
       },
       {
         "id": "external_commands:scripts/validate_role.sh:49:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.89,
-        "reason": "The command substitution captures jq or tomlq validation results using quoted paths and fixed filters. It validates user-selected files and does not execute generated commands."
+        "reason": "The command substitution captures jq or tomlq output while validating explicit config and schema files. Inputs are quoted and no shell eval is used."
       },
       {
         "id": "external_commands:scripts/validate_role.sh:50:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.89,
-        "reason": "The command substitution captures jq or tomlq validation results using quoted paths and fixed filters. It validates user-selected files and does not execute generated commands."
+        "reason": "The command substitution captures jq or tomlq output while validating explicit config and schema files. Inputs are quoted and no shell eval is used."
       },
       {
         "id": "external_commands:scripts/validate_role.sh:56:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.89,
-        "reason": "The command substitution captures jq or tomlq validation results using quoted paths and fixed filters. It validates user-selected files and does not execute generated commands."
+        "reason": "The command substitution captures jq or tomlq output while validating explicit config and schema files. Inputs are quoted and no shell eval is used."
       },
       {
         "id": "external_commands:scripts/validate_role.sh:62:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.89,
-        "reason": "The command substitution captures jq or tomlq validation results using quoted paths and fixed filters. It validates user-selected files and does not execute generated commands."
+        "reason": "The command substitution captures jq or tomlq output while validating explicit config and schema files. Inputs are quoted and no shell eval is used."
       },
       {
         "id": "external_commands:scripts/validate_role.sh:63:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.89,
-        "reason": "The command substitution captures jq or tomlq validation results using quoted paths and fixed filters. It validates user-selected files and does not execute generated commands."
+        "reason": "The command substitution captures jq or tomlq output while validating explicit config and schema files. Inputs are quoted and no shell eval is used."
       },
       {
         "id": "external_commands:scripts/validate_role.sh:64:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.89,
-        "reason": "The command substitution captures jq or tomlq validation results using quoted paths and fixed filters. It validates user-selected files and does not execute generated commands."
+        "reason": "The command substitution captures jq or tomlq output while validating explicit config and schema files. Inputs are quoted and no shell eval is used."
       },
       {
         "id": "external_commands:scripts/validate_role.sh:71:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.89,
-        "reason": "The command substitution captures jq or tomlq validation results using quoted paths and fixed filters. It validates user-selected files and does not execute generated commands."
+        "reason": "The command substitution captures jq or tomlq output while validating explicit config and schema files. Inputs are quoted and no shell eval is used."
       },
       {
         "id": "external_commands:scripts/write_role_config.sh:141:shell-command-substitution",
-        "verdict": "confirmed",
-        "confidence": 0.72,
-        "reason": "The script reads an arbitrary user-provided developer-instructions file and copies its contents into a persistent agent config. This is legitimate functionality but can disclose local file contents if misused.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.78,
+        "reason": "cat reads a user-provided developer-instructions file into the generated local config. This can copy unintended content if misused, but it is not command execution or exfiltration."
       },
       {
         "id": "external_commands:scripts/write_role_config.sh:151:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The command substitution performs file path creation or CSV-to-JSON conversion with quoted variables and fixed jq filters. I did not find arbitrary shell command execution at this location."
+        "confidence": 0.87,
+        "reason": "dirname is used on a quoted output path so the script can create the target directory. This is expected local file generation, not command injection."
       },
       {
         "id": "external_commands:scripts/write_role_config.sh:155:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.86,
-        "reason": "The command substitution performs file path creation or CSV-to-JSON conversion with quoted variables and fixed jq filters. I did not find arbitrary shell command execution at this location."
+        "reason": "The script pipes CSV text into jq to build JSON arrays for TOML output. The input is data to jq, not shell code."
       },
       {
         "id": "external_commands:scripts/write_role_config.sh:173:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.86,
-        "reason": "The command substitution performs file path creation or CSV-to-JSON conversion with quoted variables and fixed jq filters. I did not find arbitrary shell command execution at this location."
+        "reason": "The script pipes CSV text into jq to build JSON arrays for TOML output. The input is data to jq, not shell code."
       },
       {
         "id": "external_commands:scripts/write_role_config.sh:188:shell-command-substitution",
-        "verdict": "confirmed",
-        "confidence": 0.78,
-        "reason": "The trimmed MCP name comes from user-controlled CSV input and is later interpolated into a generated tomlq filter. Without name validation, crafted values can alter the output expression.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.82,
+        "reason": "The xargs call trims a user-provided MCP server name before writing config. It does not execute the name as a shell command."
       },
       {
         "id": "external_commands:scripts/write_role_config.sh:198:shell-command-substitution",
-        "verdict": "confirmed",
-        "confidence": 0.78,
-        "reason": "The trimmed MCP name comes from user-controlled CSV input and is later interpolated into a generated tomlq filter. Without name validation, crafted values can alter the output expression.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.82,
+        "reason": "The xargs call trims a user-provided MCP server name before writing config. It does not execute the name as a shell command."
       },
       {
         "id": "blocker:scripts/write_role_config.sh:100:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited text is validation wording, documentation, or option help text, not reconnaissance behavior. No system or network enumeration occurs at this location."
+        "confidence": 0.94,
+        "reason": "This is an input validation error message for invalid user-supplied options. It does not perform system reconnaissance."
       },
       {
         "id": "blocker:scripts/write_role_config.sh:108:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited text is validation wording, documentation, or option help text, not reconnaissance behavior. No system or network enumeration occurs at this location."
+        "confidence": 0.94,
+        "reason": "This is an input validation error message for invalid user-supplied options. It does not perform system reconnaissance."
       },
       {
         "id": "blocker:scripts/write_role_config.sh:117:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited text is validation wording, documentation, or option help text, not reconnaissance behavior. No system or network enumeration occurs at this location."
+        "confidence": 0.94,
+        "reason": "This is an input validation error message for invalid user-supplied options. It does not perform system reconnaissance."
       },
       {
         "id": "blocker:scripts/write_role_config.sh:126:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited text is validation wording, documentation, or option help text, not reconnaissance behavior. No system or network enumeration occurs at this location."
+        "confidence": 0.94,
+        "reason": "This is an input validation error message for invalid user-supplied options. It does not perform system reconnaissance."
       },
       {
         "id": "blocker:scripts/write_role_config.sh:147:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited text is validation wording, documentation, or option help text, not reconnaissance behavior. No system or network enumeration occurs at this location."
+        "confidence": 0.94,
+        "reason": "The text is default role instruction prose and does not inspect the system. No reconnaissance behavior is present."
       },
       {
         "id": "blocker:scripts/write_role_config.sh:22:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited text is validation wording, documentation, or option help text, not reconnaissance behavior. No system or network enumeration occurs at this location."
+        "confidence": 0.94,
+        "reason": "The line lists allowed sandbox mode values in usage text. It does not perform network discovery or scanning."
       },
       {
         "id": "external_commands:SKILL.md:14:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:15:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:17:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:23:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:30:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:38:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:39:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:43:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:60:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:65:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:71:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown fences around example commands. They document how to run helper scripts and are not executed by the skill text."
       },
       {
         "id": "external_commands:SKILL.md:92:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown fences around example commands. They document how to run helper scripts and are not executed by the skill text."
       },
       {
         "id": "external_commands:SKILL.md:96:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:97:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:102:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:103:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The cited text is Markdown inline code or a fenced example block, not Ruby or shell backtick execution by the runtime. Executable shell behavior is reviewed in the script files separately."
+        "confidence": 0.97,
+        "reason": "The backticks are Markdown inline code formatting for paths, keys, or examples. They are not Ruby or shell execution."
       },
       {
         "id": "network:SKILL.md:102:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The URL is a reference to official Codex documentation, not a runtime network request. No data is fetched or sent by the skill at this location."
+        "reason": "The URL is a documentation reference to OpenAI developer docs. The skill text does not fetch the URL or send data to it."
       },
       {
         "id": "network:SKILL.md:103:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The URL is a reference to official Codex documentation, not a runtime network request. No data is fetched or sent by the skill at this location."
+        "reason": "The URL is a documentation reference to OpenAI developer docs. The skill text does not fetch the URL or send data to it."
       },
       {
         "id": "filesystem:SKILL.md:14:hidden-file-in-home-directory",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "high"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The path names expected Codex agent or config locations for the user-facing workflow. It is transparent documentation, not covert hidden-file access."
       },
       {
         "id": "filesystem:SKILL.md:17:hidden-file-in-home-directory",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "high"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The path names expected Codex agent or config locations for the user-facing workflow. It is transparent documentation, not covert hidden-file access."
       },
       {
         "id": "filesystem:SKILL.md:59:hidden-file-in-home-directory",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "high"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The path names expected Codex agent or config locations for the user-facing workflow. It is transparent documentation, not covert hidden-file access."
       },
       {
         "id": "filesystem:SKILL.md:74:hidden-file-in-home-directory",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "high"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The path names expected Codex agent or config locations for the user-facing workflow. It is transparent documentation, not covert hidden-file access."
       },
       {
         "id": "filesystem:SKILL.md:83:hidden-file-in-home-directory",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "high"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The path names expected Codex agent or config locations for the user-facing workflow. It is transparent documentation, not covert hidden-file access."
       },
       {
         "id": "filesystem:SKILL.md:14:hidden-file-access",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The path names expected Codex agent or config locations for the user-facing workflow. It is transparent documentation, not covert hidden-file access."
       },
       {
         "id": "filesystem:SKILL.md:15:hidden-file-access",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The path names expected Codex agent or config locations for the user-facing workflow. It is transparent documentation, not covert hidden-file access."
       },
       {
         "id": "filesystem:SKILL.md:17:hidden-file-access",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The path names expected Codex agent or config locations for the user-facing workflow. It is transparent documentation, not covert hidden-file access."
       },
       {
         "id": "filesystem:SKILL.md:59:hidden-file-access",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The path names expected Codex agent or config locations for the user-facing workflow. It is transparent documentation, not covert hidden-file access."
       },
       {
         "id": "filesystem:SKILL.md:60:hidden-file-access",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The path names expected Codex agent or config locations for the user-facing workflow. It is transparent documentation, not covert hidden-file access."
       },
       {
         "id": "filesystem:SKILL.md:74:hidden-file-access",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The path names expected Codex agent or config locations for the user-facing workflow. It is transparent documentation, not covert hidden-file access."
       },
       {
         "id": "filesystem:SKILL.md:83:hidden-file-access",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The path names expected Codex agent or config locations for the user-facing workflow. It is transparent documentation, not covert hidden-file access."
       },
       {
         "id": "blocker:SKILL.md:98:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited text is validation wording, documentation, or option help text, not reconnaissance behavior. No system or network enumeration occurs at this location."
+        "confidence": 0.95,
+        "reason": "The sentence is guidance to keep role instructions scoped. It does not gather host information or bypass safeguards."
       },
       {
         "id": "env_access:templates/full-role-config.toml:28:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited API key text is a placeholder environment variable name in documentation or an example TOML template. The skill does not read or transmit the secret value at this location."
+        "confidence": 0.95,
+        "reason": "The template contains an environment variable name for a Linear MCP example, not a secret value. It does not read or transmit the variable."
       }
     ],
-    "semantic_findings": [
-      {
-        "title": "Filter Injection in MCP Server Names",
-        "description": "scripts/write_role_config.sh trims names from --mcp-enable and --mcp-disable, then interpolates them into the tomlq filter. A crafted name containing filter syntax could alter fields outside the intended mcp_servers entry.",
-        "severity": "medium",
-        "locations": [
-          {
-            "file": "scripts/write_role_config.sh",
-            "line_start": 185,
-            "line_end": 200
-          }
-        ],
-        "confidence": 0.82,
-        "confidence_reasoning": "The CSV values are user-controlled and only trimmed before being inserted into the filter string. No name validation or jq variable binding protects the generated expression."
-      },
-      {
-        "title": "Permissive Runtime Options in Persistent Roles",
-        "description": "The skill can write sandbox_mode, network_access, web_search, and MCP settings into persistent Codex role files. This is legitimate functionality, but unsafe choices can expand a custom agent filesystem or network authority.",
-        "severity": "medium",
-        "locations": [
-          {
-            "file": "scripts/write_role_config.sh",
-            "line_start": 20,
-            "line_end": 28
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 40,
-            "line_end": 40
-          }
-        ],
-        "confidence": 0.86,
-        "confidence_reasoning": "Both the command interface and the skill contract list optional runtime permission controls. The skill defaults to minimal settings, so the issue is permission disclosure and confirmation rather than malicious intent."
-      }
-    ],
+    "semantic_findings": [],
     "critical_findings": [],
-    "high_findings": [
-      {
-        "title": "Hidden file in home directory",
-        "description": "## Role Declaration Shape (`~/.codex/config.toml`)",
-        "locations": [
-          {
-            "file": "references/role-config-reference.md",
-            "line_start": 10,
-            "line_end": 10
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "high",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Hidden file in home directory",
-        "description": "config_file = \"~/.codex/agents/researcher.toml\"",
-        "locations": [
-          {
-            "file": "references/role-config-reference.md",
-            "line_start": 15,
-            "line_end": 15
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "high",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Hidden file in home directory",
-        "description": "--config PATH          Target config.toml (default: ~/.codex/config.toml)",
-        "locations": [
-          {
-            "file": "scripts/install_role.sh",
-            "line_start": 10,
-            "line_end": 10
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "high",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Hidden file in home directory",
-        "description": "- Global: `~/.codex/agents/<agent-name>.toml`",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 14,
-            "line_end": 14
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "high",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Hidden file in home directory",
-        "description": "- `~/.codex/config.toml` is only for global/runtime settings (for example `[agents]` thread limits),",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 17,
-            "line_end": 17
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "high",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Hidden file in home directory",
-        "description": "- `global` → `~/.codex/agents/<name>.toml`",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 59,
-            "line_end": 59
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "high",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Hidden file in home directory",
-        "description": "--output ~/.codex/agents/reviewer.toml \\",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 74,
-            "line_end": 74
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "high",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Hidden file in home directory",
-        "description": "--output ~/.codex/agents/reviewer.toml \\",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 83,
-            "line_end": 83
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "high",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      }
-    ],
-    "medium_findings": [
-      {
-        "title": "Hidden file access",
-        "description": "## Role Declaration Shape (`~/.codex/config.toml`)",
-        "locations": [
-          {
-            "file": "references/role-config-reference.md",
-            "line_start": 10,
-            "line_end": 10
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Hidden file access",
-        "description": "config_file = \"~/.codex/agents/researcher.toml\"",
-        "locations": [
-          {
-            "file": "references/role-config-reference.md",
-            "line_start": 15,
-            "line_end": 15
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Hidden file access",
-        "description": "--config PATH          Target config.toml (default: ~/.codex/config.toml)",
-        "locations": [
-          {
-            "file": "scripts/install_role.sh",
-            "line_start": 10,
-            "line_end": 10
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Hidden file access",
-        "description": "config_path=\"${HOME}/.codex/config.toml\"",
-        "locations": [
-          {
-            "file": "scripts/install_role.sh",
-            "line_start": 17,
-            "line_end": 17
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Shell command substitution",
-        "description": "developer_instructions=\"$(cat \"$developer_instructions_file\")\"",
-        "locations": [
-          {
-            "file": "scripts/write_role_config.sh",
-            "line_start": 141,
-            "line_end": 141
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The script reads an arbitrary user-provided developer-instructions file and copies its contents into a persistent agent config. This is legitimate functionality but can disclose local file contents if misused."
-      },
-      {
-        "title": "Shell command substitution",
-        "description": "trimmed=\"$(printf '%s' \"$name\" | xargs)\"",
-        "locations": [
-          {
-            "file": "scripts/write_role_config.sh",
-            "line_start": 188,
-            "line_end": 188
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The trimmed MCP name comes from user-controlled CSV input and is later interpolated into a generated tomlq filter. Without name validation, crafted values can alter the output expression."
-      },
-      {
-        "title": "Shell command substitution",
-        "description": "trimmed=\"$(printf '%s' \"$name\" | xargs)\"",
-        "locations": [
-          {
-            "file": "scripts/write_role_config.sh",
-            "line_start": 198,
-            "line_end": 198
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The trimmed MCP name comes from user-controlled CSV input and is later interpolated into a generated tomlq filter. Without name validation, crafted values can alter the output expression."
-      },
-      {
-        "title": "Hidden file access",
-        "description": "- Global: `~/.codex/agents/<agent-name>.toml`",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 14,
-            "line_end": 14
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Hidden file access",
-        "description": "- Project: `<project>/.codex/agents/<agent-name>.toml`",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 15,
-            "line_end": 15
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Hidden file access",
-        "description": "- `~/.codex/config.toml` is only for global/runtime settings (for example `[agents]` thread limits),",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 17,
-            "line_end": 17
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Hidden file access",
-        "description": "- `global` → `~/.codex/agents/<name>.toml`",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 59,
-            "line_end": 59
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Hidden file access",
-        "description": "- `project` → `<project>/.codex/agents/<name>.toml`",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 60,
-            "line_end": 60
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Hidden file access",
-        "description": "--output ~/.codex/agents/reviewer.toml \\",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 74,
-            "line_end": 74
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Hidden file access",
-        "description": "--output ~/.codex/agents/reviewer.toml \\",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 83,
-            "line_end": 83
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The finding points to hidden Codex agent or config paths used by this skill. This is intended behavior, but it creates persistent configuration under dot-directories and needs explicit user consent."
-      },
-      {
-        "title": "Filter Injection in MCP Server Names",
-        "description": "scripts/write_role_config.sh trims names from --mcp-enable and --mcp-disable, then interpolates them into the tomlq filter. A crafted name containing filter syntax could alter fields outside the intended mcp_servers entry.",
-        "locations": [
-          {
-            "file": "scripts/write_role_config.sh",
-            "line_start": 185,
-            "line_end": 200
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "semantic",
-        "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The CSV values are user-controlled and only trimmed before being inserted into the filter string. No name validation or jq variable binding protects the generated expression."
-      },
-      {
-        "title": "Permissive Runtime Options in Persistent Roles",
-        "description": "The skill can write sandbox_mode, network_access, web_search, and MCP settings into persistent Codex role files. This is legitimate functionality, but unsafe choices can expand a custom agent filesystem or network authority.",
-        "locations": [
-          {
-            "file": "scripts/write_role_config.sh",
-            "line_start": 20,
-            "line_end": 28
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 40,
-            "line_end": 40
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "semantic",
-        "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "Both the command interface and the skill contract list optional runtime permission controls. The skill defaults to minimal settings, so the issue is permission disclosure and confirmation rather than malicious intent."
-      }
-    ],
+    "high_findings": [],
+    "medium_findings": [],
     "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 9,
     "total_lines": 722,
     "audit_model": "codex",
-    "audited_at": "2026-07-07T19:31:14.966Z",
+    "audited_at": "2026-07-09T08:32:12.073Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Create Codex Custom Agents",
-    "value_statement": "Custom agent setup can be error-prone when paths and TOML fields differ. This skill creates, updates, and validates Codex role files with clear inputs.",
+    "value_statement": "Custom Codex agents need precise TOML files and clear runtime settings. This skill guides role design, writes configs, and validates required fields.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
-      "custom agent builder",
-      "Codex agents",
-      "TOML role configuration",
-      "AI agent roles",
+      "Codex custom agents",
+      "custom agent TOML",
+      "AI role configuration",
       "developer instructions",
-      "agent validation",
-      "workspace automation"
+      "subagent setup",
+      "TOML validation",
+      "agent templates"
     ],
     "actual_capabilities": [
-      "Collects required role name, description, model, reasoning effort, instructions, and scope before writing.",
-      "Creates standalone TOML files for global or project-scoped Codex custom agents.",
-      "Supports optional nickname candidates, sandbox mode, web search, network access, and MCP toggles.",
-      "Updates a Codex role declaration and can back up the existing config before replacing it.",
-      "Validates role declarations and role TOML files with jq and tomlq checks."
+      "Collects required role inputs before writing an agent file.",
+      "Resolves global and project Codex agent file paths.",
+      "Writes standalone custom-agent TOML with required keys.",
+      "Adds optional nicknames, sandbox, web search, and MCP settings when requested.",
+      "Validates role declarations and TOML keys with shell helpers.",
+      "Provides minimal, restricted, full, and frontend role templates."
     ],
     "limitations": [
-      "Requires explicit user inputs before it can safely write a role file.",
-      "Shell helpers depend on jq and tomlq being installed in the environment.",
-      "Can write to hidden Codex configuration locations when global or project paths are selected.",
-      "Does not verify external MCP packages, API permissions, or runtime model availability."
+      "Does not infer missing role names, models, or developer instructions.",
+      "Requires local shell tools such as tomlq and jq for scripts.",
+      "Can modify Codex configuration files when users run helper scripts.",
+      "Does not verify external MCP server trust or availability."
     ],
     "use_cases": [
       {
-        "title": "Create a focused reviewer role",
-        "description": "Define a project-scoped reviewer agent with clear instructions, model settings, and validation before use.",
-        "target_user": "Solo developer"
+        "title": "Create a project agent",
+        "description": "Define a focused Codex agent for one repository with clear instructions and model settings.",
+        "target_user": "Software engineer"
       },
       {
-        "title": "Standardize team agent templates",
-        "description": "Prepare repeatable role files for common tasks such as review, research, documentation, and planning.",
+        "title": "Standardize team roles",
+        "description": "Build repeatable agent profiles for review, research, planning, or implementation work.",
         "target_user": "Engineering lead"
       },
       {
-        "title": "Control agent runtime permissions",
-        "description": "Build roles with explicit sandbox, web search, and MCP settings when a workflow needs controlled capabilities.",
-        "target_user": "Platform engineer"
+        "title": "Audit role configuration",
+        "description": "Check that agent files use supported keys and include required role fields.",
+        "target_user": "Platform administrator"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Create a Basic Role",
-        "scenario": "Beginner setup for a simple custom agent.",
-        "prompt": "Create a project-scoped Codex agent named reviewer. Use medium reasoning, a concise description, and narrow developer instructions for code review."
+        "title": "Create a basic role",
+        "scenario": "Beginner setup for one agent.",
+        "prompt": "Create a project Codex agent named reviewer. It should review pull requests for correctness and security. Use medium reasoning."
       },
       {
-        "title": "Add Display Names",
-        "scenario": "Add optional nickname candidates for a role.",
-        "prompt": "Create a global Codex agent named researcher with three nickname candidates. Confirm the output path before writing the TOML file."
+        "title": "Add role details",
+        "scenario": "Define clear behavior before writing files.",
+        "prompt": "Help me design a global Codex agent for backend incident analysis. Ask for any missing required values before writing the role file."
       },
       {
-        "title": "Validate Existing Files",
-        "scenario": "Check a role declaration and role TOML file.",
-        "prompt": "Validate my existing Codex role named planner. Check the declaration, required fields, unsupported keys, and TOML parse status."
+        "title": "Update an existing role",
+        "scenario": "Modify a role while preserving explicit settings.",
+        "prompt": "Update my project reviewer agent to include nickname candidates and disabled web search. Validate the role after the change."
       },
       {
-        "title": "Configure Advanced Runtime Controls",
-        "scenario": "Advanced setup with explicit permissions.",
-        "prompt": "Create a project agent for release analysis with read-only sandboxing, cached web search, and no MCP servers unless I approve each one."
+        "title": "Build a constrained specialist",
+        "scenario": "Advanced role with optional security controls.",
+        "prompt": "Create a read-focused architecture analyst role with workspace-write sandboxing, disabled network access, and strict developer instructions."
       }
     ],
     "output_examples": [
       {
-        "input": "Create a project reviewer role with high reasoning and concise review instructions.",
-        "output": "The skill confirms the role name, scope, model, reasoning level, and target path. It writes the role file and reports validation status."
+        "input": "Create a reviewer role for one project.",
+        "output": [
+          "A confirmed role name, description, model, reasoning level, and developer instruction set.",
+          "A project-scoped agent file path selected for the new role.",
+          "A validation result showing whether required fields are present."
+        ]
       },
       {
-        "input": "Validate a role that fails to start when called by agent type.",
-        "output": "The skill checks the active scope, confirms the role file path, validates required fields, and explains the missing or unsupported setting."
+        "input": "Make a restricted research role.",
+        "output": [
+          "A role profile with read-focused instructions and limited optional settings.",
+          "A reminder that stronger controls are only added after explicit user confirmation."
+        ]
       },
       {
-        "input": "Create a research role with optional web search enabled.",
-        "output": "The skill asks for explicit approval of the web search setting, writes the requested role, and notes the enabled runtime capability."
+        "input": "Troubleshoot an unknown agent type error.",
+        "output": [
+          "A checklist for scope, file location, role name, and supported configuration keys.",
+          "Guidance to validate TOML syntax before changing behavior."
+        ]
       }
     ],
     "best_practices": [
-      "Confirm role scope and target path before writing any global or project configuration file.",
-      "Keep developer instructions narrow, operational, and tied to the role purpose.",
-      "Use minimal optional settings unless the workflow requires sandbox, search, or MCP changes."
+      "Confirm the role name, scope, model, reasoning effort, and instructions before writing files.",
+      "Keep generated roles minimal unless the user requests optional tools or permissions.",
+      "Validate TOML syntax and required keys after each create or update task."
     ],
     "anti_patterns": [
-      "Creating global agents without clear user approval of the hidden Codex path.",
-      "Enabling broad sandbox, network, search, or MCP settings by default.",
-      "Putting secret values directly inside role configuration files or developer instructions."
+      "Do not add sandbox, web search, MCP, or app settings without explicit user approval.",
+      "Do not reuse vague developer instructions across unrelated roles.",
+      "Do not overwrite global Codex configuration without checking the intended scope."
     ],
     "faq": [
       {
         "question": "What does this skill create?",
-        "answer": "It creates standalone TOML files for Codex custom agents and can validate related role declarations."
+        "answer": "It creates standalone Codex custom agent TOML files and can validate required role fields."
       },
       {
-        "question": "Does it support Claude and Claude Code?",
-        "answer": "The marketplace metadata lists Claude, Codex, and Claude Code compatibility, but the role files target Codex custom agents."
+        "question": "Can it create global and project agents?",
+        "answer": "Yes. It supports global Codex agent paths and project-local Codex agent paths."
       },
       {
-        "question": "Can it create project-scoped agents?",
-        "answer": "Yes. It can write role files under a project .codex directory when that scope is selected."
+        "question": "Does it choose missing values automatically?",
+        "answer": "No. The skill is designed to ask for missing required values before writing files."
       },
       {
-        "question": "Can it create global agents?",
-        "answer": "Yes. Global agents use hidden Codex paths under the user home directory and should be confirmed before writing."
+        "question": "Does it edit Codex configuration files?",
+        "answer": "Yes, helper scripts can edit Codex configuration files when the user runs them."
       },
       {
-        "question": "Can it enable network or web search settings?",
-        "answer": "Yes, when requested. The safer default is to omit those settings unless the user explicitly approves them."
+        "question": "Are optional permissions enabled by default?",
+        "answer": "No. Optional sandbox, web search, MCP, and app settings are omitted unless requested."
       },
       {
-        "question": "What tools are required for validation?",
-        "answer": "The shell validation helpers expect jq and tomlq to be available in the environment."
+        "question": "Which tools can use the generated roles?",
+        "answer": "The report lists support for Claude, Codex, and Claude Code workflows."
       }
     ]
   },
@@ -2298,12 +1860,6 @@
       ]
     },
     {
-      "name": "SKILL.md",
-      "type": "file",
-      "path": "SKILL.md",
-      "lines": 105
-    },
-    {
       "name": "templates",
       "type": "dir",
       "path": "templates",
@@ -2333,6 +1889,12 @@
           "lines": 20
         }
       ]
+    },
+    {
+      "name": "SKILL.md",
+      "type": "file",
+      "path": "SKILL.md",
+      "lines": 105
     }
   ]
 }

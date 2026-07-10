@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T03:30:18.388Z",
+    "generated_at": "2026-07-09T16:50:30.358Z",
     "slug": "davila7-pdf-processing-pro",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/document-processing/pdf-processing-pro",
     "source_ref": "main",
@@ -23,18 +23,18 @@
   },
   "skill": {
     "name": "PDF Processing Pro",
-    "description": "Process PDF forms, tables, OCR, validation, and batch workflows with documented Python patterns and one included form-analysis script.",
-    "summary": "Guides production PDF workflows for form analysis, table extraction, OCR, validation, and batch processing.",
+    "description": "Guidance and sample tooling for PDF forms, table extraction, OCR, validation, and batch workflows in production-oriented document processing.",
+    "summary": "Process complex PDFs with forms, tables, OCR, validation, and batch workflow guidance.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
     "license": "MIT",
     "tags": [
-      "pdf-processing",
+      "pdf",
       "ocr",
       "forms",
-      "tables",
-      "document-automation"
+      "table-extraction",
+      "batch-processing"
     ],
     "supported_tools": [
       "claude",
@@ -48,30 +48,25 @@
     "category": "data"
   },
   "security_audit": {
-    "risk_level": "medium",
+    "risk_level": "safe",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static alerts are Markdown code fences, expected file-output examples, or CLI examples rather than hidden execution. Confirmed risk remains where OCR docs instruct sudo package installation, and semantic review found an unsanitized submission ID used in output filenames. No prompt injection or data exfiltration intent was found.",
+    "summary": "Most static hits are false positives from Markdown fences, validation text, and expected local PDF output examples. Two OCR installation lines are confirmed because they instruct elevated sudo package installation. No prompt injection or data exfiltration intent was found in the reviewed files.",
     "remediation": [
       {
-        "issue": "Sudo package installation guidance",
-        "suggestion": "Replace sudo commands with permission-aware setup notes and require users to confirm elevated package installation before running them.",
+        "issue": "Elevated package installation commands",
+        "suggestion": "Replace sudo commands with manual prerequisite notes, package names, or OS-specific links. Require explicit user approval before any privileged install.",
         "severity": "high"
       },
       {
-        "issue": "Unsanitized output filenames in batch form example",
-        "suggestion": "Sanitize applicant IDs, reject path separators, and resolve output paths to ensure they remain inside the intended directory.",
+        "issue": "Output path handling in examples",
+        "suggestion": "Validate output directories, prevent unintended overwrites, and document that generated PDFs and text files should use user-approved paths.",
         "severity": "medium"
       },
       {
-        "issue": "User-controlled output paths in examples and CLI tools",
-        "suggestion": "Document safe output-directory practices and warn users before overwriting existing files.",
-        "severity": "low"
-      },
-      {
-        "issue": "Documented helper scripts are not all present in the scanned package",
-        "suggestion": "Either include the referenced scripts or clearly label them as examples so users do not run missing or replacement scripts by mistake.",
+        "issue": "Referenced scripts not included",
+        "suggestion": "Either include the referenced scripts or mark them clearly as examples so agents do not assume missing tools exist.",
         "severity": "low"
       }
     ],
@@ -378,16 +373,6 @@
             "file": "SKILL.md",
             "line_start": 282,
             "line_end": 286
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 286,
-            "line_end": 288
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 288,
-            "line_end": 291
           }
         ]
       }
@@ -1128,460 +1113,445 @@
       {
         "id": "filesystem:FORMS.md:138:python-file-write-append",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is a documented PDF output example that writes to a fixed local filename. It is expected user-directed output, not hidden or destructive filesystem behavior."
+        "confidence": 0.88,
+        "reason": "The example writes a generated PDF to an explicit output file. This is expected form-processing behavior, not hidden persistence or exfiltration."
       },
       {
         "id": "filesystem:FORMS.md:340:python-file-write-append",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is a documented PDF output example that writes to a fixed local filename. It is expected user-directed output, not hidden or destructive filesystem behavior."
+        "confidence": 0.88,
+        "reason": "The example writes a generated PDF to an explicit output file. This is expected form-processing behavior, not hidden persistence or exfiltration."
       },
       {
         "id": "filesystem:FORMS.md:386:python-file-write-append",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is a documented PDF output example that writes to a fixed local filename. It is expected user-directed output, not hidden or destructive filesystem behavior."
+        "confidence": 0.88,
+        "reason": "The example writes a generated PDF to an explicit output file. This is expected form-processing behavior, not hidden persistence or exfiltration."
       },
       {
         "id": "filesystem:FORMS.md:463:python-file-write-append",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The write is the explicit output operation for an export or analysis workflow. It does not show covert writes, secret collection, or command-controlled destination changes."
+        "confidence": 0.88,
+        "reason": "The example writes a generated PDF to an explicit output file. This is expected form-processing behavior, not hidden persistence or exfiltration."
       },
       {
         "id": "blocker:FORMS.md:250:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text concerns validation messages, exit codes, caching, or error handling. It does not perform host reconnaissance or collect system information."
+        "confidence": 0.95,
+        "reason": "The line reports form validation errors for invalid field format. It does not inspect host configuration, credentials, or system identity."
       },
       {
         "id": "blocker:FORMS.md:446:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text concerns validation messages, exit codes, caching, or error handling. It does not perform host reconnaissance or collect system information."
+        "confidence": 0.95,
+        "reason": "The comment describes checking submitted PDF form field names. This is data validation, not reconnaissance of the runtime system."
       },
       {
         "id": "blocker:FORMS.md:520:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text concerns validation messages, exit codes, caching, or error handling. It does not perform host reconnaissance or collect system information."
+        "confidence": 0.95,
+        "reason": "The code reads an applicant id from form data for naming an output file. It does not collect machine, network, or account information."
       },
       {
         "id": "blocker:FORMS.md:579:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text concerns validation messages, exit codes, caching, or error handling. It does not perform host reconnaissance or collect system information."
+        "confidence": 0.95,
+        "reason": "The text is a best-practice note about graceful handling of invalid data. It contains no probing or environment discovery behavior."
       },
       {
         "id": "blocker:FORMS.md:604:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text concerns validation messages, exit codes, caching, or error handling. It does not perform host reconnaissance or collect system information."
+        "confidence": 0.95,
+        "reason": "The comment describes chunking work to reduce memory use. It does not gather system details or enumerate local resources."
       },
       {
         "id": "external_commands:OCR.md:32:sudo-privilege-escalation",
         "verdict": "confirmed",
-        "confidence": 0.82,
+        "confidence": 0.9,
         "severity": "high",
-        "reason": "The guide instructs users to run sudo apt-get install for an OCR system package. This modifies the host with elevated privileges and should require explicit user approval."
+        "reason": "This is a runnable sudo apt-get command in the OCR installation guide. It asks users or agents to elevate privileges for package installation."
       },
       {
         "id": "external_commands:OCR.md:63:sudo-privilege-escalation",
         "verdict": "confirmed",
-        "confidence": 0.82,
+        "confidence": 0.9,
         "severity": "high",
-        "reason": "The guide instructs users to install OCR language packages with sudo. Elevated package installation is security-sensitive even when the packages are legitimate."
+        "reason": "This is a runnable sudo apt-get command in the OCR installation guide. It asks users or agents to elevate privileges for package installation."
       },
       {
         "id": "filesystem:OCR.md:130:python-file-write-append",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The write is the explicit output operation for an export or analysis workflow. It does not show covert writes, secret collection, or command-controlled destination changes."
+        "confidence": 0.87,
+        "reason": "The example writes OCR text to an explicit output_path supplied to the function. This is expected export behavior for document processing."
       },
       {
         "id": "blocker:OCR.md:100:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text concerns validation messages, exit codes, caching, or error handling. It does not perform host reconnaissance or collect system information."
+        "confidence": 0.95,
+        "reason": "The line recommends caching OCR results for performance. It does not inspect or report system state."
       },
       {
         "id": "filesystem:scripts/analyze_form.py:282:python-file-write-append",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The write is the explicit output operation for an export or analysis workflow. It does not show covert writes, secret collection, or command-controlled destination changes."
+        "confidence": 0.86,
+        "reason": "The script writes JSON only to the user-supplied --output path or stdout. This is declared export behavior, not hidden persistence."
       },
       {
         "id": "blocker:scripts/analyze_form.py:14:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text concerns validation messages, exit codes, caching, or error handling. It does not perform host reconnaissance or collect system information."
+        "confidence": 0.95,
+        "reason": "The line is an exit-code description for invalid PDF input. It is normal CLI documentation, not system reconnaissance."
       },
       {
         "id": "blocker:scripts/analyze_form.py:251:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text concerns validation messages, exit codes, caching, or error handling. It does not perform host reconnaissance or collect system information."
+        "confidence": 0.95,
+        "reason": "The line is an argparse help entry for invalid PDF input. It is not probing host or user information."
       },
       {
         "id": "blocker:scripts/analyze_form.py:295:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text concerns validation messages, exit codes, caching, or error handling. It does not perform host reconnaissance or collect system information."
+        "confidence": 0.95,
+        "reason": "The logger reports invalid user input errors. It does not enumerate files, processes, users, or network settings."
       },
       {
         "id": "external_commands:SKILL.md:187:python-subprocess-run",
         "verdict": "false_positive",
         "confidence": 0.84,
-        "reason": "The subprocess example uses an argument list for local Python helper scripts and does not use shell=True or string interpolation. No command injection vector is evident."
+        "reason": "The batch example runs a local Python extraction script with an argument list and capture_output=True. It does not use shell=True or shell interpolation."
       },
       {
         "id": "external_commands:SKILL.md:212:python-subprocess-run",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "The subprocess example uses an argument list for local Python helper scripts and does not use shell=True or string interpolation. No command injection vector is evident."
+        "confidence": 0.86,
+        "reason": "This is pseudocode for checking exit codes from a local form-filling script. It is documented automation, not hidden command execution."
       },
       {
         "id": "external_commands:SKILL.md:14:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:20:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:34:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:38:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:103:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:105:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:108:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:113:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:115:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:120:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:122:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:127:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:129:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:134:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:136:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:139:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:141:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:144:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:146:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:152:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:164:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:168:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:174:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:178:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:197:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:203:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:220:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:226:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:228:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:231:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:236:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:241:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:261:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:263:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:266:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:268:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:271:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:277:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:280:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:282:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:286:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "external_commands:SKILL.md:288:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The static hit is caused by Markdown code fences or inline backticks in documentation. There is no Ruby backtick execution or hidden shell evaluation at this location."
+        "confidence": 0.97,
+        "reason": "The hit is Markdown fence or inline-code syntax in documentation. It is not Ruby backtick execution and does not execute command output."
       },
       {
         "id": "filesystem:SKILL.md:184:python-glob-pattern-matching",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The glob pattern enumerates PDFs in a local invoices directory for batch processing. This is normal file selection, not suspicious filesystem discovery."
+        "confidence": 0.9,
+        "reason": "The glob is a local batch-processing example limited to invoices/*.pdf. It is expected file selection, not broad system enumeration."
       },
       {
         "id": "blocker:SKILL.md:207:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text concerns validation messages, exit codes, caching, or error handling. It does not perform host reconnaissance or collect system information."
+        "confidence": 0.95,
+        "reason": "The line documents an invalid input exit code. It does not request or reveal system information."
       },
       {
         "id": "blocker:SKILL.md:242:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text concerns validation messages, exit codes, caching, or error handling. It does not perform host reconnaissance or collect system information."
+        "confidence": 0.95,
+        "reason": "The line recommends caching extracted data to avoid repeated PDF processing. It is a performance note, not reconnaissance."
       },
       {
         "id": "filesystem:TABLES.md:256:python-file-write-append",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The write is the explicit output operation for an export or analysis workflow. It does not show covert writes, secret collection, or command-controlled destination changes."
+        "confidence": 0.88,
+        "reason": "The example writes extracted tables to an explicit output_path. This is expected CSV or JSON export behavior, not covert file modification."
       },
       {
         "id": "filesystem:TABLES.md:326:python-file-write-append",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The write is the explicit output operation for an export or analysis workflow. It does not show covert writes, secret collection, or command-controlled destination changes."
+        "confidence": 0.88,
+        "reason": "The example writes extracted tables to an explicit output_path. This is expected CSV or JSON export behavior, not covert file modification."
       },
       {
         "id": "blocker:TABLES.md:602:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text concerns validation messages, exit codes, caching, or error handling. It does not perform host reconnaissance or collect system information."
+        "confidence": 0.95,
+        "reason": "The line recommends caching table extraction results for performance. It does not inspect the host environment."
       }
     ],
-    "semantic_findings": [
-      {
-        "title": "Unsanitized Data Used in Output Filename",
-        "description": "The batch form example reads applicant_id from submission data and uses it in output_file without sanitizing path separators. Untrusted IDs could create nested paths or escape the intended output directory.",
-        "severity": "medium",
-        "locations": [
-          {
-            "file": "FORMS.md",
-            "line_start": 520,
-            "line_end": 521
-          }
-        ],
-        "confidence": 0.78,
-        "confidence_reasoning": "The lines directly show data.get(\"id\") feeding an output filename. It is a documentation example, so exploitability depends on user adoption, but the pattern is clear."
-      }
-    ],
+    "semantic_findings": [],
     "critical_findings": [],
     "high_findings": [
       {
@@ -1597,8 +1567,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "high",
-        "confidence": 0.82,
-        "confidence_reasoning": "The guide instructs users to run sudo apt-get install for an OCR system package. This modifies the host with elevated privileges and should require explicit user approval."
+        "confidence": 0.9,
+        "confidence_reasoning": "This is a runnable sudo apt-get command in the OCR installation guide. It asks users or agents to elevate privileges for package installation."
       },
       {
         "title": "sudo privilege escalation",
@@ -1613,152 +1583,135 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "high",
-        "confidence": 0.82,
-        "confidence_reasoning": "The guide instructs users to install OCR language packages with sudo. Elevated package installation is security-sensitive even when the packages are legitimate."
+        "confidence": 0.9,
+        "confidence_reasoning": "This is a runnable sudo apt-get command in the OCR installation guide. It asks users or agents to elevate privileges for package installation."
       }
     ],
-    "medium_findings": [
-      {
-        "title": "Unsanitized Data Used in Output Filename",
-        "description": "The batch form example reads applicant_id from submission data and uses it in output_file without sanitizing path separators. Untrusted IDs could create nested paths or escape the intended output directory.",
-        "locations": [
-          {
-            "file": "FORMS.md",
-            "line_start": 520,
-            "line_end": 521
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "semantic",
-        "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The lines directly show data.get(\"id\") feeding an output filename. It is a documentation example, so exploitability depends on user adoption, but the pattern is clear."
-      }
-    ],
+    "medium_findings": [],
     "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 5,
     "total_lines": 1981,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T03:30:18.388Z",
+    "audited_at": "2026-07-09T16:50:30.358Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Process PDFs With Forms, Tables, and OCR",
-    "value_statement": "Complex PDF workflows often fail when forms, tables, and scanned pages need different tools. This skill provides structured guidance and examples for reliable PDF processing.",
+    "user_title": "Process PDFs with Forms, Tables, and OCR",
+    "value_statement": "PDF workflows often need reliable extraction, validation, and batch processing. This skill gives Claude, Codex, and Claude Code practical PDF workflows for forms, tables, OCR, and checks.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "PDF processing",
-      "PDF form automation",
-      "PDF OCR",
-      "PDF table extraction",
-      "Tesseract OCR",
-      "pdfplumber",
-      "pypdf"
+      "PDF forms",
+      "OCR extraction",
+      "table extraction",
+      "batch PDF workflows",
+      "pypdf",
+      "pdfplumber"
     ],
     "actual_capabilities": [
-      "Analyzes AcroForm fields with scripts/analyze_form.py and outputs JSON or summary data.",
-      "Documents PDF form filling, field validation, flattening, and batch-submission workflows.",
-      "Shows table extraction patterns with pdfplumber and exports to CSV, Excel, or JSON.",
-      "Explains OCR setup, image preprocessing, language selection, and text export with Tesseract.",
-      "Provides operational guidance for batch processing, logging, exit codes, and troubleshooting."
+      "Extract PDF form field metadata with scripts/analyze_form.py.",
+      "Explain form filling, validation, flattening, and multi-page field handling.",
+      "Describe table extraction methods and exports to CSV, Excel, and JSON.",
+      "Describe OCR setup, image preprocessing, language selection, and text export.",
+      "Show batch processing, exit codes, logging, and error-handling patterns."
     ],
     "limitations": [
-      "Only scripts/analyze_form.py is present; other named scripts are examples, not included files.",
-      "OCR depends on external Tesseract and Python libraries installed by the user.",
-      "Examples can write local output files and should be run in trusted project directories.",
-      "It does not verify extracted data accuracy; users must validate results."
+      "Only scripts/analyze_form.py is present in this package.",
+      "Other script names are documented examples and may require user implementation.",
+      "OCR needs Tesseract and related Python packages installed.",
+      "Extraction accuracy depends on PDF structure, scan quality, and form format."
     ],
     "use_cases": [
       {
-        "title": "Map Form Fields Before Automation",
-        "description": "Inspect a PDF form, identify required fields, and prepare validation rules before building a fill workflow.",
+        "title": "Automate Form Intake",
+        "description": "Operations teams can inspect form fields, validate submissions, and plan filled PDF outputs.",
         "target_user": "Operations teams"
       },
       {
-        "title": "Extract Tables From Reports",
-        "description": "Plan table extraction from multi-page reports and choose CSV, Excel, or JSON output for analysis.",
+        "title": "Extract Report Tables",
+        "description": "Data analysts can plan table extraction and export results for spreadsheet review.",
         "target_user": "Data analysts"
       },
       {
-        "title": "Add OCR to Document Pipelines",
-        "description": "Design OCR steps for scanned PDFs using preprocessing, language selection, and result validation.",
-        "target_user": "Document automation engineers"
+        "title": "Process Scanned Documents",
+        "description": "Records teams can design OCR workflows with preprocessing and language selection.",
+        "target_user": "Records managers"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Beginner: Analyze One Form",
-        "scenario": "A user wants to inspect a single PDF form.",
-        "prompt": "Use PDF Processing Pro to inspect application.pdf. List field names, field types, required fields, and any setup steps needed."
+        "title": "Inspect a Form",
+        "scenario": "Beginner form analysis",
+        "prompt": "Use PDF Processing Pro to inspect this PDF form. List fields, required inputs, field types, and validation concerns."
       },
       {
-        "title": "Intermediate: Extract Report Tables",
-        "scenario": "A user needs structured data from a PDF report.",
-        "prompt": "Use PDF Processing Pro to plan table extraction from monthly_report.pdf. Recommend detection settings, cleanup checks, and an export format."
+        "title": "Extract Tables",
+        "scenario": "Intermediate report extraction",
+        "prompt": "Use PDF Processing Pro to plan table extraction from this report. Recommend settings, output format, and validation checks."
       },
       {
-        "title": "Intermediate: Build an OCR Flow",
-        "scenario": "A user has scanned pages with uneven image quality.",
-        "prompt": "Use PDF Processing Pro to design an OCR workflow for scanned_document.pdf. Include preprocessing, language settings, and validation steps."
+        "title": "Build OCR Workflow",
+        "scenario": "Advanced scanned document processing",
+        "prompt": "Use PDF Processing Pro to design an OCR workflow for scanned PDFs. Include preprocessing, language settings, quality checks, and expected outputs."
       },
       {
-        "title": "Advanced: Design Batch Processing",
-        "scenario": "A user must process many PDFs safely and consistently.",
-        "prompt": "Use PDF Processing Pro to design a batch PDF pipeline for a folder of forms and reports. Include logging, validation, error handling, and output naming safeguards."
+        "title": "Design Batch Pipeline",
+        "scenario": "Advanced production automation",
+        "prompt": "Use PDF Processing Pro to design a batch pipeline for many PDFs. Include validation, error handling, logging, retries, and output organization."
       }
     ],
     "output_examples": [
       {
-        "input": "A tax intake form PDF needs field discovery before automation.",
-        "output": "A field inventory grouped by type, with required fields, read-only fields, and a suggested validation plan."
+        "input": "A tax form template that needs field mapping before automation.",
+        "output": "A field inventory with required fields, field types, suggested validation rules, and output planning notes."
       },
       {
-        "input": "A scanned contract has low-quality pages.",
-        "output": "An OCR workflow with preprocessing steps, language settings, confidence checks, and a text export plan."
+        "input": "A monthly sales report with tables across several pages.",
+        "output": "A table extraction plan with export format guidance, validation checks, and post-processing steps."
       },
       {
-        "input": "Monthly reports contain tables across many pages.",
-        "output": "A table extraction plan comparing automatic detection, custom settings, cleanup checks, and export options."
+        "input": "A scanned application packet with mixed English and Spanish text.",
+        "output": "An OCR workflow with preprocessing steps, language settings, confidence review, and text export guidance."
       }
     ],
     "best_practices": [
-      "Validate input paths, file types, and expected PDF structure before processing.",
-      "Run examples in a dedicated working directory with backups of original documents.",
-      "Review extracted form, table, and OCR data before using it in downstream systems."
+      "Validate inputs and output paths before processing any PDF.",
+      "Test each workflow with representative sample documents first.",
+      "Review extracted text and tables before using them in decisions."
     ],
     "anti_patterns": [
-      "Do not run package installation commands without reviewing the source and permissions.",
-      "Do not use untrusted document data directly in filenames or output paths.",
-      "Do not assume OCR or table extraction results are complete without manual checks."
+      "Do not run elevated installation commands from an agent without user approval.",
+      "Do not overwrite original PDFs without a verified backup.",
+      "Do not treat OCR or table extraction output as final without review."
     ],
     "faq": [
       {
-        "question": "Does this skill include working scripts?",
-        "answer": "It includes scripts/analyze_form.py. Other scripts are documented examples and may need to be created by the user."
+        "question": "Can this skill fill PDF forms?",
+        "answer": "It explains form filling patterns and includes a form analysis script. Some referenced fill scripts are examples, not included files."
       },
       {
-        "question": "Can it process scanned PDFs?",
-        "answer": "Yes, the OCR guide explains Tesseract-based processing for scanned or image-based PDFs."
+        "question": "Does it support scanned PDFs?",
+        "answer": "Yes. The OCR guide covers Tesseract, image preprocessing, language selection, and text export."
       },
       {
         "question": "Can it extract tables?",
-        "answer": "Yes, the table guide shows pdfplumber strategies and export patterns for CSV, Excel, and JSON."
+        "answer": "Yes. The table guide explains extraction strategies and exports to CSV, Excel, and JSON."
       },
       {
-        "question": "Is it safe to run on sensitive documents?",
-        "answer": "It does not show network upload behavior, but files are read and written locally. Use trusted directories and review outputs."
+        "question": "Which tools can use it?",
+        "answer": "The report lists support for Claude, Codex, and Claude Code."
       },
       {
-        "question": "What dependencies are needed?",
-        "answer": "The examples reference Python PDF libraries, pandas, Pillow, pytesseract, and the Tesseract OCR system package."
+        "question": "Does it require system packages?",
+        "answer": "OCR workflows require Tesseract. Elevated installation commands should be handled manually by the user."
       },
       {
-        "question": "Does it guarantee accurate extraction?",
-        "answer": "No. PDF structure, scan quality, and table layout affect results, so extracted data needs validation."
+        "question": "Is it ready for production?",
+        "answer": "It provides production-oriented patterns, but teams should add path validation, tests, and review steps before deployment."
       }
     ]
   },

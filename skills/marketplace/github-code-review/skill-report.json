@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-06T12:18:36.344Z",
+    "generated_at": "2026-07-09T10:51:45.770Z",
     "slug": "dnyoussef-github-code-review",
     "source_url": "https://github.com/DNYoussef/ai-chrome-extension/tree/main/.claude/skills/github-code-review",
     "source_ref": "main",
@@ -9,7 +9,7 @@
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "e4636e3d078b784fe778c1a47845b39e45d495339b2e7893c08b4db6aa56613d",
-    "tree_hash": "3111734f223621aecfc757bfefe0404f294e033a94a250c84152930e8239fb81",
+    "tree_hash": "8c086ee7595f6ef4aab5ff498b1c6d1527066f0917725ea2f808f61884dc6cf8",
     "provenance": {
       "model_requested": "gpt-5.5:high",
       "model_effective": "codex:gpt-5.5:high",
@@ -26,16 +26,16 @@
   },
   "skill": {
     "name": "github-code-review",
-    "description": "AI-assisted GitHub pull request review workflow using GitHub CLI, ruv-swarm examples, and coordinated review agents.",
-    "summary": "Coordinate AI-assisted reviews for GitHub pull requests across security, performance, style, and architecture checks.",
+    "description": "Coordinate GitHub pull request reviews with swarm-based agents, GitHub CLI commands, and review automation examples.",
+    "summary": "Runs structured GitHub PR review workflows with specialized AI review agents.",
     "icon": "📦",
     "version": "1.0.0",
     "author": "Claude Code Flow",
     "license": "MIT",
     "category": "coding",
     "tags": [
-      "github",
       "code-review",
+      "github",
       "pull-requests",
       "automation",
       "security-review"
@@ -56,26 +56,26 @@
     "is_blocked": true,
     "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "Most static backtick detections are false positives from Markdown code fences and inline formatting. Real risks remain in the webhook example that executes PR comment text, use of runtime npx commands, and handling of GitHub tokens for repository mutations.",
+    "summary": "The skill is a GitHub pull request review workflow that intentionally uses gh, npx, shell commands, and GitHub tokens. Most Markdown backtick findings are false positives, but webhook-driven execSync, authenticated automation, external command execution, and automated approval or merge examples are real risks that require controls before publication.",
     "remediation": [
       {
-        "issue": "Webhook command execution from PR comments",
-        "suggestion": "Verify GitHub webhook signatures, parse request bodies safely, allowlist commands, and replace execSync shell strings with argument-array execution.",
+        "issue": "Webhook examples execute shell commands from PR comment text.",
+        "suggestion": "Replace execSync string construction with a fixed command allowlist, argument arrays, signature verification, actor authorization, and strict parsing before execution.",
         "severity": "critical"
       },
       {
-        "issue": "Runtime execution of external packages with npx",
-        "suggestion": "Pin ruv-swarm versions, install through a locked dependency manifest, and run review commands only in controlled CI environments.",
-        "severity": "medium"
-      },
-      {
-        "issue": "GitHub token use in automated workflows",
-        "suggestion": "Set explicit least-privilege workflow permissions, pass tokens through GH_TOKEN or scoped credentials, and avoid echoing secrets into command pipelines.",
+        "issue": "Automation examples authenticate with GitHub tokens and then run external review tooling.",
+        "suggestion": "Require least-privilege tokens, pinned tool versions, trusted runner contexts, and explicit user approval before running gh or npx commands.",
         "severity": "high"
       },
       {
-        "issue": "Automated approval and merge decisions",
-        "suggestion": "Require protected branch checks, human approval, and structured trusted status signals before approving or merging pull requests.",
+        "issue": "Examples can approve or merge pull requests automatically.",
+        "suggestion": "Document human approval requirements and remove direct auto-approve or auto-merge examples from default workflows.",
+        "severity": "high"
+      },
+      {
+        "issue": "Command examples pass PR diffs, files, and generated output between tools.",
+        "suggestion": "Warn users to treat PR data and model output as untrusted, validate generated comments, and avoid posting secrets or sensitive code to external services.",
         "severity": "medium"
       }
     ],
@@ -2192,888 +2192,908 @@
       {
         "id": "external_commands:SKILL.md:395:node-js-child-process-module",
         "verdict": "confirmed",
-        "confidence": 0.88,
-        "reason": "The webhook example imports child_process and the same block executes shell commands from webhook events. This is dangerous if copied without strict validation and isolation.",
-        "severity": "high"
+        "confidence": 0.9,
+        "severity": "high",
+        "reason": "The webhook example imports child_process to run local commands from GitHub webhook events. That enables privileged command execution if copied into production without strict validation."
       },
       {
         "id": "external_commands:SKILL.md:402:synchronous-process-execution",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "execSync runs a shell command inside a webhook handler using event data. The PR number is expected numeric, but synchronous shell execution in a webhook remains high impact.",
-        "severity": "high"
+        "confidence": 0.88,
+        "severity": "high",
+        "reason": "The webhook example synchronously runs an npx ruv-swarm command from event data. This is real command execution in response to webhook input and needs strong trust controls."
       },
       {
         "id": "external_commands:SKILL.md:407:synchronous-process-execution",
         "verdict": "confirmed",
         "confidence": 0.96,
-        "reason": "execSync interpolates a PR comment body into a shell command. PR comments are user-controlled, so this is command injection unless strictly authenticated and allowlisted.",
-        "severity": "critical"
+        "severity": "critical",
+        "reason": "The command embeds a PR comment body into execSync after only checking that it starts with /swarm. Untrusted comment text can influence shell execution."
       },
       {
         "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:34:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:49:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:105:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:120:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:136:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:156:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:161:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:180:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:187:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:199:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:201:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:206:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:216:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:223:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:228:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:246:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:256:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:263:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:268:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:286:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:296:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:302:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:307:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:325:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:335:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:345:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:351:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:362:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:366:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:372:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:380:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:387:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:392:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:402:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "This is a real JavaScript template literal passed to execSync, not only Markdown formatting. It executes a shell command from webhook event data.",
-        "severity": "high"
+        "confidence": 0.88,
+        "severity": "high",
+        "reason": "The backtick appears inside an execSync command template in the webhook example. The pattern is executable JavaScript command construction, not just documentation formatting."
       },
       {
         "id": "external_commands:SKILL.md:407:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.96,
-        "reason": "This is a real JavaScript template literal passed to execSync with PR comment text. The untrusted comment body creates a direct command injection risk.",
-        "severity": "critical"
+        "confidence": 0.88,
+        "severity": "critical",
+        "reason": "The backtick appears inside an execSync command template in the webhook example. The pattern is executable JavaScript command construction, not just documentation formatting."
       },
       {
         "id": "external_commands:SKILL.md:414:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:424:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:459:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:463:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:486:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:494:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:547:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:555:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:585:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:589:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:596:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:604:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:614:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:618:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:628:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:632:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:639:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:649:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:657:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:663:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:676:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:682:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:689:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:693:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:699:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:707:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:757:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:761:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:767:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:775:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:798:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:802:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:808:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:812:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:822:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:830:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:838:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:842:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:850:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:854:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:862:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:866:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:873:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:877:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:884:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:892:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:897:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:901:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:908:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:912:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:918:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:922:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:928:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:976:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:994:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:998:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:1011:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:1027:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:1052:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:1064:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:1073:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:1081:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:1090:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:1098:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:1107:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected backticks are Markdown code fence delimiters in documentation. They do not execute Ruby or shell commands by themselves."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:1116:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticks only format related skill names in Markdown. They are not shell execution syntax in this context."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:1117:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticks only format related skill names in Markdown. They are not shell execution syntax in this context."
+        "confidence": 0.91,
+        "reason": "The match is a Markdown code fence or inline documentation backtick. It does not indicate Ruby backtick execution in the skill file."
       },
       {
         "id": "external_commands:SKILL.md:39:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a documented GitHub CLI or jq command substitution used to read PR data or parse structured output. It does not introduce shell eval or execute user text on this line."
+        "verdict": "confirmed",
+        "confidence": 0.76,
+        "severity": "medium",
+        "reason": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
       },
       {
         "id": "external_commands:SKILL.md:40:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a documented GitHub CLI or jq command substitution used to read PR data or parse structured output. It does not introduce shell eval or execute user text on this line."
+        "verdict": "confirmed",
+        "confidence": 0.76,
+        "severity": "medium",
+        "reason": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
       },
       {
         "id": "external_commands:SKILL.md:107:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a documented GitHub CLI or jq command substitution used to read PR data or parse structured output. It does not introduce shell eval or execute user text on this line."
+        "verdict": "confirmed",
+        "confidence": 0.76,
+        "severity": "medium",
+        "reason": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
       },
       {
         "id": "external_commands:SKILL.md:108:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a documented GitHub CLI or jq command substitution used to read PR data or parse structured output. It does not introduce shell eval or execute user text on this line."
+        "verdict": "confirmed",
+        "confidence": 0.76,
+        "severity": "medium",
+        "reason": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
       },
       {
         "id": "external_commands:SKILL.md:138:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a documented GitHub CLI or jq command substitution used to read PR data or parse structured output. It does not introduce shell eval or execute user text on this line."
+        "verdict": "confirmed",
+        "confidence": 0.76,
+        "severity": "medium",
+        "reason": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
       },
       {
         "id": "external_commands:SKILL.md:141:shell-command-substitution",
         "verdict": "confirmed",
-        "confidence": 0.64,
-        "reason": "This example captures output from an npx ruv-swarm invocation. It intentionally executes external package code, so it requires trusted pinned dependencies and controlled CI execution.",
-        "severity": "medium"
+        "confidence": 0.82,
+        "severity": "medium",
+        "reason": "The shell substitution runs npx ruv-swarm and captures its output for later GitHub actions. This executes external tooling with PR context and should require explicit trust."
       },
       {
         "id": "external_commands:SKILL.md:518:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a documented GitHub CLI or jq command substitution used to read PR data or parse structured output. It does not introduce shell eval or execute user text on this line."
+        "verdict": "confirmed",
+        "confidence": 0.76,
+        "severity": "medium",
+        "reason": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
       },
       {
         "id": "external_commands:SKILL.md:519:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a documented GitHub CLI or jq command substitution used to read PR data or parse structured output. It does not introduce shell eval or execute user text on this line."
+        "verdict": "confirmed",
+        "confidence": 0.76,
+        "severity": "medium",
+        "reason": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
       },
       {
         "id": "external_commands:SKILL.md:522:shell-command-substitution",
         "verdict": "confirmed",
-        "confidence": 0.64,
-        "reason": "This example captures output from an npx ruv-swarm invocation. It intentionally executes external package code, so it requires trusted pinned dependencies and controlled CI execution.",
-        "severity": "medium"
+        "confidence": 0.82,
+        "severity": "medium",
+        "reason": "The shell substitution runs npx ruv-swarm and captures its output for later GitHub actions. This executes external tooling with PR context and should require explicit trust."
       },
       {
         "id": "external_commands:SKILL.md:557:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a documented GitHub CLI or jq command substitution used to read PR data or parse structured output. It does not introduce shell eval or execute user text on this line."
+        "verdict": "confirmed",
+        "confidence": 0.76,
+        "severity": "medium",
+        "reason": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
       },
       {
         "id": "external_commands:SKILL.md:558:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a documented GitHub CLI or jq command substitution used to read PR data or parse structured output. It does not introduce shell eval or execute user text on this line."
+        "verdict": "confirmed",
+        "confidence": 0.76,
+        "severity": "medium",
+        "reason": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
       },
       {
         "id": "external_commands:SKILL.md:561:shell-command-substitution",
         "verdict": "confirmed",
-        "confidence": 0.64,
-        "reason": "This example captures output from an npx ruv-swarm invocation. It intentionally executes external package code, so it requires trusted pinned dependencies and controlled CI execution.",
-        "severity": "medium"
+        "confidence": 0.82,
+        "severity": "medium",
+        "reason": "The shell substitution runs npx ruv-swarm and captures its output for later GitHub actions. This executes external tooling with PR context and should require explicit trust."
       },
       {
         "id": "external_commands:SKILL.md:571:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a documented GitHub CLI or jq command substitution used to read PR data or parse structured output. It does not introduce shell eval or execute user text on this line."
+        "verdict": "confirmed",
+        "confidence": 0.62,
+        "severity": "medium",
+        "reason": "The shell substitution parses generated review output for later API calls. The pattern is operationally legitimate but depends on untrusted or tool-generated data."
       },
       {
         "id": "external_commands:SKILL.md:572:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a documented GitHub CLI or jq command substitution used to read PR data or parse structured output. It does not introduce shell eval or execute user text on this line."
+        "verdict": "confirmed",
+        "confidence": 0.62,
+        "severity": "medium",
+        "reason": "The shell substitution parses generated review output for later API calls. The pattern is operationally legitimate but depends on untrusted or tool-generated data."
       },
       {
         "id": "external_commands:SKILL.md:573:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a documented GitHub CLI or jq command substitution used to read PR data or parse structured output. It does not introduce shell eval or execute user text on this line."
+        "verdict": "confirmed",
+        "confidence": 0.62,
+        "severity": "medium",
+        "reason": "The shell substitution parses generated review output for later API calls. The pattern is operationally legitimate but depends on untrusted or tool-generated data."
       },
       {
         "id": "external_commands:SKILL.md:574:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a documented GitHub CLI or jq command substitution used to read PR data or parse structured output. It does not introduce shell eval or execute user text on this line."
+        "verdict": "confirmed",
+        "confidence": 0.76,
+        "severity": "medium",
+        "reason": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
       },
       {
         "id": "external_commands:SKILL.md:814:shell-command-substitution",
         "verdict": "confirmed",
-        "confidence": 0.64,
-        "reason": "This example captures output from an npx ruv-swarm invocation. It intentionally executes external package code, so it requires trusted pinned dependencies and controlled CI execution.",
-        "severity": "medium"
+        "confidence": 0.82,
+        "severity": "medium",
+        "reason": "The shell substitution runs npx ruv-swarm and captures its output for later GitHub actions. This executes external tooling with PR context and should require explicit trust."
       },
       {
         "id": "external_commands:SKILL.md:819:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a documented GitHub CLI or jq command substitution used to read PR data or parse structured output. It does not introduce shell eval or execute user text on this line."
+        "verdict": "confirmed",
+        "confidence": 0.62,
+        "severity": "medium",
+        "reason": "The shell substitution parses generated review output for later API calls. The pattern is operationally legitimate but depends on untrusted or tool-generated data."
       },
       {
         "id": "external_commands:SKILL.md:1000:shell-command-substitution",
         "verdict": "confirmed",
-        "confidence": 0.64,
-        "reason": "This example captures output from an npx ruv-swarm invocation. It intentionally executes external package code, so it requires trusted pinned dependencies and controlled CI execution.",
-        "severity": "medium"
+        "confidence": 0.82,
+        "severity": "medium",
+        "reason": "The shell substitution runs npx ruv-swarm and captures its output for later GitHub actions. This executes external tooling with PR context and should require explicit trust."
       },
       {
         "id": "external_commands:SKILL.md:1004:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a documented GitHub CLI or jq command substitution used to read PR data or parse structured output. It does not introduce shell eval or execute user text on this line."
+        "verdict": "confirmed",
+        "confidence": 0.76,
+        "severity": "medium",
+        "reason": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
       },
       {
         "id": "external_commands:SKILL.md:37:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The snippet is a Markdown code fence marker, not a JavaScript template literal executed by the skill. No runtime interpolation occurs from this line."
+        "confidence": 0.9,
+        "reason": "The detected text is a Markdown fence or GitHub Actions syntax marker, not JavaScript code being evaluated. Actual command execution is covered by separate execSync findings."
       },
       {
         "id": "external_commands:SKILL.md:105:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The snippet is a Markdown code fence marker, not a JavaScript template literal executed by the skill. No runtime interpolation occurs from this line."
+        "confidence": 0.9,
+        "reason": "The detected text is a Markdown fence or GitHub Actions syntax marker, not JavaScript code being evaluated. Actual command execution is covered by separate execSync findings."
       },
       {
         "id": "external_commands:SKILL.md:136:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The snippet is a Markdown code fence marker, not a JavaScript template literal executed by the skill. No runtime interpolation occurs from this line."
+        "confidence": 0.9,
+        "reason": "The detected text is a Markdown fence or GitHub Actions syntax marker, not JavaScript code being evaluated. Actual command execution is covered by separate execSync findings."
       },
       {
         "id": "external_commands:SKILL.md:494:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The snippet is a Markdown code fence marker, not a JavaScript template literal executed by the skill. No runtime interpolation occurs from this line."
+        "confidence": 0.9,
+        "reason": "The detected text is a Markdown fence or GitHub Actions syntax marker, not JavaScript code being evaluated. Actual command execution is covered by separate execSync findings."
       },
       {
         "id": "external_commands:SKILL.md:555:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The snippet is a Markdown code fence marker, not a JavaScript template literal executed by the skill. No runtime interpolation occurs from this line."
+        "confidence": 0.9,
+        "reason": "The detected text is a Markdown fence or GitHub Actions syntax marker, not JavaScript code being evaluated. Actual command execution is covered by separate execSync findings."
       },
       {
         "id": "external_commands:SKILL.md:812:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The snippet is a Markdown code fence marker, not a JavaScript template literal executed by the skill. No runtime interpolation occurs from this line."
+        "confidence": 0.9,
+        "reason": "The detected text is a Markdown fence or GitHub Actions syntax marker, not JavaScript code being evaluated. Actual command execution is covered by separate execSync findings."
       },
       {
         "id": "external_commands:SKILL.md:998:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The snippet is a Markdown code fence marker, not a JavaScript template literal executed by the skill. No runtime interpolation occurs from this line."
+        "confidence": 0.9,
+        "reason": "The detected text is a Markdown fence or GitHub Actions syntax marker, not JavaScript code being evaluated. Actual command execution is covered by separate execSync findings."
       },
       {
         "id": "network:SKILL.md:1121:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The URL appears in an Additional Resources documentation link. It is not a network request made by the skill and does not exfiltrate data."
+        "confidence": 0.93,
+        "reason": "This is a Markdown documentation link in the resources section. It is not an automatic network request or data transfer path."
       },
       {
         "id": "network:SKILL.md:1122:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The URL appears in an Additional Resources documentation link. It is not a network request made by the skill and does not exfiltrate data."
+        "confidence": 0.93,
+        "reason": "This is a Markdown documentation link in the resources section. It is not an automatic network request or data transfer path."
       },
       {
         "id": "network:SKILL.md:1123:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The URL appears in an Additional Resources documentation link. It is not a network request made by the skill and does not exfiltrate data."
+        "confidence": 0.93,
+        "reason": "This is a Markdown documentation link in the resources section. It is not an automatic network request or data transfer path."
       },
       {
         "id": "env_access:SKILL.md:512:git-platform-tokens",
         "verdict": "confirmed",
-        "confidence": 0.73,
-        "reason": "The workflow authenticates GitHub CLI with secrets.GITHUB_TOKEN for repository actions. This is legitimate automation, but it handles a sensitive token and requires least-privilege permissions.",
-        "severity": "high"
+        "confidence": 0.86,
+        "severity": "high",
+        "reason": "The workflow authenticates gh with secrets.GITHUB_TOKEN before running review automation. This is legitimate but exposes repository privileges to the surrounding automation path."
       },
       {
         "id": "blocker:SKILL.md:574:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This GitHub CLI call reads the pull request head commit id for inline review comments. It does not inspect the host system or perform reconnaissance."
+        "confidence": 0.82,
+        "reason": "The command retrieves a GitHub pull request head commit SHA for inline review comments. It does not enumerate local system state or host configuration."
       },
       {
         "id": "blocker:SKILL.md:969:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This line is a best-practice note about caching analysis results. It is not a command and does not perform reconnaissance."
+        "confidence": 0.95,
+        "reason": "The flagged line is a prose best practice about caching analysis results. It is not system reconnaissance or executable behavior."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Webhook Executes Untrusted PR Comments",
-        "description": "The webhook example accepts PR comments starting with /swarm and passes the full comment body into a shell command. The surrounding handler does not show GitHub signature verification, an allowlist, or safe argument execution.",
+        "title": "Untrusted PR Comment Command Execution",
+        "description": "The skill presents PR comments such as /swarm commands as direct automation triggers and shows a webhook handler passing the comment body into a shell command. This can let untrusted repository users influence privileged review automation.",
         "severity": "critical",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 392,
+            "line_start": 376,
             "line_end": 407
           }
         ],
         "confidence": 0.94,
-        "confidence_reasoning": "The code reads event.comment.body and interpolates it into execSync. PR comments are attacker-controlled in many repository workflows unless separately authenticated and allowlisted."
+        "confidence_reasoning": "The command path is explicit: PR comments are accepted when they start with /swarm, then the full comment body is passed to execSync. Later checklist guidance does not remove the unsafe example."
       },
       {
-        "title": "Automated PR Approval and Merge Logic",
-        "description": "The workflow examples approve a pull request when review output contains the word approved, and later enable auto-merge based on swarm status and review count. This can create unsafe business logic if tool output is influenced or branch protection is weak.",
-        "severity": "medium",
+        "title": "Automated Approval and Merge Workflow Risk",
+        "description": "The skill includes examples that approve pull requests based on generated review output and enable auto-merge after review counts. That can bypass human judgment if adopted without strict policy controls.",
+        "severity": "high",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 522,
+            "line_start": 528,
             "line_end": 535
           },
           {
             "file": "SKILL.md",
-            "line_start": 998,
-            "line_end": 1009
+            "line_start": 996,
+            "line_end": 1008
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 1035,
+            "line_end": 1038
           }
         ],
-        "confidence": 0.78,
-        "confidence_reasoning": "The cited examples contain concrete gh pr review --approve and gh pr merge --auto commands controlled by parsed text or status checks. The pattern is legitimate automation but needs stronger policy gates."
+        "confidence": 0.86,
+        "confidence_reasoning": "The cited examples issue gh pr review --approve and gh pr merge commands from automation flows. They are documented examples, but the business logic risk is clear if used directly."
       }
     ],
     "critical_findings": [
@@ -3091,7 +3111,7 @@
         "source_category": "external_commands",
         "source_severity": "high",
         "confidence": 0.96,
-        "confidence_reasoning": "execSync interpolates a PR comment body into a shell command. PR comments are user-controlled, so this is command injection unless strictly authenticated and allowlisted."
+        "confidence_reasoning": "The command embeds a PR comment body into execSync after only checking that it starts with /swarm. Untrusted comment text can influence shell execution."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -3106,16 +3126,16 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.96,
-        "confidence_reasoning": "This is a real JavaScript template literal passed to execSync with PR comment text. The untrusted comment body creates a direct command injection risk."
+        "confidence": 0.88,
+        "confidence_reasoning": "The backtick appears inside an execSync command template in the webhook example. The pattern is executable JavaScript command construction, not just documentation formatting."
       },
       {
-        "title": "Webhook Executes Untrusted PR Comments",
-        "description": "The webhook example accepts PR comments starting with /swarm and passes the full comment body into a shell command. The surrounding handler does not show GitHub signature verification, an allowlist, or safe argument execution.",
+        "title": "Untrusted PR Comment Command Execution",
+        "description": "The skill presents PR comments such as /swarm commands as direct automation triggers and shows a webhook handler passing the comment body into a shell command. This can let untrusted repository users influence privileged review automation.",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 392,
+            "line_start": 376,
             "line_end": 407
           }
         ],
@@ -3123,7 +3143,7 @@
         "source_category": "semantic",
         "source_severity": "critical",
         "confidence": 0.94,
-        "confidence_reasoning": "The code reads event.comment.body and interpolates it into execSync. PR comments are attacker-controlled in many repository workflows unless separately authenticated and allowlisted."
+        "confidence_reasoning": "The command path is explicit: PR comments are accepted when they start with /swarm, then the full comment body is passed to execSync. Later checklist guidance does not remove the unsafe example."
       }
     ],
     "high_findings": [
@@ -3140,8 +3160,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "high",
-        "confidence": 0.88,
-        "confidence_reasoning": "The webhook example imports child_process and the same block executes shell commands from webhook events. This is dangerous if copied without strict validation and isolation."
+        "confidence": 0.9,
+        "confidence_reasoning": "The webhook example imports child_process to run local commands from GitHub webhook events. That enables privileged command execution if copied into production without strict validation."
       },
       {
         "title": "Synchronous process execution",
@@ -3156,8 +3176,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "high",
-        "confidence": 0.82,
-        "confidence_reasoning": "execSync runs a shell command inside a webhook handler using event data. The PR number is expected numeric, but synchronous shell execution in a webhook remains high impact."
+        "confidence": 0.88,
+        "confidence_reasoning": "The webhook example synchronously runs an npx ruv-swarm command from event data. This is real command execution in response to webhook input and needs strong trust controls."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -3172,8 +3192,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "This is a real JavaScript template literal passed to execSync, not only Markdown formatting. It executes a shell command from webhook event data."
+        "confidence": 0.88,
+        "confidence_reasoning": "The backtick appears inside an execSync command template in the webhook example. The pattern is executable JavaScript command construction, not just documentation formatting."
       },
       {
         "title": "Git platform tokens",
@@ -3188,11 +3208,117 @@
         "review_kind": "capability",
         "source_category": "env_access",
         "source_severity": "high",
-        "confidence": 0.73,
-        "confidence_reasoning": "The workflow authenticates GitHub CLI with secrets.GITHUB_TOKEN for repository actions. This is legitimate automation, but it handles a sensitive token and requires least-privilege permissions."
+        "confidence": 0.86,
+        "confidence_reasoning": "The workflow authenticates gh with secrets.GITHUB_TOKEN before running review automation. This is legitimate but exposes repository privileges to the surrounding automation path."
+      },
+      {
+        "title": "Automated Approval and Merge Workflow Risk",
+        "description": "The skill includes examples that approve pull requests based on generated review output and enable auto-merge after review counts. That can bypass human judgment if adopted without strict policy controls.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 528,
+            "line_end": 535
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 996,
+            "line_end": 1008
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 1035,
+            "line_end": 1038
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "high",
+        "confidence": 0.86,
+        "confidence_reasoning": "The cited examples issue gh pr review --approve and gh pr merge commands from automation flows. They are documented examples, but the business logic risk is clear if used directly."
       }
     ],
     "medium_findings": [
+      {
+        "title": "Shell command substitution",
+        "description": "PR_DATA=$(gh pr view 123 --json files,additions,deletions,title,body)",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 39,
+            "line_end": 39
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.76,
+        "confidence_reasoning": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "PR_DIFF=$(gh pr diff 123)",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 40,
+            "line_end": 40
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.76,
+        "confidence_reasoning": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "PR_DATA=$(gh pr view 123 --json files,additions,deletions,title,body)",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 107,
+            "line_end": 107
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.76,
+        "confidence_reasoning": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "PR_DIFF=$(gh pr diff 123)",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 108,
+            "line_end": 108
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.76,
+        "confidence_reasoning": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "CHANGED_FILES=$(gh pr view 123 --json files --jq '.files[].path')",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 138,
+            "line_end": 138
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.76,
+        "confidence_reasoning": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
+      },
       {
         "title": "Shell command substitution",
         "description": "SECURITY_RESULTS=$(npx ruv-swarm github review-security \\",
@@ -3206,8 +3332,40 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.64,
-        "confidence_reasoning": "This example captures output from an npx ruv-swarm invocation. It intentionally executes external package code, so it requires trusted pinned dependencies and controlled CI execution."
+        "confidence": 0.82,
+        "confidence_reasoning": "The shell substitution runs npx ruv-swarm and captures its output for later GitHub actions. This executes external tooling with PR context and should require explicit trust."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "PR_DATA=$(gh pr view $PR_NUM --json files,title,body,labels)",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 518,
+            "line_end": 518
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.76,
+        "confidence_reasoning": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "PR_DIFF=$(gh pr diff $PR_NUM)",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 519,
+            "line_end": 519
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.76,
+        "confidence_reasoning": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
       },
       {
         "title": "Shell command substitution",
@@ -3222,8 +3380,40 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.64,
-        "confidence_reasoning": "This example captures output from an npx ruv-swarm invocation. It intentionally executes external package code, so it requires trusted pinned dependencies and controlled CI execution."
+        "confidence": 0.82,
+        "confidence_reasoning": "The shell substitution runs npx ruv-swarm and captures its output for later GitHub actions. This executes external tooling with PR context and should require explicit trust."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "PR_DIFF=$(gh pr diff 123 --color never)",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 557,
+            "line_end": 557
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.76,
+        "confidence_reasoning": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "PR_FILES=$(gh pr view 123 --json files)",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 558,
+            "line_end": 558
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.76,
+        "confidence_reasoning": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
       },
       {
         "title": "Shell command substitution",
@@ -3238,8 +3428,72 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.64,
-        "confidence_reasoning": "This example captures output from an npx ruv-swarm invocation. It intentionally executes external package code, so it requires trusted pinned dependencies and controlled CI execution."
+        "confidence": 0.82,
+        "confidence_reasoning": "The shell substitution runs npx ruv-swarm and captures its output for later GitHub actions. This executes external tooling with PR context and should require explicit trust."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "FILE=$(echo \"$comment\" | jq -r '.path')",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 571,
+            "line_end": 571
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.62,
+        "confidence_reasoning": "The shell substitution parses generated review output for later API calls. The pattern is operationally legitimate but depends on untrusted or tool-generated data."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "LINE=$(echo \"$comment\" | jq -r '.line')",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 572,
+            "line_end": 572
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.62,
+        "confidence_reasoning": "The shell substitution parses generated review output for later API calls. The pattern is operationally legitimate but depends on untrusted or tool-generated data."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "BODY=$(echo \"$comment\" | jq -r '.body')",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 573,
+            "line_end": 573
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.62,
+        "confidence_reasoning": "The shell substitution parses generated review output for later API calls. The pattern is operationally legitimate but depends on untrusted or tool-generated data."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "COMMIT_ID=$(gh pr view 123 --json headRefOid -q .headRefOid)",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 574,
+            "line_end": 574
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.76,
+        "confidence_reasoning": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
       },
       {
         "title": "Shell command substitution",
@@ -3254,8 +3508,24 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.64,
-        "confidence_reasoning": "This example captures output from an npx ruv-swarm invocation. It intentionally executes external package code, so it requires trusted pinned dependencies and controlled CI execution."
+        "confidence": 0.82,
+        "confidence_reasoning": "The shell substitution runs npx ruv-swarm and captures its output for later GitHub actions. This executes external tooling with PR context and should require explicit trust."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "if [[ $(echo \"$PROGRESS\" | grep -o '[0-9]\\+%' | sed 's/%//') -gt 90 ]]; then",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 819,
+            "line_end": 819
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.62,
+        "confidence_reasoning": "The shell substitution parses generated review output for later API calls. The pattern is operationally legitimate but depends on untrusted or tool-generated data."
       },
       {
         "title": "Shell command substitution",
@@ -3270,29 +3540,24 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.64,
-        "confidence_reasoning": "This example captures output from an npx ruv-swarm invocation. It intentionally executes external package code, so it requires trusted pinned dependencies and controlled CI execution."
+        "confidence": 0.82,
+        "confidence_reasoning": "The shell substitution runs npx ruv-swarm and captures its output for later GitHub actions. This executes external tooling with PR context and should require explicit trust."
       },
       {
-        "title": "Automated PR Approval and Merge Logic",
-        "description": "The workflow examples approve a pull request when review output contains the word approved, and later enable auto-merge based on swarm status and review count. This can create unsafe business logic if tool output is influenced or branch protection is weak.",
+        "title": "Shell command substitution",
+        "description": "REVIEWS=$(gh pr view 123 --json reviews --jq '.reviews | length')",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 522,
-            "line_end": 535
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 998,
-            "line_end": 1009
+            "line_start": 1004,
+            "line_end": 1004
           }
         ],
-        "review_kind": "security",
-        "source_category": "semantic",
+        "review_kind": "capability",
+        "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The cited examples contain concrete gh pr review --approve and gh pr merge --auto commands controlled by parsed text or status checks. The pattern is legitimate automation but needs stronger policy gates."
+        "confidence": 0.76,
+        "confidence_reasoning": "The shell substitution invokes gh to fetch pull request data from GitHub. This is expected for the skill but still performs authenticated external access."
       }
     ],
     "low_findings": [],
@@ -3300,13 +3565,13 @@
     "files_scanned": 1,
     "total_lines": 1141,
     "audit_model": "codex",
-    "audited_at": "2026-07-06T12:18:36.344Z",
+    "audited_at": "2026-07-09T10:51:45.770Z",
     "agent_auto_install_policy": "blocked",
     "manual_install_policy": "allowed_with_warning"
   },
   "content": {
-    "user_title": "Review GitHub Pull Requests with AI Swarms",
-    "value_statement": "Large pull requests are hard to review consistently across security, performance, and architecture concerns. This skill provides GitHub CLI and swarm-based workflows for coordinated AI-assisted review.",
+    "user_title": "Review GitHub Pull Requests with AI Agents",
+    "value_statement": "Manual pull request reviews can miss security, performance, and architecture issues. This skill provides structured GitHub review workflows using specialized AI agents and CLI automation.",
     "seo_keywords": [
       "Claude",
       "Codex",
@@ -3314,122 +3579,123 @@
       "GitHub code review",
       "pull request review",
       "AI review agents",
-      "ruv-swarm",
-      "GitHub CLI automation",
-      "security review",
-      "PR quality gates"
+      "PR automation",
+      "security code review",
+      "GitHub CLI workflow",
+      "swarm coordination"
     ],
     "actual_capabilities": [
-      "Shows how to collect pull request metadata and diffs with GitHub CLI.",
-      "Defines security, performance, architecture, style, and accessibility review agent examples.",
-      "Provides GitHub Actions examples for automated review workflows.",
-      "Demonstrates inline review comment generation and posting through GitHub APIs.",
-      "Describes quality gates, review metrics, progress updates, and troubleshooting steps.",
-      "Includes guidance for token scope, command validation, rate limits, and audit logs."
+      "Guides GitHub pull request reviews using gh CLI commands and PR context.",
+      "Defines specialized review agents for security, performance, style, architecture, and accessibility checks.",
+      "Provides examples for posting PR comments, review summaries, labels, and status updates.",
+      "Shows GitHub Actions workflows for automated review on pull request events.",
+      "Documents quality gates, review metrics, dashboards, and troubleshooting commands."
     ],
     "limitations": [
-      "Requires GitHub CLI, ruv-swarm, claude-flow, and repository authentication to be configured.",
-      "Several examples execute external commands and should only run in trusted environments.",
-      "Automated approval and merge examples need human guardrails before production use.",
-      "Review results depend on configured agents and do not replace maintainer judgment."
+      "Requires authenticated GitHub CLI access and repository permissions before commands can work.",
+      "Depends on external tools such as ruv-swarm, claude-flow, jq, and npm packages.",
+      "Examples may need security hardening before production use, especially webhooks and comment commands.",
+      "Does not replace human approval for high-risk code, security-sensitive changes, or merge decisions."
     ],
     "use_cases": [
       {
-        "title": "Coordinate PR Reviews",
-        "description": "Run structured reviews that split security, performance, style, and architecture checks across specialized agents.",
-        "target_user": "Repository maintainers"
+        "title": "Review Security-Critical Pull Requests",
+        "target_user": "Security engineer",
+        "description": "Run focused review workflows for authentication, authorization, secrets, and dependency changes before approval."
       },
       {
-        "title": "Add Security Review Gates",
-        "description": "Create review flows that flag critical security issues and request changes before a pull request can merge.",
-        "target_user": "Security engineers"
+        "title": "Standardize Team Review Workflows",
+        "target_user": "Engineering manager",
+        "description": "Use repeatable review agents and quality gates to improve consistency across pull requests."
       },
       {
-        "title": "Automate Review Workflows",
-        "description": "Build GitHub Actions workflows that collect PR context, run review agents, post summaries, and update labels.",
-        "target_user": "DevOps engineers"
+        "title": "Automate PR Feedback Collection",
+        "target_user": "DevOps engineer",
+        "description": "Connect GitHub Actions, review comments, labels, and metrics into a single review process."
       }
     ],
     "prompt_templates": [
       {
-        "title": "Basic Pull Request Review",
-        "scenario": "Beginner review of one pull request.",
-        "prompt": "Review pull request 123. Summarize the main changes, list the highest priority issues, and suggest next review steps."
+        "title": "Run a Basic PR Review",
+        "scenario": "Beginner review of one pull request",
+        "prompt": "Review pull request 123 with the GitHub code review skill. Focus on correctness, tests, and clear feedback."
       },
       {
-        "title": "Focused Security Review",
-        "scenario": "Security-focused review for sensitive changes.",
-        "prompt": "Review pull request 123 for authentication, authorization, secret exposure, and input validation risks. Prioritize findings by impact."
+        "title": "Focus on Security Findings",
+        "scenario": "Targeted security review",
+        "prompt": "Review pull request 123 for security issues. Prioritize authentication, authorization, secrets, injection risks, and dependency changes."
       },
       {
-        "title": "CI Review Workflow Design",
-        "scenario": "Design a repeatable GitHub Actions review workflow.",
-        "prompt": "Design an automated review workflow for pull requests. Include required agents, quality gates, labels, and safe token handling."
+        "title": "Create a Multi-Agent Review Plan",
+        "scenario": "Coordinated review for a larger change",
+        "prompt": "Create a review plan for pull request 123 using security, performance, architecture, style, and accessibility agents. Include expected outputs and quality gates."
       },
       {
-        "title": "Advanced Multi-Agent Review Plan",
-        "scenario": "Plan a coordinated review for a large or high-risk pull request.",
-        "prompt": "Create a multi-agent review plan for pull request 123. Assign agents, define review depth, set escalation rules, and specify merge criteria."
+        "title": "Audit a Review Automation Workflow",
+        "scenario": "Advanced CI and webhook review",
+        "prompt": "Evaluate the automated review workflow for pull request 123. Check webhook safety, token scope, command validation, approval rules, and merge controls."
       }
     ],
     "output_examples": [
       {
-        "input": "Review a pull request that changes authentication code.",
+        "input": "Review PR 123 for security and performance regressions.",
         "output": [
-          "Security review requested changes for missing authorization checks.",
-          "Architecture review found no blocking design issues.",
-          "Recommended next step: add tests for denied access paths before approval."
+          "Security review summary with critical, high, and low priority findings.",
+          "Performance observations with suggested benchmarks or follow-up tests.",
+          "GitHub-ready review comments and labels for the pull request."
         ]
       },
       {
-        "input": "Create an automated review flow for a large feature branch.",
+        "input": "Set up an automated review workflow for new pull requests.",
         "output": [
-          "The workflow collects pull request context, runs focused review agents, posts a summary, and labels follow-up areas.",
-          "Human approval remains required before merge."
+          "A workflow outline for collecting PR context and running review agents.",
+          "Quality gate recommendations for security, performance, style, and architecture checks.",
+          "Operational cautions for token scope, webhook validation, and command execution."
         ]
       },
       {
-        "input": "Generate review comments for performance-sensitive database changes.",
+        "input": "Generate a final review report for a large feature PR.",
         "output": [
-          "Performance feedback highlights query count, caching behavior, and baseline comparison needs.",
-          "Comments are grouped by severity so maintainers can address blocking items first."
+          "A concise decision summary with approval status and remaining blockers.",
+          "Grouped findings by agent type and severity.",
+          "Next actions for authors, reviewers, and release owners."
         ]
       }
     ],
     "best_practices": [
-      "Run examples only in repositories where GitHub tokens and branch permissions are tightly scoped.",
-      "Pin external tool versions and review package provenance before using npx-based commands.",
-      "Require human approval for merge, approval, and label changes in protected branches."
+      "Run commands only in trusted repositories with explicit user approval and limited GitHub token scopes.",
+      "Validate PR comments, webhook signatures, and command arguments before any automation executes.",
+      "Use the generated review as decision support and keep human approval for risky changes."
     ],
     "anti_patterns": [
-      "Do not execute pull request comments as shell commands without signature checks and allowlists.",
-      "Do not grant broad repository tokens to automated review workflows.",
-      "Do not approve or merge pull requests based only on unstructured tool output."
+      "Do not allow arbitrary PR comments to trigger shell commands or privileged automation.",
+      "Do not pass unreviewed model output directly into GitHub approval, merge, or labeling commands.",
+      "Do not run external npm packages with repository secrets unless the package and version are trusted."
     ],
     "faq": [
       {
-        "question": "Does this skill review GitHub pull requests directly?",
-        "answer": "It provides workflows and command examples for AI-assisted GitHub pull request review. The required tools must be configured separately."
+        "question": "Does this skill require GitHub access?",
+        "answer": "Yes. Most workflows require gh CLI authentication and repository permissions for pull request data and comments."
       },
       {
-        "question": "Which tools does it expect?",
-        "answer": "The skill expects GitHub CLI, ruv-swarm, claude-flow, and an authenticated repository environment."
+        "question": "Can it approve or merge pull requests automatically?",
+        "answer": "The skill includes examples for approval and merge automation, but teams should require human review for these actions."
       },
       {
-        "question": "Can it post review comments?",
-        "answer": "Yes. The examples show how to generate comments and post inline pull request feedback through GitHub APIs."
+        "question": "Which review areas does it cover?",
+        "answer": "It covers security, performance, architecture, style, accessibility, tests, quality gates, and review metrics."
       },
       {
-        "question": "Is it safe to run automatically?",
-        "answer": "Automatic use needs guardrails. Limit token permissions, validate webhook input, and require human approval for merge actions."
+        "question": "Is it safe to use with public pull requests?",
+        "answer": "Use caution. Public pull requests can contain untrusted input, so tokens, webhooks, and commands need strict controls."
       },
       {
-        "question": "Does it replace human reviewers?",
-        "answer": "No. It helps organize review coverage, but maintainers should verify findings and approve final changes."
+        "question": "Does it install or run external tools?",
+        "answer": "The examples use gh, npx, ruv-swarm, claude-flow, jq, npm, and shell commands. Verify each tool before use."
       },
       {
-        "question": "Can Codex, Claude, and Claude Code use it?",
-        "answer": "The report lists support for Claude, Codex, and Claude Code, with examples centered on GitHub workflows."
+        "question": "Can it replace a human reviewer?",
+        "answer": "No. It helps organize review work and produce feedback, but human reviewers should make final decisions."
       }
     ]
   },

@@ -1,20 +1,23 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T20:11:51.469Z",
+    "generated_at": "2026-07-09T09:06:34.970Z",
     "slug": "arvindrk-extract-design-system",
     "source_url": "https://github.com/arvindrk/extract-design-system/tree/main/skills/extract-design-system/",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "e1a08d959b6f6d8d6012bc1dd6b12493dc83f615e32e70117d2fdda33b053c65",
-    "tree_hash": "ec3aa1c43034194c8779c1d88f15730cf82917a7766702de166ba9fa3380b98d",
+    "content_hash": "403e0bb6da51441cfa996e418a8ba5b48d28fb811784477daf42c94b5c5229af",
+    "tree_hash": "0bf612890b7082749dd2951d9dd9b3ba2430241930eebe89199f5c214ae1a881",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
       "fallback_chain": [
         {
           "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -23,19 +26,19 @@
   },
   "skill": {
     "name": "extract-design-system",
-    "description": "Extract design primitives from a public website and generate starter token files for your project.",
-    "summary": "Extract design primitives from a public website and generate starter token files for your project.",
+    "description": "Extract design primitives from a public website and generate starter token files for a project.",
+    "summary": "Turn public website styles into starter design tokens.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "arvindrk",
     "license": "MIT",
     "category": "design",
     "tags": [
-      "design-system",
-      "design-tokens",
-      "css-variables",
-      "website-analysis",
-      "playwright"
+      "design tokens",
+      "design system",
+      "css variables",
+      "website analysis",
+      "frontend"
     ],
     "supported_tools": [
       "claude",
@@ -51,21 +54,16 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The real security concern is that the skill instructs agents to run external npx commands, including commands with a user-supplied URL argument. The remaining static hits are markdown fences, workflow prose, or generated output path references. I found no prompt-injection attempt or malicious intent in SKILL.md.",
+    "summary": "The skill contains legitimate instructions to run npx commands from SKILL.md, including package execution and Playwright setup. Several static hits are markdown code fences or inline file names and are false positives for Ruby backtick execution. No prompt injection or malicious data exfiltration intent was found in the reviewed files.",
     "remediation": [
       {
         "issue": "Unpinned npx package execution",
-        "suggestion": "Pin the extract-design-system package version and document that npx may download and run package code.",
+        "suggestion": "Pin the extract-design-system package version in examples and require user confirmation before running npm-hosted code.",
         "severity": "medium"
       },
       {
-        "issue": "User-provided URL passed to shell command",
-        "suggestion": "Validate the URL, quote the argument, and require explicit confirmation before running commands that use it.",
-        "severity": "medium"
-      },
-      {
-        "issue": "Browser dependency installation command",
-        "suggestion": "Ask before installing Chromium with Playwright and explain the local disk and network effects.",
+        "issue": "Browser binary installation",
+        "suggestion": "Explain that Playwright may download Chromium and prefer an existing local browser installation when available.",
         "severity": "low"
       }
     ],
@@ -247,71 +245,71 @@
       {
         "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.88,
-        "reason": "Lines 28-31 instruct the agent to run npx playwright install chromium and npx extract-design-system with a user-provided URL. This is real external command execution with package and URL input risk.",
+        "confidence": 0.84,
+        "reason": "This block instructs the agent to run npx commands, including installing Chromium and executing an npm package. The commands are task-related, but they still run external code and can download dependencies.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.95,
-        "reason": "This range is the markdown code fence closure and the start of a review step. It does not contain an executable command or command construction."
+        "reason": "This finding points to a markdown code-fence terminator and a file review instruction. It is not Ruby backtick execution and does not invoke a command."
       },
       {
         "id": "external_commands:SKILL.md:33:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "Lines 33-41 describe reviewing normalized output and list design attributes. The only shell-like text is a markdown fence, not command execution."
+        "confidence": 0.91,
+        "reason": "These lines describe reviewing a local normalized output file and summarizing extracted design values. The backticks are markdown formatting around a path, not executable shell syntax."
       },
       {
         "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "Lines 41-43 instruct the agent to run npx extract-design-system with a user-provided URL and the --extract-only flag. This is real external command execution with user-controlled input.",
+        "confidence": 0.85,
+        "reason": "This block instructs the agent to run npx extract-design-system with a user-provided public URL. It is a legitimate workflow command, but it executes an external package against third-party input.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:43:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "This range contains the markdown code fence closure and prose introducing the next workflow step. It does not include an executable command."
+        "reason": "This finding is on markdown fence closure and prose before the next workflow step. It does not contain an executable backtick expression or command."
       },
       {
         "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "Lines 45-47 introduce a conditional workflow and open a markdown code block. The command itself is outside this static finding range."
+        "confidence": 0.88,
+        "reason": "These lines describe when to regenerate starter files and include markdown formatting around a local path. The finding does not include the executable command itself."
       },
       {
         "id": "external_commands:SKILL.md:47:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "Lines 47-49 instruct the agent to run npx extract-design-system init. Even without user input, this executes an external npm-distributed tool in the local project context.",
+        "confidence": 0.84,
+        "reason": "This block instructs the agent to run npx extract-design-system init. The command is narrowly scoped, but it still executes an npm package in the user's project.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:49:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This range closes a markdown code block and introduces generated output descriptions. It does not contain a shell command."
+        "confidence": 0.95,
+        "reason": "This finding points to a markdown fence terminator and explanatory prose. It does not run a shell command or use Ruby-style command execution."
       },
       {
         "id": "external_commands:SKILL.md:53:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "Line 53 is a generated output file path for raw extraction data. Referencing a file path is not external command execution."
+        "reason": "This line lists a generated output file path using markdown backticks. It is documentation, not command execution."
       },
       {
         "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "Line 54 is a generated output file path for normalized extraction data. It is documentation of an artifact, not command execution."
+        "reason": "This line lists a generated normalized output file path using markdown backticks. It does not invoke external commands."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "Line 55 is a generated output file path for design-system/tokens.json. It does not execute a command or invoke a shell."
+        "reason": "This line lists a generated tokens file path using markdown backticks. It is not executable syntax."
       }
     ],
     "semantic_findings": [],
@@ -331,8 +329,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "Lines 28-31 instruct the agent to run npx playwright install chromium and npx extract-design-system with a user-provided URL. This is real external command execution with package and URL input risk."
+        "confidence": 0.84,
+        "confidence_reasoning": "This block instructs the agent to run npx commands, including installing Chromium and executing an npm package. The commands are task-related, but they still run external code and can download dependencies."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -347,8 +345,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "Lines 41-43 instruct the agent to run npx extract-design-system with a user-provided URL and the --extract-only flag. This is real external command execution with user-controlled input."
+        "confidence": 0.85,
+        "confidence_reasoning": "This block instructs the agent to run npx extract-design-system with a user-provided public URL. It is a legitimate workflow command, but it executes an external package against third-party input."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -363,8 +361,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "Lines 47-49 instruct the agent to run npx extract-design-system init. Even without user input, this executes an external npm-distributed tool in the local project context."
+        "confidence": 0.84,
+        "confidence_reasoning": "This block instructs the agent to run npx extract-design-system init. The command is narrowly scoped, but it still executes an npm package in the user's project."
       }
     ],
     "low_findings": [],
@@ -372,129 +370,134 @@
     "files_scanned": 3,
     "total_lines": 101,
     "audit_model": "codex",
-    "audited_at": "2026-07-07T20:11:51.469Z",
+    "audited_at": "2026-07-09T09:06:34.970Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Extract Website Design Tokens",
-    "value_statement": "Teams need a fast starting point when matching an existing public website. This skill extracts visible design primitives and generates local token files for review.",
+    "value_statement": "Recreating a public site's visual language by hand is slow and inconsistent. This skill extracts starter colors, fonts, spacing, radius, shadows, and token files for review.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "design system extraction",
       "design tokens",
-      "website style audit",
+      "Playwright design audit",
       "CSS variables",
-      "Playwright design analysis",
-      "extract colors and fonts",
-      "starter token files"
+      "frontend styling",
+      "public website analysis",
+      "token generator"
     ],
     "actual_capabilities": [
-      "Runs extract-design-system against a public website URL when approved.",
-      "Installs Chromium with Playwright when the local browser dependency is missing.",
-      "Reviews normalized extraction output for colors, fonts, spacing, radius, and shadows.",
-      "Generates starter tokens.json and tokens.css files from extracted primitives.",
-      "Supports extraction-only mode and token regeneration from existing normalized output."
+      "Checks that the target website URL is public and reachable.",
+      "Runs the extract-design-system CLI with Playwright when extraction is requested.",
+      "Summarizes detected colors, fonts, spacing, radius, and shadow scales.",
+      "Generates starter token artifacts for project review.",
+      "Supports extraction-only and token-regeneration workflows.",
+      "Asks before modifying existing app code, styles, or config files."
     ],
     "limitations": [
-      "Does not build a complete component library.",
-      "Does not guarantee pixel-perfect reproduction of the source site.",
-      "Single-page or dynamic sites may not represent a full product design system.",
-      "Requires review before using extracted third-party styles in an application."
+      "It does not create a complete component library.",
+      "Results are starter assets, not pixel-perfect reproductions.",
+      "Private, dynamic, or blocked pages may produce incomplete results.",
+      "Extracted values require human review before production use."
     ],
     "use_cases": [
       {
-        "title": "Audit Public Brand Styling",
-        "description": "Extract visible colors, typography, and spacing from a public site to start a design-token discussion.",
-        "target_user": "Product designer"
-      },
-      {
-        "title": "Start Frontend Theme Files",
-        "description": "Generate starter token files before wiring CSS variables into an app.",
+        "title": "Bootstrap Project Tokens",
+        "description": "Create starter design tokens from a public reference site before building a new frontend.",
         "target_user": "Frontend developer"
       },
       {
-        "title": "Document Design Primitives",
-        "description": "Review normalized output to document likely primitives before a deeper manual audit.",
+        "title": "Audit Brand Styles",
+        "description": "Identify likely colors, fonts, spacing, radius, and shadows from a public brand page.",
         "target_user": "Design systems lead"
+      },
+      {
+        "title": "Prepare Migration Assets",
+        "description": "Generate token files from an existing public site before planning a styling migration.",
+        "target_user": "Product engineer"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Extract Basic Tokens",
-        "prompt": "Use this skill to extract design primitives from https://example.com. Generate starter token files and summarize the main colors and fonts.",
-        "scenario": "Beginner website extraction"
+        "title": "Extract Starter Tokens",
+        "scenario": "Beginner extraction from one public page",
+        "prompt": "Extract design primitives from this public URL and summarize the starter tokens before generating files: <url>"
       },
       {
-        "title": "Extract Without Files",
-        "prompt": "Use this skill on https://example.com with extraction only. Do not create starter token files. Summarize the normalized output.",
-        "scenario": "Analysis-only run"
+        "title": "Analyze Without Files",
+        "scenario": "Review design values without creating starter assets",
+        "prompt": "Analyze this public URL with extraction only. Report the detected colors, fonts, spacing, radius, and shadows: <url>"
       },
       {
         "title": "Regenerate Token Files",
-        "prompt": "Use the existing .extract-design-system/normalized.json to regenerate starter token files. Review the generated CSS variables before suggesting app changes.",
-        "scenario": "Existing extraction artifacts"
+        "scenario": "Use an existing normalized extraction output",
+        "prompt": "Use the existing normalized extraction output to regenerate starter token files. Do not change app code or styling."
       },
       {
-        "title": "Review Adoption Readiness",
-        "prompt": "Run the extraction for https://example.com, review colors, fonts, spacing, radius, and shadows, then list what requires human validation before adoption.",
-        "scenario": "Advanced design-system review"
+        "title": "Compare Extraction Quality",
+        "scenario": "Advanced review before adoption",
+        "prompt": "Extract tokens from this public URL, identify likely gaps from dynamic content, and recommend which values need manual review: <url>"
       }
     ],
     "output_examples": [
       {
-        "input": "Extract design primitives from a public marketing site.",
+        "input": "Analyze a public marketing page for starter design tokens.",
         "output": [
-          "Primary color candidates identified with secondary and accent colors.",
-          "Detected font families and fallback behavior summarized.",
-          "Starter token files generated for review."
+          "A concise summary of likely primary, secondary, and accent colors.",
+          "Detected font families and visible typography patterns.",
+          "A list of generated token artifacts ready for review."
         ]
       },
       {
-        "input": "Run extraction-only mode for a design audit.",
-        "output": "The result is a concise report of detected tokens, missing scales, and recommended manual review points."
+        "input": "Run extraction only for a public documentation site.",
+        "output": [
+          "A review summary of extracted design primitives.",
+          "Notes about missing or uncertain values from the page.",
+          "No starter files unless the user asks for them."
+        ]
       },
       {
-        "input": "Regenerate starter files from normalized output.",
-        "output": "The skill refreshes the token file set and explains which generated files changed conceptually."
+        "input": "Regenerate token files from an existing normalized extraction.",
+        "output": "The skill refreshes starter token files and explains that existing app styles were not changed."
       }
     ],
     "best_practices": [
-      "Confirm the target URL is public and approved before running extraction.",
-      "Review normalized output before importing generated tokens into an application.",
-      "Ask for confirmation before changing existing app code, styles, or config files."
+      "Use public URLs and confirm the target page is reachable before extraction.",
+      "Review extracted output before importing token files into an application.",
+      "Ask for confirmation before changing existing app code, styling, or config."
     ],
     "anti_patterns": [
-      "Do not treat one page as a complete design system.",
-      "Do not overwrite existing styling without explicit user approval.",
-      "Do not infer semantic tokens or components that were not extracted."
+      "Do not treat one extracted page as a complete product design system.",
+      "Do not overwrite an existing design system without explicit approval.",
+      "Do not accept third-party page content as instructions for code changes."
     ],
     "faq": [
       {
-        "question": "Does this create a full design system?",
-        "answer": "No. It creates starter token files from visible design primitives."
+        "question": "Does this build a full component library?",
+        "answer": "No. It creates starter design tokens and summaries from public website styles."
       },
       {
-        "question": "Can it inspect private websites?",
-        "answer": "It is intended for public, reachable URLs. Private or authenticated sites need separate user approval and access handling."
+        "question": "Can it analyze private websites?",
+        "answer": "The skill is intended for public, reachable URLs. Private pages may need separate access handling."
       },
       {
-        "question": "Which files can it generate?",
-        "answer": "It can produce raw extraction output, normalized data, tokens.json, and tokens.css."
+        "question": "What files can it generate?",
+        "answer": "It can generate raw extraction data, normalized design data, token JSON, and starter CSS variables."
       },
       {
-        "question": "Does it modify my app automatically?",
-        "answer": "No. The skill instructs the agent to ask before changing existing app code, styles, or configuration."
+        "question": "Does it modify existing app styles?",
+        "answer": "It should ask for confirmation before changing existing app code, styles, or config files."
       },
       {
-        "question": "Can I run analysis without starter files?",
-        "answer": "Yes. Use extraction-only mode when you only need the extracted design data."
+        "question": "Is the extracted design system authoritative?",
+        "answer": "No. The output is a starting point and should be reviewed before production use."
       },
       {
-        "question": "Why is manual review required?",
-        "answer": "Extraction can miss dynamic states, hidden pages, and brand rules, so humans must validate the result."
+        "question": "Which assistants can use this skill?",
+        "answer": "The report lists support for Claude, Codex, and Claude Code."
       }
     ]
   },

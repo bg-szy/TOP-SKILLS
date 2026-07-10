@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T07:45:20.760Z",
+    "generated_at": "2026-07-09T17:25:30.842Z",
     "slug": "davila7-senior-architect",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/development/senior-architect",
     "source_ref": "main",
@@ -23,8 +23,8 @@
   },
   "skill": {
     "name": "senior-architect",
-    "description": "Architecture review skill for system design, technology decisions, and implementation planning. It includes reference guides and Python helper scripts for basic project, dependency, and architecture reports.",
-    "summary": "Plan and review software architecture with reference guides and basic helper scripts.",
+    "description": "Provides architecture guidance, reference patterns, and helper scripts for reviewing software systems, selecting technology stacks, and producing basic analysis reports.",
+    "summary": "Plan architecture decisions and system reviews with guided references and simple Python analysis scripts.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
@@ -34,7 +34,7 @@
       "system-design",
       "technical-decisions",
       "dependency-analysis",
-      "architecture-diagrams"
+      "diagrams"
     ],
     "supported_tools": [
       "claude",
@@ -52,21 +52,21 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "No prompt injection, credential exfiltration, network activity, or obfuscated behavior was found in the reviewed files. Most static hits are Markdown fences or reference links. Confirmed risks are optional JSON report file writes and broad command examples that can modify local or deployment state if run without approval.",
+    "summary": "The audit confirms limited filesystem write behavior in the three helper scripts through a user-supplied output path. The markdown code fences, documentation links, anti-pattern headings, and .env setup example are false positives for execution or reconnaissance. No evidence found of prompt injection, network access, credential exfiltration, or destructive behavior.",
     "remediation": [
       {
-        "issue": "Unrestricted report output paths",
-        "suggestion": "Restrict --output to the project workspace, refuse overwrites by default, and show the write target before execution.",
+        "issue": "Scripts write to a user-provided output path.",
+        "suggestion": "Validate --output paths, avoid overwriting existing files by default, and document the write behavior clearly.",
         "severity": "medium"
       },
       {
-        "issue": "Broad setup and deployment commands",
-        "suggestion": "Require explicit user approval before npm, pip, Docker, Docker Compose, or kubectl commands. Avoid automatic execution.",
-        "severity": "high"
+        "issue": "Documentation includes broad shell command examples.",
+        "suggestion": "Label commands as examples and require users to review them before running against real projects or clusters.",
+        "severity": "low"
       },
       {
-        "issue": "Environment file creation can overwrite local configuration",
-        "suggestion": "Replace cp .env.example .env with a no-clobber command and warn users before changing existing .env files.",
+        "issue": "The setup example copies .env.example to .env.",
+        "suggestion": "Warn users to avoid overwriting an existing .env file and to never commit populated secret files.",
         "severity": "low"
       }
     ],
@@ -543,221 +543,202 @@
       {
         "id": "blocker:references/architecture_patterns.md:81:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a documentation heading about anti-patterns, not system reconnaissance or host discovery. It gives no command or instruction to inspect the user system."
+        "confidence": 0.96,
+        "reason": "The detected text is an architecture documentation heading about design anti-patterns. No system enumeration, host discovery, or reconnaissance instruction is present."
       },
       {
         "id": "blocker:references/system_design_workflows.md:81:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a documentation heading about anti-patterns, not system reconnaissance or host discovery. It gives no command or instruction to inspect the user system."
+        "confidence": 0.96,
+        "reason": "The detected text is an architecture documentation heading about design anti-patterns. No system enumeration, host discovery, or reconnaissance instruction is present."
       },
       {
         "id": "blocker:references/tech_decision_guide.md:81:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a documentation heading about anti-patterns, not system reconnaissance or host discovery. It gives no command or instruction to inspect the user system."
+        "confidence": 0.96,
+        "reason": "The detected text is an architecture documentation heading about design anti-patterns. No system enumeration, host discovery, or reconnaissance instruction is present."
       },
       {
         "id": "filesystem:scripts/architecture_diagram_generator.py:107:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.78,
+        "confidence": 0.74,
         "severity": "medium",
-        "reason": "The script writes JSON output to args.output with open(..., \"w\"), so a supplied path can overwrite files accessible to the agent. The write is intentional, but lacks path limits or no-clobber protection."
+        "reason": "The script writes JSON output to args.output with no path restriction. This is intentional report output, but it can overwrite any writable path chosen by the caller."
       },
       {
         "id": "filesystem:scripts/dependency_analyzer.py:107:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.78,
+        "confidence": 0.74,
         "severity": "medium",
-        "reason": "The script writes JSON output to args.output with open(..., \"w\"), so a supplied path can overwrite files accessible to the agent. The write is intentional, but lacks path limits or no-clobber protection."
+        "reason": "The script writes JSON output to args.output with no path restriction. This is intentional report output, but it can overwrite any writable path chosen by the caller."
       },
       {
         "id": "filesystem:scripts/project_architect.py:107:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.78,
+        "confidence": 0.74,
         "severity": "medium",
-        "reason": "The script writes JSON output to args.output with open(..., \"w\"), so a supplied path can overwrite files accessible to the agent. The write is intentional, but lacks path limits or no-clobber protection."
+        "reason": "The script writes JSON output to args.output with no path restriction. This is intentional report output, but it can overwrite any writable path chosen by the caller."
       },
       {
         "id": "external_commands:SKILL.md:16:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The lines document direct invocation of bundled Python scripts with explicit arguments. There is no shell interpolation, hidden execution, network access, or dynamic command construction."
+        "confidence": 0.9,
+        "reason": "This is markdown documentation for example shell usage, not Ruby backtick execution or hidden command execution. The commands are visible and user-initiated."
       },
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The cited range is Markdown structure or explanatory text around a command block. It is not Ruby backtick execution or concealed command execution."
+        "reason": "This is markdown documentation for example shell usage, not Ruby backtick execution or hidden command execution. The commands are visible and user-initiated."
       },
       {
         "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The lines document direct invocation of bundled Python scripts with explicit arguments. There is no shell interpolation, hidden execution, network access, or dynamic command construction."
+        "confidence": 0.9,
+        "reason": "This is markdown documentation for example shell usage, not Ruby backtick execution or hidden command execution. The commands are visible and user-initiated."
       },
       {
         "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The cited range is Markdown structure or explanatory text around a command block. It is not Ruby backtick execution or concealed command execution."
+        "reason": "This is markdown documentation for example shell usage, not Ruby backtick execution or hidden command execution. The commands are visible and user-initiated."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The lines document direct invocation of bundled Python scripts with explicit arguments. There is no shell interpolation, hidden execution, network access, or dynamic command construction."
+        "confidence": 0.9,
+        "reason": "This is markdown documentation for example shell usage, not Ruby backtick execution or hidden command execution. The commands are visible and user-initiated."
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The cited range is Markdown structure or explanatory text around a command block. It is not Ruby backtick execution or concealed command execution."
+        "reason": "This is markdown documentation for example shell usage, not Ruby backtick execution or hidden command execution. The commands are visible and user-initiated."
       },
       {
         "id": "external_commands:SKILL.md:70:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The lines document direct invocation of bundled Python scripts with explicit arguments. There is no shell interpolation, hidden execution, network access, or dynamic command construction."
+        "confidence": 0.9,
+        "reason": "This is markdown documentation for example shell usage, not Ruby backtick execution or hidden command execution. The commands are visible and user-initiated."
       },
       {
         "id": "external_commands:SKILL.md:72:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The cited range is Markdown structure or explanatory text around a command block. It is not Ruby backtick execution or concealed command execution."
+        "reason": "This is markdown documentation for example shell usage, not Ruby backtick execution or hidden command execution. The commands are visible and user-initiated."
       },
       {
         "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text is an inline reference to documentation files, not an executable command. The backticks are Markdown formatting rather than shell execution."
+        "confidence": 0.95,
+        "reason": "This markdown line references local documentation files or headings inside the skill. It is not executable shell code and has no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text is an inline reference to documentation files, not an executable command. The backticks are Markdown formatting rather than shell execution."
+        "confidence": 0.95,
+        "reason": "This markdown line references local documentation files or headings inside the skill. It is not executable shell code and has no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text is an inline reference to documentation files, not an executable command. The backticks are Markdown formatting rather than shell execution."
+        "confidence": 0.95,
+        "reason": "This markdown line references local documentation files or headings inside the skill. It is not executable shell code and has no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.8,
-        "severity": "medium",
-        "reason": "The setup block recommends npm install and pip install -r requirements.txt, which can execute project-controlled install hooks or untrusted packages. These commands require explicit approval in untrusted workspaces."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "This is markdown documentation for example shell usage, not Ruby backtick execution or hidden command execution. The commands are visible and user-initiated."
       },
       {
         "id": "external_commands:SKILL.md:127:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The cited range is Markdown structure or explanatory text around a command block. It is not Ruby backtick execution or concealed command execution."
+        "reason": "This is markdown documentation for example shell usage, not Ruby backtick execution or hidden command execution. The commands are visible and user-initiated."
       },
       {
         "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The lines document direct invocation of bundled Python scripts with explicit arguments. There is no shell interpolation, hidden execution, network access, or dynamic command construction."
+        "confidence": 0.9,
+        "reason": "This is markdown documentation for example shell usage, not Ruby backtick execution or hidden command execution. The commands are visible and user-initiated."
       },
       {
         "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The cited range is Markdown structure or explanatory text around a command block. It is not Ruby backtick execution or concealed command execution."
+        "reason": "This is markdown documentation for example shell usage, not Ruby backtick execution or hidden command execution. The commands are visible and user-initiated."
       },
       {
         "id": "external_commands:SKILL.md:142:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text is an inline reference to documentation files, not an executable command. The backticks are Markdown formatting rather than shell execution."
+        "confidence": 0.95,
+        "reason": "This markdown line references local documentation files or headings inside the skill. It is not executable shell code and has no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:143:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text is an inline reference to documentation files, not an executable command. The backticks are Markdown formatting rather than shell execution."
+        "confidence": 0.95,
+        "reason": "This markdown line references local documentation files or headings inside the skill. It is not executable shell code and has no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:144:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text is an inline reference to documentation files, not an executable command. The backticks are Markdown formatting rather than shell execution."
+        "confidence": 0.95,
+        "reason": "This markdown line references local documentation files or headings inside the skill. It is not executable shell code and has no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:174:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.86,
-        "severity": "high",
-        "reason": "The common commands include npm scripts, Docker Compose, and kubectl apply. If run by an agent, they can execute project code and modify local or cluster state."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "This is markdown documentation for example shell usage, not Ruby backtick execution or hidden command execution. The commands are visible and user-initiated."
       },
       {
         "id": "external_commands:SKILL.md:189:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The cited range is Markdown structure or explanatory text around a command block. It is not Ruby backtick execution or concealed command execution."
+        "reason": "This is markdown documentation for example shell usage, not Ruby backtick execution or hidden command execution. The commands are visible and user-initiated."
       },
       {
         "id": "external_commands:SKILL.md:195:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text is an inline reference to documentation files, not an executable command. The backticks are Markdown formatting rather than shell execution."
+        "confidence": 0.95,
+        "reason": "This markdown line references local documentation files or headings inside the skill. It is not executable shell code and has no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:206:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text is an inline reference to documentation files, not an executable command. The backticks are Markdown formatting rather than shell execution."
+        "confidence": 0.95,
+        "reason": "This markdown line references local documentation files or headings inside the skill. It is not executable shell code and has no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:207:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text is an inline reference to documentation files, not an executable command. The backticks are Markdown formatting rather than shell execution."
+        "confidence": 0.95,
+        "reason": "This markdown line references local documentation files or headings inside the skill. It is not executable shell code and has no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:208:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text is an inline reference to documentation files, not an executable command. The backticks are Markdown formatting rather than shell execution."
+        "confidence": 0.95,
+        "reason": "This markdown line references local documentation files or headings inside the skill. It is not executable shell code and has no command injection path."
       },
       {
         "id": "sensitive:SKILL.md:126:environment-file-access",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The command copies .env.example to .env and does not read, print, or transmit existing environment secrets. It is still safer to avoid overwriting an existing .env file."
+        "confidence": 0.92,
+        "reason": "The command copies .env.example to .env as setup documentation. It does not read, print, transmit, or embed secrets from an environment file."
       },
       {
         "id": "blocker:SKILL.md:83:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a documentation heading about anti-patterns, not system reconnaissance or host discovery. It gives no command or instruction to inspect the user system."
+        "confidence": 0.96,
+        "reason": "The detected text is an architecture documentation heading about design anti-patterns. No system enumeration, host discovery, or reconnaissance instruction is present."
       }
     ],
     "semantic_findings": [],
     "critical_findings": [],
-    "high_findings": [
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 174,
-            "line_end": 189
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "The common commands include npm scripts, Docker Compose, and kubectl apply. If run by an agent, they can execute project code and modify local or cluster state."
-      }
-    ],
+    "high_findings": [],
     "medium_findings": [
       {
         "title": "Python file write/append",
@@ -772,8 +753,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The script writes JSON output to args.output with open(..., \"w\"), so a supplied path can overwrite files accessible to the agent. The write is intentional, but lacks path limits or no-clobber protection."
+        "confidence": 0.74,
+        "confidence_reasoning": "The script writes JSON output to args.output with no path restriction. This is intentional report output, but it can overwrite any writable path chosen by the caller."
       },
       {
         "title": "Python file write/append",
@@ -788,8 +769,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The script writes JSON output to args.output with open(..., \"w\"), so a supplied path can overwrite files accessible to the agent. The write is intentional, but lacks path limits or no-clobber protection."
+        "confidence": 0.74,
+        "confidence_reasoning": "The script writes JSON output to args.output with no path restriction. This is intentional report output, but it can overwrite any writable path chosen by the caller."
       },
       {
         "title": "Python file write/append",
@@ -804,24 +785,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The script writes JSON output to args.output with open(..., \"w\"), so a supplied path can overwrite files accessible to the agent. The write is intentional, but lacks path limits or no-clobber protection."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 119,
-            "line_end": 127
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.8,
-        "confidence_reasoning": "The setup block recommends npm install and pip install -r requirements.txt, which can execute project-controlled install hooks or untrusted packages. These commands require explicit approval in untrusted workspaces."
+        "confidence": 0.74,
+        "confidence_reasoning": "The script writes JSON output to args.output with no path restriction. This is intentional report output, but it can overwrite any writable path chosen by the caller."
       }
     ],
     "low_findings": [],
@@ -829,126 +794,135 @@
     "files_scanned": 7,
     "total_lines": 867,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T07:45:20.760Z",
+    "audited_at": "2026-07-09T17:25:30.842Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Design Scalable Software Architectures",
-    "value_statement": "Architecture decisions are hard to compare when patterns, trade-offs, and tooling live in separate notes. This skill gives Claude, Codex, and Claude Code a focused architecture checklist with scripts and references.",
+    "user_title": "Design Scalable Software Architecture",
+    "value_statement": "Architecture decisions are hard to compare when requirements, trade-offs, and implementation constraints are scattered. This skill gives structured references and helper scripts for system design, technology selection, and basic architecture reporting.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
-      "software architecture skill",
+      "software architecture",
       "system design",
       "architecture diagrams",
-      "technical decision guide",
+      "technology decisions",
       "dependency analysis",
       "Next.js architecture",
-      "AI architecture review"
+      "technical trade-offs"
     ],
     "actual_capabilities": [
-      "Documents architecture patterns, system design workflows, and technology decision criteria.",
-      "Provides three Python command-line scripts for architecture, dependency, and project review workflows.",
-      "Validates a target path before running script reports.",
-      "Prints basic report status and finding counts for reviewed targets.",
-      "Can write JSON report output to a user-selected file.",
-      "Summarizes common stacks for web, mobile, backend, database, DevOps, and cloud projects."
+      "Provides reference guidance for architecture patterns, system design workflows, and technology decisions.",
+      "Runs Python helper scripts against a target path to produce basic status and findings reports.",
+      "Can emit JSON output for script results when the user supplies an output file.",
+      "Lists common development, analysis, deployment, and quality check commands.",
+      "Covers architecture concerns across frontend, backend, database, cloud, and DevOps stacks."
     ],
     "limitations": [
-      "The scripts are scaffolds and do not inspect source files deeply.",
-      "Reference files contain generic examples and placeholder pattern names.",
-      "No built-in renderer creates visual architecture diagrams.",
-      "Command examples require trusted projects and explicit approval."
+      "The included scripts are scaffolds and do not perform deep dependency or architecture analysis.",
+      "The references contain generic examples rather than detailed production patterns.",
+      "Commands must be reviewed before running in any real project or deployment environment.",
+      "It does not replace expert architecture review or security assessment."
     ],
     "use_cases": [
       {
-        "title": "Plan an MVP Architecture",
-        "description": "Compare stack choices, service boundaries, and early scaling risks before implementation starts.",
-        "target_user": "Startup technical lead"
+        "title": "Review an Existing Project",
+        "description": "Use the references and scripts to frame architecture risks, component boundaries, and next design questions.",
+        "target_user": "Senior engineer"
       },
       {
-        "title": "Review Platform Changes",
-        "description": "Assess integration points, operational impact, and dependency risks for a proposed platform change.",
-        "target_user": "Platform engineer"
+        "title": "Choose a Technology Stack",
+        "description": "Compare stack options across frontend, backend, database, cloud, and DevOps constraints.",
+        "target_user": "Technical lead"
       },
       {
-        "title": "Prepare Decision Notes",
-        "description": "Turn architecture trade-offs into clear notes for review, approval, and future maintenance.",
-        "target_user": "Engineering manager"
+        "title": "Prepare Architecture Documentation",
+        "description": "Turn system design notes into decision summaries, trade-off lists, and review-ready documentation.",
+        "target_user": "Startup founder"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Map Current System",
-        "scenario": "Beginner architecture mapping",
-        "prompt": "Analyze this project architecture. Identify main components, data flows, risks, and three improvements. Use only the files I provide."
+        "title": "Map My Architecture",
+        "scenario": "Beginner project review",
+        "prompt": "Use the senior-architect skill to review this project structure. Summarize the main components, risks, and next architecture decisions."
       },
       {
         "title": "Compare Stack Options",
         "scenario": "Intermediate technology selection",
-        "prompt": "Compare these technology options for my product. Score fit, complexity, operations, hiring, and cost. Recommend one option with clear trade-offs."
+        "prompt": "Compare these technology options for my product requirements. Include trade-offs, risks, team impact, and a recommended path."
       },
       {
-        "title": "Review Architecture Risks",
-        "scenario": "Advanced design review",
-        "prompt": "Review this proposed system design for scalability, security, and maintainability. List risks, mitigations, and questions for the team."
+        "title": "Draft a Decision Record",
+        "scenario": "Architecture documentation",
+        "prompt": "Create an architecture decision record for this proposal. Cover context, options, decision, consequences, and follow-up checks."
       },
       {
-        "title": "Prepare Decision Package",
-        "scenario": "Advanced architecture governance",
-        "prompt": "Create an architecture decision package for this initiative. Include context, constraints, options, trade-offs, migration plan, and review checkpoints."
+        "title": "Plan a Migration Review",
+        "scenario": "Advanced architecture planning",
+        "prompt": "Design a migration review for this system. Identify boundaries, data risks, rollout stages, observability needs, and rollback criteria."
       }
     ],
     "output_examples": [
       {
-        "input": "I need to choose between REST and GraphQL for a mobile product.",
-        "output": "A decision brief comparing integration complexity, caching, client flexibility, team skill, and operational cost, with a recommended path."
+        "input": "A team asks for a quick architecture review before adding GraphQL to a Next.js and PostgreSQL product.",
+        "output": [
+          "A component summary that separates client, API, data, and deployment concerns.",
+          "A trade-off review for GraphQL adoption, including caching, schema ownership, and team readiness.",
+          "A short decision list covering what to prototype before implementation."
+        ]
       },
       {
-        "input": "Review our Next.js and Postgres architecture before launch.",
-        "output": "A launch readiness review covering service boundaries, database scaling risks, observability gaps, and immediate fixes."
+        "input": "A lead needs to compare Flutter, React Native, and native mobile options for a new application.",
+        "output": [
+          "A comparison matrix covering team skills, platform access, release workflow, and long-term maintenance.",
+          "A recommendation tied to product scope, performance needs, and hiring constraints."
+        ]
       },
       {
-        "input": "Generate an architecture review from a target path.",
-        "output": "A basic script report showing the selected target, status, and finding count."
+        "input": "A platform owner wants a migration plan from a monolith to clearer service boundaries.",
+        "output": [
+          "A migration outline with candidate boundaries, shared data concerns, rollout phases, and rollback checks.",
+          "A risk list focused on ownership, observability, deployment coupling, and operational load."
+        ]
       }
     ],
     "best_practices": [
-      "Provide project goals, constraints, and expected traffic before asking for architecture guidance.",
-      "Ask for trade-offs and decision records, not only a final recommendation.",
-      "Review any generated command before running it in a real workspace."
+      "Review generated recommendations against project goals before acting.",
+      "Run scripts on a copy or branch when testing output behavior.",
+      "Pair architecture suggestions with measurable constraints such as latency, team size, and release cadence."
     ],
     "anti_patterns": [
-      "Do not run setup, Docker, or Kubernetes commands without checking the target project.",
-      "Do not treat placeholder reference text as complete production guidance.",
-      "Do not overwrite report files or environment files without a backup."
+      "Treating scaffold script output as a complete architecture audit.",
+      "Running deployment commands from examples without environment-specific review.",
+      "Selecting technologies before documenting requirements and trade-offs."
     ],
     "faq": [
       {
-        "question": "Does this skill generate real architecture diagrams?",
-        "answer": "It includes a diagram generator script scaffold, but it does not render visual diagrams by itself."
+        "question": "What does this skill help with?",
+        "answer": "It helps structure architecture reviews, technology decisions, system design notes, and basic project analysis."
       },
       {
-        "question": "Can it inspect my whole codebase automatically?",
-        "answer": "The included scripts validate target paths and print basic reports. Deep code inspection depends on the agent using the skill."
+        "question": "Does it generate full production diagrams?",
+        "answer": "No. The diagram script is a scaffold and produces basic report output only."
+      },
+      {
+        "question": "Can it analyze dependencies automatically?",
+        "answer": "It includes a dependency analyzer scaffold, but deeper dependency logic must be added by the user."
+      },
+      {
+        "question": "Is it safe to run on private repositories?",
+        "answer": "Review the scripts first. They inspect a local target path and can write output when requested."
       },
       {
         "question": "Which tools can use this skill?",
         "answer": "The report lists support for Claude, Codex, and Claude Code."
       },
       {
-        "question": "Is it suitable for production architecture reviews?",
-        "answer": "Use it as a structured checklist and starting point. Human review is still needed for production decisions."
-      },
-      {
-        "question": "Does it make technology decisions automatically?",
-        "answer": "No. It helps compare options and trade-offs, then presents a recommendation for review."
-      },
-      {
-        "question": "What should I check before running commands?",
-        "answer": "Confirm the target path, review package scripts, and avoid deployment commands without explicit approval."
+        "question": "Does it replace an architect?",
+        "answer": "No. It provides structure and starter material for expert review."
       }
     ]
   },

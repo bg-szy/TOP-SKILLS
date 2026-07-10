@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T02:56:53.154Z",
+    "generated_at": "2026-07-09T16:42:26.172Z",
     "slug": "davila7-opentargets-database",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/scientific/opentargets-database",
     "source_ref": "main",
@@ -23,8 +23,8 @@
   },
   "skill": {
     "name": "opentargets-database",
-    "description": "Query the Open Targets Platform for target-disease associations, evidence, drug data, tractability, and safety annotations.",
-    "summary": "Retrieve Open Targets evidence for therapeutic target discovery and drug repurposing research.",
+    "description": "Query the Open Targets Platform for target-disease associations, drug evidence, tractability, safety annotations, and drug repurposing signals.",
+    "summary": "Search and interpret Open Targets Platform data for therapeutic target discovery.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
@@ -32,7 +32,7 @@
     "tags": [
       "open-targets",
       "drug-discovery",
-      "biomedical-research",
+      "bioinformatics",
       "graphql",
       "target-validation"
     ],
@@ -52,22 +52,17 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The skill contains intentional outbound GraphQL access to the public Open Targets API, which creates a low disclosure risk for submitted query terms. The command-execution and reconnaissance alerts are false positives caused by Markdown fences, inline identifiers, and biomedical GraphQL fields. No prompt injection, credential access, filesystem abuse, or malicious intent was found.",
+    "summary": "The static findings are false positives caused by documented Open Targets API access, Markdown code fences, inline identifiers, and biomedical terminology. I found no evidence of prompt injection, credential access, arbitrary command execution, malicious persistence, or data exfiltration beyond expected public API queries.",
     "remediation": [
       {
-        "issue": "Outbound API requests send user query terms to Open Targets.",
-        "suggestion": "Document that search terms leave the local environment and warn users not to submit secrets or private patient data.",
+        "issue": "The helper script sends user-provided search terms and identifiers to the public Open Targets API.",
+        "suggestion": "Document this network behavior clearly for users and keep the destination restricted to the official Open Targets endpoint.",
         "severity": "low"
       },
       {
-        "issue": "Repeated exploratory queries can depend heavily on the public API.",
-        "suggestion": "Add caching, pagination limits, and guidance to use downloads or BigQuery for bulk analyses.",
-        "severity": "low"
-      },
-      {
-        "issue": "Markdown examples create noisy command-execution scanner matches.",
-        "suggestion": "Keep examples clearly labeled as Python and avoid ambiguous inline backticks in security-sensitive metadata.",
-        "severity": "low"
+        "issue": "The documentation includes many fenced Python examples that can trigger command-execution heuristics.",
+        "suggestion": "Label examples as documentation and avoid shell-style snippets unless they are required.",
+        "severity": "safe"
       }
     ],
     "risk_factor_evidence": [
@@ -987,673 +982,536 @@
     "finding_verdicts": [
       {
         "id": "network:references/api_reference.md:66:python-http-libraries",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The documentation directs users or agents to the Open Targets external API. This is intentional and low risk, but it confirms outbound network use.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "The HTTP request is the documented Open Targets GraphQL query path for this research skill. It posts to the fixed public API endpoint and does not include credentials, local files, or secret exfiltration behavior."
       },
       {
         "id": "network:references/api_reference.md:6:hardcoded-url",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The documentation directs users or agents to the Open Targets external API. This is intentional and low risk, but it confirms outbound network use.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.94,
+        "reason": "The URL points to the public Open Targets endpoint or documentation for the declared data source. No credential-bearing or unrelated external destination is present."
       },
       {
         "id": "network:references/api_reference.md:11:hardcoded-url",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The documentation directs users or agents to the Open Targets external API. This is intentional and low risk, but it confirms outbound network use.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.94,
+        "reason": "The URL points to the public Open Targets endpoint or documentation for the declared data source. No credential-bearing or unrelated external destination is present."
       },
       {
         "id": "network:references/api_reference.md:65:hardcoded-url",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The documentation directs users or agents to the Open Targets external API. This is intentional and low risk, but it confirms outbound network use.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.94,
+        "reason": "The URL points to the public Open Targets endpoint or documentation for the declared data source. No credential-bearing or unrelated external destination is present."
       },
       {
         "id": "blocker:references/api_reference.md:48:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:references/api_reference.md:166:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:references/api_reference.md:209:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:references/evidence_types.md:214:network-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The line discusses whether pathway evidence predicts clinical success. It is biomedical interpretation guidance, not network reconnaissance."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:references/target_annotations.md:282:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:references/target_annotations.md:319:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:references/target_annotations.md:21:network-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The line describes antibody tractability for therapeutic targets. It is domain documentation, not network reconnaissance."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "network:scripts/query_opentargets.py:40:python-http-libraries",
-        "verdict": "confirmed",
-        "confidence": 0.92,
-        "reason": "The helper script sends GraphQL queries to api.platform.opentargets.org. This is expected for the skill, but user search terms leave the local environment.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "The HTTP request is the documented Open Targets GraphQL query path for this research skill. It posts to the fixed public API endpoint and does not include credentials, local files, or secret exfiltration behavior."
       },
       {
         "id": "network:scripts/query_opentargets.py:49:python-http-libraries",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation or exception handling and does not itself perform a network request. Executable outbound API use is covered by the confirmed script findings."
+        "confidence": 0.97,
+        "reason": "This line only handles requests exceptions and does not initiate communication. It is normal error handling for the documented Open Targets API helper."
       },
       {
         "id": "network:scripts/query_opentargets.py:18:hardcoded-url",
-        "verdict": "confirmed",
-        "confidence": 0.92,
-        "reason": "The helper script sends GraphQL queries to api.platform.opentargets.org. This is expected for the skill, but user search terms leave the local environment.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.94,
+        "reason": "The URL points to the public Open Targets endpoint or documentation for the declared data source. No credential-bearing or unrelated external destination is present."
       },
       {
         "id": "blocker:scripts/query_opentargets.py:68:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:scripts/query_opentargets.py:100:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:scripts/query_opentargets.py:115:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:scripts/query_opentargets.py:171:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:scripts/query_opentargets.py:187:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:scripts/query_opentargets.py:191:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:scripts/query_opentargets.py:263:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:scripts/query_opentargets.py:269:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:scripts/query_opentargets.py:298:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:scripts/query_opentargets.py:313:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:scripts/query_opentargets.py:348:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:scripts/query_opentargets.py:379:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "blocker:scripts/query_opentargets.py:396:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The matched id is a GraphQL or biomedical entity identifier field. It identifies genes, diseases, drugs, or studies, not local systems or infrastructure."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       },
       {
         "id": "external_commands:SKILL.md:43:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:49:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:63:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:66:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:68:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:74:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:86:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:94:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:100:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:116:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:138:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:149:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:155:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:169:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:181:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:193:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:199:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:212:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:222:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:225:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:226:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:229:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:231:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:277:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:315:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:316:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:317:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:318:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:319:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:320:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:321:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline backtick around Python examples and function names. I found no shell command execution or Ruby backtick execution at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks are Markdown code fences, inline identifiers, URLs, or Python examples in documentation. They are not shell backtick execution and do not run external commands."
       },
       {
         "id": "network:SKILL.md:225:hardcoded-url",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The documentation directs users or agents to the Open Targets external API. This is intentional and low risk, but it confirms outbound network use.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.94,
+        "reason": "The URL points to the public Open Targets endpoint or documentation for the declared data source. No credential-bearing or unrelated external destination is present."
       },
       {
         "id": "network:SKILL.md:226:hardcoded-url",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The documentation directs users or agents to the Open Targets external API. This is intentional and low risk, but it confirms outbound network use.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.94,
+        "reason": "The URL points to the public Open Targets endpoint or documentation for the declared data source. No credential-bearing or unrelated external destination is present."
       },
       {
         "id": "network:SKILL.md:355:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation or exception handling and does not itself perform a network request. Executable outbound API use is covered by the confirmed script findings."
+        "confidence": 0.94,
+        "reason": "The URL points to the public Open Targets endpoint or documentation for the declared data source. No credential-bearing or unrelated external destination is present."
       },
       {
         "id": "blocker:SKILL.md:269:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The line explains that under-studied diseases may have lower evidence scores. It is domain caveat text, not host or system reconnaissance."
+        "reason": "The matched text is an Open Targets identifier field or biomedical evidence wording, not host, network, or system reconnaissance. The context is scientific data querying and interpretation."
       }
     ],
     "semantic_findings": [],
     "critical_findings": [],
     "high_findings": [],
     "medium_findings": [],
-    "low_findings": [
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.post(base_url, json={\"query\": query_string, \"variables\": variables})",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 66,
-            "line_end": 66
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.82,
-        "confidence_reasoning": "The documentation directs users or agents to the Open Targets external API. This is intentional and low risk, but it confirms outbound network use."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "https://api.platform.opentargets.org/api/v4/graphql",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 6,
-            "line_end": 6
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.82,
-        "confidence_reasoning": "The documentation directs users or agents to the Open Targets external API. This is intentional and low risk, but it confirms outbound network use."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "https://api.platform.opentargets.org/api/v4/graphql/browser",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 11,
-            "line_end": 11
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.82,
-        "confidence_reasoning": "The documentation directs users or agents to the Open Targets external API. This is intentional and low risk, but it confirms outbound network use."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "base_url = \"https://api.platform.opentargets.org/api/v4/graphql\"",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 65,
-            "line_end": 65
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.82,
-        "confidence_reasoning": "The documentation directs users or agents to the Open Targets external API. This is intentional and low risk, but it confirms outbound network use."
-      },
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.post(BASE_URL, json=payload, timeout=30)",
-        "locations": [
-          {
-            "file": "scripts/query_opentargets.py",
-            "line_start": 40,
-            "line_end": 40
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.92,
-        "confidence_reasoning": "The helper script sends GraphQL queries to api.platform.opentargets.org. This is expected for the skill, but user search terms leave the local environment."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "BASE_URL = \"https://api.platform.opentargets.org/api/v4/graphql\"",
-        "locations": [
-          {
-            "file": "scripts/query_opentargets.py",
-            "line_start": 18,
-            "line_end": 18
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.92,
-        "confidence_reasoning": "The helper script sends GraphQL queries to api.platform.opentargets.org. This is expected for the skill, but user search terms leave the local environment."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "- **Endpoint:** `https://api.platform.opentargets.org/api/v4/graphql`",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 225,
-            "line_end": 225
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.82,
-        "confidence_reasoning": "The documentation directs users or agents to the Open Targets external API. This is intentional and low risk, but it confirms outbound network use."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "- **Interactive browser:** `https://api.platform.opentargets.org/api/v4/graphql/browser`",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 226,
-            "line_end": 226
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.82,
-        "confidence_reasoning": "The documentation directs users or agents to the Open Targets external API. This is intentional and low risk, but it confirms outbound network use."
-      }
-    ],
+    "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 5,
     "total_lines": 1731,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T02:56:53.154Z",
+    "audited_at": "2026-07-09T16:42:26.172Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Query Open Targets Drug Discovery Data",
-    "value_statement": "Drug discovery teams need structured evidence before selecting therapeutic targets. This skill queries Open Targets data and explains associations, evidence, drugs, and risks.",
+    "user_title": "Explore Open Targets Drug Discovery Data",
+    "value_statement": "Drug discovery teams need reliable ways to connect genes, diseases, evidence, and known drugs. This skill guides Claude, Codex, and Claude Code through Open Targets queries and evidence interpretation.",
     "seo_keywords": [
-      "Open Targets",
-      "drug target discovery",
-      "therapeutic target identification",
-      "GraphQL API",
-      "target disease associations",
       "Claude",
       "Codex",
       "Claude Code",
-      "biomedical research",
-      "drug repurposing"
+      "Open Targets Platform",
+      "drug target discovery",
+      "target disease associations",
+      "GraphQL API",
+      "therapeutic targets",
+      "drug repurposing",
+      "bioinformatics research"
     ],
     "actual_capabilities": [
-      "Search Open Targets for targets, diseases, and drugs by name or identifier.",
-      "Retrieve target annotations, including tractability, safety liabilities, genetic constraint, and associated diseases.",
-      "Fetch disease profiles with therapeutic areas, associated targets, and known drugs.",
-      "Retrieve evidence records for a target-disease pair and filter by evidence type.",
-      "Summarize known drugs, mechanisms, targets, clinical phases, and indication status.",
-      "Provide GraphQL endpoint guidance and interpretation notes for Open Targets scores."
+      "Search Open Targets entities by gene, disease, or drug name.",
+      "Retrieve target annotations, including tractability, safety, and genetic constraint data.",
+      "Summarize target-disease evidence from genetics, known drugs, pathways, expression, animal models, and literature.",
+      "Find known drugs for a disease with target, mechanism, phase, and status context.",
+      "Explain Open Targets identifiers, GraphQL endpoints, pagination, and common query patterns.",
+      "Support target prioritization workflows using association scores and evidence breakdowns."
     ],
     "limitations": [
-      "Requires internet access to the public Open Targets API.",
-      "Not designed for bulk systematic analyses across many entities.",
-      "Association scores are rankings, not clinical success probabilities.",
-      "Does not replace primary literature review or expert biomedical validation."
+      "The skill depends on the public Open Targets API and network availability.",
+      "Association scores are ranking metrics and do not predict clinical success.",
+      "Large systematic analyses should use downloads or BigQuery instead of repeated API calls.",
+      "Results require expert biological and clinical review before research decisions."
     ],
     "use_cases": [
       {
-        "title": "Prioritize Disease Targets",
-        "description": "Find disease-associated genes, compare evidence types, and shortlist targets for deeper review.",
-        "target_user": "Translational researchers"
+        "title": "Prioritize Targets For A Disease",
+        "description": "Identify top associated genes, inspect evidence types, and compare tractability and safety signals.",
+        "target_user": "Translational scientist"
       },
       {
-        "title": "Assess Target Readiness",
-        "description": "Review tractability, safety liabilities, genetic constraint, and clinical precedence for one gene.",
-        "target_user": "Drug discovery scientists"
+        "title": "Validate A Candidate Gene",
+        "description": "Review target annotations, disease associations, known drugs, and safety liabilities for a nominated gene.",
+        "target_user": "Drug discovery researcher"
       },
       {
-        "title": "Explore Drug Repurposing",
-        "description": "Identify known drugs for a disease and compare mechanisms, targets, and clinical phases.",
-        "target_user": "Portfolio and strategy teams"
+        "title": "Map Repurposing Opportunities",
+        "description": "Find drugs linked to a disease and compare mechanisms, targets, clinical phases, and related indications.",
+        "target_user": "Competitive intelligence analyst"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Find an Entity",
-        "scenario": "Beginner search for one target, disease, or drug.",
-        "prompt": "Search Open Targets for \"BRCA1\" as a target. Return the best identifier, name, entity type, and short description."
+        "title": "Search Basic Entity IDs",
+        "scenario": "Beginner lookup for identifiers before deeper analysis.",
+        "prompt": "Search Open Targets for the gene BRCA1 and the disease Alzheimer disease. Return the best matching identifiers and explain why each match is likely correct."
       },
       {
-        "title": "Review One Target",
-        "scenario": "Target assessment after an Ensembl identifier is known.",
-        "prompt": "Assess ENSG00000157764 in Open Targets. Summarize tractability, safety liabilities, genetic constraint, and the strongest disease associations."
+        "title": "Summarize A Target Profile",
+        "scenario": "Intermediate review of one target.",
+        "prompt": "Use Open Targets to summarize BRAF target annotations. Include tractability, safety concerns, genetic constraint, and the strongest disease associations."
       },
       {
-        "title": "Compare Evidence Types",
-        "scenario": "Intermediate review of a target-disease hypothesis.",
-        "prompt": "For ENSG00000157764 and EFO_0000249, retrieve evidence by data type. Explain which evidence is strongest and which needs manual review."
+        "title": "Compare Evidence For Targets",
+        "scenario": "Advanced target prioritization for one disease.",
+        "prompt": "For Parkinson disease, compare the top associated targets by evidence type, association score, tractability, and known drug support. Highlight review priorities."
       },
       {
-        "title": "Prioritize a Disease Pipeline",
-        "scenario": "Advanced workflow for target discovery planning.",
-        "prompt": "For Alzheimer disease, identify top associated targets, compare evidence, flag safety or tractability concerns, and recommend three targets for follow-up."
+        "title": "Design A Repurposing Review",
+        "scenario": "Advanced workflow combining disease, drug, and mechanism data.",
+        "prompt": "Build a drug repurposing review for inflammatory bowel disease using Open Targets. Include known drugs, targets, mechanisms, clinical phase, and evidence caveats."
       }
     ],
     "output_examples": [
       {
-        "input": "Assess BRAF as a therapeutic target.",
-        "output": "The skill returns the Ensembl identifier, target name, tractability signals, safety notes, top disease links, and evidence categories to review."
+        "input": "Find promising Open Targets evidence for BRCA1 in breast cancer.",
+        "output": "A concise report lists matching identifiers, association strength, supporting evidence types, known clinical context, and caveats for manual literature review."
       },
       {
-        "input": "Find known drugs for Alzheimer disease.",
-        "output": "The skill summarizes drug names, target genes, mechanisms, clinical phases, indication status, and caveats for repurposing decisions."
+        "input": "Assess whether BRAF is tractable as a drug target.",
+        "output": "The response compares tractability categories, approved or clinical drug precedence, safety notes, disease associations, and interpretation limits."
       },
       {
-        "input": "Compare evidence for one target-disease pair.",
-        "output": "The skill groups evidence by genetics, known drugs, pathways, expression, animal models, and literature, then explains confidence limits."
+        "input": "Identify repurposing signals for Alzheimer disease.",
+        "output": "The response summarizes known drugs, linked targets, mechanisms of action, trial phases, and questions for follow-up validation."
       }
     ],
     "best_practices": [
-      "Start with exact Open Targets identifiers before comparing evidence.",
-      "Review evidence type breakdowns instead of relying only on the overall score.",
-      "Use downloads or BigQuery for large studies instead of repeated API calls."
+      "Start with verified Open Targets identifiers before interpreting associations.",
+      "Compare evidence breakdowns instead of relying only on aggregate scores.",
+      "Use downloads or BigQuery for high-volume analyses across many entities."
     ],
     "anti_patterns": [
-      "Treating Open Targets scores as clinical success probabilities.",
-      "Using text-mining evidence alone for target prioritization.",
-      "Submitting private patient data or confidential project details to the public API."
+      "Treating Open Targets scores as direct probabilities of clinical success.",
+      "Using text-mining evidence alone for target validation decisions.",
+      "Running broad repeated API queries when bulk data access is more suitable."
     ],
     "faq": [
       {
-        "question": "Does this skill require authentication?",
-        "answer": "No. The Open Targets GraphQL API is public and does not require an API key."
+        "question": "Does this skill require Open Targets authentication?",
+        "answer": "No. The referenced GraphQL API is public and does not require authentication."
       },
       {
-        "question": "Can it run large systematic studies?",
-        "answer": "It is best for exploratory queries. Use Open Targets downloads or BigQuery for large analyses."
+        "question": "Can it run large systematic screens?",
+        "answer": "It is designed for exploratory queries. Large screens should use Open Targets downloads or BigQuery."
       },
       {
         "question": "What identifiers does it use?",
         "answer": "It uses Ensembl gene IDs for targets, EFO IDs for diseases, and ChEMBL IDs for drugs."
       },
       {
-        "question": "Are association scores confidence scores?",
-        "answer": "No. They rank relative evidence strength and require biological and clinical interpretation."
+        "question": "Can it prove a target will succeed clinically?",
+        "answer": "No. It provides evidence summaries and ranking context that require expert interpretation."
       },
       {
-        "question": "Can it assess drug safety?",
-        "answer": "It can retrieve safety liabilities, expression, constraint, and withdrawn drug information for review."
+        "question": "Which evidence types can it explain?",
+        "answer": "It covers genetics, somatic mutation, known drugs, pathways, RNA expression, animal models, and literature signals."
       },
       {
-        "question": "Does it replace expert validation?",
-        "answer": "No. It supports evidence gathering, but primary literature review and expert validation remain necessary."
+        "question": "Does it support Claude, Codex, and Claude Code?",
+        "answer": "Yes. The report lists support for Claude, Codex, and Claude Code workflows."
       }
     ]
   },

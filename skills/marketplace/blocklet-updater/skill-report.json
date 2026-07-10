@@ -1,20 +1,23 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T23:26:48.829Z",
+    "generated_at": "2026-07-09T08:50:45.799Z",
     "slug": "arcblock-blocklet-updater",
     "source_url": "https://github.com/ArcBlock/agent-skills/tree/main/plugins/blocklet/skills/blocklet-updater",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "a49e45e4c5c09d5c53de86951b3e3f0c63c5b0da626b5e0bb6366a466eafb4ea",
-    "tree_hash": "bf6de6850697ae70d8dc8b5682690491e188f17e79871968cc5de417b3eac7ba",
+    "content_hash": "3cb9d3a9868d1ee577d684be8671d97a3d7510c36f4130c2232410e4f47818c3",
+    "tree_hash": "fa7d587f66c365110c9641111d70acbd02a625aca25ae439fb9586c15b94ea36",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
       "fallback_chain": [
         {
           "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -23,10 +26,10 @@
   },
   "skill": {
     "name": "blocklet-updater",
-    "description": "Automates Blocklet release preparation by choosing a version bump method, validating output, running builds, and creating a release bundle.",
-    "summary": "Bump, build, validate, and bundle Blocklet projects for releases.",
+    "description": "Automates Blocklet release preparation by bumping versions, checking changelog entries, building projects, validating metadata, and creating release bundles.",
+    "summary": "Automates version bumps, build checks, metadata validation, and release bundle creation for Blocklet projects.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "ArcBlock",
     "license": "MIT",
     "tags": [
@@ -48,26 +51,26 @@
     "category": "devops"
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "high",
     "is_blocked": false,
-    "safe_to_publish": true,
+    "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "Most static hits are Markdown formatting or benign local file checks, not executable code in the skill package. Confirmed risks are the intended release actions that run project-controlled Makefile or package scripts, install dependencies, run builds, and create Blocklet release bundles.",
+    "summary": "The audit found many static matches caused by Markdown formatting and read-only project checks, and those were dismissed. Real risk remains because the skill automatically runs project-defined version and build scripts, and it includes an instruction that suppresses final user-visible reporting.",
     "remediation": [
       {
-        "issue": "Project-defined release scripts can execute arbitrary local commands.",
-        "suggestion": "Require explicit user confirmation before running Makefile, package.json, lerna, or pnpm scripts, and show the exact command first.",
-        "severity": "high"
-      },
-      {
-        "issue": "Dependency install and build steps may run package lifecycle hooks.",
-        "suggestion": "Document that untrusted repositories require isolation, or offer a sandboxed mode before running pnpm install and build commands.",
-        "severity": "high"
-      },
-      {
-        "issue": "Silent finalization reduces visibility after release changes.",
-        "suggestion": "Report changed files, version, output directory, and bundle path after successful completion.",
+        "issue": "Project-defined release scripts can run automatically.",
+        "suggestion": "Show the exact command and working directory, then require user confirmation before running Makefile, package.json, Lerna, or build scripts.",
         "severity": "medium"
+      },
+      {
+        "issue": "Dependency installation and build commands can execute package lifecycle hooks.",
+        "suggestion": "Warn users before pnpm install or pnpm run build, and provide a skip option for untrusted repositories.",
+        "severity": "medium"
+      },
+      {
+        "issue": "The skill suppresses completion summaries after modifying and bundling a project.",
+        "suggestion": "Remove the silent completion instruction and report changed files, command status, and bundle location after success.",
+        "severity": "high"
       }
     ],
     "risk_factor_evidence": [
@@ -323,31 +326,6 @@
             "file": "SKILL.md",
             "line_start": 150,
             "line_end": 150
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 164,
-            "line_end": 164
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 85,
-            "line_end": 93
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 118,
-            "line_end": 127
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 148,
-            "line_end": 155
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 162,
-            "line_end": 168
           }
         ]
       },
@@ -1013,484 +991,451 @@
       {
         "id": "external_commands:SKILL.md:14:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.78,
-        "severity": "medium",
-        "reason": "The workflow explicitly directs the agent to use an external Blocklet version command during release preparation. That command mutates project files, so it is a real operational risk even though it is intended behavior."
+        "confidence": 0.72,
+        "reason": "The workflow prioritizes Makefile or package.json release scripts and later runs the selected command. In an untrusted repository these project-controlled scripts can execute arbitrary code during a version bump.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:22:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "severity": "high",
-        "reason": "The skill prioritizes running a project-controlled Makefile target. A malicious or unreviewed Makefile can execute arbitrary local commands during the release flow."
+        "confidence": 0.84,
+        "reason": "The workflow prioritizes Makefile or package.json release scripts and later runs the selected command. In an untrusted repository these project-controlled scripts can execute arbitrary code during a version bump.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:23:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "severity": "high",
-        "reason": "The skill can run a package.json bump-version script from the target repository. Package scripts are project-controlled and can execute arbitrary local commands."
+        "confidence": 0.86,
+        "reason": "The workflow prioritizes Makefile or package.json release scripts and later runs the selected command. In an untrusted repository these project-controlled scripts can execute arbitrary code during a version bump.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.89,
-        "severity": "high",
-        "reason": "The skill can run the package.json version script from the target repository. That script is project-controlled and may execute arbitrary local commands."
+        "confidence": 0.86,
+        "reason": "The workflow prioritizes Makefile or package.json release scripts and later runs the selected command. In an untrusted repository these project-controlled scripts can execute arbitrary code during a version bump.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.8,
-        "severity": "medium",
-        "reason": "The lerna version command mutates package versions and uses --yes to skip prompts. It is legitimate release automation, but it changes repository state through an external CLI."
+        "confidence": 0.74,
+        "reason": "The command runs Lerna version automation with --yes, which can modify project files and invoke repository release tooling. It is legitimate release behavior, but it executes external project tooling without an explicit confirmation step.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.78,
-        "severity": "medium",
-        "reason": "The fallback blocklet version command mutates project version metadata. It is intended behavior, but it is still external command execution with file-changing side effects."
+        "verdict": "false_positive",
+        "confidence": 0.76,
+        "reason": "This is a hardcoded Blocklet CLI command used for the expected release workflow. No untrusted input is interpolated into the command at this location."
       },
       {
         "id": "external_commands:SKILL.md:30:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "verdict": "confirmed",
+        "confidence": 0.68,
+        "reason": "This section builds the command selection logic from repository files before execution. The command list includes project-defined scripts, so a malicious repository can influence what code runs.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "verdict": "confirmed",
+        "confidence": 0.78,
+        "reason": "The workflow instructs the agent to run the detected command variable. Because earlier detection can select project-defined scripts, this is real command execution risk in untrusted repositories.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:65:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.92,
-        "severity": "high",
-        "reason": "The skill instructs execution of $VERSION_CMD, which can resolve to project-controlled make or package scripts. This creates a direct path for local command execution from repository content."
+        "confidence": 0.88,
+        "reason": "The workflow instructs the agent to run the detected command variable. Because earlier detection can select project-defined scripts, this is real command execution risk in untrusted repositories.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "verdict": "confirmed",
+        "confidence": 0.74,
+        "reason": "The text explicitly notes that project-specific scripts may call additional tooling scripts. That confirms the workflow expects indirect command execution beyond the visible command name.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:69:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "severity": "high",
-        "reason": "The text acknowledges that project-specific scripts may call additional tooling scripts. That confirms the release flow intentionally runs repository-controlled automation with broad side effects."
+        "confidence": 0.78,
+        "reason": "The text explicitly notes that project-specific scripts may call additional tooling scripts. That confirms the workflow expects indirect command execution beyond the visible command name.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:70:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:71:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "verdict": "confirmed",
+        "confidence": 0.72,
+        "reason": "The text explicitly notes that project-specific scripts may call additional tooling scripts. That confirms the workflow expects indirect command execution beyond the visible command name.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:85:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The shell snippet reads local project metadata or computes variables with standard tools. It does not execute a value read from those files as a command."
       },
       {
         "id": "external_commands:SKILL.md:93:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:97:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The shell snippet reads local project metadata or computes variables with standard tools. It does not execute a value read from those files as a command."
       },
       {
         "id": "external_commands:SKILL.md:112:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:118:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The shell snippet reads local project metadata or computes variables with standard tools. It does not execute a value read from those files as a command."
       },
       {
         "id": "external_commands:SKILL.md:127:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:139:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.78,
+        "reason": "This snippet shows a local changelog edit as part of release maintenance. It does not run untrusted input as a command or contact external systems."
       },
       {
         "id": "external_commands:SKILL.md:142:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:148:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.78,
+        "reason": "This snippet shows a local changelog edit as part of release maintenance. It does not run untrusted input as a command or contact external systems."
       },
       {
         "id": "external_commands:SKILL.md:155:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:162:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The shell snippet reads local project metadata or computes variables with standard tools. It does not execute a value read from those files as a command."
       },
       {
         "id": "external_commands:SKILL.md:168:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:171:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:177:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:179:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:187:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:188:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:189:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:191:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:195:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "verdict": "confirmed",
+        "confidence": 0.7,
+        "reason": "The workflow runs pnpm install and pnpm run build when package.json exposes a build script. Dependency lifecycle hooks and build scripts are project-controlled and can execute arbitrary commands.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:201:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.91,
-        "severity": "high",
-        "reason": "The skill instructs pnpm install and pnpm run build. Dependency lifecycle hooks and build scripts can execute project-controlled code on the local machine."
+        "confidence": 0.88,
+        "reason": "The workflow runs pnpm install and pnpm run build when package.json exposes a build script. Dependency lifecycle hooks and build scripts are project-controlled and can execute arbitrary commands.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:203:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:215:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:221:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:223:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:224:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:229:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.76,
+        "reason": "This is a hardcoded Blocklet CLI command used for the expected release workflow. No untrusted input is interpolated into the command at this location."
       },
       {
         "id": "external_commands:SKILL.md:231:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:237:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.8,
-        "severity": "medium",
-        "reason": "The blocklet bundle command is an external release command that creates bundle artifacts from the local project. It is expected functionality, but it mutates release output and should be treated as command-execution risk."
+        "verdict": "false_positive",
+        "confidence": 0.76,
+        "reason": "This is a hardcoded Blocklet CLI command used for the expected release workflow. No untrusted input is interpolated into the command at this location."
       },
       {
         "id": "external_commands:SKILL.md:239:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:249:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:253:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:254:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This finding is caused by Markdown backticks or a fenced example, not Ruby backtick execution. The surrounding text documents the release workflow and does not create an untrusted shell command by itself."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code or fence text, not Ruby or shell backtick execution. It documents the workflow and does not by itself execute code."
       },
       {
         "id": "external_commands:SKILL.md:87:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "This is a fixed local metadata parsing command in a documented shell example. It does not build a command string from untrusted input or send data outside the project."
+        "confidence": 0.8,
+        "reason": "The shell snippet reads local project metadata or computes variables with standard tools. It does not execute a value read from those files as a command."
       },
       {
         "id": "external_commands:SKILL.md:91:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "This is a fixed local metadata parsing command in a documented shell example. It does not build a command string from untrusted input or send data outside the project."
+        "confidence": 0.8,
+        "reason": "The shell snippet reads local project metadata or computes variables with standard tools. It does not execute a value read from those files as a command."
       },
       {
         "id": "external_commands:SKILL.md:120:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "This is a fixed local metadata parsing command in a documented shell example. It does not build a command string from untrusted input or send data outside the project."
+        "confidence": 0.8,
+        "reason": "The shell snippet reads local project metadata or computes variables with standard tools. It does not execute a value read from those files as a command."
       },
       {
         "id": "external_commands:SKILL.md:150:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "This is a fixed local metadata parsing command in a documented shell example. It does not build a command string from untrusted input or send data outside the project."
+        "confidence": 0.8,
+        "reason": "The shell snippet reads local project metadata or computes variables with standard tools. It does not execute a value read from those files as a command."
       },
       {
         "id": "external_commands:SKILL.md:164:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "This is a fixed local metadata parsing command in a documented shell example. It does not build a command string from untrusted input or send data outside the project."
+        "confidence": 0.8,
+        "reason": "The shell snippet reads local project metadata or computes variables with standard tools. It does not execute a value read from those files as a command."
       },
       {
         "id": "external_commands:SKILL.md:85:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "This is a Markdown fenced shell example with fixed local commands. No JavaScript template literal or hidden dynamic execution path is present."
+        "confidence": 0.8,
+        "reason": "The shell snippet reads local project metadata or computes variables with standard tools. It does not execute a value read from those files as a command."
       },
       {
         "id": "external_commands:SKILL.md:118:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "This is a Markdown fenced shell example with fixed local commands. No JavaScript template literal or hidden dynamic execution path is present."
+        "confidence": 0.8,
+        "reason": "The shell snippet reads local project metadata or computes variables with standard tools. It does not execute a value read from those files as a command."
       },
       {
         "id": "external_commands:SKILL.md:148:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "This is a Markdown fenced shell example with fixed local commands. No JavaScript template literal or hidden dynamic execution path is present."
+        "confidence": 0.8,
+        "reason": "The shell snippet reads local project metadata or computes variables with standard tools. It does not execute a value read from those files as a command."
       },
       {
         "id": "external_commands:SKILL.md:162:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "This is a Markdown fenced shell example with fixed local commands. No JavaScript template literal or hidden dynamic execution path is present."
+        "confidence": 0.8,
+        "reason": "The shell snippet reads local project metadata or computes variables with standard tools. It does not execute a value read from those files as a command."
       },
       {
         "id": "filesystem:SKILL.md:32:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The access is limited to normal shell redirection or local project file checks in the documented workflow. There is no sensitive device access or data exfiltration."
+        "confidence": 0.88,
+        "reason": "This reads expected project files or redirects command output during release checks. The access is scoped to local project metadata, not sensitive device or host files."
       },
       {
         "id": "filesystem:SKILL.md:38:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The access is limited to normal shell redirection or local project file checks in the documented workflow. There is no sensitive device access or data exfiltration."
+        "confidence": 0.88,
+        "reason": "This reads expected project files or redirects command output during release checks. The access is scoped to local project metadata, not sensitive device or host files."
       },
       {
         "id": "filesystem:SKILL.md:45:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The access is limited to normal shell redirection or local project file checks in the documented workflow. There is no sensitive device access or data exfiltration."
+        "confidence": 0.88,
+        "reason": "This reads expected project files or redirects command output during release checks. The access is scoped to local project metadata, not sensitive device or host files."
       },
       {
         "id": "filesystem:SKILL.md:87:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The access is limited to normal shell redirection or local project file checks in the documented workflow. There is no sensitive device access or data exfiltration."
+        "confidence": 0.88,
+        "reason": "This reads expected project files or redirects command output during release checks. The access is scoped to local project metadata, not sensitive device or host files."
       },
       {
         "id": "filesystem:SKILL.md:91:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The access is limited to normal shell redirection or local project file checks in the documented workflow. There is no sensitive device access or data exfiltration."
+        "confidence": 0.88,
+        "reason": "This reads expected project files or redirects command output during release checks. The access is scoped to local project metadata, not sensitive device or host files."
       },
       {
         "id": "filesystem:SKILL.md:164:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The access is limited to normal shell redirection or local project file checks in the documented workflow. There is no sensitive device access or data exfiltration."
+        "confidence": 0.88,
+        "reason": "This reads expected project files or redirects command output during release checks. The access is scoped to local project metadata, not sensitive device or host files."
       },
       {
         "id": "blocker:SKILL.md:223:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The instruction checks the Blocklet main field and index.html output path inside the project. That is release validation, not host or network reconnaissance."
+        "reason": "The line checks whether blocklet.yml points to a directory containing index.html. That is project entry-point validation, not host or network reconnaissance."
       }
     ],
-    "semantic_findings": [],
-    "critical_findings": [],
-    "high_findings": [
+    "semantic_findings": [
       {
-        "title": "Ruby/shell backtick execution",
-        "description": "| 1 | Makefile has `bump-version` target | `make bump-version` |",
+        "title": "Automatic Execution of Project-Defined Scripts",
+        "description": "The workflow chooses Makefile and package.json scripts before the Blocklet CLI fallback, then runs the selected command. A malicious repository can place arbitrary release logic in those scripts.",
+        "severity": "medium",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 22,
-            "line_end": 22
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The skill prioritizes running a project-controlled Makefile target. A malicious or unreviewed Makefile can execute arbitrary local commands during the release flow."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "| 2 | package.json has `bump-version` script | `pnpm run bump-version` |",
-        "locations": [
+            "line_start": 18,
+            "line_end": 26
+          },
           {
             "file": "SKILL.md",
-            "line_start": 23,
-            "line_end": 23
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The skill can run a package.json bump-version script from the target repository. Package scripts are project-controlled and can execute arbitrary local commands."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "| 3 | package.json has `version` script | `pnpm run version` |",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 24,
-            "line_end": 24
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.89,
-        "confidence_reasoning": "The skill can run the package.json version script from the target repository. That script is project-controlled and may execute arbitrary local commands."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 65,
+            "line_start": 61,
             "line_end": 67
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.92,
-        "confidence_reasoning": "The skill instructs execution of $VERSION_CMD, which can resolve to project-controlled make or package scripts. This creates a direct path for local command execution from repository content."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "**Important**: Project-specific scripts (like `make bump-version`) often:",
-        "locations": [
+          },
           {
             "file": "SKILL.md",
             "line_start": 69,
-            "line_end": 70
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "The text acknowledges that project-specific scripts may call additional tooling scripts. That confirms the release flow intentionally runs repository-controlled automation with broad side effects."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
+            "line_end": 73
+          },
           {
             "file": "SKILL.md",
-            "line_start": 201,
+            "line_start": 195,
             "line_end": 203
           }
         ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.91,
-        "confidence_reasoning": "The skill instructs pnpm install and pnpm run build. Dependency lifecycle hooks and build scripts can execute project-controlled code on the local machine."
+        "confidence": 0.86,
+        "confidence_reasoning": "The skill explicitly selects repository-defined version and build scripts and then runs them. This is expected release behavior, but it is risky for untrusted projects."
+      },
+      {
+        "title": "Prompt Injection Attempt Detected",
+        "description": "The skill says \"Do NOT output any summary or recap after completion\" and tells the agent to end silently. This can suppress user-visible reporting after commands modify and bundle a project.",
+        "severity": "high",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 245,
+            "line_end": 245
+          }
+        ],
+        "confidence": 0.72,
+        "confidence_reasoning": "The text is an explicit agent-facing output suppression instruction. It does not target this audit, but it can reduce transparency after release automation."
+      }
+    ],
+    "critical_findings": [],
+    "high_findings": [
+      {
+        "title": "Prompt Injection Attempt Detected",
+        "description": "The skill says \"Do NOT output any summary or recap after completion\" and tells the agent to end silently. This can suppress user-visible reporting after commands modify and bundle a project.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 245,
+            "line_end": 245
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "high",
+        "confidence": 0.72,
+        "confidence_reasoning": "The text is an explicit agent-facing output suppression instruction. It does not target this audit, but it can reduce transparency after release automation."
       }
     ],
     "medium_findings": [
@@ -1507,8 +1452,56 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The workflow explicitly directs the agent to use an external Blocklet version command during release preparation. That command mutates project files, so it is a real operational risk even though it is intended behavior."
+        "confidence": 0.72,
+        "confidence_reasoning": "The workflow prioritizes Makefile or package.json release scripts and later runs the selected command. In an untrusted repository these project-controlled scripts can execute arbitrary code during a version bump."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "| 1 | Makefile has `bump-version` target | `make bump-version` |",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 22,
+            "line_end": 22
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.84,
+        "confidence_reasoning": "The workflow prioritizes Makefile or package.json release scripts and later runs the selected command. In an untrusted repository these project-controlled scripts can execute arbitrary code during a version bump."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "| 2 | package.json has `bump-version` script | `pnpm run bump-version` |",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 23,
+            "line_end": 23
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "The workflow prioritizes Makefile or package.json release scripts and later runs the selected command. In an untrusted repository these project-controlled scripts can execute arbitrary code during a version bump."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "| 3 | package.json has `version` script | `pnpm run version` |",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 24,
+            "line_end": 24
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "The workflow prioritizes Makefile or package.json release scripts and later runs the selected command. In an untrusted repository these project-controlled scripts can execute arbitrary code during a version bump."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1523,24 +1516,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.8,
-        "confidence_reasoning": "The lerna version command mutates package versions and uses --yes to skip prompts. It is legitimate release automation, but it changes repository state through an external CLI."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "| 5 | None of the above | `blocklet version patch` (fallback) |",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 26,
-            "line_end": 26
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The fallback blocklet version command mutates project version metadata. It is intended behavior, but it is still external command execution with file-changing side effects."
+        "confidence": 0.74,
+        "confidence_reasoning": "The command runs Lerna version automation with --yes, which can modify project files and invoke repository release tooling. It is legitimate release behavior, but it executes external project tooling without an explicit confirmation step."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1548,15 +1525,158 @@
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 237,
-            "line_end": 239
+            "line_start": 30,
+            "line_end": 59
           }
         ],
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.8,
-        "confidence_reasoning": "The blocklet bundle command is an external release command that creates bundle artifacts from the local project. It is expected functionality, but it mutates release output and should be treated as command-execution risk."
+        "confidence": 0.68,
+        "confidence_reasoning": "This section builds the command selection logic from repository files before execution. The command list includes project-defined scripts, so a malicious repository can influence what code runs."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 59,
+            "line_end": 65
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.78,
+        "confidence_reasoning": "The workflow instructs the agent to run the detected command variable. Because earlier detection can select project-defined scripts, this is real command execution risk in untrusted repositories."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 65,
+            "line_end": 67
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.88,
+        "confidence_reasoning": "The workflow instructs the agent to run the detected command variable. Because earlier detection can select project-defined scripts, this is real command execution risk in untrusted repositories."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 67,
+            "line_end": 69
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.74,
+        "confidence_reasoning": "The text explicitly notes that project-specific scripts may call additional tooling scripts. That confirms the workflow expects indirect command execution beyond the visible command name."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "**Important**: Project-specific scripts (like `make bump-version`) often:",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 69,
+            "line_end": 70
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.78,
+        "confidence_reasoning": "The text explicitly notes that project-specific scripts may call additional tooling scripts. That confirms the workflow expects indirect command execution beyond the visible command name."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- Auto-generate `CHANGELOG.md` entries",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 71,
+            "line_end": 85
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.72,
+        "confidence_reasoning": "The text explicitly notes that project-specific scripts may call additional tooling scripts. That confirms the workflow expects indirect command execution beyond the visible command name."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "Check if `package.json` exists and contains a `build` script.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 195,
+            "line_end": 195
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.7,
+        "confidence_reasoning": "The workflow runs pnpm install and pnpm run build when package.json exposes a build script. Dependency lifecycle hooks and build scripts are project-controlled and can execute arbitrary commands."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 201,
+            "line_end": 203
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.88,
+        "confidence_reasoning": "The workflow runs pnpm install and pnpm run build when package.json exposes a build script. Dependency lifecycle hooks and build scripts are project-controlled and can execute arbitrary commands."
+      },
+      {
+        "title": "Automatic Execution of Project-Defined Scripts",
+        "description": "The workflow chooses Makefile and package.json scripts before the Blocklet CLI fallback, then runs the selected command. A malicious repository can place arbitrary release logic in those scripts.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 18,
+            "line_end": 26
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 61,
+            "line_end": 67
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 69,
+            "line_end": 73
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 195,
+            "line_end": 203
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "The skill explicitly selects repository-defined version and build scripts and then runs them. This is expected release behavior, but it is risky for untrusted projects."
       }
     ],
     "low_findings": [],
@@ -1564,126 +1684,125 @@
     "files_scanned": 3,
     "total_lines": 356,
     "audit_model": "codex",
-    "audited_at": "2026-07-07T23:26:48.829Z",
-    "agent_auto_install_policy": "allowed",
+    "audited_at": "2026-07-09T08:50:45.799Z",
+    "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Release Blocklet Projects",
-    "value_statement": "Blocklet releases require version updates, builds, metadata checks, and bundles. This skill guides Claude, Codex, or Claude Code through a repeatable release workflow.",
+    "user_title": "Release Blocklet Projects Reliably",
+    "value_statement": "Blocklet releases require version, changelog, build, metadata, and bundle checks. This skill guides Claude, Codex, or Claude Code through that release workflow.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "Blocklet release",
-      "ArcBlock",
+      "Blocklet bundle",
       "version bump",
-      "release bundle",
+      "changelog update",
       "blocklet.yml",
-      "pnpm build",
-      "devops automation"
+      "release automation",
+      "ArcBlock"
     ],
     "actual_capabilities": [
-      "Detects Makefile, package.json, lerna, and Blocklet version bump methods.",
-      "Runs the selected version bump command and stops on failure.",
-      "Checks changelog entries against blocklet.yml or package.json versions.",
-      "Runs dependency install and build commands when a build script exists.",
-      "Verifies index.html output and blocklet.yml main alignment.",
-      "Runs blocklet meta and creates a release bundle."
+      "Detects version bump methods from Makefile targets, package scripts, Lerna, or Blocklet CLI fallback.",
+      "Checks CHANGELOG files for version mismatches and empty release entries.",
+      "Runs dependency installation and project builds when a build script exists.",
+      "Finds index.html in common output directories and aligns blocklet.yml main when needed.",
+      "Runs Blocklet metadata validation before creating a release bundle."
     ],
     "limitations": [
-      "Runs local project commands, so users should review scripts before use.",
-      "Does not publish releases to external registries.",
-      "Requires Blocklet CLI and project tooling to be installed.",
-      "May need user input when commit history cannot produce changelog content."
+      "Requires a Blocklet project with blocklet.yml and the Blocklet CLI available.",
+      "May execute project-defined scripts, so untrusted repositories need careful review.",
+      "Does not publish releases or deploy bundles to remote services.",
+      "Stops when version bump, install, build, metadata, or bundle commands fail."
     ],
     "use_cases": [
       {
-        "title": "Prepare a Patch Release",
-        "description": "Bump a Blocklet version, build the project, and create a release bundle.",
-        "target_user": "DevOps engineer"
+        "title": "Prepare a Blocklet release",
+        "description": "Bump the project version, verify metadata, build assets, and create a release bundle.",
+        "target_user": "Blocklet developers"
       },
       {
-        "title": "Validate Release Output",
-        "description": "Check index.html output, blocklet.yml main alignment, and metadata before bundling.",
-        "target_user": "Application developer"
+        "title": "Repair release metadata",
+        "description": "Check changelog entries, output directories, and blocklet.yml main before bundling.",
+        "target_user": "Project maintainers"
       },
       {
-        "title": "Repair Changelog Versions",
-        "description": "Match changelog headings to the actual version produced by the bump command.",
-        "target_user": "Project maintainer"
+        "title": "Bundle static Blocklet apps",
+        "description": "Skip build steps when no build script exists and bundle a static project with an index.html entry point.",
+        "target_user": "Solo builders"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Simple Blocklet Release",
-        "prompt": "Bump and bundle this Blocklet project.",
-        "scenario": "Beginner release workflow from the project root."
+        "title": "Create a release bundle",
+        "scenario": "Beginner release workflow",
+        "prompt": "Create a new release bundle for this Blocklet project. Confirm each command before running it."
       },
       {
-        "title": "Patch Release With Validation",
-        "prompt": "Create a patch release, run the build if needed, and stop if validation fails.",
-        "scenario": "Standard release workflow with failure handling."
+        "title": "Bump and validate version",
+        "scenario": "Version and changelog check",
+        "prompt": "Bump the Blocklet version, then verify the changelog entry and blocklet.yml version before building."
       },
       {
-        "title": "Changelog And Main Check",
-        "prompt": "Update the version, verify changelog and blocklet.yml main, then create a release bundle.",
-        "scenario": "Release workflow that checks metadata and changelog consistency."
+        "title": "Fix output configuration",
+        "scenario": "Build output alignment",
+        "prompt": "Build this Blocklet, locate the generated index.html, and align blocklet.yml main with the output directory."
       },
       {
-        "title": "Monorepo Release Flow",
-        "prompt": "Inspect this monorepo for its release method, use the correct version command, repair changelog version mismatch, and bundle the Blocklet.",
-        "scenario": "Advanced workflow for repositories with custom release tooling."
+        "title": "Audit release readiness",
+        "scenario": "Advanced pre-release review",
+        "prompt": "Review the release workflow without running commands. List the detected version method, build steps, metadata checks, and risks."
       }
     ],
     "output_examples": [
       {
-        "input": "Bump and bundle this Blocklet project.",
-        "output": "The skill selects the release command, runs the build when present, validates metadata, and creates the release bundle."
+        "input": "Bump and bundle this Blocklet.",
+        "output": "The assistant identifies the version bump method, asks before running project scripts, validates metadata, and reports the created bundle location."
       },
       {
-        "input": "Create a release and fix the changelog if needed.",
-        "output": "The skill compares the actual version with the changelog, updates the heading when needed, and continues to bundle validation."
+        "input": "The build output changed from dist to build.",
+        "output": "The assistant checks the generated entry point, updates blocklet.yml main when appropriate, and explains the file change."
       },
       {
-        "input": "Release this Blocklet from a monorepo.",
-        "output": "The skill checks project-specific release scripts, follows the first matching method, and verifies the Blocklet output directory."
+        "input": "This project has no build script.",
+        "output": "The assistant skips installation and build steps, verifies a root index.html entry point, then runs metadata and bundle checks."
       }
     ],
     "best_practices": [
-      "Review Makefile and package scripts before running the release workflow.",
-      "Commit or stash unrelated changes before starting a version bump.",
-      "Run the skill from the Blocklet project root."
+      "Review Makefile and package scripts before allowing the skill to run them.",
+      "Run the workflow in a clean working tree so release changes are easy to inspect.",
+      "Confirm the generated bundle and metadata before sharing the release artifact."
     ],
     "anti_patterns": [
-      "Do not run it on untrusted repositories without reviewing scripts.",
-      "Do not continue after dependency, build, metadata, or bundle errors.",
-      "Do not use it to publish a release without a separate release approval process."
+      "Running the skill on an untrusted repository without reading its scripts first.",
+      "Ignoring failed install, build, metadata, or bundle commands and continuing manually.",
+      "Bundling before confirming that blocklet.yml main matches the generated entry point."
     ],
     "faq": [
       {
-        "question": "Does this skill publish a Blocklet?",
-        "answer": "No. It creates a release bundle but does not publish it to an external registry."
+        "question": "Does this skill publish a release?",
+        "answer": "No. It creates a release bundle but does not upload or deploy it."
       },
       {
-        "question": "What tools does it require?",
-        "answer": "It expects Blocklet CLI and common project tools such as pnpm, jq, git, make, or lerna when needed."
+        "question": "Can it work without a build script?",
+        "answer": "Yes. It can skip the build step when the project is static or pre-built."
       },
       {
-        "question": "Can it handle monorepos?",
-        "answer": "Yes. It checks Makefile targets, package scripts, lerna configuration, and common changelog paths."
+        "question": "What files does it inspect?",
+        "answer": "It checks project files such as Makefile, package.json, CHANGELOG.md, blocklet.yml, and generated index.html files."
       },
       {
-        "question": "Will it edit project files?",
-        "answer": "Yes. It can update versions, changelog entries, and the blocklet.yml main field."
+        "question": "Why should commands be confirmed first?",
+        "answer": "Version and build scripts come from the project and can run arbitrary local commands."
       },
       {
-        "question": "How does it choose the version command?",
-        "answer": "It follows the documented priority order and uses the first matching release method."
+        "question": "Does it fix changelog issues?",
+        "answer": "It can guide updates when the latest changelog version is missing, wrong, or empty."
       },
       {
-        "question": "Is it safe for untrusted repositories?",
-        "answer": "Use caution. Review scripts first because release and build commands can run project-controlled code."
+        "question": "Which AI tools can use it?",
+        "answer": "The report lists support for Claude, Codex, and Claude Code."
       }
     ]
   },

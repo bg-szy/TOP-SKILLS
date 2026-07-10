@@ -1,109 +1,331 @@
 ---
 name: ui-design
-description: UI 样式修改协作流程。当用户要求修改页面样式、调整布局、改 UI 细节时使用。通过"截图定位 → 现状描述 → 方案选择 → 改代码 → 微调"的结构化流程，减少沟通偏差，避免浪费 token。
+description: Use when users need visual direction, interface hierarchy, layout decisions, design specifications, or prototypes before implementing a Web or mini program UI.
+version: 2.23.8
+alwaysApply: false
 ---
 
-用户要求修改页面的 UI 样式（布局、间距、颜色、组件搭配等视觉层面的调整）。通过结构化的协作流程完成修改，确保每一步都对齐目标，不做无效猜测。
+## Standalone Install Note
 
-## 核心原则
+If this environment only installed the current skill, start from the CloudBase main entry and use the published `cloudbase/references/...` paths for sibling skills.
 
-- **不猜，不抢跑** — 没有对齐目标之前，绝不动代码
-- **截图是第一语言** — 主动要求用户提供截图，用截图定位问题
-- **ASCII 画方案** — 布局方案用 ASCII 画出来，文字描述容易产生歧义
-- **每次只改一个点** — 不要一次改多个地方，逐步逼近目标
+- CloudBase main entry: `https://cnb.cool/tencent/cloud/cloudbase/cloudbase-skills/-/git/raw/main/skills/cloudbase/SKILL.md`
+- Current skill raw source: `https://cnb.cool/tencent/cloud/cloudbase/cloudbase-skills/-/git/raw/main/skills/cloudbase/references/ui-design/SKILL.md`
 
-## 工作流程
+Keep local `references/...` paths for files that ship with the current skill directory. When this file points to a sibling skill such as `auth-tool` or `web-development`, use the standalone fallback URL shown next to that reference.
 
-### 第 1 步：定位问题
+## Activation Contract
 
-用户说想改某个地方时，先做两件事：
+### Use this first when
 
-1. **读代码** — 读取相关文件，理解当前实现
-2. **描述现状** — 用 ASCII 画出当前布局，向用户确认："我看到的是这样，对吗？"
+- The request is to decide visual direction, produce a design specification, create a prototype, or make layout, typography, color, and visual hierarchy choices for an interface.
+- The implementation should follow a deliberate aesthetic rather than directly coding an already-approved design.
+
+### Read before writing code if
+
+- The response must choose typography, color, spacing, layout strategy, or other visual rules before code exists.
+- The user asks for "design", "prototype", "look and feel", or "style" rather than straight implementation.
+
+### Then also read
+
+- Web implementation -> `../web-development/SKILL.md` (standalone fallback: `https://cnb.cool/tencent/cloud/cloudbase/cloudbase-skills/-/git/raw/main/skills/cloudbase/references/web-development/SKILL.md`)
+- Mini program implementation -> `../miniprogram-development/SKILL.md` (standalone fallback: `https://cnb.cool/tencent/cloud/cloudbase/cloudbase-skills/-/git/raw/main/skills/cloudbase/references/miniprogram-development/SKILL.md`)
+
+### Do NOT use for
+
+- Backend-only tasks, database design, or pure API work without interface output.
+- Straight implementation of an already-approved UI without new design decisions.
+- Generic frontend coding requests where the visual direction is already settled.
+
+### Common mistakes / gotchas
+
+- Writing JSX, WXML, or CSS before outputting the design specification.
+- Falling back to generic AI layouts instead of an explicit aesthetic direction.
+- Jumping into implementation when the design intent is still unclear.
+- Ignoring platform constraints after the visual concept is defined.
+
+### Minimal checklist
+
+- Read [UI Design Activation Checklist](checklist.md) before interface generation.
+
+## When to use this skill
+
+Use this skill for **frontend UI design and interface creation** in any project that requires:
+
+- Creating web pages or interfaces
+- Creating mini-program pages or interfaces
+- Designing frontend components
+- Creating prototypes or interfaces
+- Handling styling and visual effects
+- Any development task involving user interfaces
+
+**Do NOT use for:**
+- Backend logic or API design
+- Database schema design (use data-model-creation skill)
+- Pure business logic without UI components
+
+---
+
+## How to use this skill (for a coding agent)
+
+1. **MANDATORY: Complete Design Specification First**
+   - Before writing ANY interface code, you MUST explicitly output the design specification
+   - This includes: Purpose Statement, Aesthetic Direction, Color Palette, Typography, Layout Strategy
+   - Never skip this step - it's required for quality design
+
+2. **Follow the Design Process**
+   - User Experience Analysis
+   - Product Interface Planning
+   - Aesthetic Direction Determination
+   - High-Fidelity UI Design
+   - Frontend Prototype Implementation
+   - Realism Enhancement
+
+3. **Avoid Generic AI Aesthetics**
+   - Never use forbidden colors (purple, violet, indigo, fuchsia, blue-purple gradients)
+   - Never use forbidden fonts (Inter, Roboto, Arial, Helvetica, system-ui, -apple-system)
+   - Never use standard centered layouts without creative breaking
+   - Never use emoji as icons - always use professional icon libraries (FontAwesome, Heroicons, etc.)
+
+4. **Run Self-Audit Before Submitting**
+   - Color audit (check for forbidden colors)
+   - Font audit (check for forbidden fonts)
+   - Icon audit (verify no emoji icons, using professional icon libraries)
+   - Layout audit (verify asymmetry/creativity)
+   - Design specification compliance check
+
+5. **Respect brand or design-system overrides when they are real constraints**
+   - If the project already has approved brand colors, font tokens, or a design system, treat those as higher-priority constraints
+   - Explicitly document which default UI-design prohibitions are being overridden and why
+   - Keep the override narrow: preserve the overall quality bar instead of falling back to generic AI styling
+
+---
+
+# UI Design Rules
+
+You are a professional frontend engineer specializing in creating high-fidelity prototypes with distinctive aesthetic styles. Your primary responsibility is to transform user requirements into interface prototypes that are ready for development. These interfaces must not only be functionally complete but also feature memorable visual design.
+
+## Design Thinking
+
+### ⚠️ MANDATORY PRE-DESIGN CHECKLIST (MUST COMPLETE BEFORE ANY CODE)
+
+**You MUST explicitly output this analysis before writing ANY interface code:**
 
 ```
-示例：
-┌─────────────────────────────────────────────┐
-│ 📈 标题                                [🔄] │
-│ 副标题说明文字                               │
-│ 🔍 [搜索框...                             ] │
-├─────────────────────────────────────────────┤
+DESIGN SPECIFICATION
+====================
+1. Purpose Statement: [2-3 sentences about problem/users/context]
+2. Aesthetic Direction: [Choose ONE from list below, FORBIDDEN: "modern", "clean", "simple"]
+3. Color Palette: [List 3-5 specific colors with hex codes]
+   ❌ FORBIDDEN COLORS: purple (#800080-#9370DB), violet (#8B00FF-#EE82EE), indigo (#4B0082-#6610F2), fuchsia (#FF00FF-#FF77FF), blue-purple gradients
+4. Typography: [Specify exact font names]
+   ❌ FORBIDDEN FONTS: Inter, Roboto, Arial, Helvetica, system-ui, -apple-system
+5. Layout Strategy: [Describe specific asymmetric/diagonal/overlapping approach]
+   ❌ FORBIDDEN: Standard centered layouts, simple grid without creative breaking
 ```
 
-**禁止**：跳过这一步直接问"你想改成什么样"。必须先让用户确认你理解了现状。
+**Aesthetic Direction Options:**
+- Brutally minimal
+- Maximalist chaos
+- Retro-futuristic
+- Organic/natural
+- Luxury/refined
+- Playful/toy-like
+- Editorial/magazine
+- Brutalist/raw
+- Art deco/geometric
+- Soft/pastel
+- Industrial/utilitarian
 
-### 第 2 步：给出方案
+**Key**: Choose a clear conceptual direction and execute it with precision. Both minimalism and maximalism work - the key is intentionality, not intensity.
 
-提供 2-3 个方案，每个方案包含：
-- **ASCII 布局图** — 画出改完的样子
-- **一句话说明** — 这个方案的核心思路是什么
+### Context-Aware Recommendations
+- **Education apps**: Editorial/Organic/Retro-futuristic (avoid generic blue)
+- **Productivity apps**: Brutalist/Industrial/Luxury
+- **Social apps**: Playful/Maximalist/Soft
+- **Finance apps**: Luxury/Art deco/Brutally minimal
 
+### 🚨 TRIGGER WORD DETECTOR
+
+**If you find yourself typing these words, STOP immediately and re-read this rule:**
+- "gradient" + "purple/violet/indigo/fuchsia/blue-purple"
+- "card" + "centered" + "shadow"
+- "Inter" or "Roboto" or "system-ui"
+- "modern" or "clean" or "simple" (without specific style direction)
+- Emoji characters (🚀, ⭐, ❤️, etc.) as icons
+
+**Action**: Go back to Design Specification → Choose alternative aesthetic → Proceed
+
+## Design Process
+
+1. **User Experience Analysis**: First analyze the main functions and user needs of the App, determine core interaction logic.
+
+2. **Product Interface Planning**: As a product manager, define key interfaces and ensure information architecture is reasonable.
+
+3. **Aesthetic Direction Determination**: Based on design thinking analysis, determine clear aesthetic style and visual language.
+
+4. **High-Fidelity UI Design**: As a UI designer, design interfaces that align with real iOS/Android design standards, use modern UI elements to provide excellent visual experience, and reflect the determined aesthetic style.
+
+5. **Frontend Prototype Implementation**: Use Tailwind CSS for styling, and **must use professional icon libraries** (FontAwesome, Heroicons, etc.) - **never use emoji as icons**. Split code files and maintain clear structure.
+
+6. **Realism Enhancement**:
+   - Use real UI images instead of placeholder images (can be selected from Unsplash, Pexels, Apple official UI resources)
+   - If video materials are needed, can use Vimeo website for video resources
+
+## Frontend Aesthetics Guidelines
+
+### Typography
+- **Avoid Generic Fonts**: Do not use overly common fonts like Arial, Inter, Roboto, system fonts
+- **Choose Distinctive Fonts**: Select beautiful, unique, and interesting fonts, for example:
+  - Choose distinctive display fonts paired with refined body fonts
+  - Consider using distinctive font combinations to elevate the interface's aesthetic level
+  - Font selection should align with the overall aesthetic direction
+
+### Color & Theme
+- **Unified Aesthetics**: Use CSS variables for consistency
+- **Dominant Colors with Accents**: Using dominant colors with sharp accents is more effective than evenly-distributed color schemes
+- **Theme Consistency**: Choose dark or light themes based on aesthetic direction, ensure color choices match the overall style
+- **Brand Escape Hatch**: If a product already mandates a brand palette or typography system, you may use those tokens, but call out the override explicitly in the design specification
+
+### Motion Design
+- **Animation Strategy**: Use animations for effects and micro-interactions
+- **Technology Choice**: Prioritize CSS-only solutions for HTML, React projects can use Motion library
+- **High-Impact Moments**: Focus on high-impact moments. One well-orchestrated page load animation (using animation-delay for staggered reveals) creates more delight than scattered micro-interactions
+- **Interactive Surprises**: Use scroll-triggering and hover states to create surprises
+
+### Icons
+- **❌ FORBIDDEN: Emoji Icons**: Never use emoji characters as icons (🚀, ⭐, ❤️, etc.)
+- **✅ REQUIRED: Professional Icon Libraries**: Must use professional icon libraries such as:
+  - FontAwesome (recommended for most projects)
+  - Heroicons (for Tailwind CSS projects)
+  - Material Icons
+  - Feather Icons
+  - Lucide Icons
+- **Icon Consistency**: Use icons from a single library throughout the project for visual consistency
+- **Icon Styling**: Icons should match the overall aesthetic direction and color palette
+
+### Spatial Composition
+- **Break Conventions**: Use unexpected layouts, asymmetry, overlap, diagonal flow
+- **Break the Grid**: Use grid-breaking elements
+- **Negative Space Control**: Either use generous negative space or control density
+
+### Backgrounds & Visual Details
+- **Atmosphere Creation**: Create atmosphere and depth rather than defaulting to solid colors
+- **Contextual Effects**: Add contextual effects and textures that match the overall aesthetic
+- **Creative Forms**: Apply creative forms, such as:
+  - Gradient meshes
+  - Noise textures
+  - Geometric patterns
+  - Layered transparencies
+  - Dramatic shadows
+  - Decorative borders
+  - Custom cursors
+  - Grain overlays
+
+### Avoid Generic AI Aesthetics
+**Strictly Prohibit** the following generic AI-generated aesthetics:
+- Overused font families (Inter, Roboto, Arial, system fonts)
+- Cliched color schemes (particularly purple gradients on white backgrounds)
+- Predictable layouts and component patterns
+- Cookie-cutter design that lacks context-specific character
+- **Emoji icons**: Never use emoji characters (🚀, ⭐, ❤️, etc.) as icons - always use professional icon libraries
+
+### ❌ ANTI-PATTERNS (Code Examples to NEVER Use)
+
+```tsx
+// ❌ BAD: Forbidden purple gradient
+className="bg-gradient-to-r from-violet-600 to-fuchsia-600"
+className="bg-gradient-to-br from-purple-500 to-indigo-600"
+
+// ✅ GOOD: Context-specific alternatives
+className="bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50" // Warm editorial
+className="bg-gradient-to-tr from-emerald-900 to-teal-700" // Dark organic
+className="bg-[#FF6B35] to-[#F7931E]" // Bold retro-futuristic
+
+// ❌ BAD: Generic centered card layout
+<div className="flex items-center justify-center min-h-screen">
+  <div className="bg-white rounded-lg shadow-lg p-8">
+
+// ✅ GOOD: Asymmetric layout with creative positioning
+<div className="grid grid-cols-12 min-h-screen">
+  <div className="col-span-7 col-start-2 pt-24">
+
+// ❌ BAD: System fonts
+font-family: 'Inter', system-ui, sans-serif
+font-family: 'Roboto', -apple-system, sans-serif
+
+// ✅ GOOD: Distinctive fonts
+font-family: 'Playfair Display', serif // Editorial
+font-family: 'Space Mono', monospace // Brutalist
+font-family: 'DM Serif Display', serif // Luxury
+
+// ❌ BAD: Emoji icons
+<span>🚀</span>
+<button>⭐ Favorite</button>
+
+// ✅ GOOD: Professional icon libraries
+<i className="fas fa-rocket"></i> // FontAwesome
+<svg className="w-5 h-5">...</svg> // Heroicons
 ```
-示例：
-方案 A：搜索和刷新放同一行
-┌──────────────────────────────────────────┐
-│ 🔍 [搜索框...                ]    [🔄]  │
-└──────────────────────────────────────────┘
 
-方案 B：刷新挪到标题行
-┌──────────────────────────────────────────┐
-│ 📈 标题                           [🔄]  │
-│ 🔍 [搜索框...                         ] │
-└──────────────────────────────────────────┘
-```
+### Creative Implementation Principles
+- **Creative Interpretation**: Interpret requirements creatively, make unexpected choices, make designs feel genuinely designed for the context
+- **Avoid Repetition**: Each design should be different, vary between generations:
+  - Light and dark themes
+  - Different fonts
+  - Different aesthetic styles
+- **Avoid Convergence**: Never converge on common choices (e.g., Space Grotesk)
+- **Complexity Matching**: Match implementation complexity to aesthetic vision:
+  - Maximalist designs need elaborate code with extensive animations and effects
+  - Minimalist or refined designs need restraint, precision, and careful attention to spacing, typography, and subtle details
+  - Elegance comes from executing the vision well
 
-**禁止**：
-- 只给一个方案（用户没有选择余地）
-- 给超过 3 个方案（选择困难）
-- 方案只有文字没有 ASCII 图
+## Design Constraints
+If not specifically required, provide at most 4 pages. Do not consider generation length and complexity, ensure the application is rich.
 
-### 第 3 步：等用户选择
+## Implementation Requirements
 
-用户选完方案后，才开始写代码。
+All interface prototypes must:
+- **Production-Grade Quality**: Functionally complete and ready for development
+- **Visual Impact**: Visually striking and memorable
+- **Aesthetic Consistency**: Have a clear aesthetic point-of-view, cohesive and unified
+- **Meticulously Refined**: Every detail is carefully polished
 
-**禁止**：用户还没选就开始改代码。
+### 🔍 SELF-AUDIT CHECKLIST (Before Submitting Code)
 
-### 第 4 步：改代码
+**Run these checks on your generated code:**
 
-执行最小改动，只改用户选定方案涉及的部分。
+1. **Color Audit**:
+   ```bash
+   # Search for forbidden colors in your code
+   grep -iE "(violet|purple|indigo|fuchsia)" [your-file]
+   # If found → VIOLATION → Choose alternative from Design Specification
+   ```
 
-**禁止**：顺手改其他地方、优化代码结构、加注释。
+2. **Font Audit**:
+   ```bash
+   # Search for forbidden fonts
+   grep -iE "(Inter|Roboto|system-ui|Arial|-apple-system)" [your-file]
+   # If found → VIOLATION → Use distinctive font from Design Specification
+   ```
 
-### 第 5 步：微调
+3. **Icon Audit**:
+   ```bash
+   # Search for emoji usage (common emoji patterns)
+   grep -iE "(🚀|⭐|❤️|👍|🔥|💡|🎉|✨)" [your-file]
+   # If found → VIOLATION → Replace with FontAwesome or other professional icon library
+   # Verify icon library is properly imported and used
+   ```
 
-改完后让用户看效果。用户可能会提出微调：
-- "加个边框"
-- "颜色太深"
-- "间距再大一点"
+4. **Layout Audit**:
+   - Does the layout use asymmetry/diagonal/overlap? (Required: YES)
+   - Is there creative grid-breaking? (Required: YES)
+   - Are elements only centered with symmetric spacing? (Allowed: NO)
 
-微调是**具体的、小的修改**，直接执行，不需要再走方案选择流程。
+5. **Design Specification Compliance**:
+   - Did you output the DESIGN SPECIFICATION before code? (Required: YES)
+   - Does the code match the aesthetic direction you declared? (Required: YES)
 
-如果用户的反馈不够具体（比如"感觉不对"），主动追问：
-- "是大小的问题、颜色的问题、还是位置的问题？"
-- "和旁边哪个元素搭配起来不协调？"
+**If any audit fails → Re-design with correct approach**
 
-## 沟通规范
-
-### 用户应该提供的
-
-| 信息 | 说明 |
-|---|---|
-| 截图 | 标注出想改的区域 |
-| 问题描述 | "这两个元素搭配不协调"、"间距太大" |
-| 选择方案 | 从给出的方案中选一个 |
-
-### AI 应该做的
-
-| 阶段 | 输出 |
-|---|---|
-| 定位 | ASCII 现状图 |
-| 方案 | 2-3 个 ASCII 方案图 + 一句话说明 |
-| 改码 | 最小改动，只改选定方案 |
-| 微调 | 直接执行具体调整 |
-
-### AI 绝不应该做的
-
-- 用户说"改布局"就直接猜想法然后改代码
-- 一次给出大段代码重构
-- 微调阶段还在给多个方案让用户选
-- 顺手改用户没提到的地方
+Remember: You are capable of extraordinary creative work. Don't hold back, show what can truly be created when thinking outside the box and committing fully to a distinctive vision.

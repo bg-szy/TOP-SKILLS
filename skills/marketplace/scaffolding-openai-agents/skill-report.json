@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T22:32:06.883Z",
+    "generated_at": "2026-07-09T09:16:18.836Z",
     "slug": "asmayaseen-scaffolding-openai-agents",
     "source_url": "https://github.com/Asmayaseen/hackathon-2/tree/main/.claude/skills/scaffolding-openai-agents",
     "source_ref": "main",
@@ -9,12 +9,15 @@
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "89fed45ef3134be0c649fab7018fc0177c92c8d36eaca34578c4e48f7520ca3d",
-    "tree_hash": "886cf16db27ae84a6fbf3251ffd7a51f29e22b46ffe5ec282a8504f3f95af98b",
+    "tree_hash": "dce89f32bc01f1467da0f1b4d365d9953a3a9caf2219ab676958dfff47bd6c95",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
       "fallback_chain": [
         {
           "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -23,18 +26,18 @@
   },
   "skill": {
     "name": "scaffolding-openai-agents",
-    "description": "Scaffold Python agents with the OpenAI Agents SDK, including runners, tools, handoffs, guardrails, streaming, context, and FastAPI integration.",
-    "summary": "Build OpenAI Agents SDK projects with practical Python patterns for tools, handoffs, guardrails, and streaming.",
+    "description": "Build AI agents with the OpenAI Agents SDK, including async runners, tools, handoffs, guardrails, context, streaming, and FastAPI integration.",
+    "summary": "Scaffold OpenAI Agents SDK projects with tools, guardrails, handoffs, streaming, and API patterns.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "Asmayaseen",
     "license": "MIT",
     "tags": [
       "openai-agents",
-      "ai-agents",
-      "python",
-      "sdk",
-      "multi-agent"
+      "agent-sdk",
+      "multi-agent",
+      "tool-calling",
+      "python"
     ],
     "supported_tools": [
       "claude",
@@ -50,25 +53,30 @@
     "category": "coding"
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "medium",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The review confirmed one high-risk unsafe code example: an agent tool evaluates user-controlled input with eval(). A low-risk weather example also performs third-party network access, while the remaining static hits are Markdown formatting, placeholders, documentation links, or benign validation strings.",
+    "summary": "Most static command findings are false positives caused by Markdown fences and inline documentation. One high-risk finding is confirmed because SKILL.md presents eval(expression) in a function tool, which can execute arbitrary Python if copied. No prompt injection language was found, but the FastAPI example also exposes raw exception messages.",
     "remediation": [
       {
-        "issue": "Unsafe eval calculator tool example",
-        "suggestion": "Replace eval(expression) with an allowlisted math parser or a small set of explicit arithmetic operations.",
+        "issue": "Unsafe calculator tool uses eval on model-supplied expressions.",
+        "suggestion": "Replace eval with a constrained expression parser or explicit arithmetic operations, and remove the unsafe example from the main path.",
         "severity": "high"
       },
       {
-        "issue": "Weather tool sends user input to a third-party service",
-        "suggestion": "Encode the city value, add timeouts and error handling, and document that the tool contacts wttr.in.",
+        "issue": "FastAPI example returns raw exception text to clients.",
+        "suggestion": "Log server errors internally and return a generic response body from public endpoints.",
+        "severity": "medium"
+      },
+      {
+        "issue": "External weather tool lacks timeout and privacy notes.",
+        "suggestion": "Add httpx timeouts, input validation for city, and a note that user data is sent to wttr.in.",
         "severity": "low"
       },
       {
-        "issue": "Setup command examples are broad and versionless",
-        "suggestion": "Pin dependency versions where practical and state that setup commands should be reviewed before use.",
+        "issue": "Quick start shows an API key placeholder.",
+        "suggestion": "State that users must store keys in local environment variables or secret managers and never commit them.",
         "severity": "low"
       }
     ],
@@ -865,319 +873,333 @@
       {
         "id": "blocker:scripts/verify.py:27:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This line only prints a validation failure when the expected skill name is missing. It does not collect host, user, process, or environment information."
+        "confidence": 0.98,
+        "reason": "The script only prints an error when the expected skill name is missing. It performs local content validation and no system reconnaissance."
       },
       {
         "id": "scripts:SKILL.md:189:dynamic-code-evaluation-with-eval",
         "verdict": "confirmed",
         "confidence": 0.96,
-        "reason": "The sample calculator tool calls eval(expression) on tool input. If copied into an agent, user-controlled text could execute arbitrary Python code.",
+        "reason": "The skill presents eval(expression) as a calculator tool implementation for model-provided input. This can execute arbitrary Python code if copied into production, despite the warning comment.",
         "severity": "high"
       },
       {
         "id": "external_commands:SKILL.md:16:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "This is a Markdown Quick Start code fence with ordinary setup commands. The skill does not execute these commands automatically or hide shell behavior."
+        "confidence": 0.95,
+        "reason": "The matched text opens a fenced Bash quick-start block for manual project setup. It is not Ruby backtick execution and does not run automatically."
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The matched text is the closing marker for a Markdown code block. It is not Ruby backtick execution or an executable shell instruction."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:47:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:62:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:74:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:92:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:123:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:129:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:133:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:149:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:153:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:167:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:173:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:196:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:200:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:222:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:226:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:254:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:260:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:301:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:305:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:343:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:349:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:373:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:377:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:401:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:407:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:444:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:448:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:466:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:470:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:514:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:524:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:533:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The match is a Markdown fenced Python example for the OpenAI Agents SDK. It does not use Ruby backticks or invoke shell commands."
+        "confidence": 0.98,
+        "reason": "The matched text is a Markdown code fence used to format examples. It is not Ruby backtick execution and does not create command execution by itself."
       },
       {
         "id": "external_commands:SKILL.md:537:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The inline command tells a user how to run the local verification script. It is transparent, local, and not automatically executed by the skill."
+        "confidence": 0.94,
+        "reason": "The line documents an optional local verification command. It has fixed arguments, no user-controlled interpolation, and no automatic execution by the skill."
       },
       {
         "id": "external_commands:SKILL.md:541:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticks wrap related skill names in Markdown. They are not command execution syntax in this context."
+        "confidence": 0.98,
+        "reason": "The backticks mark related skill names in Markdown. They are not shell execution syntax in this context."
       },
       {
         "id": "external_commands:SKILL.md:542:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticks wrap related skill names in Markdown. They are not command execution syntax in this context."
+        "confidence": 0.98,
+        "reason": "The backticks mark related skill names in Markdown. They are not shell execution syntax in this context."
       },
       {
         "id": "external_commands:SKILL.md:543:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticks wrap related skill names in Markdown. They are not command execution syntax in this context."
+        "confidence": 0.98,
+        "reason": "The backticks mark related skill names in Markdown. They are not shell execution syntax in this context."
       },
       {
         "id": "network:SKILL.md:213:hardcoded-url",
-        "verdict": "confirmed",
-        "confidence": 0.78,
-        "reason": "The weather tool example sends the city argument to wttr.in over HTTP client code. This is intended tutorial behavior, but it is real third-party network access with user-controlled input.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.82,
+        "reason": "The URL is a public weather endpoint used in an instructional tool example. It does not include credentials or evidence of exfiltration, although production code should add validation and timeouts."
       },
       {
         "id": "network:SKILL.md:245:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The URL appears inside a static SearchResult example and is not fetched by the shown code. It documents an output value, not network access."
+        "confidence": 0.95,
+        "reason": "The URL is a static Python documentation link in a sample search result. It is not an outbound request carrying user data or secrets."
       },
       {
         "id": "network:SKILL.md:520:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The OpenAI traces URL is a documentation link for users to view traces. It is not used by code to make a network request."
+        "confidence": 0.96,
+        "reason": "The URL is a human-facing OpenAI traces page reference. It is not executable code and does not perform a network request."
       },
       {
         "id": "env_access:SKILL.md:23:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The value is a placeholder API key in setup documentation, not a real credential. It does not expose a secret from the skill repository."
+        "confidence": 0.93,
+        "reason": "The line shows a placeholder OPENAI_API_KEY setup command, not a real secret value. It documents environment variable use and does not read, expose, or transmit credentials."
       },
       {
         "id": "blocker:SKILL.md:187:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The text describes a math expression argument for a tutorial calculator tool. It is not system reconnaissance or host inspection."
+        "confidence": 0.97,
+        "reason": "The line is documentation for acceptable calculator input examples. It does not inspect the host system or request system information."
       },
       {
         "id": "blocker:SKILL.md:364:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The string is a guardrail output label for a programming-question check. It does not enumerate or inspect system state."
+        "confidence": 0.98,
+        "reason": "The line sets a benign guardrail output string for valid programming questions. It does not enumerate or collect system information."
       }
     ],
-    "semantic_findings": [],
+    "semantic_findings": [
+      {
+        "title": "Raw Exception Details Returned by API Example",
+        "description": "The FastAPI example returns str(e) in an HTTP 500 response. If copied into a public service, this can expose internal error details to clients.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 501,
+            "line_end": 501
+          }
+        ],
+        "confidence": 0.78,
+        "confidence_reasoning": "The code directly places str(e) in an HTTP 500 response. This is a common information disclosure issue if copied into a public endpoint."
+      }
+    ],
     "critical_findings": [],
     "high_findings": [
       {
@@ -1194,151 +1216,152 @@
         "source_category": "scripts",
         "source_severity": "high",
         "confidence": 0.96,
-        "confidence_reasoning": "The sample calculator tool calls eval(expression) on tool input. If copied into an agent, user-controlled text could execute arbitrary Python code."
+        "confidence_reasoning": "The skill presents eval(expression) as a calculator tool implementation for model-provided input. This can execute arbitrary Python code if copied into production, despite the warning comment."
       }
     ],
-    "medium_findings": [],
-    "low_findings": [
+    "medium_findings": [
       {
-        "title": "Hardcoded URL",
-        "description": "f\"https://wttr.in/{city}?format=3\"",
+        "title": "Raw Exception Details Returned by API Example",
+        "description": "The FastAPI example returns str(e) in an HTTP 500 response. If copied into a public service, this can expose internal error details to clients.",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 213,
-            "line_end": 213
+            "line_start": 501,
+            "line_end": 501
           }
         ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
         "confidence": 0.78,
-        "confidence_reasoning": "The weather tool example sends the city argument to wttr.in over HTTP client code. This is intended tutorial behavior, but it is real third-party network access with user-controlled input."
+        "confidence_reasoning": "The code directly places str(e) in an HTTP 500 response. This is a common information disclosure issue if copied into a public endpoint."
       }
     ],
+    "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 2,
     "total_lines": 588,
     "audit_model": "codex",
-    "audited_at": "2026-07-07T22:32:06.883Z",
+    "audited_at": "2026-07-09T09:16:18.836Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Build OpenAI Agents SDK Apps",
-    "value_statement": "Building agent systems requires many SDK patterns across tools, handoffs, guardrails, streaming, and context. This skill provides focused examples for scaffolding OpenAI Agents SDK workflows.",
+    "user_title": "Build OpenAI Agents With SDK Patterns",
+    "value_statement": "Agent projects need clear structure before tool calls, handoffs, and guardrails become hard to manage. This skill provides reusable OpenAI Agents SDK patterns for Python teams.",
     "seo_keywords": [
-      "OpenAI Agents SDK",
-      "AI agent scaffolding",
       "Claude",
       "Codex",
       "Claude Code",
-      "function tools",
+      "OpenAI Agents SDK",
+      "AI agent scaffolding",
+      "Python agents",
       "agent handoffs",
+      "function tools",
       "guardrails",
-      "streaming responses",
-      "multi-agent orchestration"
+      "streaming responses"
     ],
     "actual_capabilities": [
-      "Shows basic Agent and Runner setup for asynchronous Python workflows.",
-      "Demonstrates function tools, typed tool inputs, and structured outputs.",
-      "Explains handoffs and agents-as-tools patterns for multi-agent routing.",
-      "Includes input and output guardrail examples for safer interactions.",
-      "Provides streaming, context sharing, tracing, and FastAPI integration patterns."
+      "Shows how to define Agents with instructions, models, and structured outputs.",
+      "Demonstrates async, sync, streamed, and continued Runner execution patterns.",
+      "Provides examples for function tools, typed tool inputs, and context-aware tools.",
+      "Explains multi-agent routing with handoffs and agents used as tools.",
+      "Includes guardrail examples for input validation and output validation.",
+      "Outlines a FastAPI integration and a suggested project structure."
     ],
     "limitations": [
-      "Targets the OpenAI Agents SDK and does not cover LangChain or raw API clients.",
-      "Examples are scaffolding guidance, not a complete production application.",
-      "One calculator example uses eval and must be replaced before real use.",
-      "Deployment, authentication, persistence, and full test suites are not included."
+      "Examples are instructional and require dependency setup before use.",
+      "It targets the OpenAI Agents SDK, not LangChain or raw OpenAI API workflows.",
+      "Security hardening is partial; unsafe examples must be replaced before production.",
+      "It does not provide a complete generated project or deployment pipeline."
     ],
     "use_cases": [
       {
-        "title": "Prototype a tutoring agent",
-        "description": "Create a Python tutor with specialist handoffs for concepts, debugging, and exercises.",
-        "target_user": "Education developers"
+        "title": "Prototype a Python Agent Service",
+        "description": "Use the templates to create async agents, tool functions, and a FastAPI endpoint for early product validation.",
+        "target_user": "Backend developers"
       },
       {
-        "title": "Design an agent service API",
-        "description": "Use FastAPI and Runner patterns to expose agent responses and streaming output.",
-        "target_user": "Backend engineers"
+        "title": "Design Multi-Agent Routing",
+        "description": "Combine specialist agents with handoffs so user requests reach the right agent for each task.",
+        "target_user": "AI engineers"
       },
       {
-        "title": "Add guardrails to agent workflows",
-        "description": "Define input and output checks that route or block unsuitable requests.",
-        "target_user": "AI safety reviewers"
+        "title": "Create Tutoring Agents",
+        "description": "Adapt the tutor, guardrail, and context examples for guided lessons and practice workflows.",
+        "target_user": "Technical educators"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Create a basic agent",
-        "scenario": "Beginner setup",
-        "prompt": "Use this skill to scaffold a simple OpenAI Agents SDK assistant for my use case. Include the Agent setup and the Runner pattern."
+        "title": "Create a Basic Agent",
+        "prompt": "Use this skill to scaffold a simple OpenAI Agents SDK assistant. Include agent instructions, the Runner call, and setup notes.",
+        "scenario": "Beginner setup"
       },
       {
-        "title": "Add tools and structured output",
-        "scenario": "Intermediate tool use",
-        "prompt": "Use this skill to add typed function tools and structured output to an OpenAI Agents SDK agent. Avoid unsafe dynamic code execution."
+        "title": "Add Function Tools",
+        "prompt": "Use this skill to add typed function tools to an existing agent. Include safe input validation and explain each tool boundary.",
+        "scenario": "Intermediate tool design"
       },
       {
-        "title": "Plan multi-agent handoffs",
-        "scenario": "Multi-agent workflow",
-        "prompt": "Use this skill to design a triage agent with specialist handoffs. Explain each agent role and the routing logic."
+        "title": "Build Multi-Agent Handoffs",
+        "prompt": "Use this skill to design a triage agent with three specialists. Include routing logic, handoff descriptions, and conversation continuation.",
+        "scenario": "Advanced orchestration"
       },
       {
-        "title": "Build a production-ready service outline",
-        "scenario": "Advanced service design",
-        "prompt": "Use this skill to outline an OpenAI Agents SDK service with streaming, guardrails, tracing, context, and FastAPI endpoints."
+        "title": "Harden a Production Agent API",
+        "prompt": "Use this skill to review an agent service design for guardrails, streaming, context handling, observability, and production security gaps.",
+        "scenario": "Production review"
       }
     ],
     "output_examples": [
       {
-        "input": "Scaffold a Python tutor agent with concept and debugging specialists.",
-        "output": "A plan with a triage agent, two specialist agents, routing rules, async Runner usage, and guardrail recommendations."
+        "input": "Create a beginner tutoring agent for Python concepts.",
+        "output": "A plan with a tutor agent, async runner flow, structured instructions, and guardrail recommendations."
       },
       {
-        "input": "Add a weather lookup tool to an agent.",
-        "output": "A tool design that names the input, explains the network dependency, validates the city value, and adds timeout handling."
+        "input": "Add a weather lookup tool to an assistant.",
+        "output": "A tool design summary with typed inputs, validation notes, timeout guidance, and agent wiring steps."
       },
       {
-        "input": "Expose agent responses through a web service.",
-        "output": "A service outline with request models, normal response flow, streaming response flow, error handling, and tracing notes."
+        "input": "Design a triage flow for support questions.",
+        "output": "A multi-agent routing outline with specialist roles, handoff descriptions, and conversation continuation guidance."
       }
     ],
     "best_practices": [
-      "Replace demonstration shortcuts with validated implementations before production use.",
-      "Keep agent instructions narrow and give each specialist a clear responsibility.",
-      "Add guardrails, timeouts, tracing, and error handling around external tools."
+      "Replace demonstration eval calls with a constrained parser or vetted calculation library.",
+      "Set explicit timeouts and validation for every external tool or network request.",
+      "Use guardrails to define tool boundaries, allowed topics, and output requirements."
     ],
     "anti_patterns": [
-      "Do not pass user text into eval or other dynamic execution helpers.",
-      "Do not let one agent own unrelated routing, tool use, and policy decisions.",
-      "Do not deploy examples without reviewing network calls, secrets, and failure modes."
+      "Copying sample code into production without replacing unsafe placeholders.",
+      "Letting model-selected tool inputs reach external services without validation.",
+      "Returning raw exception messages from public API endpoints."
     ],
     "faq": [
       {
-        "question": "What does this skill help me build?",
-        "answer": "It helps scaffold Python projects that use the OpenAI Agents SDK for tools, handoffs, guardrails, streaming, and context."
+        "question": "Does this skill generate a full project?",
+        "answer": "No. It provides patterns and examples that you adapt into your project."
       },
       {
-        "question": "Does it support Claude, Codex, and Claude Code?",
-        "answer": "Yes. The marketplace metadata lists Claude, Codex, and Claude Code as supported tools."
+        "question": "Which SDK does it target?",
+        "answer": "It targets the OpenAI Agents SDK for Python."
       },
       {
-        "question": "Is this a complete production template?",
-        "answer": "No. It provides focused implementation patterns that still need authentication, deployment, tests, and production hardening."
+        "question": "Can I use it with Claude, Codex, and Claude Code?",
+        "answer": "Yes. The skill content is compatible with Claude, Codex, and Claude Code."
       },
       {
-        "question": "Can I use it with LangChain?",
-        "answer": "No. The skill is written for the OpenAI Agents SDK and explicitly excludes other agent frameworks."
+        "question": "Does it cover streaming responses?",
+        "answer": "Yes. It includes a streamed Runner example and a FastAPI streaming pattern."
       },
       {
-        "question": "What security issue should I fix first?",
-        "answer": "Replace the eval-based calculator example before using any similar tool with real user input."
+        "question": "Is the included calculator tool production safe?",
+        "answer": "No. Replace the eval example with safe parsing before any production use."
       },
       {
-        "question": "Does the skill make network requests itself?",
-        "answer": "The skill text does not execute requests, but it includes an example weather tool that would call wttr.in if copied and run."
+        "question": "Does it cover multi-agent workflows?",
+        "answer": "Yes. It includes handoffs and agents-as-tools patterns for specialist routing."
       }
     ]
   },

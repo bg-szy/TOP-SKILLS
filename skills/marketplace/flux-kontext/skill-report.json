@@ -1,20 +1,22 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T23:26:31.069Z",
+    "generated_at": "2026-07-09T04:05:52.155Z",
     "slug": "agentspace-so-flux-kontext",
     "source_url": "https://github.com/agentspace-so/runcomfy-agent-skills/tree/main/flux-kontext/",
     "source_ref": "main",
-    "model": "codex",
+    "model": "claude",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "1ae706a2a0e8e006ff5197b3bc0309b386523e27a99bac3556c5eaae34c47106",
-    "tree_hash": "5f51b970ac251a9e590fc48a8390af7ea241e5801c81ef6a9a7733a87055706c",
+    "content_hash": "201388c96100bf57f168cb5c1c550bb10c16a74be080f49cc1f168e279c1b5a4",
+    "tree_hash": "ff7da8196939a5a9b6524b86bd0a787427fafa4b41772b93382bdf7971656256",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "claude-sonnet-4.6",
+      "model_effective": "claude:claude-sonnet-4.6",
       "fallback_chain": [
         {
-          "agent": "codex",
+          "agent": "claude",
+          "model": "claude-sonnet-4.6",
           "outcome": "success"
         }
       ],
@@ -23,18 +25,18 @@
   },
   "skill": {
     "name": "flux-kontext",
-    "description": "Use Flux 1 Kontext Pro on RunComfy for precise single-image edits. The skill explains prompt patterns, model limits, CLI invocation, and routing choices.",
-    "summary": "Edit one source image with Flux 1 Kontext Pro through RunComfy.",
+    "description": "Guide Claude, Codex, or Claude Code to edit a single image with Flux 1 Kontext Pro through the RunComfy CLI. The skill documents the model endpoint, input schema, prompting patterns, and routing guidance for related image models.",
+    "summary": "Edit single images with Flux 1 Kontext Pro on RunComfy using focused prompts.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "agentspace-so",
     "license": "MIT",
     "tags": [
       "image-editing",
-      "runcomfy",
       "flux-kontext",
-      "generative-ai",
-      "model-api"
+      "runcomfy",
+      "creative-tools",
+      "prompting"
     ],
     "supported_tools": [
       "claude",
@@ -49,28 +51,12 @@
     "category": "design"
   },
   "security_audit": {
-    "risk_level": "medium",
+    "risk_level": "safe",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The skill is a transparent RunComfy wrapper for Flux Kontext Pro and does not contain prompt-injection language. Most static hits are Markdown false positives, but the skill intentionally uses a local CLI, remote model API calls, and local token storage.",
-    "remediation": [
-      {
-        "issue": "Remote model processing of user media and prompts",
-        "suggestion": "Add a concise privacy notice before invocation that prompts and image URLs are sent to RunComfy for processing.",
-        "severity": "medium"
-      },
-      {
-        "issue": "Local API token storage",
-        "suggestion": "Document token revocation and recommend RUNCOMFY_TOKEN for ephemeral CI environments.",
-        "severity": "high"
-      },
-      {
-        "issue": "External CLI execution",
-        "suggestion": "Keep command arguments fixed, require user confirmation before running the CLI, and validate output directories before download.",
-        "severity": "medium"
-      }
-    ],
+    "summary": "The static findings are false positives from Markdown examples, hardcoded documentation links, placeholder URLs, and documented RunComfy CLI usage. I found no prompt injection attempt, covert exfiltration, unsafe shell interpolation, or malicious filesystem behavior in SKILL.md.",
+    "remediation": [],
     "risk_factor_evidence": [
       {
         "factor": "external_commands",
@@ -673,581 +659,368 @@
     "finding_verdicts": [
       {
         "id": "external_commands:SKILL.md:13:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.78,
-        "reason": "The description states that the skill calls the local RunComfy CLI to run a remote image model. The command is fixed, but it still executes an external program and sends data off host.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "This is documentation for the intended RunComfy CLI workflow, with hardcoded command names and JSON input examples. I found no shell interpolation or instruction to execute untrusted user input as a command."
       },
       {
         "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.62,
-        "reason": "This finding points at a Markdown bash fence for installation documentation, not Ruby backtick execution. The surrounding command is user-facing setup text, not hidden runtime code."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "This line is a Markdown code-fence delimiter. It does not execute a command or interpolate user input."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The prerequisite instructs installing the RunComfy CLI with npm globally. That is legitimate setup, but it is still an external package-manager command with local system impact.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "This is documentation for the intended RunComfy CLI workflow, with hardcoded command names and JSON input examples. I found no shell interpolation or instruction to execute untrusted user input as a command."
       },
       {
         "id": "external_commands:SKILL.md:46:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.74,
-        "reason": "The prerequisite instructs running runcomfy login, which starts an authentication flow and changes local credential state. This is expected but security-relevant external command use.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "This is documentation for the intended RunComfy CLI workflow, with hardcoded command names and JSON input examples. I found no shell interpolation or instruction to execute untrusted user input as a command."
       },
       {
         "id": "external_commands:SKILL.md:47:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "This line documents an environment variable alternative for CI and mentions runcomfy login. It does not add a new executable command pattern beyond the preceding login instruction."
+        "confidence": 0.88,
+        "reason": "This is documentation for the intended RunComfy CLI workflow, with hardcoded command names and JSON input examples. I found no shell interpolation or instruction to execute untrusted user input as a command."
       },
       {
         "id": "external_commands:SKILL.md:51:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is an endpoint identifier rendered as inline Markdown code. It is not shell execution."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This table row names the prompt field in inline Markdown code. It is schema documentation, not command execution."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This table row names the image field in inline Markdown code. It is schema documentation, not command execution."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This table row names the aspect_ratio field in inline Markdown code. It is schema documentation, not command execution."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This table row names the seed field and then continues normal documentation. It does not execute code."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:66:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The fenced bash example invokes runcomfy run with user-provided JSON and an output directory. The command is expected, but it executes a local CLI and sends work to RunComfy.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "This is documentation for the intended RunComfy CLI workflow, with hardcoded command names and JSON input examples. I found no shell interpolation or instruction to execute untrusted user input as a command."
       },
       {
         "id": "external_commands:SKILL.md:73:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "This line is only the closing Markdown fence after a command example. It is not itself an executable instruction or code path."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:77:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The fenced bash example shows a second runcomfy run invocation with a seed. It is legitimate model usage, but it is still external command execution.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "This is documentation for the intended RunComfy CLI workflow, with hardcoded command names and JSON input examples. I found no shell interpolation or instruction to execute untrusted user input as a command."
       },
       {
         "id": "external_commands:SKILL.md:85:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "This line is only a closing Markdown fence. It does not run a command or introduce shell interpolation."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:89:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The inline code is a natural-language image edit prompt example. It is not shell syntax or executable code."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:91:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The inline code is a prompt-writing pattern for preserving image elements. It is not a command execution primitive."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:118:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line opens a plain prompt example block. The block contains natural-language image editing text, not a shell command."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:120:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line closes a plain prompt example block. It has no executable behavior."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:124:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line opens a natural-language prompt example block. It is not a shell command or script."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:128:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line closes a natural-language prompt example block. It has no executable behavior."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:132:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line opens a natural-language prompt example block. It is not command execution."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:135:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line closes a natural-language prompt example block before the limitations section. It is not executable code."
+        "confidence": 0.96,
+        "reason": "The detector matched Markdown backticks or code-fence boundaries, not executable code. The surrounding text is documentation and sample prompt content."
       },
       {
         "id": "external_commands:SKILL.md:159:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
+        "verdict": "false_positive",
         "confidence": 0.88,
-        "reason": "The how-it-works section confirms the skill invokes runcomfy run and the CLI submits, polls, fetches, and downloads outputs. This is intentional external command and network activity.",
-        "severity": "medium"
+        "reason": "This is documentation for the intended RunComfy CLI workflow, with hardcoded command names and JSON input examples. I found no shell interpolation or instruction to execute untrusted user input as a command."
       },
       {
         "id": "external_commands:SKILL.md:163:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.78,
-        "reason": "The security section documents runcomfy login and local token storage. The storage is disclosed and permissioned, but credential-writing CLI behavior remains security-relevant.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "This is documentation for the intended RunComfy CLI workflow, with hardcoded command names and JSON input examples. I found no shell interpolation or instruction to execute untrusted user input as a command."
       },
       {
         "id": "external_commands:SKILL.md:164:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "This line explains that prompt JSON is passed without shell expansion. It describes a mitigation and does not itself introduce command execution."
+        "confidence": 0.88,
+        "reason": "This is documentation for the intended RunComfy CLI workflow, with hardcoded command names and JSON input examples. I found no shell interpolation or instruction to execute untrusted user input as a command."
       },
       {
         "id": "external_commands:SKILL.md:166:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.88,
-        "reason": "This line lists outbound endpoint names in inline code. It is endpoint documentation, not shell execution."
+        "reason": "This is documentation for the intended RunComfy CLI workflow, with hardcoded command names and JSON input examples. I found no shell interpolation or instruction to execute untrusted user input as a command."
       },
       {
         "id": "network:SKILL.md:17:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is homepage metadata for RunComfy. It is a benign reference and not an automatic network request by itself."
+        "confidence": 0.94,
+        "reason": "The URL points to RunComfy documentation, model pages, or project metadata. These links are ordinary references for the advertised third-party service."
       },
       {
         "id": "network:SKILL.md:23:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The URLs are documentation links to RunComfy, a model page, and GitHub. They are visible references, not covert callbacks."
+        "confidence": 0.94,
+        "reason": "The URL points to RunComfy documentation, model pages, or project metadata. These links are ordinary references for the advertised third-party service."
       },
       {
         "id": "network:SKILL.md:70:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The value is an illustrative HTTPS placeholder in sample input. It does not identify a real exfiltration endpoint."
+        "confidence": 0.93,
+        "reason": "The URL is a placeholder image input in an example command, not a hardcoded exfiltration endpoint. The user supplies a public HTTPS image URL for the intended model call."
       },
       {
         "id": "network:SKILL.md:81:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The value is an illustrative HTTPS placeholder in sample input. It does not identify a real exfiltration endpoint."
+        "confidence": 0.93,
+        "reason": "The URL is a placeholder image input in an example command, not a hardcoded exfiltration endpoint. The user supplies a public HTTPS image URL for the intended model call."
       },
       {
         "id": "network:SKILL.md:140:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The URL is a visible model documentation link. It does not trigger automatic data transfer."
+        "confidence": 0.94,
+        "reason": "The URL points to RunComfy documentation, model pages, or project metadata. These links are ordinary references for the advertised third-party service."
       },
       {
         "id": "network:SKILL.md:155:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The URL is a visible troubleshooting documentation link. It is not hidden telemetry or exfiltration behavior."
+        "confidence": 0.94,
+        "reason": "The URL points to RunComfy documentation, model pages, or project metadata. These links are ordinary references for the advertised third-party service."
       },
       {
         "id": "network:SKILL.md:159:hardcoded-url",
-        "verdict": "confirmed",
-        "confidence": 0.91,
-        "reason": "The text states that the CLI POSTs to the RunComfy Model API and downloads generated outputs from RunComfy domains. This is expected remote processing but real outbound network activity.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The RunComfy API endpoint is disclosed as the intended service endpoint for image editing. This is expected network behavior, not covert telemetry or data exfiltration."
       },
       {
         "id": "filesystem:SKILL.md:70:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The detected sequence is the ellipsis in an HTTPS placeholder URL. It is not a filesystem path and cannot traverse local directories."
+        "confidence": 0.98,
+        "reason": "The sequence appears inside a placeholder URL such as https://... and is not a filesystem path. There is no path traversal operation in the skill content."
       },
       {
         "id": "filesystem:SKILL.md:81:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The detected sequence is the ellipsis in an HTTPS placeholder URL. It is not a filesystem path and cannot traverse local directories."
+        "confidence": 0.98,
+        "reason": "The sequence appears inside a placeholder URL such as https://... and is not a filesystem path. There is no path traversal operation in the skill content."
       },
       {
         "id": "filesystem:SKILL.md:163:hidden-file-in-home-directory",
-        "verdict": "confirmed",
-        "confidence": 0.9,
-        "reason": "The skill documents that runcomfy login stores an API token under ~/.config/runcomfy/token.json. Owner-only permissions reduce exposure, but a hidden credential file is still sensitive.",
-        "severity": "high"
+        "verdict": "false_positive",
+        "confidence": 0.86,
+        "reason": "The hidden path documents RunComfy CLI token storage with owner-only permissions and an environment-variable alternative. The skill does not read or exfiltrate this file."
       },
       {
         "id": "filesystem:SKILL.md:163:hidden-file-access",
-        "verdict": "confirmed",
-        "confidence": 0.88,
-        "reason": "The same line documents access to a hidden config path containing an API token. This is expected credential storage, but it is security-relevant filesystem access.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.86,
+        "reason": "The hidden path documents RunComfy CLI token storage with owner-only permissions and an environment-variable alternative. The skill does not read or exfiltrate this file."
       },
       {
         "id": "blocker:SKILL.md:41:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.87,
-        "reason": "The line is a model-routing instruction for explicit user requests. It does not inspect the system, enumerate files, or gather host information."
+        "confidence": 0.95,
+        "reason": "The line is model-routing guidance based on explicit user intent, not system reconnaissance. It does not inspect the host, enumerate files, or collect environment data."
       }
     ],
-    "semantic_findings": [
-      {
-        "title": "Remote Processing of User Images and Prompts",
-        "description": "The skill sends prompts and image references to the RunComfy Model API, and RunComfy servers fetch user-provided media URLs. Users should treat submitted images and prompts as third-party processed data.",
-        "severity": "medium",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 159,
-            "line_end": 159
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 165,
-            "line_end": 165
-          }
-        ],
-        "confidence": 0.92,
-        "confidence_reasoning": "Line 159 explicitly describes POSTing to the RunComfy Model API, and line 165 states that the model server fetches user URLs. This is clear remote data processing, not an inferred behavior."
-      }
-    ],
+    "semantic_findings": [],
     "critical_findings": [],
-    "high_findings": [
-      {
-        "title": "Hidden file in home directory",
-        "description": "- **Token storage**: `runcomfy login` writes the API token to `~/.config/runcomfy/token.json` with m",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 163,
-            "line_end": 163
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "high",
-        "confidence": 0.9,
-        "confidence_reasoning": "The skill documents that runcomfy login stores an API token under ~/.config/runcomfy/token.json. Owner-only permissions reduce exposure, but a hidden credential file is still sensitive."
-      }
-    ],
-    "medium_findings": [
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "`runcomfy run blackforestlabs/flux-1-kontext/pro/edit` through the",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 13,
-            "line_end": 13
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The description states that the skill calls the local RunComfy CLI to run a remote image model. The command is fixed, but it still executes an external program and sends data off host."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "1. **RunComfy CLI** — `npm i -g @runcomfy/cli`",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 45,
-            "line_end": 46
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "The prerequisite instructs installing the RunComfy CLI with npm globally. That is legitimate setup, but it is still an external package-manager command with local system impact."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "2. **RunComfy account** — `runcomfy login` opens a browser device-code flow.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 46,
-            "line_end": 47
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The prerequisite instructs running runcomfy login, which starts an authentication flow and changes local credential state. This is expected but security-relevant external command use."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 66,
-            "line_end": 73
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The fenced bash example invokes runcomfy run with user-provided JSON and an output directory. The command is expected, but it executes a local CLI and sends work to RunComfy."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 77,
-            "line_end": 85
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The fenced bash example shows a second runcomfy run invocation with a seed. It is legitimate model usage, but it is still external command execution."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "The skill invokes `runcomfy run blackforestlabs/flux-1-kontext/pro/edit` with a JSON body matching t",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 159,
-            "line_end": 159
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The how-it-works section confirms the skill invokes runcomfy run and the CLI submits, polls, fetches, and downloads outputs. This is intentional external command and network activity."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "- **Token storage**: `runcomfy login` writes the API token to `~/.config/runcomfy/token.json` with m",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 163,
-            "line_end": 163
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The security section documents runcomfy login and local token storage. The storage is disclosed and permissioned, but credential-writing CLI behavior remains security-relevant."
-      },
-      {
-        "title": "Hidden file access",
-        "description": "- **Token storage**: `runcomfy login` writes the API token to `~/.config/runcomfy/token.json` with m",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 163,
-            "line_end": 163
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The same line documents access to a hidden config path containing an API token. This is expected credential storage, but it is security-relevant filesystem access."
-      },
-      {
-        "title": "Remote Processing of User Images and Prompts",
-        "description": "The skill sends prompts and image references to the RunComfy Model API, and RunComfy servers fetch user-provided media URLs. Users should treat submitted images and prompts as third-party processed data.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 159,
-            "line_end": 159
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 165,
-            "line_end": 165
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "semantic",
-        "source_severity": "medium",
-        "confidence": 0.92,
-        "confidence_reasoning": "Line 159 explicitly describes POSTing to the RunComfy Model API, and line 165 states that the model server fetches user URLs. This is clear remote data processing, not an inferred behavior."
-      }
-    ],
-    "low_findings": [
-      {
-        "title": "Hardcoded URL",
-        "description": "The skill invokes `runcomfy run blackforestlabs/flux-1-kontext/pro/edit` with a JSON body matching t",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 159,
-            "line_end": 159
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.91,
-        "confidence_reasoning": "The text states that the CLI POSTs to the RunComfy Model API and downloads generated outputs from RunComfy domains. This is expected remote processing but real outbound network activity."
-      }
-    ],
+    "high_findings": [],
+    "medium_findings": [],
+    "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 168,
-    "audit_model": "codex",
-    "audited_at": "2026-07-07T23:26:31.069Z",
+    "audit_model": "claude",
+    "audited_at": "2026-07-09T04:05:52.155Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Edit Images with Flux Kontext Pro",
-    "value_statement": "Precise image edits can drift when prompts are vague or the wrong model is used. This skill guides Claude, Codex, and Claude Code through Flux Kontext Pro on RunComfy.",
+    "value_statement": "Precise image edits need clear model routing and focused prompts. This skill helps Claude, Codex, and Claude Code call Flux 1 Kontext Pro through RunComfy with practical prompt patterns.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
-      "Flux Kontext Pro",
+      "Flux Kontext",
+      "Flux 1 Kontext Pro",
       "RunComfy",
-      "AI image editing",
-      "image edit prompt",
-      "Black Forest Labs",
-      "model API",
+      "image editing",
+      "AI image edit",
+      "prompt templates",
       "local image edits"
     ],
     "actual_capabilities": [
-      "Selects Flux Kontext Pro for precise edits on one source image.",
-      "Builds preservation-first prompts for identity, pose, framing, and brand details.",
-      "Shows the RunComfy CLI command shape for model execution.",
-      "Documents supported inputs such as prompt, image URL, aspect ratio, and seed.",
-      "Explains when to route work to sibling image models instead."
+      "Documents the RunComfy endpoint for Flux 1 Kontext Pro image edits.",
+      "Shows the required prompt and image input fields for a single-source edit.",
+      "Provides example RunComfy CLI commands with output directory usage.",
+      "Gives prompt patterns for preservation-led local image changes.",
+      "Explains when to choose related models for batch, text, or generation tasks.",
+      "Lists RunComfy CLI exit codes and troubleshooting references."
     ],
     "limitations": [
-      "It supports one source image per edit request.",
-      "It depends on a RunComfy account, CLI access, and network availability.",
-      "It requires publicly fetchable image URLs for model input.",
-      "Complex multi-step edits may need separate sequential passes."
+      "Supports one source image per edit workflow.",
+      "Requires RunComfy CLI access and a RunComfy account or token.",
+      "Uses public HTTPS image URLs for model input examples.",
+      "Does not replace the latest RunComfy model page for new schema fields."
     ],
     "use_cases": [
       {
-        "title": "Refine Product Visuals",
-        "description": "Change label text, colors, or small props while preserving lighting and product shape.",
-        "target_user": "Brand designer"
+        "title": "Refine a product image",
+        "description": "Change a label, color, or small product detail while preserving lighting and composition.",
+        "target_user": "Ecommerce designer"
       },
       {
-        "title": "Prepare Campaign Variants",
-        "description": "Create controlled variants from one approved image without changing the core composition.",
-        "target_user": "Marketing specialist"
+        "title": "Create a controlled portrait edit",
+        "description": "Add or adjust one visual element while keeping identity, pose, and clothing stable.",
+        "target_user": "Creative producer"
       },
       {
-        "title": "Prototype Visual Changes",
-        "description": "Test a focused edit before committing design time to manual image production.",
-        "target_user": "Product manager"
+        "title": "Choose the right image model",
+        "description": "Route single-image edits to Flux Kontext and redirect batch or text-heavy jobs to better models.",
+        "target_user": "AI workflow builder"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Simple Local Edit",
-        "scenario": "Beginner request for one clear change.",
-        "prompt": "Use Flux Kontext Pro to edit this image. Keep the main subject unchanged. Add [specific object or detail]."
+        "title": "Basic object addition",
+        "scenario": "Beginner single-change image edit",
+        "prompt": "Use Flux Kontext to edit this image. Keep the person, pose, and background unchanged. Add a small orange umbrella in the left hand."
       },
       {
-        "title": "Preserve Brand Details",
-        "scenario": "Intermediate request for a product or brand asset.",
-        "prompt": "Use Flux Kontext Pro. Keep the product shape, lighting, camera angle, and background unchanged. Replace only [old detail] with [new detail]."
+        "title": "Preservation-led product edit",
+        "scenario": "Product asset update",
+        "prompt": "Use Flux Kontext for a product image edit. Keep the bottle shape, lighting, table, and camera angle unchanged. Replace only the label text with AURA."
       },
       {
-        "title": "Create Seeded Variants",
-        "scenario": "Intermediate request for repeatable comparison edits.",
-        "prompt": "Use Flux Kontext Pro with a seed. Keep identity and framing unchanged. Generate a focused variant that changes only [single visual attribute]."
+        "title": "Reproducible variant run",
+        "scenario": "Compare several controlled outputs",
+        "prompt": "Run Flux Kontext with a fixed seed. Keep the source identity and framing unchanged. Change only the jacket color to navy blue."
       },
       {
-        "title": "Plan Sequential Edits",
-        "scenario": "Advanced request with several controlled changes.",
-        "prompt": "Use Flux Kontext Pro in separate passes. First preserve [critical elements] and change [edit one]. Then review before applying [edit two]."
+        "title": "Model-routing decision",
+        "scenario": "Advanced workflow selection",
+        "prompt": "Decide whether this image task should use Flux Kontext, Nano Banana Edit, GPT Image 2 edit, or Flux 2 Klein. Explain the choice, then prepare the best prompt."
       }
     ],
     "output_examples": [
       {
-        "input": "A portrait needs a small prop added while preserving the person and clothing.",
-        "output": "The assistant prepares a preservation-first edit request that adds the prop and keeps face, pose, clothing, and framing unchanged."
+        "input": "A user asks to add an umbrella to a portrait without changing the subject.",
+        "output": "The assistant selects Flux Kontext, writes a preservation-first edit prompt, and prepares a RunComfy CLI invocation with the source image URL."
       },
       {
-        "input": "A product bottle needs brand text changed from ALPHA to AURA.",
-        "output": "The assistant requests a focused label text edit while preserving bottle shape, label style, table, and lighting."
+        "input": "A user wants to change text on a product label while keeping the scene stable.",
+        "output": "The assistant recommends a quoted replacement instruction and keeps the bottle, lighting, table, and camera angle unchanged."
       },
       {
-        "input": "A campaign image needs several changes across the background and outfit.",
-        "output": "The assistant splits the work into sequential passes to reduce drift and review each change."
+        "input": "A user asks to edit twenty images with the same prompt.",
+        "output": "The assistant explains that Flux Kontext is single-image focused and routes the batch job to a more suitable model."
       }
     ],
     "best_practices": [
-      "Use one clear edit instruction per run.",
-      "State the elements that must remain unchanged before the requested change.",
-      "Use a seed when comparing variants or repeating a result."
+      "Lead with what must stay unchanged before describing the edit.",
+      "Use one clear declarative edit instruction per model call.",
+      "Set a seed when comparing repeatable variants."
     ],
     "anti_patterns": [
       "Do not combine many unrelated edits in one prompt.",
-      "Do not use this skill for multi-image reference workflows.",
-      "Do not submit private images unless RunComfy processing is acceptable."
+      "Do not use this model for multi-image batch workflows.",
+      "Do not send private images unless the user accepts RunComfy processing."
     ],
     "faq": [
       {
-        "question": "What model does this skill use?",
-        "answer": "It uses Flux 1 Kontext Pro from Black Forest Labs through the RunComfy Model API."
+        "question": "What does this skill do?",
+        "answer": "It guides an assistant to edit one image with Flux 1 Kontext Pro through the RunComfy CLI."
       },
       {
-        "question": "Does it generate images from scratch?",
-        "answer": "No. It is designed for editing one existing source image."
+        "question": "Does it require an account?",
+        "answer": "Yes. The documented workflow requires RunComfy CLI access and either login or a RUNCOMFY_TOKEN value."
       },
       {
-        "question": "What inputs are required?",
-        "answer": "A text prompt and one publicly fetchable image URL are required."
+        "question": "Can it edit multiple images at once?",
+        "answer": "No. The skill states that Flux Kontext is for single-source image edits and recommends another model for batch work."
       },
       {
-        "question": "Can it edit many images at once?",
-        "answer": "No. The skill recommends another model for multi-image workflows."
+        "question": "What inputs does the model need?",
+        "answer": "The skill documents a prompt and a public HTTPS image URL as required inputs, with optional aspect ratio and seed fields."
       },
       {
-        "question": "Does it need a RunComfy account?",
-        "answer": "Yes. The documented workflow requires the RunComfy CLI and account authentication."
+        "question": "Is the user prompt shell-expanded?",
+        "answer": "The skill states that the prompt is passed as a JSON string to the CLI and transmitted to the Model API."
       },
       {
-        "question": "What should users avoid sending?",
-        "answer": "Users should avoid private or sensitive images unless they accept remote model processing."
+        "question": "When should I choose another model?",
+        "answer": "Choose another model for multi-image batch edits, embedded multilingual text edits, or generation without a source image."
       }
     ]
   },

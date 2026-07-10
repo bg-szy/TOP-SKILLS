@@ -1,20 +1,22 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T19:10:46.638Z",
+    "generated_at": "2026-07-09T05:53:03.353Z",
     "slug": "am-will-openai-docs-skill",
     "source_url": "https://github.com/am-will/codex-skills/tree/main/skills/openai-docs-skill/",
     "source_ref": "main",
-    "model": "codex",
+    "model": "claude",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "dc13e2de3141851576c4b18f2e59d1428ac6ec2ed1cc0bfcc93e3f9c9b283039",
-    "tree_hash": "789e998e5ab9600b92239d2acb7bd980ccdec43a7ed0132924ec9c88b852ee80",
+    "content_hash": "af61fe1851ed54ae7416d966f9cef51dd29dec40b54519ea41aab187dc3f2978",
+    "tree_hash": "652891e0455bd18a7bc320ee8d0fe2f1b584302db7b98c86c6399807325fc825",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "claude-sonnet-4.6",
+      "model_effective": "claude:claude-sonnet-4.6",
       "fallback_chain": [
         {
-          "agent": "codex",
+          "agent": "claude",
+          "model": "claude-sonnet-4.6",
           "outcome": "success"
         }
       ],
@@ -23,10 +25,10 @@
   },
   "skill": {
     "name": "openai-docs-skill",
-    "description": "Query official OpenAI developer documentation through an included shell wrapper for the OpenAI Docs MCP server.",
-    "summary": "Find and fetch current OpenAI documentation from the official Docs MCP server.",
+    "description": "Search and fetch OpenAI developer documentation through the OpenAI Docs MCP server using a curl and jq CLI wrapper.",
+    "summary": "Search official OpenAI docs from Claude, Codex, or Claude Code workflows.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "am-will",
     "license": "MIT",
     "tags": [
@@ -53,16 +55,16 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static command-execution hits are false positives from markdown backticks or safe shell substitutions that build JSON with jq. The only confirmed behavior is intended network access to the OpenAI Docs MCP endpoint, which sends user queries and requested documentation URLs outside the local environment.",
+    "summary": "The static findings are false positives caused by shell command substitution, markdown backticks, documented OpenAI URLs, and /dev/null usage. The wrapper builds JSON with jq using quoted arguments and calls the official documentation MCP endpoint for the stated purpose. No prompt injection, credential access, destructive behavior, or covert data exfiltration intent was found.",
     "remediation": [
       {
-        "issue": "Network requests are required for documentation lookup.",
-        "suggestion": "Document that queries and requested URLs are sent to the configured MCP endpoint, and avoid submitting secrets.",
+        "issue": "The MCP_URL environment variable can redirect documentation requests to another endpoint.",
+        "suggestion": "Document that MCP_URL should only be set to trusted endpoints, or restrict it to approved documentation hosts if this skill is used in managed environments.",
         "severity": "low"
       },
       {
-        "issue": "MCP_URL can redirect requests away from the default endpoint.",
-        "suggestion": "Warn users when MCP_URL is overridden, or restrict overrides to trusted HTTPS endpoints.",
+        "issue": "The shell wrapper depends on external curl and jq commands.",
+        "suggestion": "Keep arguments quoted as they are now, and avoid adding eval, unquoted expansions, or dynamically constructed command names in future changes.",
         "severity": "low"
       }
     ],
@@ -630,383 +632,352 @@
         "id": "external_commands:scripts/openai-docs-mcp.sh:47:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The substitution runs jq or an internal shell function with quoted arguments to build JSON. No user-controlled string is evaluated as a shell command."
+        "reason": "The command substitution captures jq output while all variable data is passed through jq --arg or --argjson, so shell metacharacters are not re-evaluated as commands. This is JSON construction, not unsafe dynamic shell execution."
       },
       {
         "id": "external_commands:scripts/openai-docs-mcp.sh:49:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The substitution runs jq or an internal shell function with quoted arguments to build JSON. No user-controlled string is evaluated as a shell command."
+        "reason": "The command substitution captures jq output while all variable data is passed through jq --arg or --argjson, so shell metacharacters are not re-evaluated as commands. This is JSON construction, not unsafe dynamic shell execution."
       },
       {
         "id": "external_commands:scripts/openai-docs-mcp.sh:58:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The substitution runs jq or an internal shell function with quoted arguments to build JSON. No user-controlled string is evaluated as a shell command."
+        "reason": "The command substitution captures jq output while all variable data is passed through jq --arg or --argjson, so shell metacharacters are not re-evaluated as commands. This is JSON construction, not unsafe dynamic shell execution."
       },
       {
         "id": "external_commands:scripts/openai-docs-mcp.sh:87:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The nested jq invocation uses a static expression and feeds JSON to an internal helper. It does not execute user-controlled shell syntax."
+        "confidence": 0.86,
+        "reason": "The command substitution captures output from local helper functions with fixed tool names or previously JSON-encoded arguments. User-controlled values are quoted before JSON encoding and are not concatenated into executable shell syntax."
       },
       {
         "id": "external_commands:scripts/openai-docs-mcp.sh:92:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The substitution captures the tools/list response from an internal helper with a fixed method name. No user input is executed by the shell."
+        "confidence": 0.86,
+        "reason": "The command substitution captures output from local helper functions with fixed tool names or previously JSON-encoded arguments. User-controlled values are quoted before JSON encoding and are not concatenated into executable shell syntax."
       },
       {
         "id": "external_commands:scripts/openai-docs-mcp.sh:108:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The query, limit, and cursor values are passed to jq as data, and limit is checked as an integer. This builds JSON without shell evaluation of user input."
+        "reason": "The command substitution captures jq output while all variable data is passed through jq --arg or --argjson, so shell metacharacters are not re-evaluated as commands. This is JSON construction, not unsafe dynamic shell execution."
       },
       {
         "id": "external_commands:scripts/openai-docs-mcp.sh:112:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The substitution captures output from a local helper call with fixed tool names and quoted JSON arguments. It is not command injection."
+        "confidence": 0.86,
+        "reason": "The command substitution captures output from local helper functions with fixed tool names or previously JSON-encoded arguments. User-controlled values are quoted before JSON encoding and are not concatenated into executable shell syntax."
       },
       {
         "id": "external_commands:scripts/openai-docs-mcp.sh:123:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The list arguments are converted to JSON with jq, and the optional limit is validated as an integer. No dynamic command string is executed."
+        "reason": "The command substitution captures jq output while all variable data is passed through jq --arg or --argjson, so shell metacharacters are not re-evaluated as commands. This is JSON construction, not unsafe dynamic shell execution."
       },
       {
         "id": "external_commands:scripts/openai-docs-mcp.sh:126:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The substitution captures output from a local helper call with fixed tool names and quoted JSON arguments. It is not command injection."
+        "confidence": 0.86,
+        "reason": "The command substitution captures output from local helper functions with fixed tool names or previously JSON-encoded arguments. User-controlled values are quoted before JSON encoding and are not concatenated into executable shell syntax."
       },
       {
         "id": "external_commands:scripts/openai-docs-mcp.sh:137:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The URL and anchor are passed to jq with --arg, so they are treated as JSON strings. The shell does not evaluate them as commands."
+        "reason": "The command substitution captures jq output while all variable data is passed through jq --arg or --argjson, so shell metacharacters are not re-evaluated as commands. This is JSON construction, not unsafe dynamic shell execution."
       },
       {
         "id": "external_commands:scripts/openai-docs-mcp.sh:139:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The substitution captures output from a local helper call with fixed tool names and quoted JSON arguments. It is not command injection."
+        "confidence": 0.86,
+        "reason": "The command substitution captures output from local helper functions with fixed tool names or previously JSON-encoded arguments. User-controlled values are quoted before JSON encoding and are not concatenated into executable shell syntax."
       },
       {
         "id": "external_commands:scripts/openai-docs-mcp.sh:144:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The nested jq invocation uses a static expression and feeds JSON to an internal helper. It does not execute user-controlled shell syntax."
+        "confidence": 0.86,
+        "reason": "The command substitution captures output from local helper functions with fixed tool names or previously JSON-encoded arguments. User-controlled values are quoted before JSON encoding and are not concatenated into executable shell syntax."
       },
       {
         "id": "external_commands:scripts/openai-docs-mcp.sh:158:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.88,
-        "reason": "The languages value is quoted through printf, split with tr, and parsed by jq as data. It does not create a shell command from user input."
+        "reason": "The pipeline transforms a comma-separated language list into JSON using quoted printf input and jq. It does not execute the language values as commands."
       },
       {
         "id": "external_commands:scripts/openai-docs-mcp.sh:164:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The URL, language array, and boolean flag are passed into jq as typed values. This constructs JSON and does not evaluate user-controlled shell syntax."
+        "reason": "The command substitution captures jq output while all variable data is passed through jq --arg or --argjson, so shell metacharacters are not re-evaluated as commands. This is JSON construction, not unsafe dynamic shell execution."
       },
       {
         "id": "external_commands:scripts/openai-docs-mcp.sh:168:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The substitution captures output from a local helper call with fixed tool names and quoted JSON arguments. It is not command injection."
+        "confidence": 0.86,
+        "reason": "The command substitution captures output from local helper functions with fixed tool names or previously JSON-encoded arguments. User-controlled values are quoted before JSON encoding and are not concatenated into executable shell syntax."
       },
       {
         "id": "network:scripts/openai-docs-mcp.sh:31:http-client-library",
-        "verdict": "confirmed",
-        "confidence": 0.88,
-        "reason": "mcp_request uses curl to POST payloads to the configured MCP endpoint. This is intended, but it sends queries and requested URLs to an external service.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.84,
+        "reason": "The mcp_request function uses curl to call the configured documentation MCP endpoint. Network access is declared by the skill and limited to documentation requests."
       },
       {
         "id": "network:scripts/openai-docs-mcp.sh:4:hardcoded-url",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "This sets the default remote MCP endpoint and allows MCP_URL override. Requests can leave the local environment or be redirected by configuration.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "The URL points to the documented OpenAI MCP documentation endpoint and is the core purpose of the skill. This is expected documentation access, not covert exfiltration."
       },
       {
         "id": "network:scripts/openai-docs-mcp.sh:20:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This line is usage text inside the help message, not executable network logic. The actual outbound behavior is covered by the endpoint and curl findings."
+        "confidence": 0.88,
+        "reason": "The URL points to the documented OpenAI MCP documentation endpoint and is the core purpose of the skill. This is expected documentation access, not covert exfiltration."
       },
       {
         "id": "filesystem:scripts/openai-docs-mcp.sh:25:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This redirects command lookup output to /dev/null while checking dependencies. It does not read, write, or expose sensitive filesystem data."
+        "confidence": 0.93,
+        "reason": "Access to /dev/null is used only to suppress command-existence and jq test output. It does not read or write user files or sensitive data."
       },
       {
         "id": "filesystem:scripts/openai-docs-mcp.sh:64:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This redirects jq error-check output to /dev/null while testing a response field. It does not access local files or persist data."
+        "confidence": 0.93,
+        "reason": "Access to /dev/null is used only to suppress command-existence and jq test output. It does not read or write user files or sensitive data."
       },
       {
         "id": "external_commands:SKILL.md:15:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is Markdown inline code or a fenced command reference, not executable Ruby or shell backtick evaluation. It documents the wrapper usage only."
+        "confidence": 0.92,
+        "reason": "This is markdown documentation for command names or the wrapper path, not Ruby backtick execution. The text does not execute in the skill file itself."
       },
       {
         "id": "external_commands:SKILL.md:16:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is Markdown inline code or a fenced command reference, not executable Ruby or shell backtick evaluation. It documents the wrapper usage only."
+        "confidence": 0.92,
+        "reason": "This is markdown documentation for command names or the wrapper path, not Ruby backtick execution. The text does not execute in the skill file itself."
       },
       {
         "id": "external_commands:SKILL.md:21:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is Markdown inline code or a fenced command reference, not executable Ruby or shell backtick evaluation. It documents the wrapper usage only."
+        "confidence": 0.91,
+        "reason": "This is a fenced shell example in documentation. It demonstrates intended usage and does not create hidden execution behavior by itself."
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is Markdown inline code or a fenced command reference, not executable Ruby or shell backtick evaluation. It documents the wrapper usage only."
+        "confidence": 0.91,
+        "reason": "This is a fenced shell example in documentation. It demonstrates intended usage and does not create hidden execution behavior by itself."
       },
       {
         "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is Markdown inline code or a fenced command reference, not executable Ruby or shell backtick evaluation. It documents the wrapper usage only."
+        "confidence": 0.92,
+        "reason": "This is markdown documentation for command names or the wrapper path, not Ruby backtick execution. The text does not execute in the skill file itself."
       },
       {
         "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is Markdown inline code or a fenced command reference, not executable Ruby or shell backtick evaluation. It documents the wrapper usage only."
+        "confidence": 0.92,
+        "reason": "This is markdown documentation for command names or the wrapper path, not Ruby backtick execution. The text does not execute in the skill file itself."
       },
       {
         "id": "external_commands:SKILL.md:34:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is Markdown inline code or a fenced command reference, not executable Ruby or shell backtick evaluation. It documents the wrapper usage only."
+        "confidence": 0.92,
+        "reason": "This is markdown documentation for command names or the wrapper path, not Ruby backtick execution. The text does not execute in the skill file itself."
       },
       {
         "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is Markdown inline code or a fenced command reference, not executable Ruby or shell backtick evaluation. It documents the wrapper usage only."
+        "confidence": 0.92,
+        "reason": "This is markdown documentation for command names or the wrapper path, not Ruby backtick execution. The text does not execute in the skill file itself."
       },
       {
         "id": "external_commands:SKILL.md:38:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is Markdown inline code or a fenced command reference, not executable Ruby or shell backtick evaluation. It documents the wrapper usage only."
+        "confidence": 0.92,
+        "reason": "This is markdown documentation for command names or the wrapper path, not Ruby backtick execution. The text does not execute in the skill file itself."
       },
       {
         "id": "external_commands:SKILL.md:39:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is Markdown inline code or a fenced command reference, not executable Ruby or shell backtick evaluation. It documents the wrapper usage only."
+        "confidence": 0.92,
+        "reason": "This is markdown documentation for command names or the wrapper path, not Ruby backtick execution. The text does not execute in the skill file itself."
       },
       {
         "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is Markdown inline code or a fenced command reference, not executable Ruby or shell backtick evaluation. It documents the wrapper usage only."
+        "confidence": 0.92,
+        "reason": "This is markdown documentation for command names or the wrapper path, not Ruby backtick execution. The text does not execute in the skill file itself."
       },
       {
         "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is Markdown inline code or a fenced command reference, not executable Ruby or shell backtick evaluation. It documents the wrapper usage only."
+        "confidence": 0.92,
+        "reason": "This is markdown documentation for command names or the wrapper path, not Ruby backtick execution. The text does not execute in the skill file itself."
       },
       {
         "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is Markdown inline code or a fenced command reference, not executable Ruby or shell backtick evaluation. It documents the wrapper usage only."
+        "confidence": 0.92,
+        "reason": "This is markdown documentation for command names or the wrapper path, not Ruby backtick execution. The text does not execute in the skill file itself."
       },
       {
         "id": "external_commands:SKILL.md:43:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is Markdown inline code or a fenced command reference, not executable Ruby or shell backtick evaluation. It documents the wrapper usage only."
+        "confidence": 0.92,
+        "reason": "This is markdown documentation for command names or the wrapper path, not Ruby backtick execution. The text does not execute in the skill file itself."
       },
       {
         "id": "network:SKILL.md:23:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is a Markdown quick-start example pointing to an OpenAI documentation URL. It is not executable network code by itself."
+        "confidence": 0.9,
+        "reason": "The hardcoded URL is an official OpenAI documentation URL used in a visible example. It matches the skill purpose and is not a suspicious third-party endpoint."
       },
       {
         "id": "network:SKILL.md:34:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is prose describing the official MCP endpoint used by the wrapper. The executable network behavior is already covered in the shell script findings."
+        "confidence": 0.9,
+        "reason": "The hardcoded URL is an official OpenAI documentation URL used in a visible example. It matches the skill purpose and is not a suspicious third-party endpoint."
       }
     ],
     "semantic_findings": [],
     "critical_findings": [],
     "high_findings": [],
     "medium_findings": [],
-    "low_findings": [
-      {
-        "title": "HTTP client library",
-        "description": "mcp_request() {",
-        "locations": [
-          {
-            "file": "scripts/openai-docs-mcp.sh",
-            "line_start": 31,
-            "line_end": 31
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.88,
-        "confidence_reasoning": "mcp_request uses curl to POST payloads to the configured MCP endpoint. This is intended, but it sends queries and requested URLs to an external service."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "MCP_URL=\"${MCP_URL:-https://developers.openai.com/mcp}\"",
-        "locations": [
-          {
-            "file": "scripts/openai-docs-mcp.sh",
-            "line_start": 4,
-            "line_end": 4
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "This sets the default remote MCP endpoint and allows MCP_URL override. Requests can leave the local environment or be redirected by configuration."
-      }
-    ],
+    "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 2,
     "total_lines": 224,
-    "audit_model": "codex",
-    "audited_at": "2026-07-07T19:10:46.638Z",
+    "audit_model": "claude",
+    "audited_at": "2026-07-09T05:53:03.353Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Query Official OpenAI Docs",
-    "value_statement": "OpenAI API details change quickly, and memory can become outdated. This skill searches and fetches official documentation through the OpenAI Docs MCP server.",
+    "user_title": "Query OpenAI Docs from Your Agent",
+    "value_statement": "OpenAI platform details change quickly, so memory can become outdated. This skill gives agents a repeatable way to search and fetch official OpenAI documentation.",
     "seo_keywords": [
       "OpenAI documentation",
-      "OpenAI Docs MCP",
       "OpenAI API",
       "Claude",
       "Codex",
       "Claude Code",
+      "MCP server",
+      "developer docs",
       "Responses API",
-      "Realtime API",
       "OpenAI SDK",
-      "OpenAPI schema"
+      "API reference"
     ],
     "actual_capabilities": [
-      "Searches the official OpenAI documentation index by query.",
-      "Fetches selected OpenAI documentation pages or anchors as markdown.",
-      "Lists available documentation pages and API endpoints.",
-      "Retrieves OpenAPI endpoint details and optional language samples.",
-      "Guides assistants to cite the source URL used.",
-      "Runs through a local curl and jq shell wrapper."
+      "Searches the OpenAI developer documentation index with a focused query.",
+      "Fetches a specific OpenAI documentation page or section as markdown.",
+      "Lists available OpenAI documentation pages through the MCP server.",
+      "Lists OpenAPI endpoints exposed by the documentation service.",
+      "Fetches OpenAPI schema details or code examples for an endpoint.",
+      "Formats requests and responses through local curl and jq commands."
     ],
     "limitations": [
-      "Requires curl and jq on the local system.",
-      "Sends queries and requested documentation URLs to the configured MCP endpoint.",
-      "Only covers official OpenAI documentation sources exposed by the MCP server.",
-      "Does not replace security, billing, or account-specific review."
+      "Requires curl, jq, shell access, and network access to the MCP endpoint.",
+      "Only covers documentation exposed by the OpenAI Docs MCP server.",
+      "Does not authenticate to private OpenAI accounts or inspect user projects.",
+      "Returned documentation can change when OpenAI updates the source pages."
     ],
     "use_cases": [
       {
-        "title": "Build With Current APIs",
-        "description": "Developers can check current OpenAI API parameters before implementing features.",
-        "target_user": "Application developers"
+        "title": "Check current API behavior",
+        "description": "Verify current OpenAI endpoint parameters before changing application code.",
+        "target_user": "Backend developer"
       },
       {
-        "title": "Update Migration Notes",
-        "description": "Technical writers can verify migration guidance and cite official OpenAI pages.",
-        "target_user": "Technical writers"
+        "title": "Plan an API migration",
+        "description": "Find official migration guidance when moving from older endpoints to newer OpenAI APIs.",
+        "target_user": "Technical lead"
       },
       {
-        "title": "Ground AI Answers",
-        "description": "AI assistant operators can require official sources before answering OpenAI platform questions.",
-        "target_user": "AI assistant operators"
+        "title": "Answer documentation questions",
+        "description": "Ground support answers in official OpenAI documentation and include the source page used.",
+        "target_user": "Developer advocate"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Search A Topic",
+        "title": "Find a documentation page",
         "scenario": "Beginner lookup",
-        "prompt": "Use the OpenAI docs skill to search for Responses API basics. Fetch the best official page and cite the URL."
+        "prompt": "Use the OpenAI docs skill to find the official page for the Responses API. Summarize the most relevant page and include the source URL."
       },
       {
-        "title": "Check SDK Guidance",
-        "scenario": "Implementation detail",
-        "prompt": "Search official OpenAI docs for current Python and JavaScript SDK guidance on streaming responses. Summarize the relevant differences."
+        "title": "Verify a parameter",
+        "scenario": "Implementation support",
+        "prompt": "Search the OpenAI docs for the current parameter rules for response generation. Explain the supported options and cite the documentation page."
       },
       {
-        "title": "Plan A Migration",
-        "scenario": "Migration research",
-        "prompt": "Find official guidance for moving from Chat Completions to the Responses API. Fetch the key page and list migration considerations."
+        "title": "Compare migration paths",
+        "scenario": "API migration planning",
+        "prompt": "Use the OpenAI docs skill to research migration guidance from Chat Completions to the Responses API. List the main code changes and risks."
       },
       {
-        "title": "Inspect Endpoint Details",
-        "scenario": "Advanced API review",
-        "prompt": "Use the endpoints and openapi commands to inspect the current Responses endpoint. Explain important parameters and supported examples without raw schema dumps."
+        "title": "Fetch endpoint schema details",
+        "scenario": "Advanced API reference work",
+        "prompt": "Use the OpenAI docs skill to inspect the OpenAPI information for a target endpoint. Summarize request fields, response fields, and code sample availability."
       }
     ],
     "output_examples": [
       {
-        "input": "Find the official docs for Realtime API session setup.",
-        "output": "The response identifies the Realtime guide, summarizes session creation and connection flow, and includes the official OpenAI source URL."
+        "input": "Find official guidance for migrating to the Responses API.",
+        "output": "The skill returns the relevant migration page, summarizes the main migration steps, and includes the OpenAI documentation URL used."
       },
       {
-        "input": "Compare current migration guidance for Chat Completions and Responses.",
+        "input": "Check whether an endpoint has Python examples.",
+        "output": "The skill reports whether examples are available, names the relevant endpoint documentation, and notes any language filters applied."
+      },
+      {
+        "input": "List documentation pages related to realtime audio.",
         "output": [
-          "Shows the recommended migration path.",
-          "Calls out changed request and response concepts.",
-          "Links to the official migration page."
+          "A short list of matching documentation pages.",
+          "A recommendation for the best page to fetch first.",
+          "The source URLs for follow-up reading."
         ]
       }
     ],
     "best_practices": [
-      "Search first, then fetch the most relevant official page before answering.",
-      "Include the source URL whenever using the skill output.",
-      "Use focused queries that match the OpenAI product or endpoint."
+      "Start with a narrow search query, then fetch the most relevant page.",
+      "Include the documentation URL in answers so users can verify the source.",
+      "Use endpoint lookup when implementation details require exact schema fields."
     ],
     "anti_patterns": [
-      "Do not answer OpenAI API questions from memory when current docs matter.",
-      "Do not send secrets, private prompts, or customer data as search text.",
-      "Do not treat MCP output as authorization to change production systems."
+      "Do not rely on memory when current OpenAI API behavior matters.",
+      "Do not treat search result titles as enough evidence without fetching the page.",
+      "Do not use this skill for non-OpenAI providers or private account data."
     ],
     "faq": [
       {
-        "question": "Does this skill contact the internet?",
-        "answer": "Yes. The shell wrapper posts requests to the configured OpenAI Docs MCP endpoint."
+        "question": "Does this skill call OpenAI APIs directly?",
+        "answer": "No. It queries the OpenAI developer documentation MCP server for documentation content and endpoint reference material."
       },
       {
-        "question": "Which tools must be installed?",
-        "answer": "The wrapper requires curl and jq on the local system."
+        "question": "Which tools can use this skill?",
+        "answer": "The report lists support for Claude, Codex, and Claude Code."
       },
       {
-        "question": "Can it fetch any website?",
-        "answer": "It is designed for OpenAI documentation URLs served through the Docs MCP tools."
+        "question": "What local tools are required?",
+        "answer": "The CLI wrapper requires a shell with curl and jq installed."
       },
       {
-        "question": "Does it provide official citations?",
-        "answer": "The skill instructs assistants to include the source URL used for each answer."
+        "question": "Can the MCP endpoint be changed?",
+        "answer": "Yes. The script supports an MCP_URL environment variable for overriding the default endpoint."
       },
       {
-        "question": "Can Claude Code use it?",
-        "answer": "Yes. The metadata lists Claude, Codex, and Claude Code as supported tools."
+        "question": "Does it provide citations?",
+        "answer": "The skill instructs agents to include the documentation URL used in their response."
       },
       {
-        "question": "Is it safe to include secrets in queries?",
-        "answer": "No. Search terms and requested URLs may be sent to the configured MCP endpoint."
+        "question": "Can it fetch code examples?",
+        "answer": "Yes. The openapi command can request endpoint schema information and code examples when the documentation service provides them."
       }
     ]
   },

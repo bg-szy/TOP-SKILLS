@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T07:28:36.715Z",
+    "generated_at": "2026-07-09T16:19:59.676Z",
     "slug": "davila7-hypothesis-generation",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/scientific/hypothesis-generation",
     "source_ref": "main",
@@ -23,18 +23,18 @@
   },
   "skill": {
     "name": "hypothesis-generation",
-    "description": "Generate evidence-based scientific hypotheses from observations, literature context, and research questions. Design tests, predictions, comparisons, and structured reports.",
-    "summary": "Build testable scientific hypotheses with predictions, experimental designs, and structured reporting.",
+    "description": "Helps researchers generate evidence-based, testable hypotheses, compare competing explanations, design experiments, and produce structured LaTeX reports.",
+    "summary": "Generate evidence-based hypotheses with predictions, experiments, quality checks, and report structure.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
     "license": "MIT",
     "tags": [
       "hypothesis-generation",
-      "scientific-research",
       "experimental-design",
       "literature-review",
-      "latex-reporting"
+      "scientific-research",
+      "latex-reports"
     ],
     "supported_tools": [
       "claude",
@@ -48,25 +48,25 @@
     "category": "research"
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "medium",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static findings are false positives caused by markdown code fences, LaTeX macros, local file references, and public PubMed search examples. Two findings are confirmed as medium-risk external command guidance because the skill asks users to run a schematic-generation Python command and LaTeX compilation commands.",
+    "summary": "Most static findings are false positives caused by Markdown backticks, LaTeX commands, research guidance, or PubMed search examples. Confirmed risks are limited to explicit Bash workflows for schematic generation and LaTeX compilation, plus a medium-confidence concern about an unbundled external schematic dependency.",
     "remediation": [
       {
-        "issue": "Schematic generation uses a Bash command that invokes an external Python script.",
-        "suggestion": "Make schematic generation optional, document the required script source, and avoid passing unsanitized user text to shell commands.",
+        "issue": "External command execution is part of the documented workflow.",
+        "suggestion": "Require explicit user confirmation before running python, xelatex, or bibtex commands, and explain what files they read or write.",
         "severity": "medium"
       },
       {
-        "issue": "Report compilation requires xelatex and bibtex external commands.",
-        "suggestion": "Warn users before compiling untrusted LaTeX and recommend sandboxed compilation with shell escape disabled.",
+        "issue": "The mandatory schematic workflow references an external skill and a missing script.",
+        "suggestion": "Bundle the script, remove the mandatory requirement, or clearly document the separate dependency and its trust boundary.",
         "severity": "medium"
       },
       {
-        "issue": "Literature search guidance may send sensitive research terms to public services.",
-        "suggestion": "Tell users to remove confidential, proprietary, or personally identifiable details before using PubMed or web search queries.",
+        "issue": "Literature searches may disclose sensitive research terms to external services.",
+        "suggestion": "Add a privacy note and ask users before using WebFetch, WebSearch, or PubMed URLs for confidential topics.",
         "severity": "low"
       }
     ],
@@ -659,246 +659,282 @@
         "id": "blocker:assets/FORMATTING_GUIDE.md:554:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.98,
-        "reason": "The line is writing guidance that says to avoid vague words. It does not request host, account, network, or environment reconnaissance."
+        "reason": "The line is style guidance telling writers to avoid vague words. It does not request host details, system inspection, or reconnaissance."
       },
       {
         "id": "blocker:references/experimental_design_patterns.md:56:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.98,
-        "reason": "The line discusses early time points in a time-course study design. It is scientific methodology content, not system reconnaissance."
+        "reason": "The line describes early measurement points in a time-course study. It has no relation to enumerating system state or environment details."
       },
       {
         "id": "blocker:references/experimental_design_patterns.md:231:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.98,
-        "reason": "The line describes historical controls in experimental design. It does not ask the agent to inspect system state or collect environment details."
+        "reason": "The line explains historical controls in experimental design. It is scientific methodology guidance, not system reconnaissance."
       },
       {
         "id": "blocker:references/hypothesis_quality_criteria.md:55:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.98,
-        "reason": "The line asks whether a hypothesis avoids unnecessary assumptions. It is a hypothesis quality criterion, not a host reconnaissance instruction."
+        "reason": "The line asks whether a hypothesis avoids unnecessary assumptions. It is a research quality criterion, not a request to inspect the host system."
       },
       {
         "id": "network:references/literature_search_strategies.md:104:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "This is a public PubMed search-template URL with placeholders for scientific search terms. It does not transmit secrets or direct data to an unknown endpoint."
+        "reason": "The URL is a PubMed search template with placeholders for a literature query. It is not an exfiltration endpoint or hidden network call."
       },
       {
         "id": "network:references/literature_search_strategies.md:109:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "This is a public PubMed query example for causal relationship searches. It is documentation content and contains no credential or telemetry exfiltration behavior."
+        "reason": "The URL is a PubMed search example for causal literature searches. It uses placeholders and does not send secrets or contact an untrusted service."
       },
       {
         "id": "network:references/literature_search_strategies.md:114:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "This is a public PubMed query example for biomarker searches. The URL is instructional and does not create hidden network access."
+        "reason": "The URL is a PubMed search example for biomarkers and associations. It is documentation for user-directed research, not covert network behavior."
       },
       {
         "id": "network:references/literature_search_strategies.md:119:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "This is a public PubMed query example for treatment-effectiveness searches. It is a user-visible research link, not covert network behavior."
+        "reason": "The URL is a PubMed search example for treatment effectiveness. It is transparent literature-search guidance and not malicious networking."
       },
       {
         "id": "blocker:references/literature_search_strategies.md:450:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line is a markdown heading for common literature search pitfalls. It has no instruction to enumerate files, system details, users, or network configuration."
+        "reason": "The line is a section heading for common search pitfalls. It does not instruct the agent to discover system information."
       },
       {
         "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "reason": "The bash example invokes python scripts/generate_schematic.py with user-provided diagram text and writes an output file. This is explicit local command execution and depends on an external script that is not visible in the audited file tree.",
+        "confidence": 0.86,
+        "reason": "The fenced bash example instructs the agent to run a Python script through the shell. This is real external command execution and should require user approval, especially because the script is not bundled here.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:39:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The flagged text is the closing fence of a markdown bash example. The command content is addressed separately, and this line itself is not execution logic."
+        "verdict": "confirmed",
+        "confidence": 0.78,
+        "reason": "This finding falls within the same bash block that runs scripts/generate_schematic.py. The command appears legitimate, but it is still shell execution from skill instructions.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:92:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line references a local markdown guide using inline backticks. It is a file-reference convention in documentation, not shell execution."
+        "confidence": 0.93,
+        "reason": "The backticked text is a relative reference file path. It is not a shell command and contains no executable instruction."
       },
       {
         "id": "external_commands:SKILL.md:122:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line references a local hypothesis quality guide. Inline backticks identify a filename and do not execute a command."
+        "confidence": 0.93,
+        "reason": "The backticked text is a Markdown file reference used for hypothesis criteria. It is not command execution."
       },
       {
         "id": "external_commands:SKILL.md:136:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line references a local experimental design guide. This is documentation navigation, not dynamic command execution."
+        "confidence": 0.93,
+        "reason": "The backticked text is a Markdown reference file used for design guidance. It does not execute or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:163:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.92,
-        "reason": "The line references a LaTeX template file using inline backticks. It describes report generation and does not run a shell command."
+        "reason": "The backticked path names a bundled LaTeX template. Referencing a local asset is not shell execution."
       },
       {
         "id": "external_commands:SKILL.md:170:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged token is a LaTeX page-break macro inside documentation. It is not a shell, Ruby, or process execution construct."
+        "confidence": 0.95,
+        "reason": "The backticked text is the LaTeX page-break command \\newpage. It affects document formatting and is not a host command."
       },
       {
         "id": "external_commands:SKILL.md:178:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line mentions the LaTeX \\newpage macro for formatting. It has no command execution semantics outside LaTeX document text."
+        "confidence": 0.95,
+        "reason": "The backticked text is the LaTeX page-break command \\newpage. It is document syntax, not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:190:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line names a LaTeX style file with inline backticks. This is a document asset reference, not command execution."
+        "confidence": 0.93,
+        "reason": "The backticked text names the bundled LaTeX style file. It is a file reference, not an executable command."
       },
       {
         "id": "external_commands:SKILL.md:192:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line lists LaTeX custom box environment names. These identifiers are formatting constructs, not shell commands."
+        "confidence": 0.95,
+        "reason": "The backticked terms name LaTeX box environments. They are document macros, not shell commands."
       },
       {
         "id": "external_commands:SKILL.md:193:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line lists a LaTeX box environment for predictions. It does not invoke an interpreter or operating system command."
+        "confidence": 0.95,
+        "reason": "The backticked term names a LaTeX box environment for predictions. It is not executable host code."
       },
       {
         "id": "external_commands:SKILL.md:194:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line lists a LaTeX box environment for comparisons. It is formatting documentation, not executable code."
+        "confidence": 0.95,
+        "reason": "The backticked term names a LaTeX box environment for comparisons. It is document syntax, not command execution."
       },
       {
         "id": "external_commands:SKILL.md:195:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line lists a LaTeX box environment for evidence highlights. The inline backticks are markdown formatting only."
+        "confidence": 0.95,
+        "reason": "The backticked term names a LaTeX box environment for evidence. It does not run a shell command."
       },
       {
         "id": "external_commands:SKILL.md:196:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line lists a LaTeX box environment for summaries. It does not contain a shell command or code execution primitive."
+        "confidence": 0.95,
+        "reason": "The backticked term names a LaTeX box environment for summaries. It is safe document syntax."
       },
       {
         "id": "external_commands:SKILL.md:206:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line mentions a LaTeX page-break macro. It is a formatting instruction within generated documents, not external process execution."
+        "confidence": 0.95,
+        "reason": "The backticked text is the LaTeX page-break command \\newpage. It is formatting guidance, not external command execution."
       },
       {
         "id": "external_commands:SKILL.md:218:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line shows a LaTeX citation command for bibliography formatting. It is document syntax, not a shell command."
+        "confidence": 0.95,
+        "reason": "The backticked text is a citation macro used inside LaTeX documents. It is not a Ruby or shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:224:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The bash block instructs users to run xelatex and bibtex on generated report files. This is legitimate report compilation, but it still executes local tooling against generated content and should be treated as an external-command risk.",
+        "confidence": 0.82,
+        "reason": "The fenced bash block instructs users or agents to run xelatex and bibtex locally. That is legitimate report compilation, but it is still external command execution on generated files.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:229:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The flagged text is the closing fence of the LaTeX compilation command block. The actual compiler commands are covered by the separate line 224 finding."
+        "verdict": "confirmed",
+        "confidence": 0.76,
+        "reason": "This finding closes the same bash block containing xelatex and bibtex commands. The context confirms a real external-command workflow even though the closing fence itself is harmless.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:231:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line names a LaTeX style package and required LaTeX packages. Inline backticks mark filenames and package names, not execution."
+        "confidence": 0.92,
+        "reason": "The backticked text names a required style package. It is a dependency note and does not invoke a command."
       },
       {
         "id": "external_commands:SKILL.md:239:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line mentions the LaTeX \\newpage macro as formatting guidance. It is not an operating system command."
+        "confidence": 0.95,
+        "reason": "The backticked text is the LaTeX page-break command \\newpage. It is document formatting syntax."
       },
       {
         "id": "external_commands:SKILL.md:240:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.95,
-        "reason": "The line opens a markdown block labeled latex. It introduces document syntax and does not execute code by itself."
+        "reason": "The fenced block is marked as LaTeX and shows document markup. It contains no shell command."
       },
       {
         "id": "external_commands:SKILL.md:245:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.95,
-        "reason": "The line closes a markdown LaTeX example. It is not an external command or interpreter invocation."
+        "reason": "This is the closing fence for a LaTeX example. The surrounding content is document markup, not executable shell code."
       },
       {
         "id": "external_commands:SKILL.md:258:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The line gives page layout advice for generated reports. It contains no command, shell metacharacter, or dynamic execution behavior."
+        "confidence": 0.95,
+        "reason": "The backticked text is the LaTeX page-break command \\newpage. It is not a command sent to the operating system."
       },
       {
         "id": "external_commands:SKILL.md:260:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line mentions using a LaTeX page-break macro between appendix sections. This is document formatting guidance, not command execution."
+        "confidence": 0.95,
+        "reason": "The backticked text is the LaTeX page-break command \\newpage. It only affects generated document layout."
       },
       {
         "id": "external_commands:SKILL.md:262:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line references a local formatting guide file. It is a documentation link using markdown inline code, not execution."
+        "confidence": 0.93,
+        "reason": "The backticked text is a relative documentation path. It is not executable code or command interpolation."
       },
       {
         "id": "external_commands:SKILL.md:278:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line lists a local markdown reference file. Inline backticks identify the filename and do not run code."
+        "confidence": 0.93,
+        "reason": "The backticked text is a bundled reference file name. It is not a command invocation."
       },
       {
         "id": "external_commands:SKILL.md:279:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line lists a local experimental design reference file. It is part of the resource index, not an executable instruction."
+        "confidence": 0.93,
+        "reason": "The backticked text is a bundled reference file name. It provides documentation context, not shell execution."
       },
       {
         "id": "external_commands:SKILL.md:280:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line lists a local literature-search reference file. It is a resource pointer and not a shell command."
+        "confidence": 0.93,
+        "reason": "The backticked text is a bundled reference file name for search guidance. It is not executable."
       },
       {
         "id": "external_commands:SKILL.md:284:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line lists a local LaTeX style asset. It does not instruct the agent to execute that file as code."
+        "confidence": 0.92,
+        "reason": "The backticked text is a bundled LaTeX style file name. It is a document asset reference, not a shell command."
       },
       {
         "id": "external_commands:SKILL.md:285:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line lists a local LaTeX report template. It is a document asset reference, not command execution."
+        "confidence": 0.92,
+        "reason": "The backticked text is a bundled LaTeX template file name. It is not an external command."
       },
       {
         "id": "blocker:SKILL.md:260:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.98,
-        "reason": "The line is appendix page-management guidance for LaTeX reports. It does not ask for system details or environmental probing."
+        "reason": "The line recommends page breaks between appendix sections to avoid overflow. It is document formatting guidance, not reconnaissance."
       }
     ],
-    "semantic_findings": [],
+    "semantic_findings": [
+      {
+        "title": "Unbundled External Skill Dependency",
+        "description": "The skill makes figure generation mandatory through scientific-schematics and a scripts/generate_schematic.py command. That script is not present in the package, so agents may rely on unreviewed external code.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 25,
+            "line_end": 39
+          }
+        ],
+        "confidence": 0.84,
+        "confidence_reasoning": "SKILL.md explicitly marks schematic generation as mandatory and shows a Python script command. The file tree contains no scripts directory, which supports the dependency concern."
+      },
+      {
+        "title": "External Literature Search Privacy Exposure",
+        "description": "The workflow directs WebFetch and WebSearch use for literature discovery. Sensitive research topics or unpublished observations may be sent to external services during searches.",
+        "severity": "low",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 74,
+            "line_end": 84
+          },
+          {
+            "file": "references/literature_search_strategies.md",
+            "line_start": 100,
+            "line_end": 119
+          }
+        ],
+        "confidence": 0.76,
+        "confidence_reasoning": "The instructions explicitly recommend WebFetch, WebSearch, and PubMed search URLs. No malicious exfiltration is evident, but the privacy exposure is inherent in the workflow."
+      }
+    ],
     "critical_findings": [],
     "high_findings": [],
     "medium_findings": [
@@ -915,8 +951,24 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The bash example invokes python scripts/generate_schematic.py with user-provided diagram text and writes an output file. This is explicit local command execution and depends on an external script that is not visible in the audited file tree."
+        "confidence": 0.86,
+        "confidence_reasoning": "The fenced bash example instructs the agent to run a Python script through the shell. This is real external command execution and should require user approval, especially because the script is not bundled here."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 39,
+            "line_end": 92
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.78,
+        "confidence_reasoning": "This finding falls within the same bash block that runs scripts/generate_schematic.py. The command appears legitimate, but it is still shell execution from skill instructions."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -931,22 +983,76 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
+        "confidence": 0.82,
+        "confidence_reasoning": "The fenced bash block instructs users or agents to run xelatex and bibtex locally. That is legitimate report compilation, but it is still external command execution on generated files."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 229,
+            "line_end": 231
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
         "confidence": 0.76,
-        "confidence_reasoning": "The bash block instructs users to run xelatex and bibtex on generated report files. This is legitimate report compilation, but it still executes local tooling against generated content and should be treated as an external-command risk."
+        "confidence_reasoning": "This finding closes the same bash block containing xelatex and bibtex commands. The context confirms a real external-command workflow even though the closing fence itself is harmless."
+      },
+      {
+        "title": "Unbundled External Skill Dependency",
+        "description": "The skill makes figure generation mandatory through scientific-schematics and a scripts/generate_schematic.py command. That script is not present in the package, so agents may rely on unreviewed external code.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 25,
+            "line_end": 39
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.84,
+        "confidence_reasoning": "SKILL.md explicitly marks schematic generation as mandatory and shows a Python script command. The file tree contains no scripts directory, which supports the dependency concern."
       }
     ],
-    "low_findings": [],
+    "low_findings": [
+      {
+        "title": "External Literature Search Privacy Exposure",
+        "description": "The workflow directs WebFetch and WebSearch use for literature discovery. Sensitive research topics or unpublished observations may be sent to external services during searches.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 74,
+            "line_end": 84
+          },
+          {
+            "file": "references/literature_search_strategies.md",
+            "line_start": 100,
+            "line_end": 119
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "low",
+        "confidence": 0.76,
+        "confidence_reasoning": "The instructions explicitly recommend WebFetch, WebSearch, and PubMed search URLs. No malicious exfiltration is evident, but the privacy exposure is inherent in the workflow."
+      }
+    ],
     "dangerous_patterns": [],
     "files_scanned": 7,
     "total_lines": 2906,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T07:28:36.715Z",
+    "audited_at": "2026-07-09T16:19:59.676Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Generate Testable Scientific Hypotheses",
-    "value_statement": "Scientific ideas often fail when mechanisms, predictions, and tests are vague. This skill structures literature review, competing hypotheses, predictions, and experiment plans.",
+    "value_statement": "Researchers need rigorous hypotheses, predictions, and experiments from limited observations. This skill structures literature search, competing explanations, quality checks, and LaTeX-style reports for Claude, Codex, and Claude Code.",
     "seo_keywords": [
       "Claude",
       "Codex",
@@ -956,117 +1062,110 @@
       "experimental design",
       "literature review",
       "testable predictions",
-      "research planning",
-      "LaTeX report"
+      "LaTeX reports",
+      "research planning"
     ],
     "actual_capabilities": [
-      "Turns observations or research questions into 3-5 competing scientific hypotheses.",
-      "Evaluates hypotheses against testability, falsifiability, parsimony, and explanatory power.",
-      "Suggests experimental designs, controls, measurements, and confound checks.",
-      "Creates predictions that help distinguish competing explanations.",
-      "Organizes findings into a concise report structure with appendices and citation guidance."
+      "Turns observations or research questions into three to five competing scientific hypotheses.",
+      "Guides PubMed and general literature searches to ground hypotheses in existing evidence.",
+      "Evaluates hypotheses for testability, falsifiability, parsimony, explanatory power, scope, consistency, and novelty.",
+      "Proposes experiments, controls, measurements, confounds, and study designs for each viable hypothesis.",
+      "Formats outputs as concise main text with appendices using bundled LaTeX templates and style guidance.",
+      "Defines testable predictions that distinguish competing mechanisms."
     ],
     "limitations": [
-      "Does not prove that a hypothesis is true without expert review and empirical testing.",
-      "Requires clear user input about observations, constraints, domain, and acceptable methods.",
-      "Current citations may require external literature search tools.",
-      "Figure generation and LaTeX compilation depend on local tools that may not be installed."
+      "It does not validate scientific truth or replace expert peer review.",
+      "It depends on current literature access for strong evidence synthesis.",
+      "Its schematic generation workflow references a separate skill and script not included in this package.",
+      "LaTeX compilation requires local XeLaTeX, BibTeX, and required packages."
     ],
     "use_cases": [
       {
         "title": "Plan a Thesis Study",
-        "description": "Turn an early research question into competing hypotheses, measurable predictions, and a feasible study plan.",
-        "target_user": "Graduate researchers"
+        "description": "Convert an early research observation into competing mechanisms, predictions, and initial experiments.",
+        "target_user": "Graduate student"
       },
       {
-        "title": "Compare Mechanistic Explanations",
-        "description": "Organize evidence for several mechanisms and identify experiments that can separate them.",
-        "target_user": "Laboratory scientists"
+        "title": "Shape a Grant Proposal",
+        "description": "Build evidence-based hypotheses, define key controls, and identify decisive experiments for a proposal.",
+        "target_user": "Principal investigator"
       },
       {
-        "title": "Prepare Grant Concepts",
-        "description": "Build a structured concept note with hypotheses, evidence gaps, predictions, and proposed tests.",
-        "target_user": "Research teams"
+        "title": "Explore Product Research Signals",
+        "description": "Turn experimental results into plausible causal explanations and practical next tests.",
+        "target_user": "Applied research team"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Start From an Observation",
-        "scenario": "Beginner prompt for turning one observation into initial hypotheses.",
-        "prompt": "Generate three testable scientific hypotheses for this observation: [observation]. Include a short mechanism and one prediction for each hypothesis."
+        "title": "Start from an Observation",
+        "scenario": "Beginner hypothesis generation from a single phenomenon.",
+        "prompt": "Generate three testable hypotheses for this observation: [observation]. Include a short mechanism, key prediction, and one experiment for each."
       },
       {
-        "title": "Evaluate Competing Hypotheses",
-        "scenario": "Intermediate prompt for ranking existing hypotheses.",
-        "prompt": "Evaluate these hypotheses for [phenomenon]: [hypotheses]. Score testability, falsifiability, parsimony, explanatory power, and key weaknesses."
+        "title": "Compare Competing Explanations",
+        "scenario": "Intermediate evaluation of several possible mechanisms.",
+        "prompt": "Compare these hypotheses for [phenomenon]: [hypotheses]. Evaluate testability, falsifiability, parsimony, evidence, and decisive predictions."
       },
       {
-        "title": "Design Discriminating Experiments",
-        "scenario": "Advanced prompt for research planning.",
-        "prompt": "Design experiments that distinguish these competing hypotheses: [hypotheses]. Include measurements, controls, expected outcomes, confounds, and feasibility notes."
+        "title": "Design Experiments",
+        "scenario": "Advanced planning for experimental validation.",
+        "prompt": "Design experiments to test this hypothesis: [hypothesis]. Include controls, measurements, sample considerations, confounds, and expected outcomes."
       },
       {
-        "title": "Create a Full Hypothesis Report",
-        "scenario": "Expert prompt for a complete research deliverable.",
-        "prompt": "Create a structured hypothesis report for [research question]. Include literature context, 3-5 hypotheses, predictions, critical comparisons, experiments, and appendix guidance."
+        "title": "Build a Full Hypothesis Report",
+        "scenario": "Advanced end-to-end research report generation.",
+        "prompt": "Create a structured hypothesis report for [research question]. Include literature synthesis, competing hypotheses, predictions, experimental designs, limitations, and appendices."
       }
     ],
     "output_examples": [
       {
-        "input": "Observation: a treatment improves symptoms only in patients with high baseline inflammation.",
-        "output": [
-          "Hypothesis 1: The treatment acts through an inflammation-dependent pathway.",
-          "Prediction: Patients with low baseline inflammation show a smaller response.",
-          "Test: Stratify participants by inflammatory markers and compare treatment effects."
-        ]
+        "input": "Observation: A biomarker rises before symptoms appear in a disease cohort.",
+        "output": "A report with competing causal, compensatory, and correlated-marker hypotheses, each paired with predictions and validation studies."
       },
       {
-        "input": "Research question: why does a material become brittle after repeated heat cycles?",
-        "output": [
-          "Competing explanations include microcrack accumulation, phase transition, and impurity migration.",
-          "A useful test compares microscopy, diffraction, and mechanical testing after controlled cycle counts.",
-          "The strongest hypothesis should predict both timing and location of observed structural changes."
-        ]
+        "input": "Question: Why does an intervention help one subgroup but not another?",
+        "output": "A ranked set of mechanistic explanations, subgroup-specific predictions, required controls, and experiments to separate biology from measurement bias."
       },
       {
-        "input": "Grant concept: identify mechanisms behind a crop stress-resistance trait.",
-        "output": "The skill can produce a report outline with candidate mechanisms, discriminating predictions, field and lab tests, controls, and evidence gaps."
+        "input": "Need: Convert a literature gap into a proposal-ready research plan.",
+        "output": "A concise hypothesis framework with evidence summary, experimental design options, risks, and appendix-ready supporting details."
       }
     ],
     "best_practices": [
-      "Provide the observation, domain, known constraints, and any preliminary evidence before asking for hypotheses.",
-      "Ask for competing explanations before selecting a favored hypothesis.",
-      "Review proposed experiments with a domain expert before using them in real studies."
+      "Provide the observation, domain, known constraints, and any preliminary data before asking for hypotheses.",
+      "Ask for competing hypotheses, not only the most likely explanation.",
+      "Review generated citations, mechanisms, and experiments with a qualified domain expert."
     ],
     "anti_patterns": [
-      "Do not ask for one preferred answer before exploring alternative explanations.",
-      "Do not treat generated citations or mechanisms as verified without checking sources.",
-      "Do not use confidential research data in public literature search queries."
+      "Do not treat generated hypotheses as proven facts.",
+      "Do not skip falsifying predictions or negative controls.",
+      "Do not run external commands or web searches without checking privacy and local execution risks."
     ],
     "faq": [
       {
         "question": "What does this skill generate?",
-        "answer": "It generates competing hypotheses, mechanisms, predictions, experimental tests, quality assessments, and structured report guidance."
+        "answer": "It generates competing hypotheses, predictions, quality checks, experimental designs, and structured report guidance."
       },
       {
-        "question": "Can it replace a scientist or reviewer?",
-        "answer": "No. It supports research planning, but expert review and empirical evidence remain required."
+        "question": "Can it search the literature?",
+        "answer": "It guides PubMed and web search strategies when the host tool allows web access."
       },
       {
-        "question": "Does it perform live literature searches automatically?",
-        "answer": "It provides search strategies and may use available search tools when the environment supports them."
+        "question": "Does it prove a hypothesis is correct?",
+        "answer": "No. It helps design testable ideas, but evidence and expert review remain required."
       },
       {
-        "question": "Which domains can use it?",
-        "answer": "It is written for broad scientific use, including biomedical, laboratory, field, computational, and interdisciplinary research."
+        "question": "What outputs can I expect?",
+        "answer": "You can expect concise main findings, detailed appendices, predictions, experimental tests, and LaTeX-oriented formatting."
       },
       {
-        "question": "What input should I provide?",
-        "answer": "Provide the observation, research question, domain, known evidence, constraints, and methods that are available."
+        "question": "Does it require external tools?",
+        "answer": "Some workflows reference web search, schematic generation, and LaTeX compilation. These depend on your local environment."
       },
       {
-        "question": "Can it produce publication-ready reports?",
-        "answer": "It can structure detailed reports, but users must verify content, citations, formatting, and scientific claims."
+        "question": "Who should use it?",
+        "answer": "Researchers, students, and applied teams can use it to plan studies and compare explanations."
       }
     ]
   },

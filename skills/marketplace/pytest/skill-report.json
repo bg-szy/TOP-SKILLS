@@ -1,20 +1,23 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T22:04:45.326Z",
+    "generated_at": "2026-07-09T07:38:05.284Z",
     "slug": "bossjones-pytest",
     "source_url": "https://github.com/bossjones/logging-lab/tree/main/.claude/skills/pytest",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "082201f9bb48cb21fca185b7a09fe03229c9d72ec7762186fa457a082486946d",
-    "tree_hash": "3d113cf4e464bce13f1eef10e0bba41b317fe02060a9b6038e03542942728fff",
+    "content_hash": "7e9894850b9fa3b6f66d3084063af6135ddb645c74b612191fc6b34f10f574c5",
+    "tree_hash": "ba368326ab67073427e268c06e39489e29f85d8314578766c65dbb9f0a36f068",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
       "fallback_chain": [
         {
           "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -23,17 +26,17 @@
   },
   "skill": {
     "name": "pytest",
-    "description": "Guides users through writing, organizing, and running pytest tests with fixtures, parametrization, async tests, and common patterns.",
-    "summary": "A practical pytest reference for building clear Python test suites.",
+    "description": "Guides assistants in writing and organizing Python tests with pytest fixtures, parametrization, async tests, mocking, markers, API tests, database tests, and error assertions.",
+    "summary": "Create and improve Python tests with pytest patterns.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "bossjones",
     "license": "MIT",
     "tags": [
+      "python",
       "pytest",
-      "python-testing",
+      "testing",
       "fixtures",
-      "test-automation",
       "async-testing"
     ],
     "supported_tools": [
@@ -53,12 +56,17 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The review found one confirmed unsafe pattern: an eval-based pytest example in SKILL.md. Other static findings are false positives from markdown fences, visible pytest commands, placeholder environment values, or benign test sample variables. No prompt injection, credential exfiltration intent, or hidden execution behavior was found.",
+    "summary": "The skill is a benign pytest Markdown guide with no evidence of prompt injection, data exfiltration, or unauthorized network behavior. Most static findings are false positives from Markdown fences, local pytest command examples, dummy environment variables, and test variable names. One confirmed issue remains: the parametrization example teaches eval(input), which is unsafe if copied with untrusted input.",
     "remediation": [
       {
-        "issue": "Unsafe eval example in parametrized tests",
-        "suggestion": "Replace eval(input) with explicit operation functions, fixed assertions, or a safe parser that cannot execute code.",
+        "issue": "Unsafe eval idiom in pytest parametrization example",
+        "suggestion": "Replace eval(input) with a small named function, explicit expected values, or a safe operator mapping so assistants do not copy dynamic evaluation.",
         "severity": "high"
+      },
+      {
+        "issue": "Dummy API key placeholder can trigger secret scanners",
+        "suggestion": "Rename API_KEY to TEST_API_KEY and state that test-key is a fake value used only for monkeypatch examples.",
+        "severity": "low"
       }
     ],
     "risk_factor_evidence": [
@@ -745,272 +753,272 @@
         "id": "scripts:SKILL.md:102:dynamic-code-evaluation-with-eval",
         "verdict": "confirmed",
         "confidence": 0.78,
-        "reason": "The skill teaches an eval(input) pattern in a pytest example. The current parameters are fixed, but copying this pattern can execute arbitrary code when inputs change.",
+        "reason": "The skill demonstrates eval(input) in a pytest example. Although the shown parameters are static, this teaches dynamic evaluation that can execute arbitrary code if copied with untrusted input.",
         "severity": "high"
       },
       {
         "id": "external_commands:SKILL.md:15:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:23:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "This is documentation for normal pytest or uv development commands, not hidden command execution. The commands are visible, fixed, and require user action."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:39:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:47:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:61:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:73:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:77:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:89:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:95:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:103:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:107:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:121:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:125:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:144:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:148:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:160:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:166:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:179:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:183:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:193:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:199:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:210:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:216:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:232:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:236:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "This is documentation for normal pytest or uv development commands, not hidden command execution. The commands are visible, fixed, and require user action."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:245:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:251:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:278:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:282:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:303:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:307:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:321:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The match is a markdown code fence or inline formatting in documentation. It is not Ruby backtick execution and does not execute commands."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:326:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "This is documentation for normal pytest or uv development commands, not hidden command execution. The commands are visible, fixed, and require user action."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "external_commands:SKILL.md:327:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "This is documentation for normal pytest or uv development commands, not hidden command execution. The commands are visible, fixed, and require user action."
+        "reason": "The finding points to Markdown code fences or inline pytest command examples, not Ruby backtick execution. The commands are local testing examples and are not executed automatically by the skill."
       },
       {
         "id": "env_access:SKILL.md:201:setenv-environment-modification",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "monkeypatch.setenv is used in a pytest example to set a fake API_KEY for one test. It demonstrates isolated test behavior, not persistent environment tampering."
+        "confidence": 0.94,
+        "reason": "monkeypatch.setenv is used in a pytest example to isolate a test environment with a dummy value. It does not read, persist, or exfiltrate real environment variables."
       },
       {
         "id": "env_access:SKILL.md:201:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The API_KEY value is the literal placeholder test-key inside a testing example. No real secret is embedded or exfiltrated."
+        "confidence": 0.95,
+        "reason": "API_KEY appears as a placeholder variable in a test snippet with the dummy value test-key. No real secret or credential handling is present."
       },
       {
         "id": "env_access:SKILL.md:202:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The API_KEY value is the literal placeholder test-key inside a testing example. No real secret is embedded or exfiltrated."
+        "confidence": 0.95,
+        "reason": "The assertion checks the same dummy test-key value from the example. It is test documentation, not disclosure or use of a real API secret."
       },
       {
         "id": "blocker:SKILL.md:190:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The cited line is ordinary test sample code, such as a test user id or expected exception text. It does not perform system reconnaissance."
+        "reason": "The flagged text is ordinary pytest sample code using local test user identifiers or exception matching. It does not perform system reconnaissance or collect host information."
       },
       {
         "id": "blocker:SKILL.md:272:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The cited line is ordinary test sample code, such as a test user id or expected exception text. It does not perform system reconnaissance."
+        "reason": "The flagged text is ordinary pytest sample code using local test user identifiers or exception matching. It does not perform system reconnaissance or collect host information."
       },
       {
         "id": "blocker:SKILL.md:309:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The cited line is ordinary test sample code, such as a test user id or expected exception text. It does not perform system reconnaissance."
+        "reason": "The flagged text is ordinary pytest sample code using local test user identifiers or exception matching. It does not perform system reconnaissance or collect host information."
       }
     ],
     "semantic_findings": [],
@@ -1030,7 +1038,7 @@
         "source_category": "scripts",
         "source_severity": "high",
         "confidence": 0.78,
-        "confidence_reasoning": "The skill teaches an eval(input) pattern in a pytest example. The current parameters are fixed, but copying this pattern can execute arbitrary code when inputs change."
+        "confidence_reasoning": "The skill demonstrates eval(input) in a pytest example. Although the shown parameters are static, this teaches dynamic evaluation that can execute arbitrary code if copied with untrusted input."
       }
     ],
     "medium_findings": [],
@@ -1039,126 +1047,134 @@
     "files_scanned": 1,
     "total_lines": 329,
     "audit_model": "codex",
-    "audited_at": "2026-07-07T22:04:45.326Z",
+    "audited_at": "2026-07-09T07:38:05.284Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Write Better Pytest Test Suites",
-    "value_statement": "Python teams need consistent tests that are easy to run and maintain. This skill provides pytest patterns for fixtures, parametrization, async tests, markers, and common workflows.",
+    "user_title": "Write Better Pytest Tests",
+    "value_statement": "Python teams need reliable tests that stay clear and easy to extend. This skill guides Claude, Codex, and Claude Code through pytest fixtures, parametrization, async tests, mocking, and test organization.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
-      "pytest skill",
+      "pytest",
       "Python testing",
       "pytest fixtures",
       "pytest parametrization",
-      "async pytest",
+      "async testing",
       "test automation",
       "unit testing"
     ],
     "actual_capabilities": [
-      "Shows basic pytest test structure and assertion patterns.",
-      "Explains fixture setup, teardown, and fixture scopes.",
+      "Shows basic pytest test function structure and assertions.",
+      "Explains fixtures with setup, teardown, scopes, and shared conftest.py usage.",
       "Demonstrates parametrized tests and parametrized fixtures.",
-      "Covers async tests with pytest markers and async fixtures.",
-      "Describes marker-based test selection and common pytest commands.",
-      "Provides examples for API, database, and error handling tests."
+      "Covers async tests and async fixtures with pytest markers.",
+      "Provides examples for API, database, marker, mocking, and exception tests."
     ],
     "limitations": [
-      "Provides guidance only and does not run tests automatically.",
-      "Uses placeholder application objects that users must adapt.",
-      "Does not cover advanced plugin development or custom pytest hooks.",
-      "Includes an eval-based example that should be replaced before reuse."
+      "Does not install pytest or project dependencies for the user.",
+      "Examples assume basic Python and pytest knowledge.",
+      "Does not cover every pytest plugin or advanced configuration option.",
+      "Some snippets use placeholder functions that must be adapted to the project."
     ],
     "use_cases": [
       {
-        "title": "Create First Tests",
-        "description": "Use simple examples to start a small pytest suite with clear assertions and runnable test files.",
-        "target_user": "Python beginners"
+        "title": "Add Unit Tests",
+        "description": "Application developers can turn Python functions into clear pytest test cases with direct assertions and parametrized inputs.",
+        "target_user": "Python developer"
       },
       {
-        "title": "Organize Shared Test Setup",
-        "description": "Apply fixtures, scopes, and conftest patterns to reduce repeated setup across a growing project.",
-        "target_user": "Backend engineers"
+        "title": "Organize Shared Fixtures",
+        "description": "QA engineers can structure reusable setup, teardown, and fixture scopes across a growing test suite.",
+        "target_user": "QA engineer"
       },
       {
-        "title": "Expand Test Coverage",
-        "description": "Add parametrized, async, API, database, and error handling tests for broader application behavior.",
-        "target_user": "QA automation engineers"
+        "title": "Test Async And API Code",
+        "description": "Backend engineers can plan tests for async operations, API clients, database sessions, and expected failures.",
+        "target_user": "Backend engineer"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Start a Pytest File",
-        "scenario": "Beginner test setup",
-        "prompt": "Use this pytest skill to outline tests for my Python module. Include simple assertions and the command to run the tests."
+        "title": "Create Basic Tests",
+        "scenario": "Beginner request for first pytest coverage.",
+        "prompt": "Create a basic pytest test plan for this Python function. Identify simple assertions, edge cases, and clear test names before writing tests."
       },
       {
         "title": "Add Fixtures",
-        "scenario": "Shared setup cleanup",
-        "prompt": "Use this pytest skill to design fixtures for my test setup. Include setup, cleanup, and suitable fixture scope choices."
+        "scenario": "Intermediate request for reusable setup.",
+        "prompt": "Review these tests and suggest focused pytest fixtures. Explain which fixture scope each one should use and why."
       },
       {
-        "title": "Parametrize Test Cases",
-        "scenario": "Many input combinations",
-        "prompt": "Use this pytest skill to convert repeated test cases into parametrized tests. Avoid eval and keep each case explicit."
+        "title": "Parametrize Cases",
+        "scenario": "Intermediate request for repeated behavior.",
+        "prompt": "Convert these repeated test scenarios into pytest parametrization. Keep case names readable and avoid unsafe dynamic evaluation."
       },
       {
-        "title": "Design Integration Tests",
-        "scenario": "Advanced application testing",
-        "prompt": "Use this pytest skill to plan API, database, async, and error handling tests for my service. Include markers and fixture boundaries."
+        "title": "Design Integration Coverage",
+        "scenario": "Advanced request for larger test suites.",
+        "prompt": "Design a pytest strategy for this service, including unit tests, API tests, async tests, database fixtures, markers, and failure-path coverage."
       }
     ],
     "output_examples": [
       {
-        "input": "I need tests for a small utility module.",
-        "output": "A concise pytest plan with test file names, assertion goals, and the command needed to run the suite."
+        "input": "A developer asks for tests for a string normalization helper.",
+        "output": [
+          "A concise test plan covering empty input, mixed case, whitespace, and already normalized values.",
+          "A set of pytest test cases with clear names, direct assertions, and no external dependencies."
+        ]
       },
       {
-        "input": "My tests repeat the same setup in many files.",
-        "output": "A fixture organization plan that separates shared setup, teardown, fixture scope, and project-level test configuration."
+        "input": "A QA engineer needs reusable setup for database-backed tests.",
+        "output": [
+          "A fixture design that separates session setup, per-test data, and teardown responsibilities.",
+          "Guidance on fixture scope so tests stay isolated and predictable."
+        ]
       },
       {
-        "input": "I need coverage for API success and failure paths.",
-        "output": "A test strategy covering request setup, expected status checks, response validation, and exception cases without exposing secrets."
+        "input": "A backend engineer wants coverage for async API behavior.",
+        "output": [
+          "A testing outline for async client setup, success responses, error responses, and expected exceptions.",
+          "Marker and organization suggestions for separating unit, integration, and slow tests."
+        ]
       }
     ],
     "best_practices": [
-      "Keep tests small, named clearly, and focused on one behavior.",
-      "Use fixtures to share setup while keeping test intent visible.",
-      "Use markers and parametrization to organize broad coverage."
+      "Start with small deterministic unit tests before adding integration tests.",
+      "Keep fixtures focused and use explicit scopes to avoid hidden shared state.",
+      "Use parametrization for repeated cases with the same behavior."
     ],
     "anti_patterns": [
-      "Do not copy eval-based examples into production tests.",
-      "Do not hide important setup inside broad fixtures without clear names.",
-      "Do not mix slow integration tests with fast unit tests without markers."
+      "Do not hide complex setup inside broad fixtures that every test must load.",
+      "Do not mix network, database, and unit behavior in one test.",
+      "Do not use eval in test examples when direct function calls can prove behavior."
     ],
     "faq": [
       {
-        "question": "What does this skill help me do?",
-        "answer": "It helps you write and organize pytest tests using fixtures, parametrization, async tests, markers, and common examples."
+        "question": "What does this skill help with?",
+        "answer": "It helps create, organize, and improve Python tests that use pytest patterns."
       },
       {
-        "question": "Can it run pytest for me?",
-        "answer": "No. It provides commands and patterns, but the user or agent must run tests in the project environment."
+        "question": "Does it run tests automatically?",
+        "answer": "No. It provides guidance and examples. The user or agent must run commands in the project environment."
       },
       {
-        "question": "Does it support async testing?",
-        "answer": "Yes. It includes examples for async test functions and async fixtures using pytest markers."
+        "question": "Can it help with fixtures?",
+        "answer": "Yes. It covers fixture setup, teardown, scopes, parametrized fixtures, and shared conftest.py usage."
       },
       {
-        "question": "Does it include API testing guidance?",
-        "answer": "Yes. It shows API test structure with a test client, request setup, response checks, and created resource lookup."
+        "question": "Does it cover async tests?",
+        "answer": "Yes. It includes async test and async fixture examples using pytest markers."
       },
       {
-        "question": "Is the eval example safe to reuse?",
-        "answer": "No. Replace it with explicit operations or fixed assertions before using the pattern in real tests."
+        "question": "Is it only for unit tests?",
+        "answer": "No. It also discusses API tests, database tests, marker selection, and error handling tests."
       },
       {
-        "question": "Who should use this skill?",
-        "answer": "It is useful for Python developers, backend engineers, and QA engineers who work with pytest."
+        "question": "What should users adapt before use?",
+        "answer": "Users should replace placeholder functions, clients, database models, and paths with project-specific implementations."
       }
     ]
   },

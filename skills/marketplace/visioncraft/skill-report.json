@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-05T05:12:35.729Z",
+    "generated_at": "2026-07-09T07:27:51.065Z",
     "slug": "bai-32-visioncraft",
     "source_url": "https://github.com/BAI-32/visioncraft-skill/tree/main/",
     "source_ref": "main",
@@ -9,7 +9,7 @@
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "a838bd2cfd91fccbd73986fe141066a39546b8fbea7fed95bf144f0ba6167013",
-    "tree_hash": "12356c0e253b6e240945972698687cae197eb47078c2689b9e00a6548a664bb5",
+    "tree_hash": "7e09b35946c4653d7a7480f53a21ccccc7d8fe4a486396adbc4a806dbebba15d",
     "provenance": {
       "model_requested": "gpt-5.5:high",
       "model_effective": "codex:gpt-5.5:high",
@@ -26,8 +26,8 @@
   },
   "skill": {
     "name": "visioncraft",
-    "description": "Generate images and videos through Agnes AI using PowerShell scripts for text-to-image, image-to-image, text-to-video, image-to-video, multi-image video, and keyframe animation.",
-    "summary": "Create Agnes AI images and videos from prompts, reference images, and keyframes.",
+    "description": "Generate images and videos with Agnes AI from natural-language prompts. Supports text-to-image, image-to-image, text-to-video, image-to-video, multi-image video, and keyframe animation.",
+    "summary": "Create AI images, videos, and keyframe animations through Agnes AI PowerShell workflows.",
     "icon": "📦",
     "version": "1.0.0",
     "author": "BAI-32",
@@ -57,27 +57,27 @@
     "is_blocked": false,
     "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "Most static findings are false positives from Markdown examples, PowerShell line continuations, placeholder URLs, API documentation, and reviewed PNG assets. The remaining confirmed risks are intentional Agnes AI network calls and AGNES_API_KEY secret handling in the PowerShell scripts. No prompt-injection language was found, but the skill should improve privacy notices and safe argument guidance.",
+    "summary": "Most static findings are false positives from Markdown code fences, placeholder URLs, PowerShell syntax, and documentation text. Confirmed risks are intentional local PowerShell script execution, AGNES_API_KEY access, outbound Agnes API calls, and an unsafe instruction to echo the API key. No prompt injection text was found in the reviewed files.",
     "remediation": [
       {
-        "issue": "Prompts and reference media are sent to Agnes AI.",
-        "suggestion": "Add a clear privacy notice and ask users to confirm before sending sensitive prompts or private media URLs to the external service.",
-        "severity": "medium"
-      },
-      {
-        "issue": "The scripts read AGNES_API_KEY for authenticated requests.",
-        "suggestion": "Document the exact Agnes AI hosts that receive the bearer token, keep the key service-specific, and continue avoiding key logging.",
+        "issue": "The setup guide tells users to echo AGNES_API_KEY.",
+        "suggestion": "Replace the echo check with a boolean presence check that never prints the key value.",
         "severity": "high"
       },
       {
-        "issue": "Command examples do not describe safe handling of prompt arguments.",
-        "suggestion": "Add guidance for safe PowerShell argument passing and escaping when prompts contain quotes, backticks, or control characters.",
+        "issue": "The skill sends prompts, image URLs, and settings to Agnes AI endpoints.",
+        "suggestion": "Add a clear pre-run disclosure and require confirmation before sending private prompts or reference images.",
         "severity": "medium"
       },
       {
-        "issue": "Binary showcase images require manual review when changed.",
-        "suggestion": "Keep image assets limited to documentation, review them before publishing, and regenerate content hashes after asset updates.",
-        "severity": "low"
+        "issue": "The scripts print full prompts and generation settings to the console.",
+        "suggestion": "Add a quiet or redacted logging mode for sensitive prompts and customer media references.",
+        "severity": "medium"
+      },
+      {
+        "issue": "The skill relies on local PowerShell scripts for core workflows.",
+        "suggestion": "Keep commands restricted to bundled scripts, validate URL inputs, and document that agent auto-install should require confirmation.",
+        "severity": "medium"
       }
     ],
     "risk_factor_evidence": [
@@ -333,236 +333,6 @@
             "file": "scripts/gen_video.ps1",
             "line_start": 12,
             "line_end": 16
-          },
-          {
-            "file": "scripts/gen_video.ps1",
-            "line_start": 20,
-            "line_end": 161
-          },
-          {
-            "file": "scripts/gen_video.ps1",
-            "line_start": 162,
-            "line_end": 163
-          },
-          {
-            "file": "scripts/gen_video.ps1",
-            "line_start": 164,
-            "line_end": 165
-          },
-          {
-            "file": "scripts/gen_video.ps1",
-            "line_start": 166,
-            "line_end": 227
-          },
-          {
-            "file": "scripts/gen_video.ps1",
-            "line_start": 228,
-            "line_end": 229
-          },
-          {
-            "file": "scripts/gen_video.ps1",
-            "line_start": 230,
-            "line_end": 275
-          },
-          {
-            "file": "scripts/gen_video.ps1",
-            "line_start": 179,
-            "line_end": 179
-          },
-          {
-            "file": "scripts/gen_video.ps1",
-            "line_start": 188,
-            "line_end": 188
-          },
-          {
-            "file": "scripts/gen_video.ps1",
-            "line_start": 235,
-            "line_end": 235
-          },
-          {
-            "file": "scripts/gen_video.ps1",
-            "line_start": 254,
-            "line_end": 254
-          },
-          {
-            "file": "scripts/gen_video.ps1",
-            "line_start": 267,
-            "line_end": 267
-          },
-          {
-            "file": "scripts/gen_video.ps1",
-            "line_start": 166,
-            "line_end": 227
-          },
-          {
-            "file": "scripts/gen_video.ps1",
-            "line_start": 230,
-            "line_end": 275
-          },
-          {
-            "file": "scripts/gen_video.ps1",
-            "line_start": 274,
-            "line_end": 274
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 9,
-            "line_end": 9
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 11,
-            "line_end": 11
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 17,
-            "line_end": 17
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 18,
-            "line_end": 18
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 19,
-            "line_end": 19
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 20,
-            "line_end": 20
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 21,
-            "line_end": 21
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 22,
-            "line_end": 22
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 24,
-            "line_end": 24
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 30,
-            "line_end": 32
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 32,
-            "line_end": 36
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 36,
-            "line_end": 38
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 38,
-            "line_end": 40
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 40,
-            "line_end": 57
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 57,
-            "line_end": 61
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 61,
-            "line_end": 61
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 63,
-            "line_end": 67
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 67,
-            "line_end": 71
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 71,
-            "line_end": 78
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 78,
-            "line_end": 82
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 82,
-            "line_end": 85
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 85,
-            "line_end": 89
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 89,
-            "line_end": 95
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 95,
-            "line_end": 99
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 99,
-            "line_end": 101
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 101,
-            "line_end": 105
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 105,
-            "line_end": 106
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 106,
-            "line_end": 107
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 9,
-            "line_end": 9
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 30,
-            "line_end": 30
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 36,
-            "line_end": 36
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 63,
-            "line_end": 63
           }
         ]
       },
@@ -2693,1122 +2463,1151 @@
       {
         "id": "external_commands:CONTRIBUTING.md:8:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:CONTRIBUTING.md:18:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:CONTRIBUTING.md:25:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:CONTRIBUTING.md:31:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "env_access:CONTRIBUTING.md:33:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "confidence": 0.84,
+        "reason": "This is a contribution guideline requiring scripts to use AGNES_API_KEY. It is documentation, not credential access or disclosure."
       },
       {
         "id": "external_commands:examples/README.md:13:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:examples/README.md:19:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:examples/README.md:25:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:examples/README.md:31:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:examples/README.md:37:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:examples/README.md:43:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:examples/README.md:53:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:examples/README.md:59:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:examples/README.md:65:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:examples/README.md:71:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:examples/README.md:77:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:examples/README.md:83:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:examples/README.md:89:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:examples/README.md:95:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "network:examples/README.md:38:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This URL reference is documentation or example text, not an automatic network request by executable code."
       },
       {
         "id": "network:examples/README.md:44:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This URL reference is documentation or example text, not an automatic network request by executable code."
       },
       {
         "id": "network:examples/README.md:66:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This URL reference is documentation or example text, not an automatic network request by executable code."
       },
       {
         "id": "network:examples/README.md:72:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This URL reference is documentation or example text, not an automatic network request by executable code."
       },
       {
         "id": "network:examples/README.md:78:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This URL reference is documentation or example text, not an automatic network request by executable code."
       },
       {
         "id": "filesystem:examples/README.md:3:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged sequence is a relative Markdown link to the main README. It is not runtime filesystem access and cannot traverse paths during skill execution."
+        "confidence": 0.9,
+        "reason": "The ../README.md text is a Markdown link to project documentation. It is not filesystem access and does not traverse paths at runtime."
       },
       {
         "id": "env_access:examples/README.md:3:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "confidence": 0.84,
+        "reason": "This is setup documentation that points users to configure AGNES_API_KEY. It does not read or disclose a credential."
       },
       {
         "id": "external_commands:README.md:37:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:48:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:58:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:86:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:92:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:118:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:122:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:128:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:135:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:141:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:149:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:208:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:253:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:277:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:287:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:295:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:301:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:327:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:331:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:337:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:344:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:350:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:358:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:398:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:README.md:439:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "network:README.md:130:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "network:README.md:142:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This URL reference is documentation or example text, not an automatic network request by executable code."
       },
       {
         "id": "network:README.md:151:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "network:README.md:339:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "network:README.md:351:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "network:README.md:360:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "env_access:README.md:87:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "confidence": 0.84,
+        "reason": "This is setup or troubleshooting documentation with placeholder AGNES_API_KEY text. It does not contain a real secret or execute a read."
       },
       {
         "id": "env_access:README.md:93:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "confidence": 0.84,
+        "reason": "This is setup or troubleshooting documentation with placeholder AGNES_API_KEY text. It does not contain a real secret or execute a read."
       },
       {
         "id": "env_access:README.md:96:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "confidence": 0.84,
+        "reason": "This is setup or troubleshooting documentation with placeholder AGNES_API_KEY text. It does not contain a real secret or execute a read."
       },
       {
         "id": "env_access:README.md:239:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "confidence": 0.84,
+        "reason": "This is setup or troubleshooting documentation with placeholder AGNES_API_KEY text. It does not contain a real secret or execute a read."
       },
       {
         "id": "env_access:README.md:296:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "confidence": 0.84,
+        "reason": "This is setup or troubleshooting documentation with placeholder AGNES_API_KEY text. It does not contain a real secret or execute a read."
       },
       {
         "id": "env_access:README.md:302:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "confidence": 0.84,
+        "reason": "This is setup or troubleshooting documentation with placeholder AGNES_API_KEY text. It does not contain a real secret or execute a read."
       },
       {
         "id": "env_access:README.md:305:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "confidence": 0.84,
+        "reason": "This is setup or troubleshooting documentation with placeholder AGNES_API_KEY text. It does not contain a real secret or execute a read."
       },
       {
         "id": "env_access:README.md:425:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "confidence": 0.84,
+        "reason": "This is setup or troubleshooting documentation with placeholder AGNES_API_KEY text. It does not contain a real secret or execute a read."
       },
       {
         "id": "blocker:README.md:197:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "blocker:README.md:202:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "blocker:README.md:206:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "blocker:README.md:238:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "blocker:README.md:239:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "blocker:README.md:240:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "blocker:README.md:254:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "blocker:README.md:426:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "external_commands:references/api_docs.md:3:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "network:references/api_docs.md:77:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a documented sample output URL, not a request made by code. It only illustrates where generated media may be hosted."
       },
       {
         "id": "network:references/api_docs.md:162:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a documented sample output URL, not a request made by code. It only illustrates where generated media may be hosted."
       },
       {
         "id": "filesystem:references/api_docs.md:162:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged sequence is an ellipsis inside a sample storage URL in API documentation. It is not a filesystem path or runtime file access."
+        "confidence": 0.9,
+        "reason": "The ... sequence appears inside a sample storage URL in API documentation. It is not a filesystem path traversal operation."
       },
       {
         "id": "env_access:references/api_docs.md:9:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "confidence": 0.84,
+        "reason": "This is API reference text with placeholder authentication syntax. It does not contain a real key or read an environment variable."
       },
       {
         "id": "env_access:references/api_docs.md:15:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "confidence": 0.84,
+        "reason": "This is API reference text with placeholder authentication syntax. It does not contain a real key or read an environment variable."
       },
       {
         "id": "blocker:references/api_docs.md:67:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/api_docs.md:126:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/api_docs.md:188:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "external_commands:references/parameters.md:23:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:references/parameters.md:77:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line is documentation, contribution guidance, or a fenced PowerShell example. It does not execute on install, and the referenced commands are fixed local helper scripts rather than arbitrary shell payloads."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "network:references/parameters.md:31:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "network:references/parameters.md:85:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "network:references/parameters.md:88:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "network:references/parameters.md:91:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "blocker:references/parameters.md:61:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/parameters.md:99:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "external_commands:scripts/gen_image.ps1:122:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:scripts/gen_image.ps1:129:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:scripts/gen_image.ps1:143:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "network:scripts/gen_image.ps1:13:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "network:scripts/gen_image.ps1:71:hardcoded-url",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "reason": "This script sends generation or polling requests to a hardcoded Agnes AI endpoint. The endpoint matches the skill purpose, but it is real third-party network access with user prompts or media references.",
-        "severity": "low"
+        "confidence": 0.95,
+        "reason": "The image script hardcodes the Agnes image generation endpoint and posts user prompts and parameters to it. This is intentional external network access.",
+        "severity": "medium"
       },
       {
         "id": "env_access:scripts/gen_image.ps1:22:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a placeholder, error message, or service-specific AGNES_API_KEY reference, not a hardcoded real secret. The only actual reads are adjudicated separately, and the scripts do not print the key value."
+        "confidence": 0.84,
+        "reason": "This is a comment showing setup instructions with a placeholder key. It does not read the environment or include a real secret."
       },
       {
         "id": "env_access:scripts/gen_image.ps1:24:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a placeholder, error message, or service-specific AGNES_API_KEY reference, not a hardcoded real secret. The only actual reads are adjudicated separately, and the scripts do not print the key value."
+        "confidence": 0.84,
+        "reason": "This is a comment showing setup instructions with a placeholder key. It does not read the environment or include a real secret."
       },
       {
         "id": "env_access:scripts/gen_image.ps1:49:generic-api-secret-keys",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The script reads AGNES_API_KEY and uses it for Authorization to the Agnes API. The access is intentional, but it is real secret handling by a community skill and should be treated as sensitive.",
+        "confidence": 0.96,
+        "reason": "The image script reads $env:AGNES_API_KEY into $ApiKey and later uses it for Authorization. This is real credential access by executable code.",
         "severity": "high"
       },
       {
         "id": "env_access:scripts/gen_image.ps1:51:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a placeholder, error message, or service-specific AGNES_API_KEY reference, not a hardcoded real secret. The only actual reads are adjudicated separately, and the scripts do not print the key value."
+        "confidence": 0.84,
+        "reason": "This is help text or a printed example that references AGNES_API_KEY. It does not read or expose the variable value at runtime."
       },
       {
         "id": "env_access:scripts/gen_image.ps1:53:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a placeholder, error message, or service-specific AGNES_API_KEY reference, not a hardcoded real secret. The only actual reads are adjudicated separately, and the scripts do not print the key value."
+        "confidence": 0.84,
+        "reason": "This is help text or a printed example that references AGNES_API_KEY. It does not read or expose the variable value at runtime."
       },
       {
         "id": "env_access:scripts/gen_image.ps1:157:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a placeholder, error message, or service-specific AGNES_API_KEY reference, not a hardcoded real secret. The only actual reads are adjudicated separately, and the scripts do not print the key value."
+        "confidence": 0.84,
+        "reason": "This is help text or a printed example that references AGNES_API_KEY. It does not read or expose the variable value at runtime."
       },
       {
         "id": "external_commands:scripts/gen_video.ps1:12:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:scripts/gen_video.ps1:20:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:scripts/gen_video.ps1:162:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:scripts/gen_video.ps1:164:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:scripts/gen_video.ps1:166:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:scripts/gen_video.ps1:228:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:scripts/gen_video.ps1:230:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:scripts/gen_video.ps1:179:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:scripts/gen_video.ps1:188:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:scripts/gen_video.ps1:235:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:scripts/gen_video.ps1:254:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:scripts/gen_video.ps1:267:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:scripts/gen_video.ps1:166:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:scripts/gen_video.ps1:230:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:scripts/gen_video.ps1:274:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged PowerShell syntax is line continuation, property interpolation, or error formatting in reviewed script code. I did not find Invoke-Expression, dynamic shell construction, or execution of attacker-controlled commands at this location."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "network:scripts/gen_video.ps1:13:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "network:scripts/gen_video.ps1:17:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The URL is not used for hidden or unexpected communication at this location. No automatic data transfer is performed by this documentation line."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "network:scripts/gen_video.ps1:21:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The URL is not used for hidden or unexpected communication at this location. No automatic data transfer is performed by this documentation line."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "network:scripts/gen_video.ps1:162:hardcoded-url",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "reason": "This script sends generation or polling requests to a hardcoded Agnes AI endpoint. The endpoint matches the skill purpose, but it is real third-party network access with user prompts or media references.",
-        "severity": "low"
+        "confidence": 0.95,
+        "reason": "The video script sends task creation requests to the Agnes video endpoint. This is real outbound network access with bearer authentication.",
+        "severity": "medium"
       },
       {
         "id": "network:scripts/gen_video.ps1:225:hardcoded-url",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "reason": "This script sends generation or polling requests to a hardcoded Agnes AI endpoint. The endpoint matches the skill purpose, but it is real third-party network access with user prompts or media references.",
-        "severity": "low"
+        "confidence": 0.94,
+        "reason": "The video script polls the Agnes API with a video_id until completion. This is real outbound network access during normal operation.",
+        "severity": "medium"
       },
       {
         "id": "network:scripts/gen_video.ps1:275:hardcoded-url",
-        "verdict": "confirmed",
-        "confidence": 0.72,
-        "reason": "This timeout path prints a manual Agnes API re-query command that includes an Authorization header. It is intended recovery guidance, but it still directs users to make a third-party authenticated network request.",
-        "severity": "low"
+        "verdict": "false_positive",
+        "confidence": 0.82,
+        "reason": "This line prints a manual retry command after timeout; the script does not execute that command automatically. The active polling endpoint is covered separately."
       },
       {
         "id": "env_access:scripts/gen_video.ps1:30:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a placeholder, error message, or service-specific AGNES_API_KEY reference, not a hardcoded real secret. The only actual reads are adjudicated separately, and the scripts do not print the key value."
+        "confidence": 0.84,
+        "reason": "This is a comment showing setup instructions with a placeholder key. It does not read the environment or include a real secret."
       },
       {
         "id": "env_access:scripts/gen_video.ps1:32:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a placeholder, error message, or service-specific AGNES_API_KEY reference, not a hardcoded real secret. The only actual reads are adjudicated separately, and the scripts do not print the key value."
+        "confidence": 0.84,
+        "reason": "This is a comment showing setup instructions with a placeholder key. It does not read the environment or include a real secret."
       },
       {
         "id": "env_access:scripts/gen_video.ps1:80:generic-api-secret-keys",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The script reads AGNES_API_KEY and uses it for Authorization to the Agnes API. The access is intentional, but it is real secret handling by a community skill and should be treated as sensitive.",
+        "confidence": 0.96,
+        "reason": "The video script reads $env:AGNES_API_KEY into $ApiKey and uses it for Agnes API requests. This is real credential access by executable code.",
         "severity": "high"
       },
       {
         "id": "env_access:scripts/gen_video.ps1:82:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a placeholder, error message, or service-specific AGNES_API_KEY reference, not a hardcoded real secret. The only actual reads are adjudicated separately, and the scripts do not print the key value."
+        "confidence": 0.84,
+        "reason": "This is help text or a printed example that references AGNES_API_KEY. It does not read or expose the variable value at runtime."
       },
       {
         "id": "env_access:scripts/gen_video.ps1:84:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a placeholder, error message, or service-specific AGNES_API_KEY reference, not a hardcoded real secret. The only actual reads are adjudicated separately, and the scripts do not print the key value."
+        "confidence": 0.84,
+        "reason": "This is help text or a printed example that references AGNES_API_KEY. It does not read or expose the variable value at runtime."
       },
       {
         "id": "env_access:scripts/gen_video.ps1:202:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a placeholder, error message, or service-specific AGNES_API_KEY reference, not a hardcoded real secret. The only actual reads are adjudicated separately, and the scripts do not print the key value."
+        "confidence": 0.84,
+        "reason": "This is help text or a printed example that references AGNES_API_KEY. It does not read or expose the variable value at runtime."
       },
       {
         "id": "env_access:scripts/gen_video.ps1:275:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a placeholder, error message, or service-specific AGNES_API_KEY reference, not a hardcoded real secret. The only actual reads are adjudicated separately, and the scripts do not print the key value."
+        "confidence": 0.84,
+        "reason": "This is help text or a printed example that references AGNES_API_KEY. It does not read or expose the variable value at runtime."
       },
       {
         "id": "blocker:scripts/gen_video.ps1:99:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/gen_video.ps1:241:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/gen_video.ps1:269:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "external_commands:SKILL.md:9:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "verdict": "confirmed",
+        "confidence": 0.9,
+        "reason": "SKILL.md states that the skill calls PowerShell scripts in scripts/. Local script execution is intentional but creates an external command surface for agent runs.",
+        "severity": "high"
       },
       {
         "id": "external_commands:SKILL.md:11:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:17:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "verdict": "confirmed",
+        "confidence": 0.86,
+        "reason": "The SKILL.md quick reference gives a local script command for text-to-image. This directs the host to run bundled PowerShell scripts with user-supplied parameters.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:18:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "verdict": "confirmed",
+        "confidence": 0.86,
+        "reason": "The SKILL.md quick reference gives a local script command for image-to-image. This directs the host to run bundled PowerShell scripts with user-supplied parameters.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:19:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "verdict": "confirmed",
+        "confidence": 0.86,
+        "reason": "The SKILL.md quick reference gives a local script command for text-to-video. This directs the host to run bundled PowerShell scripts with user-supplied parameters.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:20:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "verdict": "confirmed",
+        "confidence": 0.86,
+        "reason": "The SKILL.md quick reference gives a local script command for image-to-video. This directs the host to run bundled PowerShell scripts with user-supplied parameters.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:21:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "verdict": "confirmed",
+        "confidence": 0.86,
+        "reason": "The SKILL.md quick reference gives a local script command for multi-image video. This directs the host to run bundled PowerShell scripts with user-supplied parameters.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:22:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "verdict": "confirmed",
+        "confidence": 0.86,
+        "reason": "The SKILL.md quick reference gives a local script command for keyframe animation. This directs the host to run bundled PowerShell scripts with user-supplied parameters.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:30:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:32:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:36:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:38:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "verdict": "confirmed",
+        "confidence": 0.93,
+        "reason": "The setup instructions tell users to run echo on AGNES_API_KEY. That command can print a secret to the console and expose it in logs.",
+        "severity": "high"
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:61:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:63:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:71:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:85:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:89:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:95:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:99:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:101:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:105:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:106:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:9:powershell-invocation",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "verdict": "confirmed",
+        "confidence": 0.92,
+        "reason": "SKILL.md explicitly says VisionCraft calls PowerShell scripts. This is a real local command execution capability, even though it is part of the design.",
+        "severity": "high"
       },
       {
         "id": "external_commands:SKILL.md:30:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:36:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "external_commands:SKILL.md:63:powershell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This line documents fixed local helper scripts for the skill workflow rather than hidden arbitrary command execution. The reviewed scripts use PowerShell parameters and HTTP cmdlets, not dynamic command evaluation."
+        "confidence": 0.84,
+        "reason": "The matched text is documentation or language syntax, not a separate executable command path."
       },
       {
         "id": "network:SKILL.md:18:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "network:SKILL.md:20:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "network:SKILL.md:21:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "network:SKILL.md:22:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a placeholder URL in documentation or a comment. It does not create automatic network traffic or identify a real destination."
       },
       {
         "id": "network:SKILL.md:81:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a documented sample output URL, not a request made by code. It only illustrates where generated media may be hosted."
       },
       {
         "id": "network:SKILL.md:88:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This URL is a placeholder, API documentation sample, or expected output example, not an automatic outbound request in executable code. It does not create hidden network behavior by itself."
+        "confidence": 0.84,
+        "reason": "This is a documented sample output URL, not a request made by code. It only illustrates where generated media may be hosted."
       },
       {
         "id": "env_access:SKILL.md:9:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "verdict": "confirmed",
+        "confidence": 0.9,
+        "reason": "SKILL.md states that the API key is read from AGNES_API_KEY. Access to a credential environment variable is intentional but security-sensitive.",
+        "severity": "high"
       },
       {
         "id": "env_access:SKILL.md:31:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "confidence": 0.84,
+        "reason": "This is setup or error documentation that references AGNES_API_KEY without exposing a real value. The unsafe echo instruction is covered separately."
       },
       {
         "id": "env_access:SKILL.md:37:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "confidence": 0.84,
+        "reason": "This is setup or error documentation that references AGNES_API_KEY without exposing a real value. The unsafe echo instruction is covered separately."
       },
       {
         "id": "env_access:SKILL.md:40:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "verdict": "confirmed",
+        "confidence": 0.94,
+        "reason": "The instruction to verify with echo $env:AGNES_API_KEY would display the API key value. This is a concrete secret exposure risk.",
+        "severity": "high"
       },
       {
         "id": "env_access:SKILL.md:95:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is documentation for setting the required AGNES_API_KEY or a placeholder key string, not a committed credential. The surrounding text tells users not to hardcode or commit real API keys."
+        "confidence": 0.84,
+        "reason": "This is setup or error documentation that references AGNES_API_KEY without exposing a real value. The unsafe echo instruction is covered separately."
       },
       {
         "id": "blocker:SKILL.md:96:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line documents parameters, status codes, video IDs, or troubleshooting behavior. It does not inspect the host system or collect reconnaissance data."
+        "confidence": 0.9,
+        "reason": "This is parameter, status-code, or troubleshooting documentation. It does not inspect the host system or perform reconnaissance."
       },
       {
         "id": "metadata:docs/images/showcase-original.png:1:unscanned-file-binary-manual-review-required",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "Manual review identified this as a PNG documentation image, not executable code. Visual inspection showed expected logo or showcase artwork and no visible prompt-injection instructions."
+        "confidence": 0.9,
+        "reason": "Manual review identified this as a valid PNG image asset used by documentation. No executable or script content is indicated by the file type."
       },
       {
         "id": "metadata:docs/images/visioncraft-logo.png:1:unscanned-file-binary-manual-review-required",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "Manual review identified this as a PNG documentation image, not executable code. Visual inspection showed expected logo or showcase artwork and no visible prompt-injection instructions."
+        "confidence": 0.9,
+        "reason": "Manual review identified this as a valid PNG image asset used by documentation. No executable or script content is indicated by the file type."
       },
       {
         "id": "metadata:docs/images/showcase-cyberpunk.png:1:unscanned-file-binary-manual-review-required",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "Manual review identified this as a PNG documentation image, not executable code. Visual inspection showed expected logo or showcase artwork and no visible prompt-injection instructions."
+        "confidence": 0.9,
+        "reason": "Manual review identified this as a valid PNG image asset used by documentation. No executable or script content is indicated by the file type."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Third-Party Prompt and Media Disclosure",
-        "description": "The scripts place user prompts and image URLs into request bodies sent to Agnes AI. Users may disclose sensitive text, reference image URLs, or media-derived content to a third-party service.",
+        "title": "Secret Exposure in Setup Verification",
+        "description": "SKILL.md instructs users to verify the Agnes API key with echo. That can print the secret to terminal history, logs, or shared transcripts.",
+        "severity": "high",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 40,
+            "line_end": 40
+          }
+        ],
+        "confidence": 0.94,
+        "confidence_reasoning": "The line explicitly tells users to echo AGNES_API_KEY, which displays the secret value in normal PowerShell use."
+      },
+      {
+        "title": "Third-Party Prompt and Media Transfer",
+        "description": "The scripts serialize prompts, image URLs, and generation settings and send them to Agnes AI with bearer authentication. Users need a clear consent boundary for this data transfer.",
         "severity": "medium",
         "locations": [
           {
             "file": "scripts/gen_image.ps1",
-            "line_start": 74,
+            "line_start": 71,
             "line_end": 111
           },
           {
             "file": "scripts/gen_video.ps1",
-            "line_start": 110,
+            "line_start": 151,
             "line_end": 166
+          },
+          {
+            "file": "scripts/gen_video.ps1",
+            "line_start": 223,
+            "line_end": 232
           }
         ],
-        "confidence": 0.86,
-        "confidence_reasoning": "The request bodies directly include Prompt, ImageUrl, and Image values before HTTP requests to Agnes AI. This is intentional functionality, but it is a real privacy-relevant data flow."
+        "confidence": 0.91,
+        "confidence_reasoning": "The code builds JSON bodies from user prompt parameters and calls hardcoded Agnes API endpoints with Authorization headers."
       },
       {
-        "title": "Freeform Prompt Shell Argument Safety Gap",
-        "description": "The skill shows freeform prompt text placed in quoted PowerShell command arguments but does not specify safe argument passing or escaping. A malicious prompt could alter command syntax if the host composes a shell string without proper quoting.",
+        "title": "Prompts and Image Inputs Logged to Console",
+        "description": "The scripts print full prompts and generation settings before sending requests. Sensitive creative briefs or reference URLs could be retained in terminal logs.",
         "severity": "medium",
         "locations": [
           {
-            "file": "SKILL.md",
-            "line_start": 59,
-            "line_end": 67
+            "file": "scripts/gen_image.ps1",
+            "line_start": 96,
+            "line_end": 99
           },
           {
-            "file": "examples/README.md",
-            "line_start": 13,
-            "line_end": 96
+            "file": "scripts/gen_video.ps1",
+            "line_start": 144,
+            "line_end": 149
           }
         ],
-        "confidence": 0.58,
-        "confidence_reasoning": "The pattern is present in user-facing command examples, but exploitability depends on how the host agent invokes PowerShell. It is a plausible argument-injection risk rather than direct dynamic execution in the scripts."
+        "confidence": 0.87,
+        "confidence_reasoning": "The Write-Host statements directly include the Prompt value and related settings during normal script execution."
       }
     ],
     "critical_findings": [],
@@ -3826,8 +3625,8 @@
         "review_kind": "capability",
         "source_category": "env_access",
         "source_severity": "high",
-        "confidence": 0.82,
-        "confidence_reasoning": "The script reads AGNES_API_KEY and uses it for Authorization to the Agnes API. The access is intentional, but it is real secret handling by a community skill and should be treated as sensitive."
+        "confidence": 0.96,
+        "confidence_reasoning": "The image script reads $env:AGNES_API_KEY into $ApiKey and later uses it for Authorization. This is real credential access by executable code."
       },
       {
         "title": "Generic API/secret keys",
@@ -3842,55 +3641,107 @@
         "review_kind": "capability",
         "source_category": "env_access",
         "source_severity": "high",
-        "confidence": 0.82,
-        "confidence_reasoning": "The script reads AGNES_API_KEY and uses it for Authorization to the Agnes API. The access is intentional, but it is real secret handling by a community skill and should be treated as sensitive."
-      }
-    ],
-    "medium_findings": [
-      {
-        "title": "Third-Party Prompt and Media Disclosure",
-        "description": "The scripts place user prompts and image URLs into request bodies sent to Agnes AI. Users may disclose sensitive text, reference image URLs, or media-derived content to a third-party service.",
-        "locations": [
-          {
-            "file": "scripts/gen_image.ps1",
-            "line_start": 74,
-            "line_end": 111
-          },
-          {
-            "file": "scripts/gen_video.ps1",
-            "line_start": 110,
-            "line_end": 166
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "semantic",
-        "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "The request bodies directly include Prompt, ImageUrl, and Image values before HTTP requests to Agnes AI. This is intentional functionality, but it is a real privacy-relevant data flow."
+        "confidence": 0.96,
+        "confidence_reasoning": "The video script reads $env:AGNES_API_KEY into $ApiKey and uses it for Agnes API requests. This is real credential access by executable code."
       },
       {
-        "title": "Freeform Prompt Shell Argument Safety Gap",
-        "description": "The skill shows freeform prompt text placed in quoted PowerShell command arguments but does not specify safe argument passing or escaping. A malicious prompt could alter command syntax if the host composes a shell string without proper quoting.",
+        "title": "Ruby/shell backtick execution",
+        "description": "Generate images and videos via Agnes AI APIs. Calls PowerShell scripts in `scripts/`. API key is rea",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 59,
-            "line_end": 67
-          },
+            "line_start": 9,
+            "line_end": 9
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.9,
+        "confidence_reasoning": "SKILL.md states that the skill calls PowerShell scripts in scripts/. Local script execution is intentional but creates an external command surface for agent runs."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "Verify with `echo $env:AGNES_API_KEY`.",
+        "locations": [
           {
-            "file": "examples/README.md",
-            "line_start": 13,
-            "line_end": 96
+            "file": "SKILL.md",
+            "line_start": 40,
+            "line_end": 57
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.93,
+        "confidence_reasoning": "The setup instructions tell users to run echo on AGNES_API_KEY. That command can print a secret to the console and expose it in logs."
+      },
+      {
+        "title": "PowerShell invocation",
+        "description": "Generate images and videos via Agnes AI APIs. Calls PowerShell scripts in `scripts/`. API key is rea",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 9,
+            "line_end": 9
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "high",
+        "confidence": 0.92,
+        "confidence_reasoning": "SKILL.md explicitly says VisionCraft calls PowerShell scripts. This is a real local command execution capability, even though it is part of the design."
+      },
+      {
+        "title": "Generic API/secret keys",
+        "description": "Generate images and videos via Agnes AI APIs. Calls PowerShell scripts in `scripts/`. API key is rea",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 9,
+            "line_end": 9
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "env_access",
+        "source_severity": "high",
+        "confidence": 0.9,
+        "confidence_reasoning": "SKILL.md states that the API key is read from AGNES_API_KEY. Access to a credential environment variable is intentional but security-sensitive."
+      },
+      {
+        "title": "Generic API/secret keys",
+        "description": "Verify with `echo $env:AGNES_API_KEY`.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 40,
+            "line_end": 40
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "env_access",
+        "source_severity": "high",
+        "confidence": 0.94,
+        "confidence_reasoning": "The instruction to verify with echo $env:AGNES_API_KEY would display the API key value. This is a concrete secret exposure risk."
+      },
+      {
+        "title": "Secret Exposure in Setup Verification",
+        "description": "SKILL.md instructs users to verify the Agnes API key with echo. That can print the secret to terminal history, logs, or shared transcripts.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 40,
+            "line_end": 40
           }
         ],
         "review_kind": "security",
         "source_category": "semantic",
-        "source_severity": "medium",
-        "confidence": 0.58,
-        "confidence_reasoning": "The pattern is present in user-facing command examples, but exploitability depends on how the host agent invokes PowerShell. It is a plausible argument-injection risk rather than direct dynamic execution in the scripts."
+        "source_severity": "high",
+        "confidence": 0.94,
+        "confidence_reasoning": "The line explicitly tells users to echo AGNES_API_KEY, which displays the secret value in normal PowerShell use."
       }
     ],
-    "low_findings": [
+    "medium_findings": [
       {
         "title": "Hardcoded URL",
         "description": "$BaseUrl = \"https://apihub.agnes-ai.com/v1/images/generations\"",
@@ -3904,8 +3755,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.9,
-        "confidence_reasoning": "This script sends generation or polling requests to a hardcoded Agnes AI endpoint. The endpoint matches the skill purpose, but it is real third-party network access with user prompts or media references."
+        "confidence": 0.95,
+        "confidence_reasoning": "The image script hardcodes the Agnes image generation endpoint and posts user prompts and parameters to it. This is intentional external network access."
       },
       {
         "title": "Hardcoded URL",
@@ -3920,8 +3771,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.9,
-        "confidence_reasoning": "This script sends generation or polling requests to a hardcoded Agnes AI endpoint. The endpoint matches the skill purpose, but it is real third-party network access with user prompts or media references."
+        "confidence": 0.95,
+        "confidence_reasoning": "The video script sends task creation requests to the Agnes video endpoint. This is real outbound network access with bearer authentication."
       },
       {
         "title": "Hardcoded URL",
@@ -3936,25 +3787,154 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.9,
-        "confidence_reasoning": "This script sends generation or polling requests to a hardcoded Agnes AI endpoint. The endpoint matches the skill purpose, but it is real third-party network access with user prompts or media references."
+        "confidence": 0.94,
+        "confidence_reasoning": "The video script polls the Agnes API with a video_id until completion. This is real outbound network access during normal operation."
       },
       {
-        "title": "Hardcoded URL",
-        "description": "Write-Host \"    Invoke-WebRequest -Uri \"\"https://apihub.agnes-ai.com/agnesapi?video_id=$videoId\"\" -H",
+        "title": "Ruby/shell backtick execution",
+        "description": "| Text-to-Image | `scripts/gen_image.ps1 -Prompt \"...\"` |",
         "locations": [
           {
-            "file": "scripts/gen_video.ps1",
-            "line_start": 275,
-            "line_end": 275
+            "file": "SKILL.md",
+            "line_start": 17,
+            "line_end": 17
           }
         ],
         "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.72,
-        "confidence_reasoning": "This timeout path prints a manual Agnes API re-query command that includes an Authorization header. It is intended recovery guidance, but it still directs users to make a third-party authenticated network request."
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "The SKILL.md quick reference gives a local script command for text-to-image. This directs the host to run bundled PowerShell scripts with user-supplied parameters."
       },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "| Image-to-Image | `scripts/gen_image.ps1 -Prompt \"...\" -ImageUrl \"https://...\"` |",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 18,
+            "line_end": 18
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "The SKILL.md quick reference gives a local script command for image-to-image. This directs the host to run bundled PowerShell scripts with user-supplied parameters."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "| Text-to-Video | `scripts/gen_video.ps1 -Prompt \"...\"` |",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 19,
+            "line_end": 19
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "The SKILL.md quick reference gives a local script command for text-to-video. This directs the host to run bundled PowerShell scripts with user-supplied parameters."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "| Image-to-Video | `scripts/gen_video.ps1 -Prompt \"...\" -Image \"https://...\"` |",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 20,
+            "line_end": 20
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "The SKILL.md quick reference gives a local script command for image-to-video. This directs the host to run bundled PowerShell scripts with user-supplied parameters."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "| Multi-image Video | `scripts/gen_video.ps1 -Prompt \"...\" -Image \"https://a.png\",\"https://b.png\"` |",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 21,
+            "line_end": 21
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "The SKILL.md quick reference gives a local script command for multi-image video. This directs the host to run bundled PowerShell scripts with user-supplied parameters."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "| Keyframes Animation | `scripts/gen_video.ps1 -Prompt \"...\" -Image \"https://a.png\",\"https://b.png\" ",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 22,
+            "line_end": 22
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "The SKILL.md quick reference gives a local script command for keyframe animation. This directs the host to run bundled PowerShell scripts with user-supplied parameters."
+      },
+      {
+        "title": "Third-Party Prompt and Media Transfer",
+        "description": "The scripts serialize prompts, image URLs, and generation settings and send them to Agnes AI with bearer authentication. Users need a clear consent boundary for this data transfer.",
+        "locations": [
+          {
+            "file": "scripts/gen_image.ps1",
+            "line_start": 71,
+            "line_end": 111
+          },
+          {
+            "file": "scripts/gen_video.ps1",
+            "line_start": 151,
+            "line_end": 166
+          },
+          {
+            "file": "scripts/gen_video.ps1",
+            "line_start": 223,
+            "line_end": 232
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.91,
+        "confidence_reasoning": "The code builds JSON bodies from user prompt parameters and calls hardcoded Agnes API endpoints with Authorization headers."
+      },
+      {
+        "title": "Prompts and Image Inputs Logged to Console",
+        "description": "The scripts print full prompts and generation settings before sending requests. Sensitive creative briefs or reference URLs could be retained in terminal logs.",
+        "locations": [
+          {
+            "file": "scripts/gen_image.ps1",
+            "line_start": 96,
+            "line_end": 99
+          },
+          {
+            "file": "scripts/gen_video.ps1",
+            "line_start": 144,
+            "line_end": 149
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.87,
+        "confidence_reasoning": "The Write-Host statements directly include the Prompt value and related settings during normal script execution."
+      }
+    ],
+    "low_findings": [
       {
         "title": "Unscanned file (binary) — manual review required",
         "description": "[unscanned: binary]",
@@ -3965,11 +3945,11 @@
             "line_end": 1
           }
         ],
-        "review_kind": "false_positive",
+        "review_kind": "security",
         "source_category": "metadata",
         "source_severity": "low",
         "confidence": 1,
-        "confidence_reasoning": "Force-confirmed metadata/low static finding; AI dismissal overridden."
+        "confidence_reasoning": "Force-confirmed metadata/low static finding; AI false-positive verdict rejected."
       },
       {
         "title": "Unscanned file (binary) — manual review required",
@@ -3981,11 +3961,11 @@
             "line_end": 1
           }
         ],
-        "review_kind": "false_positive",
+        "review_kind": "security",
         "source_category": "metadata",
         "source_severity": "low",
         "confidence": 1,
-        "confidence_reasoning": "Force-confirmed metadata/low static finding; AI dismissal overridden."
+        "confidence_reasoning": "Force-confirmed metadata/low static finding; AI false-positive verdict rejected."
       },
       {
         "title": "Unscanned file (binary) — manual review required",
@@ -3997,136 +3977,137 @@
             "line_end": 1
           }
         ],
-        "review_kind": "false_positive",
+        "review_kind": "security",
         "source_category": "metadata",
         "source_severity": "low",
         "confidence": 1,
-        "confidence_reasoning": "Force-confirmed metadata/low static finding; AI dismissal overridden."
+        "confidence_reasoning": "Force-confirmed metadata/low static finding; AI false-positive verdict rejected."
       }
     ],
     "dangerous_patterns": [],
     "files_scanned": 11,
     "total_lines": 1577,
     "audit_model": "codex",
-    "audited_at": "2026-07-05T05:12:35.729Z",
+    "audited_at": "2026-07-09T07:27:51.065Z",
     "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Create Images and Videos with Agnes AI",
-    "value_statement": "Creative teams need a quick way to turn prompts and reference images into visual assets. VisionCraft drives Agnes AI scripts for image generation, video generation, and keyframe animation.",
+    "value_statement": "Creative teams need fast ways to turn visual ideas into generated media. VisionCraft guides Claude, Codex, and Claude Code through Agnes AI image and video workflows.",
     "seo_keywords": [
+      "VisionCraft",
+      "Agnes AI",
+      "AI image generation",
+      "AI video generation",
       "Claude",
       "Codex",
       "Claude Code",
-      "VisionCraft",
-      "Agnes AI",
-      "image generation skill",
-      "video generation skill",
-      "text-to-image",
-      "text-to-video",
+      "text to image",
+      "text to video",
       "keyframe animation"
     ],
     "actual_capabilities": [
-      "Generates images from text prompts with ratio and size options.",
-      "Transforms images from public URLs or data URIs through image-to-image requests.",
-      "Creates videos from text prompts with duration, frame rate, resolution, and seed controls.",
-      "Animates one or more reference images, including keyframe transitions.",
-      "Polls Agnes video tasks and prints a MEDIA URL when rendering completes."
+      "Generates images from text prompts with size and aspect ratio controls.",
+      "Transforms existing image URLs or data URIs with image-to-image prompts.",
+      "Creates videos from text prompts using configurable ratio, duration, frame rate, and seed values.",
+      "Animates one reference image or uses multiple images for guided video generation.",
+      "Supports keyframe animation between two or more image references.",
+      "Prints a MEDIA URL when Agnes AI returns a hosted image or video."
     ],
     "limitations": [
-      "Requires PowerShell 7 and a valid Agnes AI API key.",
-      "Sends prompts and reference image URLs to the Agnes AI service.",
-      "Video rendering can take several minutes and may time out before completion.",
-      "Built for URL-based or data URI image inputs, not direct local image editing."
+      "Requires PowerShell 7+ and is documented as Windows-first.",
+      "Requires a valid Agnes AI API key stored in AGNES_API_KEY.",
+      "Sends prompts, image references, and generation settings to the Agnes AI API.",
+      "Video jobs can take many minutes and may require manual polling after timeout."
     ],
     "use_cases": [
       {
-        "title": "Design Campaign Visuals",
-        "description": "Create posters, product hero images, and concept art from written briefs.",
+        "title": "Produce Campaign Visuals",
+        "description": "Generate product posters, social covers, and concept images from brand prompts.",
         "target_user": "Marketing designer"
       },
       {
-        "title": "Produce Short Video Concepts",
-        "description": "Turn prompts or reference images into short animated clips for review.",
-        "target_user": "Content producer"
+        "title": "Prototype Video Concepts",
+        "description": "Create short cinematic clips to test motion ideas before production.",
+        "target_user": "Video producer"
       },
       {
-        "title": "Prototype Product Stories",
-        "description": "Generate keyframes and transitions to explore product scenes before production.",
-        "target_user": "Product team"
+        "title": "Animate Reference Frames",
+        "description": "Turn still images or keyframes into smooth transitions for storyboards and previews.",
+        "target_user": "Creative director"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Create a Simple Image",
+        "title": "Generate a Simple Image",
         "scenario": "Beginner text-to-image request",
-        "prompt": "Use VisionCraft to generate a 16:9 image of a modern workspace with warm lighting and clean product details. Return the MEDIA URL."
+        "prompt": "Use VisionCraft to create a square image of [subject] in [style] with [lighting] and [mood]."
       },
       {
-        "title": "Restyle a Reference Image",
+        "title": "Restyle an Existing Image",
         "scenario": "Intermediate image-to-image request",
-        "prompt": "Use VisionCraft to transform this public image URL into a rainy cyberpunk night scene. Preserve the main composition and camera angle."
+        "prompt": "Use VisionCraft to transform this image URL into [new style]. Preserve [important elements] and change [target elements]."
       },
       {
-        "title": "Animate a Reference Photo",
-        "scenario": "Intermediate image-to-video request",
-        "prompt": "Use VisionCraft to animate this reference photo as a subtle four-second cinematic shot. Keep the face and clothing consistent."
+        "title": "Create a Short Video",
+        "scenario": "Advanced text-to-video request",
+        "prompt": "Use VisionCraft to create a [duration] [aspect ratio] video of [subject] doing [action] with [camera movement]."
       },
       {
-        "title": "Build a Keyframe Transition",
-        "scenario": "Advanced multi-image video request",
-        "prompt": "Use VisionCraft with two public image URLs to create a smooth keyframe transition. Match lighting, preserve character identity, and return the final MEDIA URL."
+        "title": "Animate Keyframes",
+        "scenario": "Advanced multi-image animation request",
+        "prompt": "Use VisionCraft keyframe mode to transition from these images. Maintain [identity], [camera angle], and [visual style]."
       }
     ],
     "output_examples": [
       {
-        "input": "Generate a 16:9 poster of a futuristic city marketplace with neon lighting.",
-        "output": "Image generated. The result is returned as a MEDIA URL for the requested poster."
+        "input": "Generate a cinematic harbor city image at sunset.",
+        "output": "VisionCraft returns a hosted image URL and reports the requested size and generation time."
       },
       {
-        "input": "Animate this portrait with gentle breathing motion and moving background lights.",
-        "output": "Video task completed. The final clip is returned as a MEDIA URL with duration and resolution details."
+        "input": "Animate this portrait with subtle motion for an eight second vertical clip.",
+        "output": "VisionCraft creates a video task, polls for completion, and returns the final hosted video URL."
       },
       {
-        "input": "Create a smooth transition between these two scene images.",
-        "output": "Keyframe animation completed. The output link points to a rendered video transition."
+        "input": "Create a smooth transition between two supplied keyframe images.",
+        "output": "VisionCraft uses keyframe mode and returns a generated transition video when the job completes."
       }
     ],
     "best_practices": [
-      "Set AGNES_API_KEY before using the skill and never place real keys in prompts.",
-      "Give prompts a subject, scene, motion, style, lighting, and composition goal.",
-      "Use ratio and duration controls to match the final channel before rendering."
+      "Use clear prompts that describe subject, scene, style, lighting, and composition.",
+      "State what to preserve when transforming or animating an existing image.",
+      "Use ratio and duration shortcuts before changing low-level frame settings."
     ],
     "anti_patterns": [
-      "Do not send confidential prompts or private image URLs unless Agnes AI processing is acceptable.",
-      "Do not rely on vague prompts for keyframe animation that needs identity consistency.",
-      "Do not request local downloads unless a local copy is actually needed."
+      "Do not include private, regulated, or confidential content in prompts without approval.",
+      "Do not paste real API keys into prompts, scripts, issues, or documentation.",
+      "Do not expect long video jobs to finish instantly or without polling."
     ],
     "faq": [
       {
-        "question": "What does VisionCraft generate?",
-        "answer": "It generates images and short videos through Agnes AI using prompt and image-reference workflows."
+        "question": "What does VisionCraft create?",
+        "answer": "It creates AI images, AI videos, image transformations, image animations, multi-image videos, and keyframe transitions."
       },
       {
-        "question": "Which tools can use this skill?",
-        "answer": "The report lists support for Claude, Codex, and Claude Code."
+        "question": "Which service does it use?",
+        "answer": "It uses Agnes AI API endpoints through bundled PowerShell scripts."
       },
       {
-        "question": "Does it require an API key?",
-        "answer": "Yes. It requires an AGNES_API_KEY environment variable before scripts can call Agnes AI."
+        "question": "Does it need an API key?",
+        "answer": "Yes. The scripts require AGNES_API_KEY in the environment before requests can run."
       },
       {
-        "question": "Can it animate existing images?",
-        "answer": "Yes. It accepts public image URLs or data URIs for image-to-video and multi-image video workflows."
+        "question": "Can it work from existing images?",
+        "answer": "Yes. It accepts public image URLs and documented data URI inputs for image-to-image and video workflows."
       },
       {
-        "question": "Can it make transitions between two images?",
-        "answer": "Yes. The keyframe mode creates a smooth transition between two or more reference images."
+        "question": "Where are results returned?",
+        "answer": "The scripts print a MEDIA URL for the generated image or video when the service returns one."
       },
       {
-        "question": "Does it save generated media locally?",
-        "answer": "No by default. The skill returns hosted MEDIA URLs and advises downloading only when the user asks."
+        "question": "What should users review before running it?",
+        "answer": "Users should review external API use, prompt privacy, image URL privacy, and local PowerShell script execution."
       }
     ]
   },

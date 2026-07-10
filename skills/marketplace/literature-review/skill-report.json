@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T01:08:17.836Z",
+    "generated_at": "2026-07-09T16:25:50.589Z",
     "slug": "davila7-literature-review",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/scientific/literature-review",
     "source_ref": "main",
@@ -23,8 +23,8 @@
   },
   "skill": {
     "name": "literature-review",
-    "description": "Plan, conduct, synthesize, and format systematic literature reviews using academic search workflows, citation verification, result processing, and PDF generation helpers.",
-    "summary": "Guides systematic literature reviews from search planning through citation checks and PDF output.",
+    "description": "Create systematic literature reviews with structured search planning, citation verification, search result processing, and markdown-to-PDF document generation.",
+    "summary": "Build systematic literature reviews with search workflows, verified citations, and formatted outputs.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
@@ -32,8 +32,8 @@
     "tags": [
       "literature-review",
       "systematic-review",
-      "citations",
-      "academic-research",
+      "research-synthesis",
+      "citation-verification",
       "pdf-generation"
     ],
     "supported_tools": [
@@ -49,30 +49,30 @@
     "category": "research"
   },
   "security_audit": {
-    "risk_level": "medium",
+    "risk_level": "high",
     "is_blocked": false,
-    "safe_to_publish": true,
+    "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "The review found real but bounded risks in helper scripts that call pandoc, write output files, and contact DOI.org and Crossref for citation checks. Most static findings in SKILL.md and reference files are false positives caused by Markdown code fences, inline examples, academic URLs, and review-template text. One semantic concern remains: the documentation includes host package installation commands that should require explicit consent.",
+    "summary": "Most static findings are false positives from Markdown backticks, academic search terminology, and public reference links. Confirmed risks include pandoc execution on user-supplied inputs, unconstrained report writes, and expected DOI metadata requests. No prompt injection attempt or malicious exfiltration intent was found in the reviewed files.",
     "remediation": [
       {
-        "issue": "Pandoc is invoked on user-supplied paths.",
-        "suggestion": "Restrict input, output, template, and citation-style paths to the workspace, reject parent traversal by default, and ask before running PDF generation.",
+        "issue": "Pandoc receives user-controlled paths without option guarding.",
+        "suggestion": "Reject filenames beginning with a dash, insert -- before input paths, and restrict template and output paths to the project workspace.",
         "severity": "high"
       },
       {
-        "issue": "Helper scripts can overwrite output files.",
-        "suggestion": "Check whether target files already exist, require confirmation before overwriting, and document where reports and processed results are written.",
+        "issue": "Scripts write output files without destination constraints.",
+        "suggestion": "Require explicit output paths, warn before overwriting existing files, and keep generated reports inside the current workspace.",
         "severity": "medium"
       },
       {
-        "issue": "Citation verification sends DOI values to external services.",
-        "suggestion": "Disclose DOI.org and Crossref requests before verification and keep the existing timeouts and rate limiting.",
+        "issue": "Citation verification makes outbound DOI and Crossref requests.",
+        "suggestion": "Document the network domains, request user confirmation before verification, and provide an offline mode for sensitive drafts.",
         "severity": "low"
       },
       {
-        "issue": "Documentation includes package manager installation commands.",
-        "suggestion": "Move install commands into a manual setup section and require explicit user approval before running pip, brew, apt-get, or TeX installation commands.",
+        "issue": "Setup guidance uses unpinned package installation commands.",
+        "suggestion": "Pin package versions where practical and separate optional setup commands from the main review workflow.",
         "severity": "medium"
       }
     ],
@@ -329,86 +329,6 @@
             "file": "SKILL.md",
             "line_start": 360,
             "line_end": 361
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 361,
-            "line_end": 362
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 362,
-            "line_end": 380
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 380,
-            "line_end": 445
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 445,
-            "line_end": 491
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 491,
-            "line_end": 521
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 521,
-            "line_end": 522
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 522,
-            "line_end": 523
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 523,
-            "line_end": 526
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 526,
-            "line_end": 527
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 527,
-            "line_end": 530
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 530,
-            "line_end": 552
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 552,
-            "line_end": 554
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 554,
-            "line_end": 557
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 557,
-            "line_end": 565
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 565,
-            "line_end": 568
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 568,
-            "line_end": 570
           }
         ]
       },
@@ -1419,554 +1339,568 @@
       {
         "id": "blocker:assets/review_template.md:213:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged text is academic review guidance or a template placeholder, not system or network reconnaissance. It does not collect host details, enumerate networks, or instruct probing."
+        "confidence": 0.95,
+        "reason": "The flagged phrase is ordinary literature review terminology, such as access, limitations, or common pitfalls. No system or network reconnaissance intent is present."
       },
       {
         "id": "blocker:references/database_strategies.md:310:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged text is academic review guidance or a template placeholder, not system or network reconnaissance. It does not collect host details, enumerate networks, or instruct probing."
+        "confidence": 0.95,
+        "reason": "The flagged phrase is ordinary literature review terminology, such as access, limitations, or common pitfalls. No system or network reconnaissance intent is present."
       },
       {
         "id": "blocker:references/database_strategies.md:26:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged text is academic review guidance or a template placeholder, not system or network reconnaissance. It does not collect host details, enumerate networks, or instruct probing."
+        "confidence": 0.95,
+        "reason": "The flagged phrase is ordinary literature review terminology, such as access, limitations, or common pitfalls. No system or network reconnaissance intent is present."
       },
       {
         "id": "external_commands:scripts/generate_pdf.py:46:python-subprocess-run",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a hardcoded pandoc version check with shell=False and no user-controlled command name or arguments. It does not create a command injection path."
+        "confidence": 0.91,
+        "reason": "This subprocess call is a hardcoded dependency check with no user-controlled command or shell invocation. It does not create a command injection path."
       },
       {
         "id": "external_commands:scripts/generate_pdf.py:91:python-subprocess-run",
         "verdict": "confirmed",
-        "confidence": 0.68,
-        "reason": "This runs the fixed pandoc binary with shell=False, but user-supplied input, output, citation style, and template paths flow into an external process. That can read or write files through pandoc and needs path validation and user confirmation.",
-        "severity": "high"
+        "confidence": 0.82,
+        "severity": "high",
+        "reason": "The script invokes pandoc on user-supplied paths, which executes an external system binary and processes untrusted document content. The argument list avoids shell=True, but the external conversion step remains a real execution risk."
       },
       {
         "id": "external_commands:scripts/generate_pdf.py:110:python-subprocess-run",
         "verdict": "false_positive",
         "confidence": 0.91,
-        "reason": "The dependency check iterates over hardcoded version commands for pandoc and xelatex. No user input reaches the command string, so this is bounded dependency probing."
+        "reason": "This subprocess call is a hardcoded dependency check with no user-controlled command or shell invocation. It does not create a command injection path."
       },
       {
         "id": "network:scripts/search_databases.py:41:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This only formats a DOI hyperlink in Markdown output. It does not perform a network request or contact the hardcoded URL."
+        "confidence": 0.93,
+        "reason": "This URL is formatted into markdown or citation text and is not used to make a network request. It is normal bibliographic output."
       },
       {
         "id": "filesystem:scripts/search_databases.py:296:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "reason": "The script writes formatted results to the CLI-provided output path without restricting absolute paths or parent traversal. This is expected functionality but can overwrite files within the agent permissions.",
-        "severity": "medium"
+        "confidence": 0.76,
+        "severity": "medium",
+        "reason": "The script writes to a user-provided output path without constraining the destination. This is intended behavior, but it can overwrite files if the agent or user supplies a sensitive path."
       },
       {
         "id": "network:scripts/verify_citations.py:16:python-http-libraries",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The requests session is used for outbound DOI and Crossref checks. This is legitimate citation verification, but it is still real network activity that should be disclosed.",
-        "severity": "low"
+        "confidence": 0.86,
+        "severity": "low",
+        "reason": "The script creates a requests session used for outbound citation verification. The network use is legitimate, but it sends citation identifiers to external services."
       },
       {
         "id": "network:scripts/verify_citations.py:32:hardcoded-url",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "The script sends extracted DOI values to doi.org over the network. The endpoint is legitimate for citation verification, but user document identifiers leave the local workspace.",
-        "severity": "low"
+        "confidence": 0.84,
+        "severity": "low",
+        "reason": "The hardcoded DOI.org and Crossref API URLs are used for real outbound metadata requests. This is transparent citation verification, but it discloses DOI values to third-party services."
       },
       {
         "id": "network:scripts/verify_citations.py:47:hardcoded-url",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "The script queries Crossref with extracted DOI values to retrieve citation metadata. This is expected behavior but is an outbound request to an external service.",
-        "severity": "low"
+        "confidence": 0.84,
+        "severity": "low",
+        "reason": "The hardcoded DOI.org and Crossref API URLs are used for real outbound metadata requests. This is transparent citation verification, but it discloses DOI values to third-party services."
       },
       {
         "id": "network:scripts/verify_citations.py:157:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line only appends a DOI URL string to a formatted citation. The actual network requests are separately adjudicated at the DOI and Crossref calls."
+        "confidence": 0.93,
+        "reason": "This URL is formatted into markdown or citation text and is not used to make a network request. It is normal bibliographic output."
       },
       {
         "id": "filesystem:scripts/verify_citations.py:216:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.69,
-        "reason": "The citation verifier writes a report path derived from the supplied Markdown path without asking before overwriting an existing report. This is normal output behavior but still creates or overwrites files.",
-        "severity": "medium"
+        "confidence": 0.74,
+        "severity": "medium",
+        "reason": "The script writes a citation report beside the provided markdown file without confirming the destination. This is expected output, but it is still a filesystem write side effect."
       },
       {
         "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:97:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:99:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:107:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:108:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:109:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:113:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:120:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:124:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:126:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:133:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:134:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:139:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:144:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:146:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:167:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:173:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:200:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:202:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:212:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:220:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:240:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:242:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:258:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:266:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:270:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:273:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:274:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:275:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:276:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:301:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:302:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:309:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:312:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:313:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:314:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:320:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:321:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:323:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:334:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:344:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:357:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:358:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:359:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:360:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:361:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:362:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:380:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:445:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:491:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:521:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:522:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:523:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:526:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:527:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:530:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:552:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:554:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:557:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:565:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "external_commands:SKILL.md:568:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The flagged text is Markdown inline code or fenced documentation in SKILL.md, not Ruby backtick execution in runtime code. Executable helper-script behavior is adjudicated in the Python script findings."
+        "confidence": 0.92,
+        "reason": "The finding is Markdown backtick or code-fence formatting in documentation, not Ruby shell backtick execution. Any listed command requires explicit user or agent execution."
       },
       {
         "id": "network:SKILL.md:316:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "The hardcoded URL is a documentation link to an academic or citation resource. The line does not initiate a request or hide an exfiltration endpoint."
+        "reason": "The URL appears in documentation as an external academic reference or tool link. The skill does not automatically fetch it from this line."
       },
       {
         "id": "network:SKILL.md:384:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "The hardcoded URL is a documentation link to an academic or citation resource. The line does not initiate a request or hide an exfiltration endpoint."
+        "reason": "The URL appears in documentation as an external academic reference or tool link. The skill does not automatically fetch it from this line."
       },
       {
         "id": "network:SKILL.md:535:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "The hardcoded URL is a documentation link to an academic or citation resource. The line does not initiate a request or hide an exfiltration endpoint."
+        "reason": "The URL appears in documentation as an external academic reference or tool link. The skill does not automatically fetch it from this line."
       },
       {
         "id": "network:SKILL.md:536:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "The hardcoded URL is a documentation link to an academic or citation resource. The line does not initiate a request or hide an exfiltration endpoint."
+        "reason": "The URL appears in documentation as an external academic reference or tool link. The skill does not automatically fetch it from this line."
       },
       {
         "id": "network:SKILL.md:537:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "The hardcoded URL is a documentation link to an academic or citation resource. The line does not initiate a request or hide an exfiltration endpoint."
+        "reason": "The URL appears in documentation as an external academic reference or tool link. The skill does not automatically fetch it from this line."
       },
       {
         "id": "network:SKILL.md:540:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "The hardcoded URL is a documentation link to an academic or citation resource. The line does not initiate a request or hide an exfiltration endpoint."
+        "reason": "The URL appears in documentation as an external academic reference or tool link. The skill does not automatically fetch it from this line."
       },
       {
         "id": "network:SKILL.md:541:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "The hardcoded URL is a documentation link to an academic or citation resource. The line does not initiate a request or hide an exfiltration endpoint."
+        "reason": "The URL appears in documentation as an external academic reference or tool link. The skill does not automatically fetch it from this line."
       },
       {
         "id": "network:SKILL.md:542:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "The hardcoded URL is a documentation link to an academic or citation resource. The line does not initiate a request or hide an exfiltration endpoint."
+        "reason": "The URL appears in documentation as an external academic reference or tool link. The skill does not automatically fetch it from this line."
       },
       {
         "id": "network:SKILL.md:545:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "The hardcoded URL is a documentation link to an academic or citation resource. The line does not initiate a request or hide an exfiltration endpoint."
+        "reason": "The URL appears in documentation as an external academic reference or tool link. The skill does not automatically fetch it from this line."
       },
       {
         "id": "network:SKILL.md:546:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "The hardcoded URL is a documentation link to an academic or citation resource. The line does not initiate a request or hide an exfiltration endpoint."
+        "reason": "The URL appears in documentation as an external academic reference or tool link. The skill does not automatically fetch it from this line."
       },
       {
         "id": "network:SKILL.md:547:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "The hardcoded URL is a documentation link to an academic or citation resource. The line does not initiate a request or hide an exfiltration endpoint."
+        "reason": "The URL appears in documentation as an external academic reference or tool link. The skill does not automatically fetch it from this line."
       },
       {
         "id": "blocker:SKILL.md:218:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged text is academic review guidance or a template placeholder, not system or network reconnaissance. It does not collect host details, enumerate networks, or instruct probing."
+        "confidence": 0.95,
+        "reason": "The flagged phrase is ordinary literature review terminology, such as access, limitations, or common pitfalls. No system or network reconnaissance intent is present."
       },
       {
         "id": "blocker:SKILL.md:428:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged text is academic review guidance or a template placeholder, not system or network reconnaissance. It does not collect host details, enumerate networks, or instruct probing."
+        "confidence": 0.95,
+        "reason": "The flagged phrase is ordinary literature review terminology, such as access, limitations, or common pitfalls. No system or network reconnaissance intent is present."
       },
       {
         "id": "obfuscation:scripts/search_databases.py:1:heuristic-multiple-bracket-chains-9-jsfuck-obfus",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 1 is a normal Python shebang, and the file is readable procedural Python for formatting search results. The bracket-chain heuristic appears to be triggered by formatting strings, not obfuscation."
+        "confidence": 0.97,
+        "reason": "The referenced file is ordinary Python source with f-strings and dictionary syntax, not JavaScript or JSFuck-style obfuscation. Line 1 is a normal Python shebang."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Host Package Installation Guidance",
-        "description": "The skill documentation instructs installation of Python and system packages such as requests, pandoc, xelatex, MacTeX, and texlive-xetex. These commands can modify the host environment and should require explicit user consent before execution.",
+        "title": "Pandoc Argument Injection Risk",
+        "description": "scripts/generate_pdf.py passes the user-provided markdown file directly to pandoc without a -- delimiter or option-like filename rejection. A crafted filename beginning with -- can be interpreted as a pandoc option.",
+        "severity": "high",
+        "locations": [
+          {
+            "file": "scripts/generate_pdf.py",
+            "line_start": 52,
+            "line_end": 91
+          }
+        ],
+        "confidence": 0.74,
+        "confidence_reasoning": "The command list includes markdown_file before fixed pandoc options and does not add -- before user-controlled paths. The risk depends on crafted local filenames, so confidence is high but not maximal."
+      },
+      {
+        "title": "Unpinned Package Installation Guidance",
+        "description": "SKILL.md instructs users to install Python and system packages without version pins. This can change host state and fetch latest packages from external repositories.",
         "severity": "medium",
         "locations": [
           {
@@ -1975,8 +1909,8 @@
             "line_end": 565
           }
         ],
-        "confidence": 0.86,
-        "confidence_reasoning": "The dependency section directly lists package manager commands for pip, brew, and apt-get. The commands are legitimate setup guidance, but they are host-modifying actions."
+        "confidence": 0.8,
+        "confidence_reasoning": "The installation commands are explicitly documented for pip, brew, and apt-get. The commands are setup guidance, not automatic execution, which limits the severity."
       }
     ],
     "critical_findings": [],
@@ -1994,8 +1928,24 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "high",
-        "confidence": 0.68,
-        "confidence_reasoning": "This runs the fixed pandoc binary with shell=False, but user-supplied input, output, citation style, and template paths flow into an external process. That can read or write files through pandoc and needs path validation and user confirmation."
+        "confidence": 0.82,
+        "confidence_reasoning": "The script invokes pandoc on user-supplied paths, which executes an external system binary and processes untrusted document content. The argument list avoids shell=True, but the external conversion step remains a real execution risk."
+      },
+      {
+        "title": "Pandoc Argument Injection Risk",
+        "description": "scripts/generate_pdf.py passes the user-provided markdown file directly to pandoc without a -- delimiter or option-like filename rejection. A crafted filename beginning with -- can be interpreted as a pandoc option.",
+        "locations": [
+          {
+            "file": "scripts/generate_pdf.py",
+            "line_start": 52,
+            "line_end": 91
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "high",
+        "confidence": 0.74,
+        "confidence_reasoning": "The command list includes markdown_file before fixed pandoc options and does not add -- before user-controlled paths. The risk depends on crafted local filenames, so confidence is high but not maximal."
       }
     ],
     "medium_findings": [
@@ -2012,8 +1962,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The script writes formatted results to the CLI-provided output path without restricting absolute paths or parent traversal. This is expected functionality but can overwrite files within the agent permissions."
+        "confidence": 0.76,
+        "confidence_reasoning": "The script writes to a user-provided output path without constraining the destination. This is intended behavior, but it can overwrite files if the agent or user supplies a sensitive path."
       },
       {
         "title": "Python file write/append",
@@ -2028,12 +1978,12 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.69,
-        "confidence_reasoning": "The citation verifier writes a report path derived from the supplied Markdown path without asking before overwriting an existing report. This is normal output behavior but still creates or overwrites files."
+        "confidence": 0.74,
+        "confidence_reasoning": "The script writes a citation report beside the provided markdown file without confirming the destination. This is expected output, but it is still a filesystem write side effect."
       },
       {
-        "title": "Host Package Installation Guidance",
-        "description": "The skill documentation instructs installation of Python and system packages such as requests, pandoc, xelatex, MacTeX, and texlive-xetex. These commands can modify the host environment and should require explicit user consent before execution.",
+        "title": "Unpinned Package Installation Guidance",
+        "description": "SKILL.md instructs users to install Python and system packages without version pins. This can change host state and fetch latest packages from external repositories.",
         "locations": [
           {
             "file": "SKILL.md",
@@ -2044,8 +1994,8 @@
         "review_kind": "security",
         "source_category": "semantic",
         "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "The dependency section directly lists package manager commands for pip, brew, and apt-get. The commands are legitimate setup guidance, but they are host-modifying actions."
+        "confidence": 0.8,
+        "confidence_reasoning": "The installation commands are explicitly documented for pip, brew, and apt-get. The commands are setup guidance, not automatic execution, which limits the severity."
       }
     ],
     "low_findings": [
@@ -2062,8 +2012,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.82,
-        "confidence_reasoning": "The requests session is used for outbound DOI and Crossref checks. This is legitimate citation verification, but it is still real network activity that should be disclosed."
+        "confidence": 0.86,
+        "confidence_reasoning": "The script creates a requests session used for outbound citation verification. The network use is legitimate, but it sends citation identifiers to external services."
       },
       {
         "title": "Hardcoded URL",
@@ -2078,8 +2028,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "The script sends extracted DOI values to doi.org over the network. The endpoint is legitimate for citation verification, but user document identifiers leave the local workspace."
+        "confidence": 0.84,
+        "confidence_reasoning": "The hardcoded DOI.org and Crossref API URLs are used for real outbound metadata requests. This is transparent citation verification, but it discloses DOI values to third-party services."
       },
       {
         "title": "Hardcoded URL",
@@ -2094,134 +2044,145 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "The script queries Crossref with extracted DOI values to retrieve citation metadata. This is expected behavior but is an outbound request to an external service."
+        "confidence": 0.84,
+        "confidence_reasoning": "The hardcoded DOI.org and Crossref API URLs are used for real outbound metadata requests. This is transparent citation verification, but it discloses DOI values to third-party services."
       }
     ],
     "dangerous_patterns": [],
     "files_scanned": 7,
     "total_lines": 2251,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T01:08:17.836Z",
-    "agent_auto_install_policy": "allowed",
+    "audited_at": "2026-07-09T16:25:50.589Z",
+    "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Conduct Systematic Literature Reviews",
-    "value_statement": "Researchers need repeatable search, screening, citation, and synthesis workflows. This skill helps Claude, Codex, and Claude Code produce structured reviews with verified references and formatted outputs.",
+    "user_title": "Create Systematic Literature Reviews",
+    "value_statement": "Literature reviews require careful searches, screening, citation checks, and reproducible documentation. This skill structures the workflow and prepares polished markdown or PDF outputs.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
-      "systematic literature review",
+      "literature review",
+      "systematic review",
       "research synthesis",
       "citation verification",
-      "PubMed workflow",
+      "PubMed search",
       "academic writing",
-      "meta-analysis support",
-      "PDF literature review"
+      "PDF generation"
     ],
     "actual_capabilities": [
-      "Guides review planning with research questions, scope, databases, and inclusion criteria.",
-      "Provides database search strategies for PubMed, bioRxiv, arXiv, Semantic Scholar, and biomedical sources.",
-      "Processes exported search-result JSON for deduplication, ranking, year filtering, summaries, and formatted output.",
-      "Verifies DOI metadata through DOI.org and Crossref and generates citation reports.",
-      "Formats citations in common styles including APA, Nature, and Vancouver examples.",
-      "Converts Markdown review documents to PDF through pandoc and xelatex when dependencies are installed."
+      "Guides systematic review planning with PICO, scope, databases, and inclusion criteria.",
+      "Documents search strategies for PubMed, bioRxiv, arXiv, Semantic Scholar, and biomedical sources.",
+      "Processes search result files by deduplicating, filtering by year, ranking, and exporting formats.",
+      "Verifies DOI metadata through DOI and Crossref services, then writes a citation report.",
+      "Generates PDF output from markdown through pandoc when local dependencies are installed."
     ],
     "limitations": [
-      "The bundled search script processes exported results; it does not search every database directly.",
-      "Citation verification requires network access to DOI.org and Crossref.",
-      "PDF generation requires local pandoc and xelatex installations.",
-      "Systematic-review quality still depends on human screening, domain judgment, and source access."
+      "Does not retrieve paywalled full text without user-provided access.",
+      "Network citation checks send DOI values to public DOI and Crossref services.",
+      "PDF generation depends on local pandoc and xelatex installations.",
+      "Review quality still depends on user screening and domain expertise."
     ],
     "use_cases": [
       {
-        "title": "Build a Biomedical Review",
-        "target_user": "Biomedical researcher",
-        "description": "Plan searches, screen studies, verify DOIs, and produce a structured review for a research question."
+        "title": "Plan a Systematic Review",
+        "description": "Define the research question, databases, search terms, screening stages, and quality assessment before searching.",
+        "target_user": "Researcher"
       },
       {
-        "title": "Draft a Thesis Literature Chapter",
-        "target_user": "Graduate student",
-        "description": "Organize sources by themes, document methods, and format citations consistently for an academic chapter."
+        "title": "Organize Thesis Sources",
+        "description": "Turn exported citations into deduplicated, themed literature notes with verified references.",
+        "target_user": "Graduate student"
       },
       {
-        "title": "Support Evidence Synthesis",
-        "target_user": "Research librarian",
-        "description": "Create reproducible search records, deduplicate exported results, and prepare review-ready source summaries."
+        "title": "Document Search Methods",
+        "description": "Create reproducible search strategy sections with dates, result counts, and database-specific syntax.",
+        "target_user": "Medical librarian"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Plan My Review",
-        "scenario": "Beginner planning request",
-        "prompt": "Use this skill to plan a literature review on [topic]. Define the research question, scope, databases, search terms, and inclusion criteria."
+        "title": "Start a Review",
+        "scenario": "Beginner planning prompt",
+        "prompt": "Create a structured literature review on [topic]. Use PubMed, preprint servers, and Semantic Scholar. Include search terms and citation checks."
       },
       {
-        "title": "Create Search Strategy",
-        "scenario": "Database search preparation",
-        "prompt": "Use this skill to create database-specific search strings for [topic]. Include PubMed, arXiv, Semantic Scholar, and field-specific sources."
+        "title": "Build a Protocol",
+        "scenario": "Intermediate systematic review setup",
+        "prompt": "Build a systematic review protocol for [question]. Define PICO, inclusion criteria, databases, screening stages, quality assessment, and outputs."
       },
       {
         "title": "Synthesize Results",
-        "scenario": "Review writing support",
-        "prompt": "Use this skill to synthesize these screened studies into themes. Compare findings, assess quality, identify gaps, and draft the results section."
+        "scenario": "Search result processing",
+        "prompt": "Synthesize findings from these search results: [paste citations]. Deduplicate entries, group themes, flag evidence quality, and prepare a review outline."
       },
       {
-        "title": "Prepare Publication Output",
-        "scenario": "Advanced review finalization",
-        "prompt": "Use this skill to verify citations, check review completeness, prepare a PRISMA-style summary, and generate a publication-ready Markdown and PDF workflow."
+        "title": "Map Evidence Gaps",
+        "scenario": "Advanced evidence mapping",
+        "prompt": "Conduct an advanced evidence map for [domain]. Compare database coverage, identify gaps, plan citation chaining, and prepare reproducible methods."
       }
     ],
     "output_examples": [
       {
-        "input": "Topic: CRISPR therapy for sickle cell disease, last ten years, biomedical focus.",
-        "output": "A review plan with a PICO question, PubMed and bioRxiv search strings, inclusion criteria, screening stages, and citation checks."
+        "input": "Review recent CRISPR therapies for sickle cell disease.",
+        "output": [
+          "Structured review outline with research question, databases, and inclusion criteria.",
+          "Search strategy table with PubMed, bioRxiv, and Semantic Scholar coverage.",
+          "Thematic synthesis sections with verified citation notes and PDF generation steps."
+        ]
       },
       {
-        "input": "Exported search results from several databases need cleanup and ranking.",
-        "output": "A deduplicated source list ranked by citation count, with publication years, abstracts, DOIs, and a search summary."
+        "input": "Check citations in a completed markdown review.",
+        "output": [
+          "DOI verification summary with verified and failed references.",
+          "Formatted citation suggestions in APA style.",
+          "A saved report file for audit and correction work."
+        ]
       },
       {
-        "input": "Draft review needs final quality checks and formatted references.",
-        "output": "A citation verification report, corrected reference guidance, and steps for producing a professional PDF from Markdown."
+        "input": "Prepare a thesis literature review draft from exported search results.",
+        "output": [
+          "Deduplicated source list with year filtering and ranking.",
+          "Theme-based organization for the results section.",
+          "Reproducible methods text with search dates and database counts."
+        ]
       }
     ],
     "best_practices": [
-      "Define the research question, scope, and inclusion criteria before searching.",
-      "Record every database, search string, date, filter, and result count for reproducibility.",
-      "Verify DOI metadata and review final references before sharing the review."
+      "Document every database, search string, date, filter, and result count before screening.",
+      "Use at least three complementary databases and include synonyms for each core concept.",
+      "Verify citations and review generated PDFs before sharing or submitting the work."
     ],
     "anti_patterns": [
-      "Using one database and treating the results as comprehensive.",
-      "Listing studies one by one without thematic synthesis or quality assessment.",
-      "Running PDF or package installation commands without checking dependencies and user approval."
+      "Do not rely on one database for a comprehensive or systematic review.",
+      "Do not treat preprints as peer-reviewed evidence without clear labeling.",
+      "Do not publish generated synthesis without human screening and quality assessment."
     ],
     "faq": [
       {
-        "question": "Does this skill search databases automatically?",
-        "answer": "It provides search workflows and processes exported results. Some searches require external tools, APIs, or manual database access."
+        "question": "Does it search databases automatically?",
+        "answer": "It guides searches and can process exported result files. Some database access depends on other tools or manual exports."
       },
       {
-        "question": "Can it verify citations?",
-        "answer": "Yes. The bundled citation script extracts DOIs, checks DOI.org, retrieves Crossref metadata, and writes a report."
+        "question": "Can it create a publishable PDF?",
+        "answer": "It can generate a PDF from markdown when pandoc and xelatex are installed locally."
       },
       {
-        "question": "Can it create PDFs?",
-        "answer": "Yes. The PDF helper calls pandoc and xelatex when those system dependencies are installed."
+        "question": "Does it verify citations?",
+        "answer": "Yes. The bundled verifier checks DOI resolution and Crossref metadata for citations in a markdown file."
       },
       {
         "question": "Is it suitable for systematic reviews?",
-        "answer": "Yes. It includes planning, screening, PRISMA-style documentation, quality assessment prompts, and reproducibility guidance."
+        "answer": "Yes. It includes PRISMA-style documentation, screening steps, and quality assessment guidance."
       },
       {
         "question": "Does it replace expert review?",
-        "answer": "No. Human reviewers must make inclusion decisions, evaluate study quality, and validate conclusions."
+        "answer": "No. It supports workflow and formatting, but users must judge study quality and conclusions."
       },
       {
-        "question": "Which AI tools can use it?",
-        "answer": "The report declares support for Claude, Codex, and Claude Code."
+        "question": "What data leaves my machine?",
+        "answer": "Citation verification sends DOI values to DOI.org and Crossref. Other network searches depend on chosen database tools."
       }
     ]
   },

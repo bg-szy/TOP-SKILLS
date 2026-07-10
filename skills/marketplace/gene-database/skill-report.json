@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T06:10:08.422Z",
+    "generated_at": "2026-07-09T15:55:00.178Z",
     "slug": "davila7-gene-database",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/scientific/gene-database",
     "source_ref": "main",
@@ -23,18 +23,18 @@
   },
   "skill": {
     "name": "gene-database",
-    "description": "Query NCBI Gene and Datasets APIs to search genes, fetch metadata, and run batch gene lookups for annotation workflows.",
-    "summary": "Search and annotate genes with NCBI Gene, E-utilities, and Datasets API workflows.",
+    "description": "Search NCBI Gene and retrieve gene metadata using E-utilities and NCBI Datasets workflows.",
+    "summary": "Search, fetch, and batch annotate NCBI Gene records for research workflows.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
     "license": "MIT",
     "tags": [
-      "bioinformatics",
-      "gene-annotation",
-      "NCBI",
       "genomics",
-      "datasets"
+      "ncbi",
+      "gene-annotation",
+      "bioinformatics",
+      "research-data"
     ],
     "supported_tools": [
       "claude",
@@ -54,21 +54,21 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "I found no prompt injection, hidden exfiltration, or malicious intent in the reviewed skill files. Most static findings are expected NCBI API usage, placeholder API-key documentation, Markdown examples, and gene identifier handling; the remaining confirmed issue is unrestricted overwrite behavior for a user-supplied batch output path.",
+    "summary": "The high env_access findings are false positives caused by NCBI API key parameters and placeholders, not secret harvesting. Confirmed risk is limited to intentional outbound HTTPS requests from Python scripts to NCBI APIs. No prompt injection, hidden command execution, or malicious data exfiltration intent was found.",
     "remediation": [
       {
-        "issue": "Unrestricted output overwrite",
-        "suggestion": "Before writing args.output, check whether the file exists and require an explicit overwrite flag or a safe default output path.",
-        "severity": "medium"
-      },
-      {
-        "issue": "API key handling in command examples",
-        "suggestion": "Recommend secure secret handling for NCBI keys, and warn users not to place real keys in shared prompts or logs.",
+        "issue": "Outbound NCBI requests expose query terms to a third-party service.",
+        "suggestion": "Document the external request behavior clearly and remind users not to submit sensitive unpublished gene lists without consent.",
         "severity": "low"
       },
       {
-        "issue": "External network disclosure",
-        "suggestion": "Document that gene queries, Gene IDs, and optional API keys are sent to official NCBI endpoints when scripts run.",
+        "issue": "API keys can appear in command history when passed as CLI arguments.",
+        "suggestion": "Add support for reading the NCBI API key from an environment variable or an interactive prompt.",
+        "severity": "low"
+      },
+      {
+        "issue": "The batch output option can overwrite an existing file path.",
+        "suggestion": "Warn before overwriting existing files or require an explicit force option.",
         "severity": "low"
       }
     ],
@@ -525,56 +525,6 @@
             "file": "scripts/query_gene.py",
             "line_start": 118,
             "line_end": 118
-          },
-          {
-            "file": "scripts/query_gene.py",
-            "line_start": 134,
-            "line_end": 134
-          },
-          {
-            "file": "scripts/query_gene.py",
-            "line_start": 142,
-            "line_end": 142
-          },
-          {
-            "file": "scripts/query_gene.py",
-            "line_start": 153,
-            "line_end": 153
-          },
-          {
-            "file": "scripts/query_gene.py",
-            "line_start": 163,
-            "line_end": 163
-          },
-          {
-            "file": "scripts/query_gene.py",
-            "line_start": 183,
-            "line_end": 183
-          },
-          {
-            "file": "scripts/query_gene.py",
-            "line_start": 190,
-            "line_end": 190
-          },
-          {
-            "file": "scripts/query_gene.py",
-            "line_start": 194,
-            "line_end": 194
-          },
-          {
-            "file": "scripts/query_gene.py",
-            "line_start": 198,
-            "line_end": 198
-          },
-          {
-            "file": "scripts/query_gene.py",
-            "line_start": 243,
-            "line_end": 243
-          },
-          {
-            "file": "scripts/query_gene.py",
-            "line_start": 247,
-            "line_end": 247
           }
         ]
       },
@@ -2330,1123 +2280,1411 @@
       {
         "id": "network:references/api_reference.md:369:http-client-library",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/api_reference.md:21:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/api_reference.md:55:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/api_reference.md:87:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/api_reference.md:129:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/api_reference.md:156:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/api_reference.md:171:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/api_reference.md:183:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/api_reference.md:203:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/api_reference.md:262:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/api_reference.md:282:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "env_access:references/api_reference.md:27:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is documentation for an optional NCBI API key or a placeholder value. It does not contain a real secret and does not read local environment variables."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:references/api_reference.md:191:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is documentation for an optional NCBI API key or a placeholder value. It does not contain a real secret and does not read local environment variables."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "blocker:references/api_reference.md:323:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/api_reference.md:334:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/api_reference.md:340:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/api_reference.md:354:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "network:references/common_workflows.md:205:python-http-libraries",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/common_workflows.md:212:python-http-libraries",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/common_workflows.md:323:python-http-libraries",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/common_workflows.md:332:python-http-libraries",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/common_workflows.md:167:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/common_workflows.md:210:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/common_workflows.md:254:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/common_workflows.md:308:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "network:references/common_workflows.md:330:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "env_access:references/common_workflows.md:47:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is documentation for an optional NCBI API key or a placeholder value. It does not contain a real secret and does not read local environment variables."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:references/common_workflows.md:50:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is documentation for an optional NCBI API key or a placeholder value. It does not contain a real secret and does not read local environment variables."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "blocker:references/common_workflows.md:53:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/common_workflows.md:54:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/common_workflows.md:112:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/common_workflows.md:157:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/common_workflows.md:274:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:references/common_workflows.md:327:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "network:scripts/batch_gene_lookup.py:14:python-http-libraries",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "network:scripts/batch_gene_lookup.py:78:python-http-libraries",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "network:scripts/batch_gene_lookup.py:131:python-http-libraries",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "network:scripts/batch_gene_lookup.py:53:hardcoded-url",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "network:scripts/batch_gene_lookup.py:109:hardcoded-url",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "filesystem:scripts/batch_gene_lookup.py:287:python-file-write-append",
-        "verdict": "confirmed",
-        "confidence": 0.88,
-        "reason": "The batch script writes to args.output with mode 'w'. A caller-provided path can overwrite an existing file if an agent or user supplies an unsafe destination.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.82,
+        "reason": "The file write is limited to the explicit --output path chosen by the user. It writes generated JSON results and does not perform hidden file access."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:41:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:48:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:57:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:72:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:73:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:96:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:103:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:113:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:125:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:126:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:147:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:153:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:158:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:183:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:190:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:197:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:209:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:276:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/batch_gene_lookup.py:279:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "blocker:scripts/batch_gene_lookup.py:135:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/batch_gene_lookup.py:136:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/batch_gene_lookup.py:161:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/batch_gene_lookup.py:162:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/batch_gene_lookup.py:197:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/batch_gene_lookup.py:199:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/batch_gene_lookup.py:200:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/batch_gene_lookup.py:213:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/batch_gene_lookup.py:214:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/batch_gene_lookup.py:219:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/batch_gene_lookup.py:224:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/batch_gene_lookup.py:275:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "network:scripts/fetch_gene_data.py:13:python-http-libraries",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "network:scripts/fetch_gene_data.py:74:python-http-libraries",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "network:scripts/fetch_gene_data.py:75:python-http-libraries",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "network:scripts/fetch_gene_data.py:112:python-http-libraries",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "network:scripts/fetch_gene_data.py:113:python-http-libraries",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "network:scripts/fetch_gene_data.py:146:python-http-libraries",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "network:scripts/fetch_gene_data.py:147:python-http-libraries",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "network:scripts/fetch_gene_data.py:17:hardcoded-url",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "env_access:scripts/fetch_gene_data.py:56:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/fetch_gene_data.py:62:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/fetch_gene_data.py:70:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/fetch_gene_data.py:71:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/fetch_gene_data.py:87:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/fetch_gene_data.py:94:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/fetch_gene_data.py:108:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/fetch_gene_data.py:109:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/fetch_gene_data.py:125:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/fetch_gene_data.py:131:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/fetch_gene_data.py:142:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/fetch_gene_data.py:143:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/fetch_gene_data.py:260:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/fetch_gene_data.py:262:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/fetch_gene_data.py:264:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "blocker:scripts/fetch_gene_data.py:100:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/fetch_gene_data.py:103:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/fetch_gene_data.py:223:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/fetch_gene_data.py:229:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/fetch_gene_data.py:235:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/fetch_gene_data.py:250:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/fetch_gene_data.py:251:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/fetch_gene_data.py:258:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "network:scripts/query_gene.py:14:python-http-libraries",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "network:scripts/query_gene.py:48:python-http-libraries",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "network:scripts/query_gene.py:88:python-http-libraries",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "network:scripts/query_gene.py:123:python-http-libraries",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "network:scripts/query_gene.py:19:hardcoded-url",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The script contacts fixed official NCBI endpoints for the advertised gene lookup workflow. I did not find a hidden endpoint, attacker-controlled URL, or unrelated exfiltration path."
+        "severity": "low",
+        "reason": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       },
       {
         "id": "env_access:scripts/query_gene.py:23:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:30:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:42:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:43:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:65:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:71:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:82:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:83:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:99:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:106:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:117:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:118:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:134:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:142:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:153:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:163:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:183:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:190:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:194:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:198:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:243:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "env_access:scripts/query_gene.py:247:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The api_key value is an optional function or CLI parameter used only for NCBI rate limits. There is no hardcoded secret or environment-variable harvesting at this location."
+        "confidence": 0.93,
+        "reason": "The finding refers to NCBI api_key parameters or placeholder text, not environment-variable access or embedded credentials. No hardcoded secret value is present."
       },
       {
         "id": "blocker:scripts/query_gene.py:166:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/query_gene.py:167:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/query_gene.py:215:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/query_gene.py:221:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/query_gene.py:238:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/query_gene.py:242:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:36:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:38:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:44:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:79:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:80:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:81:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:106:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:116:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:120:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:126:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:129:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:135:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:136:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:167:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:168:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:169:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "external_commands:SKILL.md:172:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is Markdown inline code or a fenced command example in SKILL.md. It is not Ruby backtick execution and is not executed by the skill file itself."
+        "confidence": 0.96,
+        "reason": "The matched backticks are Markdown formatting for commands, file names, or query examples. They are not Ruby backtick execution or command invocation."
       },
       {
         "id": "network:SKILL.md:90:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This documents official NCBI endpoints or request examples for the advertised gene lookup workflow. The destination is fixed to NCBI and is not a hidden exfiltration sink."
+        "confidence": 0.86,
+        "reason": "This occurrence is documentation or an example URL for NCBI APIs, not hidden network execution. The endpoint is disclosed as part of the skill workflow."
       },
       {
         "id": "blocker:SKILL.md:94:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:108:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:117:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:154:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched text is gene-data handling, example Gene IDs, HTTP status documentation, or parser validation. It is not host discovery, security reconnaissance, or an instruction to inspect the user system."
+        "confidence": 0.91,
+        "reason": "The matched text describes gene IDs, loops, validation, or API error examples. It does not enumerate the host system or perform reconnaissance."
       }
     ],
     "semantic_findings": [],
     "critical_findings": [],
     "high_findings": [],
-    "medium_findings": [
+    "medium_findings": [],
+    "low_findings": [
       {
-        "title": "Python file write/append",
-        "description": "with open(args.output, 'w') as f:",
+        "title": "Python HTTP libraries",
+        "description": "import urllib.request",
         "locations": [
           {
             "file": "scripts/batch_gene_lookup.py",
-            "line_start": 287,
-            "line_end": 287
+            "line_start": 14,
+            "line_end": 14
           }
         ],
         "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The batch script writes to args.output with mode 'w'. A caller-provided path can overwrite an existing file if an agent or user supplies an unsafe destination."
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Python HTTP libraries",
+        "description": "with urllib.request.urlopen(url) as response:",
+        "locations": [
+          {
+            "file": "scripts/batch_gene_lookup.py",
+            "line_start": 78,
+            "line_end": 78
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Python HTTP libraries",
+        "description": "with urllib.request.urlopen(url) as response:",
+        "locations": [
+          {
+            "file": "scripts/batch_gene_lookup.py",
+            "line_start": 131,
+            "line_end": 131
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Hardcoded URL",
+        "description": "base_url = \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/\"",
+        "locations": [
+          {
+            "file": "scripts/batch_gene_lookup.py",
+            "line_start": 53,
+            "line_end": 53
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Hardcoded URL",
+        "description": "base_url = \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/\"",
+        "locations": [
+          {
+            "file": "scripts/batch_gene_lookup.py",
+            "line_start": 109,
+            "line_end": 109
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Python HTTP libraries",
+        "description": "import urllib.request",
+        "locations": [
+          {
+            "file": "scripts/fetch_gene_data.py",
+            "line_start": 13,
+            "line_end": 13
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Python HTTP libraries",
+        "description": "req = urllib.request.Request(url, headers=headers)",
+        "locations": [
+          {
+            "file": "scripts/fetch_gene_data.py",
+            "line_start": 74,
+            "line_end": 74
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Python HTTP libraries",
+        "description": "with urllib.request.urlopen(req) as response:",
+        "locations": [
+          {
+            "file": "scripts/fetch_gene_data.py",
+            "line_start": 75,
+            "line_end": 75
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Python HTTP libraries",
+        "description": "req = urllib.request.Request(url, headers=headers)",
+        "locations": [
+          {
+            "file": "scripts/fetch_gene_data.py",
+            "line_start": 112,
+            "line_end": 112
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Python HTTP libraries",
+        "description": "with urllib.request.urlopen(req) as response:",
+        "locations": [
+          {
+            "file": "scripts/fetch_gene_data.py",
+            "line_start": 113,
+            "line_end": 113
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Python HTTP libraries",
+        "description": "req = urllib.request.Request(url, data=data, headers=headers, method='POST')",
+        "locations": [
+          {
+            "file": "scripts/fetch_gene_data.py",
+            "line_start": 146,
+            "line_end": 146
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Python HTTP libraries",
+        "description": "with urllib.request.urlopen(req) as response:",
+        "locations": [
+          {
+            "file": "scripts/fetch_gene_data.py",
+            "line_start": 147,
+            "line_end": 147
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Hardcoded URL",
+        "description": "DATASETS_API_BASE = \"https://api.ncbi.nlm.nih.gov/datasets/v2alpha/gene\"",
+        "locations": [
+          {
+            "file": "scripts/fetch_gene_data.py",
+            "line_start": 17,
+            "line_end": 17
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Python HTTP libraries",
+        "description": "import urllib.request",
+        "locations": [
+          {
+            "file": "scripts/query_gene.py",
+            "line_start": 14,
+            "line_end": 14
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Python HTTP libraries",
+        "description": "with urllib.request.urlopen(url) as response:",
+        "locations": [
+          {
+            "file": "scripts/query_gene.py",
+            "line_start": 48,
+            "line_end": 48
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Python HTTP libraries",
+        "description": "with urllib.request.urlopen(url) as response:",
+        "locations": [
+          {
+            "file": "scripts/query_gene.py",
+            "line_start": 88,
+            "line_end": 88
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Python HTTP libraries",
+        "description": "with urllib.request.urlopen(url) as response:",
+        "locations": [
+          {
+            "file": "scripts/query_gene.py",
+            "line_start": 123,
+            "line_end": 123
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
+      },
+      {
+        "title": "Hardcoded URL",
+        "description": "BASE_URL = \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/\"",
+        "locations": [
+          {
+            "file": "scripts/query_gene.py",
+            "line_start": 19,
+            "line_end": 19
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script performs intentional outbound HTTPS requests to NCBI APIs. This is core functionality but still exposes user gene queries and API use to an external service."
       }
     ],
-    "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 6,
     "total_lines": 1837,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T06:10:08.422Z",
+    "audited_at": "2026-07-09T15:55:00.178Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Query NCBI Gene Data",
-    "value_statement": "Gene identifiers are hard to validate across species and databases. This skill guides NCBI Gene searches, batch lookups, and concise gene annotations.",
+    "value_statement": "Gene lookups often require repeated NCBI API calls and careful organism filters. This skill provides scripts and workflows for searching, fetching, and batching gene annotations.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "NCBI Gene",
       "gene database",
-      "bioinformatics",
       "gene annotation",
+      "bioinformatics",
       "E-utilities",
-      "Datasets API",
-      "batch gene lookup"
+      "NCBI Datasets API",
+      "genomics research"
     ],
     "actual_capabilities": [
-      "Search NCBI Gene by symbol, organism, disease, chromosome, pathway, or GO term.",
-      "Fetch gene summaries by NCBI Gene ID through E-utilities.",
-      "Retrieve structured gene metadata through the NCBI Datasets API.",
-      "Batch lookup gene symbols or IDs from a list or comma-separated input.",
-      "Save batch results as JSON when an output path is provided.",
-      "Reference API endpoints, rate limits, response formats, and common workflows."
+      "Search NCBI Gene by symbol, name, disease, chromosome, GO term, or organism filter.",
+      "Fetch ESummary and EFetch records for one or more Gene IDs.",
+      "Retrieve NCBI Datasets gene metadata by Gene ID or symbol plus taxon.",
+      "Process batch gene symbol or ID lists with rate limiting.",
+      "Output readable summaries or JSON files for downstream annotation workflows."
     ],
     "limitations": [
-      "Requires network access to NCBI services.",
-      "NCBI API keys are optional but should be handled as secrets.",
-      "Gene annotations can change as NCBI updates records.",
-      "Scripts do not perform clinical interpretation or variant pathogenicity assessment."
+      "Requires network access to NCBI endpoints.",
+      "Does not provide clinical interpretation, diagnosis, or medical advice.",
+      "Results depend on NCBI availability and API schema changes.",
+      "API key handling is optional and user managed."
     ],
     "use_cases": [
       {
-        "title": "Validate a gene panel",
-        "description": "Check gene symbols, Gene IDs, descriptions, chromosomes, and organism filters before downstream analysis.",
-        "target_user": "Molecular biologist"
+        "title": "Annotate Disease Gene Lists",
+        "target_user": "Genomics researchers",
+        "description": "Search disease terms and retrieve gene identifiers, descriptions, organisms, chromosomes, and map locations."
       },
       {
-        "title": "Build annotation tables",
-        "description": "Convert gene lists into structured annotations for reports, pipelines, or quality control reviews.",
-        "target_user": "Bioinformatics analyst"
+        "title": "Validate Gene Panels",
+        "target_user": "Bioinformatics engineers",
+        "description": "Batch check gene symbols or IDs before pipeline analysis, reports, or publication tables."
       },
       {
-        "title": "Explore disease and pathway genes",
-        "description": "Search NCBI Gene by disease, pathway, GO term, or publication context to plan research queries.",
-        "target_user": "Genomics researcher"
+        "title": "Compare Model Organisms",
+        "target_user": "Model organism researchers",
+        "description": "Look up the same gene across supported taxa and compare identifiers, aliases, and genomic locations."
       }
     ],
     "prompt_templates": [
       {
-        "title": "Search one gene",
-        "scenario": "Beginner lookup by symbol and organism.",
-        "prompt": "Search NCBI Gene for BRCA1 in human. Return the best Gene ID, official symbol, description, organism, and chromosome."
+        "title": "Search One Gene",
+        "scenario": "Beginner lookup",
+        "prompt": "Use the gene-database skill to search BRCA1 in human. Summarize the Gene ID, symbol, description, organism, and chromosome."
       },
       {
-        "title": "Fetch known IDs",
-        "scenario": "Retrieve summaries for exact Gene IDs.",
-        "prompt": "Fetch summaries for Gene IDs 672, 7157, and 5594. Compare the symbols, descriptions, organisms, chromosomes, and map locations."
+        "title": "Fetch by Gene ID",
+        "scenario": "Known identifier",
+        "prompt": "Use the NCBI Datasets workflow to fetch Gene ID 672. Return a readable summary with aliases, location, and transcripts."
       },
       {
-        "title": "Annotate a list",
-        "scenario": "Batch annotation for a small gene set.",
-        "prompt": "Annotate TP53, EGFR, KRAS, and BRCA2 for human. Include Gene IDs, descriptions, chromosomes, and any not found results."
+        "title": "Annotate a Panel",
+        "scenario": "Batch annotation",
+        "prompt": "Use batch lookup for BRCA1, TP53, EGFR, and KRAS in human. Include status, Gene ID, symbol, organism, and map location."
       },
       {
-        "title": "Plan a pathway workflow",
-        "scenario": "Advanced query design across NCBI workflows.",
-        "prompt": "Design an NCBI Gene workflow to find human MAPK pathway genes, retrieve summaries, handle rate limits, and review ambiguous symbols."
+        "title": "Design Pathway Query",
+        "scenario": "Advanced research planning",
+        "prompt": "Plan an NCBI Gene search for apoptosis genes in mouse. Include query terms, rate limits, and output fields for downstream analysis."
       }
     ],
     "output_examples": [
       {
         "input": "Find BRCA1 in human.",
-        "output": "Returns Gene ID 672, official symbol BRCA1, the human organism, chromosome 17, and a short functional description."
+        "output": "A concise gene summary with Gene ID 672, symbol BRCA1, organism Homo sapiens, chromosome 17, and map location."
       },
       {
-        "input": "Annotate TP53, EGFR, and KRAS for human.",
-        "output": "Produces a concise annotation table with Gene IDs, official symbols, descriptions, chromosomes, map locations, and lookup status."
+        "input": "Annotate a list of human oncology genes.",
+        "output": "A table-ready summary describing each matched gene, unmatched symbols, and any lookup errors."
       },
       {
-        "input": "Compare TP53 in human and mouse.",
-        "output": "Lists species-specific Gene IDs, symbols, taxon names, descriptions, and notes that symbols require organism context."
+        "input": "Fetch TP53 with verbose details.",
+        "output": "A structured narrative covering aliases, chromosomal location, gene type, and transcript examples."
       }
     ],
     "best_practices": [
       "Specify organism for every symbol search.",
-      "Use Gene IDs when exact records are known.",
-      "Keep NCBI API keys out of shared prompts, logs, and transcripts."
+      "Use Gene IDs when precision matters.",
+      "Cache repeated results and follow NCBI rate limits."
     ],
     "anti_patterns": [
-      "Searching gene symbols without organism filters.",
-      "Treating returned annotations as clinical conclusions.",
-      "Passing real API keys in shared chat transcripts."
+      "Do not treat gene annotations as clinical guidance.",
+      "Do not batch large lists without rate limiting.",
+      "Do not paste private API keys into shared transcripts or logs."
     ],
     "faq": [
       {
-        "question": "Which data sources does this skill use?",
-        "answer": "It uses NCBI Gene through E-utilities and the NCBI Datasets API."
+        "question": "Does this skill require an API key?",
+        "answer": "No. NCBI API keys are optional, but they increase request limits for larger workloads."
       },
       {
-        "question": "Do I need an NCBI API key?",
-        "answer": "No. A key is optional and only raises rate limits for supported NCBI requests."
+        "question": "Which APIs does it use?",
+        "answer": "It documents and scripts NCBI E-utilities and the NCBI Datasets Gene API."
       },
       {
         "question": "Can it process many genes at once?",
         "answer": "Yes. The batch script accepts comma-separated Gene IDs or a file of gene symbols."
       },
       {
-        "question": "Can it interpret clinical variant significance?",
-        "answer": "No. It retrieves gene metadata and references, but it does not make clinical interpretations."
+        "question": "Does it provide medical interpretation?",
+        "answer": "No. It retrieves reference gene data and should not be used as medical advice."
       },
       {
         "question": "What output formats are supported?",
-        "answer": "The scripts can print readable summaries or JSON. The references also describe XML and text API formats."
+        "answer": "The scripts can print readable summaries or JSON output for downstream tools."
       },
       {
-        "question": "Does it work without internet access?",
-        "answer": "No. The scripts need network access to NCBI services for live lookups."
+        "question": "Which AI tools can use it?",
+        "answer": "The skill metadata lists Claude, Codex, and Claude Code support."
       }
     ]
   },

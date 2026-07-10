@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T03:26:55.019Z",
+    "generated_at": "2026-07-09T15:13:13.740Z",
     "slug": "davila7-create-pr",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/sentry/create-pr",
     "source_ref": "main",
@@ -23,8 +23,8 @@
   },
   "skill": {
     "name": "create-pr",
-    "description": "Guides pull request creation with Sentry conventions, including branch checks, change review, concise descriptions, title formats, reviewers, and issue links.",
-    "summary": "Create clear Sentry-style pull requests from committed branch changes.",
+    "description": "Creates Sentry-style pull requests by checking branch state, reviewing diffs, writing concise descriptions, and using GitHub CLI for publishing and reviewers.",
+    "summary": "Guides Sentry-style pull request creation with branch checks, PR text, and reviewer setup.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
@@ -32,9 +32,9 @@
     "tags": [
       "pull-requests",
       "github-cli",
-      "code-review",
       "sentry",
-      "developer-workflow"
+      "code-review",
+      "git"
     ],
     "supported_tools": [
       "claude",
@@ -52,16 +52,16 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static findings are false positives caused by Markdown fences and inline backticks in the skill instructions. The only confirmed issue is the PR creation example that uses shell command substitution for generated body text, which should be replaced with safer body handling.",
+    "summary": "Most static findings are Markdown backticks or fenced examples, not Ruby execution. The confirmed risk is the gh pr create example that uses shell command substitution around generated PR body text. No prompt injection or malicious data-exfiltration intent was found.",
     "remediation": [
       {
-        "issue": "PR body text is passed through shell command substitution.",
-        "suggestion": "Use a reviewed temporary file or GitHub CLI body-file input instead of embedding generated body text in a heredoc command substitution.",
+        "issue": "Generated PR body is embedded through shell command substitution.",
+        "suggestion": "Use a temporary body file with gh pr create --body-file, or review the final command before execution.",
         "severity": "medium"
       },
       {
-        "issue": "The skill can create and edit GitHub pull requests.",
-        "suggestion": "Require explicit user confirmation before running gh pr create or gh pr edit commands that modify GitHub state.",
+        "issue": "The skill can create or edit GitHub pull requests through gh commands.",
+        "suggestion": "Require user confirmation for the final title, body, base branch, and reviewers before running mutating gh commands.",
         "severity": "low"
       }
     ],
@@ -488,166 +488,166 @@
       {
         "id": "external_commands:SKILL.md:10:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The backticks only format the gh command name in prose. This line documents a required tool and does not execute a shell command."
+        "confidence": 0.95,
+        "reason": "This is Markdown text naming the gh CLI requirement, not executable Ruby or shell code. It does not run a command or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:16:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The flagged text is a Markdown fenced block around fixed git inspection commands. These examples are read-only workflow guidance, not Ruby or shell backtick execution."
+        "confidence": 0.86,
+        "reason": "The fenced example contains fixed git status and git log inspection commands. They are read-only workflow checks with no dynamic shell construction."
       },
       {
         "id": "external_commands:SKILL.md:20:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The flagged text is a Markdown fenced block around fixed git inspection commands. These examples are read-only workflow guidance, not Ruby or shell backtick execution."
+        "confidence": 0.96,
+        "reason": "The detected text is a Markdown code fence boundary and surrounding prose. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The flagged text is a Markdown fenced block around fixed git inspection commands. These examples are read-only workflow guidance, not Ruby or shell backtick execution."
+        "confidence": 0.84,
+        "reason": "The fenced example uses fixed git log and git diff commands to inspect the current branch. No user-controlled command string is constructed."
       },
       {
         "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The flagged text is a Markdown fenced block around fixed git inspection commands. These examples are read-only workflow guidance, not Ruby or shell backtick execution."
+        "confidence": 0.96,
+        "reason": "The matched text is a Markdown fence close and explanatory prose. It is documentation, not executable backtick syntax."
       },
       {
         "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown formatting for PR description examples. It is documentation content and does not execute commands."
+        "confidence": 0.97,
+        "reason": "This is a Markdown PR body template fence. It contains placeholder prose fields and no shell execution path."
       },
       {
         "id": "external_commands:SKILL.md:53:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown formatting for PR description examples. It is documentation content and does not execute commands."
+        "confidence": 0.96,
+        "reason": "The matched text is the end of a Markdown template block and static guidance. It does not execute code."
       },
       {
         "id": "external_commands:SKILL.md:68:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The Ruby backtick pattern is matching Markdown fence syntax, not executable backticks. The real shell-substitution concern in this block is covered by the dedicated command-substitution verdict."
+        "confidence": 0.82,
+        "reason": "The Ruby backtick pattern is triggered by a Markdown bash fence, not by Ruby execution. The command-substitution concern in this block is handled by separate findings."
       },
       {
         "id": "external_commands:SKILL.md:73:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The Ruby backtick pattern is matching Markdown fence syntax, not executable backticks. The real shell-substitution concern in this block is covered by the dedicated command-substitution verdict."
+        "confidence": 0.95,
+        "reason": "This finding points to a Markdown fence boundary and the title-format section. It is not executable backtick syntax."
       },
       {
         "id": "external_commands:SKILL.md:76:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The backticks are inline Markdown used to display title or issue-reference syntax. They are not shell execution and contain no command invocation."
+        "confidence": 0.97,
+        "reason": "The inline backticks mark an example PR title string in Markdown. There is no shell or Ruby execution."
       },
       {
         "id": "external_commands:SKILL.md:77:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The backticks are inline Markdown used to display title or issue-reference syntax. They are not shell execution and contain no command invocation."
+        "confidence": 0.97,
+        "reason": "The inline backticks mark an example PR title string in Markdown. It is static documentation, not executable code."
       },
       {
         "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The backticks are inline Markdown used to display title or issue-reference syntax. They are not shell execution and contain no command invocation."
+        "confidence": 0.97,
+        "reason": "The inline backticks mark an example PR title string in Markdown. It does not create a command execution vector."
       },
       {
         "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The flagged text is a Markdown code fence for explicit gh pr edit examples. The commands are intended GitHub reviewer operations and do not contain dynamic shell execution."
+        "confidence": 0.8,
+        "reason": "The block shows explicit gh pr edit examples for reviewer assignment. The commands have fixed structure and do not build a shell command from untrusted input."
       },
       {
         "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The finding points to a closing Markdown code fence. It contains no executable command, network call, or Ruby backtick execution."
+        "confidence": 0.95,
+        "reason": "The matched location is a Markdown fence close and reviewer-count guidance. It is not executable backtick syntax."
       },
       {
         "id": "external_commands:SKILL.md:96:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown formatting for PR description examples. It is documentation content and does not execute commands."
+        "confidence": 0.97,
+        "reason": "This is a fenced Markdown example of a PR description. It contains no shell commands or dynamic code execution."
       },
       {
         "id": "external_commands:SKILL.md:108:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown formatting for PR description examples. It is documentation content and does not execute commands."
+        "confidence": 0.96,
+        "reason": "The detected text is a Markdown fence boundary before another example section. It is documentation only."
       },
       {
         "id": "external_commands:SKILL.md:112:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown formatting for PR description examples. It is documentation content and does not execute commands."
+        "confidence": 0.97,
+        "reason": "This is a fenced Markdown example of a bug-fix PR body. It is not a shell or Ruby execution construct."
       },
       {
         "id": "external_commands:SKILL.md:122:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown formatting for PR description examples. It is documentation content and does not execute commands."
+        "confidence": 0.96,
+        "reason": "The finding matches a Markdown fence close and heading text. It does not execute commands."
       },
       {
         "id": "external_commands:SKILL.md:126:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown formatting for PR description examples. It is documentation content and does not execute commands."
+        "confidence": 0.97,
+        "reason": "This is a fenced Markdown refactor PR example. It contains prose and issue references, not shell execution."
       },
       {
         "id": "external_commands:SKILL.md:134:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown formatting for PR description examples. It is documentation content and does not execute commands."
+        "confidence": 0.96,
+        "reason": "The matched text is a Markdown fence close before an issue-reference table. It is not executable syntax."
       },
       {
         "id": "external_commands:SKILL.md:142:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The backticks are inline Markdown used to display title or issue-reference syntax. They are not shell execution and contain no command invocation."
+        "confidence": 0.97,
+        "reason": "The backticks mark an issue-reference example inside a Markdown table. They do not invoke a shell or Ruby interpreter."
       },
       {
         "id": "external_commands:SKILL.md:143:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The backticks are inline Markdown used to display title or issue-reference syntax. They are not shell execution and contain no command invocation."
+        "confidence": 0.97,
+        "reason": "The backticks mark an issue-reference example inside a Markdown table. This is static documentation, not code execution."
       },
       {
         "id": "external_commands:SKILL.md:144:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The backticks are inline Markdown used to display title or issue-reference syntax. They are not shell execution and contain no command invocation."
+        "confidence": 0.97,
+        "reason": "The backticks mark an issue-reference example inside a Markdown table. No command is executed from this text."
       },
       {
         "id": "external_commands:SKILL.md:69:shell-command-substitution",
         "verdict": "confirmed",
-        "confidence": 0.72,
+        "confidence": 0.78,
         "severity": "medium",
-        "reason": "The PR creation example builds the body through shell command substitution and a heredoc. If generated body text is influenced by repository content, delimiter injection could alter the shell command."
+        "reason": "The gh pr create example wraps a generated PR body in shell command substitution with a heredoc. If generated body text breaks the heredoc delimiter, it could alter the shell command."
       },
       {
         "id": "external_commands:SKILL.md:68:template-literal-with-command-substitution",
         "verdict": "confirmed",
-        "confidence": 0.68,
+        "confidence": 0.7,
         "severity": "medium",
-        "reason": "The line range includes a shell substitution used to pass generated text to gh pr create. This is an avoidable command-construction risk even though the intended command is legitimate."
+        "reason": "The bash example includes command substitution around generated content before calling gh pr create. This is legitimate tooling, but safer body-file handling would avoid injection-prone shell composition."
       },
       {
         "id": "network:SKILL.md:156:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The hardcoded URL is a documentation reference to Sentry engineering guidance. The skill does not fetch the URL or send data to it."
+        "confidence": 0.94,
+        "reason": "The URL is a reference link to Sentry code review documentation. The skill does not fetch the URL or send data to it."
       },
       {
         "id": "network:SKILL.md:157:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The hardcoded URL is a documentation reference to Sentry engineering guidance. The skill does not fetch the URL or send data to it."
+        "confidence": 0.94,
+        "reason": "The URL is a reference link to Sentry commit message documentation. It is not an outbound network request by the skill."
       }
     ],
     "semantic_findings": [],
@@ -667,8 +667,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The PR creation example builds the body through shell command substitution and a heredoc. If generated body text is influenced by repository content, delimiter injection could alter the shell command."
+        "confidence": 0.78,
+        "confidence_reasoning": "The gh pr create example wraps a generated PR body in shell command substitution with a heredoc. If generated body text breaks the heredoc delimiter, it could alter the shell command."
       },
       {
         "title": "Template literal with command substitution",
@@ -683,8 +683,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.68,
-        "confidence_reasoning": "The line range includes a shell substitution used to pass generated text to gh pr create. This is an avoidable command-construction risk even though the intended command is legitimate."
+        "confidence": 0.7,
+        "confidence_reasoning": "The bash example includes command substitution around generated content before calling gh pr create. This is legitimate tooling, but safer body-file handling would avoid injection-prone shell composition."
       }
     ],
     "low_findings": [],
@@ -692,125 +692,125 @@
     "files_scanned": 1,
     "total_lines": 158,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T03:26:55.019Z",
+    "audited_at": "2026-07-09T15:13:13.740Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Create Sentry-Style Pull Requests",
-    "value_statement": "Writing clear PR descriptions can be slow and inconsistent. This skill guides Claude, Codex, and Claude Code through Sentry-style pull request preparation.",
+    "value_statement": "This skill helps teams create pull requests that follow Sentry review conventions. It guides branch checks, PR descriptions, titles, issue references, and reviewer selection.",
     "seo_keywords": [
-      "Claude",
-      "Codex",
-      "Claude Code",
-      "pull request creation",
-      "Sentry PR workflow",
-      "GitHub CLI",
-      "code review",
-      "PR descriptions",
-      "commit conventions",
-      "reviewer assignment"
+      "Claude pull request skill",
+      "Codex pull request workflow",
+      "Claude Code GitHub CLI",
+      "Sentry PR template",
+      "create pull request",
+      "GitHub CLI PR",
+      "code review workflow",
+      "PR description generator",
+      "git branch review",
+      "Sentry commit conventions"
     ],
     "actual_capabilities": [
-      "Checks branch status and commit history before PR creation.",
-      "Reviews commit logs and diffs against main to understand scope.",
-      "Drafts concise PR descriptions using Sentry preferred structure.",
-      "Formats PR titles with feat, fix, or ref conventions.",
-      "Guides issue references and reviewer assignment when details are known."
+      "Checks current branch status with git status.",
+      "Reviews commits with git log against main.",
+      "Reviews branch diffs with git diff against main.",
+      "Drafts PR descriptions using Sentry what, why, and context guidance.",
+      "Creates PRs with GitHub CLI and adds selected reviewers."
     ],
     "limitations": [
-      "Requires an authenticated GitHub CLI before creating or editing pull requests.",
-      "Assumes main is the comparison branch unless the user says otherwise.",
-      "Does not validate reviewer availability or team ownership.",
-      "Does not replace human review of branch state or PR scope."
+      "Requires an authenticated GitHub CLI installation.",
+      "Assumes the base branch is main.",
+      "Does not validate test results or build status.",
+      "Uses Sentry conventions, which may not match every repository."
     ],
     "use_cases": [
       {
-        "title": "Prepare Feature Pull Requests",
-        "description": "Turn committed feature work into a clear PR title and concise description.",
-        "target_user": "Software engineer"
+        "title": "Prepare a feature PR",
+        "description": "Create a Sentry-style feature pull request with concise context and relevant issue links.",
+        "target_user": "Application engineer"
       },
       {
-        "title": "Standardize Review Requests",
-        "description": "Apply consistent Sentry review conventions before sending changes to reviewers.",
-        "target_user": "Engineering maintainer"
+        "title": "Open a small fix",
+        "description": "Verify branch state, write a focused bug-fix description, and assign the right reviewers.",
+        "target_user": "Repository maintainer"
       },
       {
-        "title": "Guide AI Coding Sessions",
-        "description": "Help an AI assistant inspect branch changes and produce a review-ready pull request.",
-        "target_user": "Claude, Codex, or Claude Code user"
+        "title": "Explain a refactor",
+        "description": "Turn a refactor branch into a clean PR that explains scope, motivation, and review areas.",
+        "target_user": "Platform engineer"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Draft a Basic PR",
-        "scenario": "Beginner prompt for a small committed change.",
-        "prompt": "Create a pull request description for my current branch. Follow the skill process and keep the body concise."
+        "title": "Create a basic PR",
+        "scenario": "Beginner workflow for a ready branch.",
+        "prompt": "Create a pull request for my current branch using this skill. Check branch state first, then propose a title and description before creating it."
       },
       {
-        "title": "Prepare a Bug Fix PR",
-        "scenario": "Use when a branch fixes a tracked issue.",
-        "prompt": "Review my current branch against main and draft a Sentry-style bug fix PR. Include the issue reference I provide."
+        "title": "Draft before publishing",
+        "scenario": "Review generated PR text before any GitHub change.",
+        "prompt": "Review the commits and diff against main. Draft a Sentry-style PR title and body, but wait before running gh pr create."
       },
       {
-        "title": "Create a Review-Ready PR",
-        "scenario": "Use when the branch has several commits or reviewers.",
-        "prompt": "Analyze the commits and diff on this branch. Propose a PR title, body, issue references, and one to three reviewers."
+        "title": "Create and add reviewers",
+        "scenario": "Publish a PR and request known reviewers.",
+        "prompt": "Create the PR, then add reviewers I name. Keep the PR body focused on motivation, context, and important review areas."
       },
       {
-        "title": "Refine Complex PR Context",
-        "scenario": "Advanced prompt for larger or risky changes.",
-        "prompt": "Prepare a PR for this branch. Explain motivation, alternatives, review risks, and any areas reviewers should inspect carefully."
+        "title": "Prepare a complex branch",
+        "scenario": "Advanced workflow for larger or mixed changes.",
+        "prompt": "Analyze my branch against main, identify unrelated changes, propose a split if needed, and create a final PR after my approval."
       }
     ],
     "output_examples": [
       {
-        "input": "A branch adds Slack thread replies for alert notifications.",
-        "output": "A concise PR body that explains the change, the motivation, the rejected alternative, and the related Sentry ticket."
+        "input": "User asks to open a feature PR for a Slack notification branch.",
+        "output": "The skill checks branch status, reviews commits and diff, then prepares a concise PR title and body with issue references."
       },
       {
-        "input": "A branch fixes a null user API response.",
-        "output": "A bug fix PR description that states the failure mode, the fix, and the issue reference."
+        "input": "User asks to add reviewers after a PR is created.",
+        "output": "The skill adds one to three named reviewers or a Sentry team through GitHub CLI."
       },
       {
-        "input": "A branch extracts duplicate validation logic into a shared module.",
-        "output": "A refactor PR description that states no behavior changed and explains why the shared module prepares future work."
+        "input": "User asks for a bug-fix PR description.",
+        "output": "The skill writes a body that explains the null case, the user impact, and the linked issue."
       }
     ],
     "best_practices": [
-      "Commit all intended changes before asking the skill to create a PR.",
-      "Provide issue IDs, reviewer names, and special review concerns up front.",
-      "Confirm the final GitHub CLI command before it modifies remote state."
+      "Review the proposed PR title and body before publishing.",
+      "Keep one feature, bug fix, or refactor per pull request.",
+      "Confirm reviewer names and team handles before editing the PR."
     ],
     "anti_patterns": [
-      "Do not bundle unrelated features or fixes into one pull request.",
-      "Do not paste generated PR body text into shell commands without review.",
-      "Do not ask for broad reviewer lists when one to three reviewers are enough."
+      "Creating a PR before confirming all changes are committed.",
+      "Bundling unrelated changes into one review.",
+      "Publishing generated PR text without checking issue links and scope."
     ],
     "faq": [
       {
-        "question": "Does this skill create pull requests automatically?",
-        "answer": "It provides a process and command pattern. The user should confirm before running GitHub CLI commands."
+        "question": "Does this skill create the pull request automatically?",
+        "answer": "It can use GitHub CLI to create the PR after the user confirms the title and body."
       },
       {
-        "question": "Which repository style does it follow?",
-        "answer": "It follows Sentry engineering practices for PR descriptions, title conventions, issue references, and reviewer selection."
+        "question": "What tools are required?",
+        "answer": "It requires git and an authenticated gh command in the repository."
       },
       {
-        "question": "Does it include test plan sections?",
-        "answer": "No. The skill explicitly avoids test plan sections and checkbox lists in PR descriptions."
+        "question": "Does it run tests?",
+        "answer": "No. It focuses on branch checks, diff review, PR text, and reviewer assignment."
       },
       {
-        "question": "Can it add reviewers?",
-        "answer": "Yes. It can guide GitHub CLI reviewer requests when usernames or team names are known."
+        "question": "Can it use a branch other than main?",
+        "answer": "The instructions assume main. Ask for a different base branch if your repository uses one."
       },
       {
-        "question": "Does it need network access?",
-        "answer": "Local git inspection does not need network access. GitHub CLI actions contact GitHub to create or edit pull requests."
+        "question": "Does it follow Sentry formatting rules?",
+        "answer": "Yes. It uses Sentry-style title, description, issue reference, and review guidance from the skill."
       },
       {
-        "question": "Can I use it outside Sentry?",
-        "answer": "Yes. The workflow is useful elsewhere, but Sentry naming and review conventions may need adjustment."
+        "question": "Is it safe for private repositories?",
+        "answer": "Use it only when the GitHub CLI account has the right repository access. Review all generated PR text before publishing."
       }
     ]
   },

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T05:15:06.156Z",
+    "generated_at": "2026-07-09T15:42:22.148Z",
     "slug": "davila7-etetoolkit",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/scientific/etetoolkit",
     "source_ref": "main",
@@ -23,18 +23,18 @@
   },
   "skill": {
     "name": "etetoolkit",
-    "description": "Work with ETE Toolkit for phylogenetic tree manipulation, NCBI taxonomy annotation, orthology analysis, clustering, and publication-ready visualization.",
-    "summary": "Use ETE to manipulate, compare, annotate, and visualize phylogenetic trees.",
+    "description": "Use ETE Toolkit for phylogenetic tree manipulation, evolutionary event analysis, NCBI taxonomy lookup, and publication-ready visualization.",
+    "summary": "Guides ETE Toolkit workflows for bioinformatics tree analysis, taxonomy annotation, and visualization.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
     "license": "MIT",
     "tags": [
       "phylogenetics",
-      "ete-toolkit",
-      "newick",
+      "bioinformatics",
+      "ete3",
       "taxonomy",
-      "visualization"
+      "tree-visualization"
     ],
     "supported_tools": [
       "claude",
@@ -48,20 +48,25 @@
     "category": "research"
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "medium",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static findings are false positives from Markdown formatting, biological taxonomy lookups, and documented local output examples. Two sudo install instructions are confirmed because they request elevated system package changes for optional Qt rendering dependencies. No prompt injection, credential access, or data exfiltration intent was found.",
+    "summary": "No prompt injection or malicious exfiltration intent was found. Most command-related static findings are Markdown code fence false positives, while sudo installation examples and the NCBI taxonomy cache are real operational risks. Agents should require confirmation before privileged installs, external downloads, or home-directory writes.",
     "remediation": [
       {
-        "issue": "Privileged dependency installation examples",
-        "suggestion": "Replace sudo apt-get commands with manual-install guidance requiring explicit user approval, or link to official ETE dependency documentation.",
+        "issue": "Privileged package installation guidance",
+        "suggestion": "Replace sudo apt-get examples with non-privileged alternatives where possible, or require explicit user approval before running them.",
         "severity": "high"
       },
       {
-        "issue": "Large hidden taxonomy cache side effect",
-        "suggestion": "Keep the cache path warning and recommend a user-selected dbfile or workspace cache when possible.",
+        "issue": "Automatic NCBI taxonomy download and hidden cache",
+        "suggestion": "Warn users before instantiating NCBITaxa and prefer a configurable database path inside the project workspace when possible.",
+        "severity": "medium"
+      },
+      {
+        "issue": "Executable command examples in documentation",
+        "suggestion": "Label shell examples as user-run commands and instruct agents to ask before installing packages or rendering files.",
         "severity": "medium"
       }
     ],
@@ -348,81 +353,6 @@
             "file": "SKILL.md",
             "line_start": 547,
             "line_end": 547
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 549,
-            "line_end": 555
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 555,
-            "line_end": 561
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 561,
-            "line_end": 565
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 565,
-            "line_end": 571
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 571,
-            "line_end": 579
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 579,
-            "line_end": 595
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 595,
-            "line_end": 598
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 598,
-            "line_end": 602
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 602,
-            "line_end": 604
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 604,
-            "line_end": 608
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 608,
-            "line_end": 609
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 609,
-            "line_end": 610
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 610,
-            "line_end": 614
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 368,
-            "line_end": 368
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 554,
-            "line_end": 554
           }
         ]
       }
@@ -1332,550 +1262,590 @@
     "finding_verdicts": [
       {
         "id": "filesystem:references/api_reference.md:72:hidden-file-in-home-directory",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.86,
-        "reason": "This describes ETE3 storing the public NCBI taxonomy cache at ~/.etetoolkit/taxa.sqlite. The path is documented and is not executable persistence or secret access."
+        "severity": "high",
+        "reason": "The ETE NCBITaxa path writes a large taxonomy cache under ~/.etetoolkit, outside the project workspace. The behavior is documented, but it is a real hidden home-directory side effect."
       },
       {
         "id": "filesystem:references/api_reference.md:72:hidden-file-access",
-        "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "This describes ETE3 storing the public NCBI taxonomy cache at ~/.etetoolkit/taxa.sqlite. The path is documented and is not executable persistence or secret access."
+        "verdict": "confirmed",
+        "confidence": 0.84,
+        "severity": "medium",
+        "reason": "The referenced NCBITaxa cache path accesses ~/.etetoolkit/taxa.sqlite in the user home directory. This is legitimate library caching, but agents should not do it silently."
       },
       {
         "id": "sensitive:references/api_reference.md:72:sqlite-database-file",
         "verdict": "false_positive",
         "confidence": 0.88,
-        "reason": "The SQLite file is the documented local NCBI taxonomy database cache. It contains public taxonomy data, not credentials or user-sensitive records."
+        "reason": "The SQLite file is a public NCBI taxonomy cache, not evidence of stored credentials or private user data. The home-directory write risk is covered by filesystem findings."
       },
       {
         "id": "blocker:references/api_reference.md:476:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched code performs NCBI taxonomy name and taxid lookup for biological data. It is not reconnaissance of the user system or local environment."
       },
       {
         "id": "blocker:references/api_reference.md:477:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched code performs NCBI taxonomy name and taxid lookup for biological data. It is not reconnaissance of the user system or local environment."
       },
       {
         "id": "blocker:references/api_reference.md:480:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched code performs NCBI taxonomy name and taxid lookup for biological data. It is not reconnaissance of the user system or local environment."
       },
       {
         "id": "blocker:references/api_reference.md:583:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched text recommends caching NCBI taxonomy query results, not enumerating the user system. It is domain-specific bioinformatics guidance."
       },
       {
         "id": "filesystem:references/workflows.md:749:python-os-file-operations",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The os.makedirs call appears in a workflow example that creates a named output directory for processed trees. It is not hidden, destructive, or privileged filesystem access."
+        "confidence": 0.91,
+        "reason": "The os.makedirs call creates a user-named output directory in a batch-processing example. It does not target sensitive paths or perform shell execution."
       },
       {
         "id": "blocker:references/workflows.md:419:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched code performs NCBI taxonomy name and taxid lookup for biological data. It is not reconnaissance of the user system or local environment."
       },
       {
         "id": "blocker:references/workflows.md:451:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched code performs NCBI taxonomy name and taxid lookup for biological data. It is not reconnaissance of the user system or local environment."
       },
       {
         "id": "blocker:references/workflows.md:457:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched code performs NCBI taxonomy name and taxid lookup for biological data. It is not reconnaissance of the user system or local environment."
       },
       {
         "id": "blocker:references/workflows.md:479:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched code performs NCBI taxonomy name and taxid lookup for biological data. It is not reconnaissance of the user system or local environment."
       },
       {
         "id": "blocker:references/workflows.md:491:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched code performs NCBI taxonomy name and taxid lookup for biological data. It is not reconnaissance of the user system or local environment."
       },
       {
         "id": "blocker:references/workflows.md:497:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched code performs NCBI taxonomy name and taxid lookup for biological data. It is not reconnaissance of the user system or local environment."
       },
       {
         "id": "blocker:references/workflows.md:710:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched code performs NCBI taxonomy name and taxid lookup for biological data. It is not reconnaissance of the user system or local environment."
       },
       {
         "id": "blocker:references/workflows.md:714:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched code performs NCBI taxonomy name and taxid lookup for biological data. It is not reconnaissance of the user system or local environment."
       },
       {
         "id": "blocker:scripts/quick_visualize.py:5:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched line is a docstring saying the script has a command-line interface. It does not enumerate host users, devices, processes, or network state."
+        "confidence": 0.94,
+        "reason": "The matched line describes a command-line interface for tree visualization, not host or network reconnaissance. The script works on local tree files and render options."
       },
       {
         "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:46:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:65:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:79:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:106:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:123:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:154:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:158:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:172:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:187:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:218:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:220:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:222:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:234:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:238:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:264:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:278:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:301:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:315:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:334:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:338:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:353:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:359:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:372:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:376:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is Markdown inline formatting around a documented cache path. Command execution is not present on this line; cache behavior is covered by separate filesystem findings."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:378:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:381:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:385:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:387:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:395:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:421:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:427:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:439:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:445:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:479:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:485:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:510:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:514:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:516:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:517:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:518:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:522:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:531:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:537:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:543:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:547:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:549:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:555:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:561:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:565:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:571:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:579:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:595:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:598:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:602:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:604:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:608:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:609:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:610:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The match is a Markdown code fence or inline documentation marker. It is not Ruby backtick execution and does not execute shell input."
+        "confidence": 0.96,
+        "reason": "The match is Markdown fencing or inline backtick documentation in SKILL.md, not Ruby code execution. Separate command risks are covered by specific findings."
       },
       {
         "id": "external_commands:SKILL.md:368:sudo-privilege-escalation",
         "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The documentation tells users to run sudo apt-get install. It is hardcoded for Qt dependencies, but it requests elevated system changes and must not run automatically.",
-        "severity": "high"
+        "severity": "high",
+        "reason": "The documentation includes a sudo apt-get install command that would change system packages with root privileges. It is a standard dependency command, but it requires explicit user approval."
       },
       {
         "id": "external_commands:SKILL.md:554:sudo-privilege-escalation",
         "verdict": "confirmed",
         "confidence": 0.9,
-        "reason": "The documentation tells users to run sudo apt-get install. It is hardcoded for Qt dependencies, but it requests elevated system changes and must not run automatically.",
-        "severity": "high"
+        "severity": "high",
+        "reason": "The documentation includes a sudo apt-get install command that would change system packages with root privileges. It is a standard dependency command, but it requires explicit user approval."
       },
       {
         "id": "filesystem:SKILL.md:376:hidden-file-in-home-directory",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.86,
-        "reason": "This describes ETE3 storing the public NCBI taxonomy cache at ~/.etetoolkit/taxa.sqlite. The path is documented and is not executable persistence or secret access."
+        "severity": "high",
+        "reason": "The ETE NCBITaxa path writes a large taxonomy cache under ~/.etetoolkit, outside the project workspace. The behavior is documented, but it is a real hidden home-directory side effect."
       },
       {
         "id": "filesystem:SKILL.md:376:hidden-file-access",
-        "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "This describes ETE3 storing the public NCBI taxonomy cache at ~/.etetoolkit/taxa.sqlite. The path is documented and is not executable persistence or secret access."
+        "verdict": "confirmed",
+        "confidence": 0.84,
+        "severity": "medium",
+        "reason": "The referenced NCBITaxa cache path accesses ~/.etetoolkit/taxa.sqlite in the user home directory. This is legitimate library caching, but agents should not do it silently."
       },
       {
         "id": "sensitive:SKILL.md:376:sqlite-database-file",
         "verdict": "false_positive",
         "confidence": 0.88,
-        "reason": "The SQLite file is the documented local NCBI taxonomy database cache. It contains public taxonomy data, not credentials or user-sensitive records."
+        "reason": "The SQLite file is a public NCBI taxonomy cache, not evidence of stored credentials or private user data. The home-directory write risk is covered by filesystem findings."
       },
       {
         "id": "blocker:SKILL.md:144:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched code performs NCBI taxonomy name and taxid lookup for biological data. It is not reconnaissance of the user system or local environment."
       },
       {
         "id": "blocker:SKILL.md:162:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched code performs NCBI taxonomy name and taxid lookup for biological data. It is not reconnaissance of the user system or local environment."
       },
       {
         "id": "blocker:SKILL.md:220:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched code performs NCBI taxonomy name and taxid lookup for biological data. It is not reconnaissance of the user system or local environment."
       },
       {
         "id": "blocker:SKILL.md:411:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched code performs NCBI taxonomy name and taxid lookup for biological data. It is not reconnaissance of the user system or local environment."
       },
       {
         "id": "blocker:SKILL.md:617:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The matched code queries biological NCBI taxonomy identifiers and names. This is domain data lookup, not host or environment reconnaissance."
+        "confidence": 0.94,
+        "reason": "The matched text recommends caching NCBI taxonomy query results, not enumerating the user system. It is domain-specific bioinformatics guidance."
       }
     ],
-    "semantic_findings": [],
+    "semantic_findings": [
+      {
+        "title": "Automatic External Taxonomy Download",
+        "description": "The skill documents that NCBITaxa can download about 300 MB of NCBI taxonomy data on first use and cache it under ~/.etetoolkit. This is expected ETE behavior, but agents should get consent before network downloads or home-directory writes.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 376,
+            "line_end": 376
+          },
+          {
+            "file": "references/api_reference.md",
+            "line_start": 72,
+            "line_end": 72
+          }
+        ],
+        "confidence": 0.88,
+        "confidence_reasoning": "Both cited locations explicitly describe the first-run download and cache path. The risk is operational consent and filesystem/network side effects, not malicious exfiltration."
+      }
+    ],
     "critical_findings": [],
     "high_findings": [
+      {
+        "title": "Hidden file in home directory",
+        "description": "First instantiation downloads ~300MB NCBI taxonomy database to `~/.etetoolkit/taxa.sqlite`.",
+        "locations": [
+          {
+            "file": "references/api_reference.md",
+            "line_start": 72,
+            "line_end": 72
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "filesystem",
+        "source_severity": "high",
+        "confidence": 0.86,
+        "confidence_reasoning": "The ETE NCBITaxa path writes a large taxonomy cache under ~/.etetoolkit, outside the project workspace. The behavior is documented, but it is a real hidden home-directory side effect."
+      },
       {
         "title": "sudo privilege escalation",
         "description": "sudo apt-get install python3-pyqt5 python3-pyqt5.qtsvg",
@@ -1890,7 +1860,7 @@
         "source_category": "external_commands",
         "source_severity": "high",
         "confidence": 0.9,
-        "confidence_reasoning": "The documentation tells users to run sudo apt-get install. It is hardcoded for Qt dependencies, but it requests elevated system changes and must not run automatically."
+        "confidence_reasoning": "The documentation includes a sudo apt-get install command that would change system packages with root privileges. It is a standard dependency command, but it requires explicit user approval."
       },
       {
         "title": "sudo privilege escalation",
@@ -1906,146 +1876,204 @@
         "source_category": "external_commands",
         "source_severity": "high",
         "confidence": 0.9,
-        "confidence_reasoning": "The documentation tells users to run sudo apt-get install. It is hardcoded for Qt dependencies, but it requests elevated system changes and must not run automatically."
+        "confidence_reasoning": "The documentation includes a sudo apt-get install command that would change system packages with root privileges. It is a standard dependency command, but it requires explicit user approval."
+      },
+      {
+        "title": "Hidden file in home directory",
+        "description": "The first time NCBITaxa is instantiated, it automatically downloads the NCBI taxonomy database (~300",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 376,
+            "line_end": 376
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "filesystem",
+        "source_severity": "high",
+        "confidence": 0.86,
+        "confidence_reasoning": "The ETE NCBITaxa path writes a large taxonomy cache under ~/.etetoolkit, outside the project workspace. The behavior is documented, but it is a real hidden home-directory side effect."
       }
     ],
-    "medium_findings": [],
+    "medium_findings": [
+      {
+        "title": "Hidden file access",
+        "description": "First instantiation downloads ~300MB NCBI taxonomy database to `~/.etetoolkit/taxa.sqlite`.",
+        "locations": [
+          {
+            "file": "references/api_reference.md",
+            "line_start": 72,
+            "line_end": 72
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "filesystem",
+        "source_severity": "medium",
+        "confidence": 0.84,
+        "confidence_reasoning": "The referenced NCBITaxa cache path accesses ~/.etetoolkit/taxa.sqlite in the user home directory. This is legitimate library caching, but agents should not do it silently."
+      },
+      {
+        "title": "Hidden file access",
+        "description": "The first time NCBITaxa is instantiated, it automatically downloads the NCBI taxonomy database (~300",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 376,
+            "line_end": 376
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "filesystem",
+        "source_severity": "medium",
+        "confidence": 0.84,
+        "confidence_reasoning": "The referenced NCBITaxa cache path accesses ~/.etetoolkit/taxa.sqlite in the user home directory. This is legitimate library caching, but agents should not do it silently."
+      },
+      {
+        "title": "Automatic External Taxonomy Download",
+        "description": "The skill documents that NCBITaxa can download about 300 MB of NCBI taxonomy data on first use and cache it under ~/.etetoolkit. This is expected ETE behavior, but agents should get consent before network downloads or home-directory writes.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 376,
+            "line_end": 376
+          },
+          {
+            "file": "references/api_reference.md",
+            "line_start": 72,
+            "line_end": 72
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.88,
+        "confidence_reasoning": "Both cited locations explicitly describe the first-run download and cache path. The risk is operational consent and filesystem/network side effects, not malicious exfiltration."
+      }
+    ],
     "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 6,
     "total_lines": 3206,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T05:15:06.156Z",
+    "audited_at": "2026-07-09T15:42:22.148Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Analyze Phylogenetic Trees with ETE",
-    "value_statement": "Phylogenetic workflows often require careful tree parsing, annotation, comparison, and visualization. This skill guides ETE Toolkit usage with focused examples and helper scripts.",
+    "value_statement": "Phylogenetic analysis often requires specialized tree parsing, taxonomy lookup, and figure generation. This skill guides Claude, Codex, and Claude Code through ETE workflows for analysis and visualization.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "ETE Toolkit",
-      "phylogenetic trees",
-      "Newick format",
+      "ete3",
+      "phylogenetic tree analysis",
+      "Newick tree",
       "NCBI taxonomy",
-      "orthology analysis",
-      "tree visualization",
-      "phylogenomics"
+      "orthology detection",
+      "tree visualization"
     ],
     "actual_capabilities": [
-      "Explains ETE Tree, PhyloTree, ClusterTree, and NCBITaxa workflows.",
-      "Provides helper scripts for tree conversion, rooting, pruning, statistics, and ASCII output.",
-      "Provides a visualization script for PNG, PDF, and SVG tree rendering.",
-      "Documents NCBI taxonomy lookup, lineage retrieval, and species tree construction.",
-      "Shows workflows for ortholog detection, tree comparison, clustering, and batch processing."
+      "Loads and writes Newick, NHX, PhyloXML, and NeXML tree formats through ETE examples.",
+      "Shows workflows for pruning, rerooting, traversing, comparing, and rendering phylogenetic trees.",
+      "Guides PhyloTree event detection for orthology, paralogy, duplications, and speciation.",
+      "Explains NCBITaxa name translation, lineage lookup, topology building, and taxonomy annotation.",
+      "Includes helper scripts for tree operations and quick PNG, PDF, or SVG visualization."
     ],
     "limitations": [
-      "Requires ETE3 and optional Qt packages for rendering or GUI features.",
-      "NCBI taxonomy use can download a large local database on first run.",
-      "Examples assume valid Newick, FASTA, Phylip, or matrix input files.",
-      "The skill does not replace biological review of evolutionary interpretations."
+      "Requires the ete3 Python package and optional Qt dependencies for GUI rendering.",
+      "NCBI taxonomy use can download about 300 MB into the user home directory.",
+      "Helper scripts expect local tree files and do not validate biological correctness.",
+      "Very large trees may need memory-conscious iteration and external compute resources."
     ],
     "use_cases": [
       {
-        "title": "Prepare Trees for Analysis",
-        "description": "Convert formats, reroot trees, prune taxa, and generate basic statistics before downstream analysis.",
-        "target_user": "Computational biologists"
+        "title": "Identify Ortholog Groups",
+        "description": "Analyze gene trees, detect duplication events, and separate ortholog and paralog groups.",
+        "target_user": "Bioinformatics researcher"
       },
       {
-        "title": "Annotate Species Context",
-        "description": "Use NCBI taxonomy workflows to map names, retrieve lineages, and build species trees.",
-        "target_user": "Phylogenomics researchers"
+        "title": "Annotate Species Trees",
+        "description": "Map species names to NCBI taxids, retrieve lineages, and add taxonomy features to leaves.",
+        "target_user": "Evolutionary biologist"
       },
       {
-        "title": "Create Publication Figures",
-        "description": "Style tree layouts, show branch support, and render visual outputs for reports or manuscripts.",
-        "target_user": "Scientific authors"
+        "title": "Create Tree Figures",
+        "description": "Render rectangular or circular trees as publication-ready PDF, SVG, or PNG outputs.",
+        "target_user": "Scientific data analyst"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Summarize a Tree",
-        "scenario": "Beginner review of a Newick file",
-        "prompt": "Use the etetoolkit skill to inspect my Newick tree. Report leaf count, total nodes, branch length range, and any parsing concerns."
+        "title": "Understand a Tree File",
+        "scenario": "Beginner review of a Newick tree",
+        "prompt": "Use the etetoolkit skill to explain what information you need from my Newick file before analysis. Keep the plan beginner friendly."
       },
       {
-        "title": "Prepare Analysis Inputs",
-        "scenario": "Intermediate tree cleanup",
-        "prompt": "Use the etetoolkit skill to plan commands for midpoint rooting, pruning to my focal taxa, and writing a clean Newick output."
+        "title": "Prepare a Figure",
+        "scenario": "Intermediate visualization task",
+        "prompt": "Use ETE to design a rectangular PDF tree figure for this Newick file. Include leaf labels, branch support, and export settings."
       },
       {
         "title": "Annotate Taxonomy",
-        "scenario": "Taxonomy-aware analysis",
-        "prompt": "Use the etetoolkit skill to design an NCBI taxonomy annotation workflow for my species tree and explain the cache behavior first."
+        "scenario": "Advanced taxonomy integration",
+        "prompt": "Use NCBITaxa with explicit permission for any database download. Map these species names to taxids, add lineages, and report unresolved names."
       },
       {
-        "title": "Compare Gene Trees",
-        "scenario": "Advanced phylogenomic review",
-        "prompt": "Use the etetoolkit skill to compare several gene trees, report Robinson-Foulds distances, and propose visualization choices for conflicting clades."
+        "title": "Build an Orthology Workflow",
+        "scenario": "Advanced phylogenomics pipeline",
+        "prompt": "Design an ETE PhyloTree workflow for this gene family. Detect duplications, extract ortholog groups, compare support, and produce figure outputs."
       }
     ],
     "output_examples": [
       {
-        "input": "A researcher provides a Newick tree and asks for preprocessing guidance.",
-        "output": [
-          "A concise tree statistics summary.",
-          "A recommended rooting and pruning sequence.",
-          "A note about input format assumptions and output files."
-        ]
+        "input": "A user provides a gene tree and asks which nodes represent duplications.",
+        "output": "The skill produces an event review that separates duplication and speciation nodes, then lists likely ortholog and paralog groups."
       },
       {
-        "input": "A user asks how to annotate tree leaves with NCBI taxonomy data.",
-        "output": [
-          "A workflow for name translation, lineage lookup, and node feature annotation.",
-          "A warning about the first-run taxonomy database download.",
-          "A validation checklist for unmatched species names."
-        ]
+        "input": "A user needs a figure from a Newick tree for a manuscript.",
+        "output": "The skill recommends a tree style, support-value display, vector export format, and checks for Qt rendering requirements."
       },
       {
-        "input": "A manuscript needs a styled phylogenetic figure.",
-        "output": [
-          "A rendering plan with layout mode, support labels, and vector output.",
-          "A description of optional Qt requirements.",
-          "A short review checklist for publication readiness."
-        ]
+        "input": "A user asks to add taxonomy lineages to tree leaves.",
+        "output": "The skill maps scientific names to taxids, warns about the NCBI database download, and reports names that need manual review."
       }
     ],
     "best_practices": [
-      "Confirm Newick format settings before reading or writing trees.",
-      "Use iterators and cached content for large trees to reduce memory use.",
-      "Explain NCBI cache downloads before running taxonomy workflows."
+      "Preserve branch lengths when pruning trees for phylogenetic analysis.",
+      "Ask before using NCBITaxa because it can download and cache a large database.",
+      "Use iterators and cached content for repeated operations on large trees."
     ],
     "anti_patterns": [
-      "Do not run privileged package installation without explicit user approval.",
-      "Do not assume gene names map cleanly to species names without validation.",
-      "Do not overwrite original tree files before checking converted outputs."
+      "Do not run privileged dependency installation without explicit user approval.",
+      "Do not assume one species-name parser works for every gene naming scheme.",
+      "Do not render GUI figures on headless systems before checking Qt support."
     ],
     "faq": [
       {
-        "question": "What is this skill for?",
-        "answer": "It helps use ETE Toolkit for phylogenetic tree manipulation, taxonomy annotation, analysis, comparison, and visualization."
+        "question": "What is ETE Toolkit used for?",
+        "answer": "It supports phylogenetic tree parsing, manipulation, taxonomy annotation, event detection, and visualization."
       },
       {
-        "question": "Does it include executable scripts?",
-        "answer": "Yes. It includes helper scripts for tree operations and quick visualization using local input and output files."
+        "question": "Can it work with Newick files?",
+        "answer": "Yes. The skill includes examples for reading, writing, converting, pruning, rerooting, and comparing Newick trees."
       },
       {
-        "question": "Does it require internet access?",
-        "answer": "NCBI taxonomy workflows can trigger a large taxonomy database download on first use."
+        "question": "Does it install ETE automatically?",
+        "answer": "No. It provides installation guidance. Agents should ask before installing packages or system dependencies."
       },
       {
-        "question": "Can it produce publication figures?",
-        "answer": "Yes. The visualization guidance covers PNG, PDF, and SVG output with layout and node styling options."
+        "question": "Why does NCBITaxa need a warning?",
+        "answer": "The first taxonomy lookup can download about 300 MB and cache it in a hidden home directory."
       },
       {
-        "question": "Can it identify orthologs?",
-        "answer": "It documents PhyloTree workflows for duplication, speciation, orthology, and paralogy analysis."
+        "question": "Can it create publication figures?",
+        "answer": "Yes. It explains PDF, SVG, and PNG rendering with tree styles, node styles, and layout functions."
       },
       {
-        "question": "Is biological interpretation automated?",
-        "answer": "No. The skill supports analysis workflows, but domain experts should review evolutionary conclusions."
+        "question": "Is this only for phylogenetics?",
+        "answer": "No. It also covers hierarchical clustering trees and data matrix visualization through ETE ClusterTree."
       }
     ]
   },

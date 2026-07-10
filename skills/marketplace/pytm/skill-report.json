@@ -1,20 +1,23 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T21:23:30.230Z",
+    "generated_at": "2026-07-09T07:49:01.750Z",
     "slug": "agentsecops-pytm",
     "source_url": "https://github.com/AgentSecOps/SecOpsAgentKit/tree/main/skills/threatmodel/pytm",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "f148ac5a58ecdb02a665e53d269b96157e3b36dda16abe5c326d4d2869e40c5e",
-    "tree_hash": "d768ed7d12cfcdf1adebe531af542940a886061bcf95b5b8ea55051d139d8c78",
+    "content_hash": "7ed749d4b32bc0b8cf7736be83b43377fcb2b97a021cec3bfa76d3084afe526c",
+    "tree_hash": "f36a89af7abc79b7fe4fe788a7cfa8bd50fdb70d766953c46ed4fa154c13258b",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
       "fallback_chain": [
         {
           "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -23,10 +26,10 @@
   },
   "skill": {
     "name": "pytm",
-    "description": "Create threat models as code with pytm for STRIDE analysis, data flow diagrams, and mitigation planning across application architectures.",
-    "summary": "Guide pytm-based STRIDE threat modeling for architecture and CI workflows.",
+    "description": "Create and maintain pytm threat models with Python examples, STRIDE review steps, CI guidance, and diagram troubleshooting for security architecture work.",
+    "summary": "Use pytm to model architecture, identify STRIDE threats, and document mitigations as code.",
     "icon": "📦",
-    "version": "0.1.1",
+    "version": "0.1.0",
     "author": "AgentSecOps",
     "license": "MIT",
     "category": "security",
@@ -34,8 +37,8 @@
       "threat-modeling",
       "pytm",
       "stride",
-      "application-security",
-      "dfd"
+      "security-architecture",
+      "devsecops"
     ],
     "supported_tools": [
       "claude",
@@ -52,22 +55,22 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most Ruby backtick findings are false positives from Markdown code fences and inline code in SKILL.md. The audit confirms package-installation and host-command examples, including two sudo commands, while reference URLs are documentation links only.",
+    "summary": "No prompt injection or malicious intent was found in SKILL.md. Most static findings are Markdown formatting, inline code, or reference URLs. A few command examples install packages, run local Python files, or use sudo, so agents should require explicit approval and a trusted environment.",
     "remediation": [
       {
-        "issue": "Elevated package installation examples",
-        "suggestion": "Remove sudo commands from agent-facing workflows or require explicit user approval before any privileged package installation.",
+        "issue": "Privileged package installation examples",
+        "suggestion": "Avoid sudo in skill instructions where possible. Mark Linux package installation as a user-approved or CI-only action.",
         "severity": "high"
       },
       {
-        "issue": "Host command examples in documentation",
-        "suggestion": "Label pip, brew, Python, and script commands as optional manual steps and avoid instructing agents to run them automatically.",
+        "issue": "Local Python execution examples",
+        "suggestion": "State that agents should only run threat_model.py and helper scripts from trusted repositories after user confirmation.",
         "severity": "medium"
       },
       {
-        "issue": "Referenced scripts and templates are not included in this package",
-        "suggestion": "Either include the referenced files or state that they are examples so users do not run unexpected local scripts.",
-        "severity": "low"
+        "issue": "Dependency installation commands",
+        "suggestion": "Recommend virtual environments, pinned dependency versions, and official installation sources for pytm and Graphviz.",
+        "severity": "medium"
       }
     ],
     "risk_factor_evidence": [
@@ -323,26 +326,6 @@
             "file": "SKILL.md",
             "line_start": 521,
             "line_end": 546
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 546,
-            "line_end": 552
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 552,
-            "line_end": 565
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 188,
-            "line_end": 188
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 458,
-            "line_end": 458
           }
         ]
       },
@@ -1048,392 +1031,392 @@
       {
         "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:76:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:79:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.78,
-        "reason": "The bash install block tells users to run pip and package-manager installs for pytm and Graphviz. The commands are legitimate, but they install external packages and can alter the environment.",
-        "severity": "medium"
+        "confidence": 0.62,
+        "severity": "medium",
+        "reason": "The bash install block instructs package-manager commands for pytm and Graphviz. This is legitimate setup guidance, but installer commands can modify the host and need explicit approval."
       },
       {
         "id": "external_commands:SKILL.md:84:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:95:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:97:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:114:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:116:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:123:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:163:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:169:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.72,
-        "reason": "The CI workflow example includes run steps for pip, apt-get, and local Python scripts. It is documentation, but copying it into CI performs package installation and script execution.",
-        "severity": "medium"
+        "confidence": 0.64,
+        "severity": "medium",
+        "reason": "The CI example runs dependency installation and local Python scripts. This is expected for CI, but it can execute project code and should be limited to trusted repositories."
       },
       {
         "id": "external_commands:SKILL.md:201:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:207:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.64,
-        "reason": "The report-generation block instructs running a user threat model and local scripts from the workspace. This is expected pytm usage, but it still executes local code.",
-        "severity": "medium"
+        "confidence": 0.67,
+        "severity": "medium",
+        "reason": "The report generation block tells users to run threat_model.py and helper scripts. Running local Python files can execute arbitrary project code if the model is untrusted."
       },
       {
         "id": "external_commands:SKILL.md:216:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:260:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:262:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:263:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:264:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:265:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:267:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:269:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:270:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:271:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:272:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:274:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:276:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:277:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:278:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:279:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:280:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:286:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:325:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:329:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:361:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:367:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:385:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:391:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:400:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:441:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:442:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:445:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:452:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.72,
-        "reason": "The troubleshooting bash block includes Graphviz diagnostics, package-manager installs, and a Python one-liner. These are manual steps, but they execute commands on the host.",
-        "severity": "medium"
+        "confidence": 0.62,
+        "severity": "medium",
+        "reason": "The troubleshooting block includes installation and Python execution commands. These are legitimate diagnostics, but they modify or execute code on the user machine if run directly."
       },
       {
         "id": "external_commands:SKILL.md:462:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:470:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:471:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:472:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:483:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding is inline Markdown formatting for a function, property, or file path. It is not a shell backtick operator and does not execute by itself."
+        "confidence": 0.92,
+        "reason": "The backticks mark inline Markdown for filenames, properties, or method names, not shell execution. This is documentation text and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:491:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:515:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:521:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:546:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:552:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points to a Markdown code fence or documented example block, not Ruby backtick execution. The text is not executed when the skill loads."
+        "confidence": 0.92,
+        "reason": "The finding is a Markdown code fence marker or documentation example, not Ruby backtick execution. The surrounding content explains pytm usage and does not automatically run commands."
       },
       {
         "id": "external_commands:SKILL.md:188:sudo-privilege-escalation",
         "verdict": "confirmed",
-        "confidence": 0.94,
-        "reason": "The GitHub Actions example runs sudo apt-get install -y graphviz. That is elevated package installation that can modify the host or CI image and should require approval.",
-        "severity": "high"
+        "confidence": 0.78,
+        "severity": "high",
+        "reason": "The CI example uses sudo apt-get to install Graphviz with root privileges. Even in setup guidance, privileged commands should require explicit approval and isolated CI context."
       },
       {
         "id": "external_commands:SKILL.md:458:sudo-privilege-escalation",
         "verdict": "confirmed",
-        "confidence": 0.94,
-        "reason": "The troubleshooting section instructs sudo apt-get install graphviz. That uses elevated privileges on the host and can alter system packages.",
-        "severity": "high"
+        "confidence": 0.82,
+        "severity": "high",
+        "reason": "The troubleshooting command uses sudo apt-get on a Linux host. Running it grants root privileges to package installation and can alter the system."
       },
       {
         "id": "network:SKILL.md:21:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is a public reference URL in skill documentation, not code that performs a network request. No automatic fetch or data transfer is present."
+        "confidence": 0.94,
+        "reason": "This is a public documentation reference URL, not a runtime network request or data transfer. No secret or user data is sent by the skill."
       },
       {
         "id": "network:SKILL.md:22:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is a public reference URL in skill documentation, not code that performs a network request. No automatic fetch or data transfer is present."
+        "confidence": 0.94,
+        "reason": "This is a public documentation reference URL, not a runtime network request or data transfer. No secret or user data is sent by the skill."
       },
       {
         "id": "network:SKILL.md:23:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is a public reference URL in skill documentation, not code that performs a network request. No automatic fetch or data transfer is present."
+        "confidence": 0.94,
+        "reason": "This is a public documentation reference URL, not a runtime network request or data transfer. No secret or user data is sent by the skill."
       },
       {
         "id": "network:SKILL.md:24:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is a public reference URL in skill documentation, not code that performs a network request. No automatic fetch or data transfer is present."
+        "confidence": 0.94,
+        "reason": "This is a public documentation reference URL, not a runtime network request or data transfer. No secret or user data is sent by the skill."
       },
       {
         "id": "network:SKILL.md:569:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is a public reference URL in skill documentation, not code that performs a network request. No automatic fetch or data transfer is present."
+        "confidence": 0.94,
+        "reason": "This is a public documentation reference URL, not a runtime network request or data transfer. No secret or user data is sent by the skill."
       },
       {
         "id": "network:SKILL.md:570:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is a public reference URL in skill documentation, not code that performs a network request. No automatic fetch or data transfer is present."
+        "confidence": 0.94,
+        "reason": "This is a public documentation reference URL, not a runtime network request or data transfer. No secret or user data is sent by the skill."
       },
       {
         "id": "network:SKILL.md:571:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is a public reference URL in skill documentation, not code that performs a network request. No automatic fetch or data transfer is present."
+        "confidence": 0.94,
+        "reason": "This is a public documentation reference URL, not a runtime network request or data transfer. No secret or user data is sent by the skill."
       },
       {
         "id": "network:SKILL.md:572:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is a public reference URL in skill documentation, not code that performs a network request. No automatic fetch or data transfer is present."
+        "confidence": 0.94,
+        "reason": "This is a public documentation reference URL, not a runtime network request or data transfer. No secret or user data is sent by the skill."
       },
       {
         "id": "network:SKILL.md:573:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is a public reference URL in skill documentation, not code that performs a network request. No automatic fetch or data transfer is present."
+        "confidence": 0.94,
+        "reason": "This is a public documentation reference URL, not a runtime network request or data transfer. No secret or user data is sent by the skill."
       },
       {
         "id": "network:SKILL.md:574:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is a public reference URL in skill documentation, not code that performs a network request. No automatic fetch or data transfer is present."
+        "confidence": 0.94,
+        "reason": "This is a public documentation reference URL, not a runtime network request or data transfer. No secret or user data is sent by the skill."
       }
     ],
     "semantic_findings": [],
@@ -1452,8 +1435,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "high",
-        "confidence": 0.94,
-        "confidence_reasoning": "The GitHub Actions example runs sudo apt-get install -y graphviz. That is elevated package installation that can modify the host or CI image and should require approval."
+        "confidence": 0.78,
+        "confidence_reasoning": "The CI example uses sudo apt-get to install Graphviz with root privileges. Even in setup guidance, privileged commands should require explicit approval and isolated CI context."
       },
       {
         "title": "sudo privilege escalation",
@@ -1468,8 +1451,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "high",
-        "confidence": 0.94,
-        "confidence_reasoning": "The troubleshooting section instructs sudo apt-get install graphviz. That uses elevated privileges on the host and can alter system packages."
+        "confidence": 0.82,
+        "confidence_reasoning": "The troubleshooting command uses sudo apt-get on a Linux host. Running it grants root privileges to package installation and can alter the system."
       }
     ],
     "medium_findings": [
@@ -1486,8 +1469,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The bash install block tells users to run pip and package-manager installs for pytm and Graphviz. The commands are legitimate, but they install external packages and can alter the environment."
+        "confidence": 0.62,
+        "confidence_reasoning": "The bash install block instructs package-manager commands for pytm and Graphviz. This is legitimate setup guidance, but installer commands can modify the host and need explicit approval."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1502,8 +1485,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The CI workflow example includes run steps for pip, apt-get, and local Python scripts. It is documentation, but copying it into CI performs package installation and script execution."
+        "confidence": 0.64,
+        "confidence_reasoning": "The CI example runs dependency installation and local Python scripts. This is expected for CI, but it can execute project code and should be limited to trusted repositories."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1518,8 +1501,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.64,
-        "confidence_reasoning": "The report-generation block instructs running a user threat model and local scripts from the workspace. This is expected pytm usage, but it still executes local code."
+        "confidence": 0.67,
+        "confidence_reasoning": "The report generation block tells users to run threat_model.py and helper scripts. Running local Python files can execute arbitrary project code if the model is untrusted."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1534,8 +1517,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The troubleshooting bash block includes Graphviz diagnostics, package-manager installs, and a Python one-liner. These are manual steps, but they execute commands on the host."
+        "confidence": 0.62,
+        "confidence_reasoning": "The troubleshooting block includes installation and Python execution commands. These are legitimate diagnostics, but they modify or execute code on the user machine if run directly."
       }
     ],
     "low_findings": [],
@@ -1543,125 +1526,126 @@
     "files_scanned": 1,
     "total_lines": 575,
     "audit_model": "codex",
-    "audited_at": "2026-07-07T21:23:30.230Z",
+    "audited_at": "2026-07-09T07:49:01.750Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Build pytm Threat Models",
-    "value_statement": "Security teams need repeatable threat models that fit design and CI workflows. This skill guides pytm-based STRIDE modeling, DFD creation, and mitigation tracking.",
+    "user_title": "Build pytm Threat Models as Code",
+    "value_statement": "Threat modeling often becomes outdated and disconnected from architecture changes. This skill helps create pytm models, STRIDE analysis, and diagram workflows for security reviews and CI.",
     "seo_keywords": [
+      "pytm threat modeling",
+      "STRIDE analysis",
       "Claude",
       "Codex",
       "Claude Code",
-      "pytm threat modeling",
-      "STRIDE analysis",
-      "data flow diagram",
-      "DFD generation",
       "security architecture",
-      "threat model as code",
-      "application security"
+      "data flow diagrams",
+      "DevSecOps",
+      "threat models as code",
+      "CI threat modeling"
     ],
     "actual_capabilities": [
-      "Guides creation of pytm models with actors, boundaries, servers, datastores, and data flows.",
-      "Explains STRIDE review steps for threats, mitigations, residual risk, and acceptance criteria.",
-      "Provides example patterns for web applications, microservices, custom threats, trust boundaries, and risk scoring.",
-      "Shows how to generate reports and diagrams from pytm workflows.",
-      "Outlines CI integration patterns for threat model checks and artifact upload."
+      "Guides creation of pytm threat models with actors, boundaries, components, and data flows.",
+      "Explains STRIDE review steps for spoofing, tampering, repudiation, disclosure, denial, and privilege risks.",
+      "Provides Python examples for web, microservice, custom threat, trust boundary, and scoring patterns.",
+      "Shows CI workflow concepts for generating diagrams, reports, and mitigation checks.",
+      "Covers security handling for sensitive architecture details, reports, repositories, and review records.",
+      "Lists troubleshooting steps for missing threats, Graphviz diagrams, false positives, and model drift."
     ],
     "limitations": [
-      "The skill contains documentation only; it does not include executable scripts or templates in this package.",
-      "Users must install pytm and Graphviz separately before generating diagrams.",
-      "Threat quality depends on accurate architecture details and security attributes.",
-      "It does not replace expert security review for high-risk systems."
+      "The package only contains SKILL.md; referenced scripts and templates are not bundled.",
+      "It cannot validate a real architecture without accurate user-provided components, boundaries, and data flows.",
+      "Command examples may install packages or run local Python, so agents need user approval.",
+      "pytm threat output still requires human review for likelihood, impact, and mitigation quality."
     ],
     "use_cases": [
       {
-        "title": "Model a New Web Application",
-        "description": "Create a pytm model with trust boundaries, components, sensitive data flows, and STRIDE review steps.",
-        "target_user": "Security engineer"
+        "title": "Design Review Preparation",
+        "description": "Create a first pytm model before an architecture review and document key STRIDE threats.",
+        "target_user": "Security architect"
       },
       {
-        "title": "Add Threat Modeling to CI",
-        "description": "Plan repeatable checks that generate reports, track mitigations, and publish diagram artifacts during builds.",
-        "target_user": "DevOps engineer"
+        "title": "CI Threat Model Checks",
+        "description": "Add model generation and mitigation checks to a pipeline for architecture changes.",
+        "target_user": "DevSecOps engineer"
       },
       {
-        "title": "Review Architecture Changes",
-        "description": "Compare updated services, data stores, and trust boundaries against existing threats and mitigations.",
+        "title": "Application Security Documentation",
+        "description": "Convert service boundaries, sensitive data flows, and mitigations into reviewable threat model documentation.",
         "target_user": "Application security lead"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Create a Starter Model",
-        "scenario": "Beginner threat model setup",
-        "prompt": "Help me create a pytm threat model for [system]. Ask for actors, components, trust boundaries, data flows, and sensitive data first."
+        "title": "Start a Web Threat Model",
+        "scenario": "Beginner setup",
+        "prompt": "Help me create a pytm threat model for a three-tier web application. Include actors, trust boundaries, data flows, and initial STRIDE concerns."
       },
       {
-        "title": "Review STRIDE Threats",
-        "scenario": "Threat review and mitigation planning",
-        "prompt": "Review my pytm model for STRIDE coverage. Identify likely missing threats, mitigations, and residual risk questions."
+        "title": "Review Existing Flows",
+        "scenario": "Intermediate STRIDE review",
+        "prompt": "Review this architecture description for pytm modeling. Identify missing boundaries, sensitive flows, and security attributes before I write the model."
       },
       {
-        "title": "Add CI Checks",
-        "scenario": "Continuous integration workflow design",
-        "prompt": "Design a CI workflow for this pytm project. Include dependency setup, report generation, unmitigated threat checks, and artifact handling."
+        "title": "Prepare CI Checks",
+        "scenario": "Advanced automation",
+        "prompt": "Design a CI workflow for a pytm model that generates diagrams, produces a threat report, and flags unmitigated high-risk threats."
       },
       {
-        "title": "Extend Risk Scoring",
-        "scenario": "Advanced custom threat modeling",
-        "prompt": "Help me add custom threat definitions and risk scoring for [domain]. Map each threat to business impact and mitigation ownership."
+        "title": "Customize Threat Library",
+        "scenario": "Advanced governance",
+        "prompt": "Help me define organization-specific pytm threats, risk scoring criteria, and mitigation documentation for API and cloud storage controls."
       }
     ],
     "output_examples": [
       {
-        "input": "A product team needs a threat model for a three-tier web app.",
-        "output": "A structured model outline with actors, trust boundaries, data flows, sensitive data labels, and STRIDE review priorities."
+        "input": "A user asks for a threat model for an e-commerce web application with a web server and database.",
+        "output": "The skill produces a structured model plan with actors, boundaries, encrypted flows, STRIDE concerns, and mitigation review steps."
       },
       {
-        "input": "A CI pipeline should block unmitigated high-risk threats.",
-        "output": "A build plan that prepares prerequisites, runs the model, checks mitigation status, and publishes diagram and report artifacts."
+        "input": "A team wants pytm checks during pull requests.",
+        "output": "The skill outlines dependency setup, diagram generation, artifact upload, and a mitigation gate for the CI workflow."
       },
       {
-        "input": "A team sees too many irrelevant threats in a report.",
-        "output": "A review checklist for component properties, trust boundaries, threat conditions, and documented non-applicable threats."
+        "input": "A security lead needs to reduce irrelevant threats.",
+        "output": "The skill recommends accurate component properties, threat conditions, documented exclusions, and periodic review of model drift."
       }
     ],
     "best_practices": [
-      "Start with clear trust boundaries, data classifications, and authentication assumptions.",
-      "Keep threat models in version control and review changes with architecture updates.",
-      "Document mitigation ownership, residual risk, and approval criteria for each significant threat."
+      "Keep threat models near architecture documentation and review them when boundaries or data flows change.",
+      "Use placeholders for credentials, tokens, customer data, and internal network details.",
+      "Run generated commands only in trusted repositories, controlled virtual environments, or CI runners."
     ],
     "anti_patterns": [
-      "Do not hardcode real credentials, secrets, or private architecture details in shared models.",
-      "Do not treat generated threats as complete without human review.",
-      "Do not run installation or local script commands without user approval."
+      "Treating generated STRIDE threats as final risk decisions without human review.",
+      "Publishing diagrams or reports that reveal sensitive architecture details.",
+      "Running local threat model scripts from untrusted repositories without approval."
     ],
     "faq": [
       {
-        "question": "What is pytm?",
-        "answer": "pytm is a Python library for defining architecture, data flows, and STRIDE threats as code."
+        "question": "Does this skill include executable scripts?",
+        "answer": "No. The audited package only includes SKILL.md, so referenced scripts and templates must be supplied separately."
       },
       {
-        "question": "Does this skill generate diagrams directly?",
-        "answer": "It explains the workflow. Diagram generation requires pytm, Graphviz, and a local threat model file."
+        "question": "Can it generate data flow diagrams?",
+        "answer": "It explains how pytm and Graphviz generate diagrams, but the user must provide a valid model and installed dependencies."
       },
       {
-        "question": "Can I use it with Claude, Codex, and Claude Code?",
-        "answer": "Yes. The guidance is compatible with Claude, Codex, and Claude Code workflows."
+        "question": "Is it suitable for CI pipelines?",
+        "answer": "Yes. It provides CI workflow guidance for model generation, artifacts, and mitigation checks."
       },
       {
-        "question": "Does it include scripts or templates?",
-        "answer": "No. This package contains SKILL.md only; referenced scripts and templates are workflow examples."
+        "question": "Does it replace a security review?",
+        "answer": "No. It supports analysis, but security teams must validate threats, likelihood, impact, and mitigations."
       },
       {
-        "question": "Is it safe for CI use?",
-        "answer": "Use it with reviewed dependencies, pinned versions, and approval for package installation steps."
+        "question": "What inputs work best?",
+        "answer": "Clear architecture descriptions with actors, trust boundaries, components, protocols, sensitive data, and existing controls work best."
       },
       {
-        "question": "What information should I provide?",
-        "answer": "Provide scope, components, trust boundaries, data flows, protocols, sensitive data, controls, and constraints."
+        "question": "What should agents avoid?",
+        "answer": "Agents should avoid running install commands, sudo commands, or local Python files without explicit user approval."
       }
     ]
   },

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T07:50:20.046Z",
+    "generated_at": "2026-07-09T17:28:47.532Z",
     "slug": "davila7-senior-backend",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/development/senior-backend",
     "source_ref": "main",
@@ -23,8 +23,8 @@
   },
   "skill": {
     "name": "senior-backend",
-    "description": "A backend engineering skill for API design, database review, load testing, and security practice guidance across common service stacks.",
-    "summary": "Build and review backend APIs, database workflows, load checks, and security practices with focused references and scripts.",
+    "description": "Build and review backend systems with guidance for API design, database checks, load testing, security practices, and performance tuning.",
+    "summary": "Guides backend API design, database checks, load testing, and security reviews.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
@@ -52,19 +52,8 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static command and reconnaissance hits are false positives caused by Markdown fences, inline file paths, and generic documentation headings. The confirmed issue is that all three Python scripts can write JSON reports to an unconstrained user-supplied output path. No prompt injection or data-exfiltration intent was found in the reviewed files.",
-    "remediation": [
-      {
-        "issue": "Unconstrained output file paths in helper scripts",
-        "suggestion": "Resolve --output paths, restrict writes to the working project or a reports directory, and refuse overwrites unless the user passes an explicit force flag.",
-        "severity": "medium"
-      },
-      {
-        "issue": "Command examples are broad and include deployment commands",
-        "suggestion": "Add a short safety note that dependency, Docker, and Kubernetes commands should be reviewed before use in production repositories.",
-        "severity": "low"
-      }
-    ],
+    "summary": "All 32 static findings were adjudicated as false positives. The Markdown command fences and inline backticks are documentation examples, the script writes are explicit optional JSON outputs, and the .env command copies an example file rather than reading secrets. No prompt injection, data exfiltration, or malicious intent was found in the reviewed files.",
+    "remediation": [],
     "risk_factor_evidence": [
       {
         "factor": "filesystem",
@@ -539,378 +528,331 @@
         "id": "blocker:references/api_design_patterns.md:81:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The cited lines are a generic \"Anti-Patterns to Avoid\" documentation heading. They do not instruct system discovery, host enumeration, or collection of environment details."
+        "reason": "The cited reference line is a generic documentation heading, \"Anti-Patterns to Avoid\". It does not request host enumeration, credential discovery, or system reconnaissance."
       },
       {
         "id": "blocker:references/backend_security_practices.md:81:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The cited lines are a generic \"Anti-Patterns to Avoid\" documentation heading. They do not instruct system discovery, host enumeration, or collection of environment details."
+        "reason": "The cited reference line is a generic documentation heading, \"Anti-Patterns to Avoid\". It does not request host enumeration, credential discovery, or system reconnaissance."
       },
       {
         "id": "blocker:references/database_optimization_guide.md:81:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The cited lines are a generic \"Anti-Patterns to Avoid\" documentation heading. They do not instruct system discovery, host enumeration, or collection of environment details."
+        "reason": "The cited reference line is a generic documentation heading, \"Anti-Patterns to Avoid\". It does not request host enumeration, credential discovery, or system reconnaissance."
       },
       {
         "id": "filesystem:scripts/api_load_tester.py:107:python-file-write-append",
-        "verdict": "confirmed",
-        "confidence": 0.72,
-        "reason": "The script writes JSON report output to a user-supplied path without constraining the destination or checking for existing files. This is an opt-in report feature, but it can overwrite arbitrary local files if misused.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The file write only occurs when the user explicitly passes --json and --output to save a local report. No hidden write, persistence, overwrite bypass, or secret collection behavior is present."
       },
       {
         "id": "filesystem:scripts/api_scaffolder.py:107:python-file-write-append",
-        "verdict": "confirmed",
-        "confidence": 0.72,
-        "reason": "The script writes JSON report output to a user-supplied path without constraining the destination or checking for existing files. This is an opt-in report feature, but it can overwrite arbitrary local files if misused.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The file write only occurs when the user explicitly passes --json and --output to save a local report. No hidden write, persistence, overwrite bypass, or secret collection behavior is present."
       },
       {
         "id": "filesystem:scripts/database_migration_tool.py:107:python-file-write-append",
-        "verdict": "confirmed",
-        "confidence": 0.72,
-        "reason": "The script writes JSON report output to a user-supplied path without constraining the destination or checking for existing files. This is an opt-in report feature, but it can overwrite arbitrary local files if misused.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The file write only occurs when the user explicitly passes --json and --output to save a local report. No hidden write, persistence, overwrite bypass, or secret collection behavior is present."
       },
       {
         "id": "external_commands:SKILL.md:16:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The lines are a fenced Markdown block showing script invocation examples. They are documentation, not Ruby backtick execution or automatic command execution."
+        "confidence": 0.93,
+        "reason": "The finding points to Markdown code fences or documented command examples in SKILL.md. These are visible usage instructions, not Ruby backtick execution or hidden command execution in skill code."
       },
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points at the close of a Markdown code fence after usage examples. No executable skill code or shell interpolation is present."
+        "confidence": 0.93,
+        "reason": "The finding points to Markdown code fences or documented command examples in SKILL.md. These are visible usage instructions, not Ruby backtick execution or hidden command execution in skill code."
       },
       {
         "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The lines introduce a fenced Markdown usage example for the database migration script. The block is instructional text and does not execute commands by itself."
+        "confidence": 0.93,
+        "reason": "The finding points to Markdown code fences or documented command examples in SKILL.md. These are visible usage instructions, not Ruby backtick execution or hidden command execution in skill code."
       },
       {
         "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points at the close of a Markdown usage block. There is no Ruby backtick expression or dynamic command construction."
+        "confidence": 0.93,
+        "reason": "The finding points to Markdown code fences or documented command examples in SKILL.md. These are visible usage instructions, not Ruby backtick execution or hidden command execution in skill code."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The lines introduce a fenced Markdown usage example for the load tester. This is static documentation and not executable code inside the skill."
+        "confidence": 0.93,
+        "reason": "The finding points to Markdown code fences or documented command examples in SKILL.md. These are visible usage instructions, not Ruby backtick execution or hidden command execution in skill code."
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points at the close of a Markdown usage block. It does not contain command substitution or automatic execution behavior."
+        "confidence": 0.93,
+        "reason": "The finding points to Markdown code fences or documented command examples in SKILL.md. These are visible usage instructions, not Ruby backtick execution or hidden command execution in skill code."
       },
       {
         "id": "external_commands:SKILL.md:70:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The lines introduce a fenced Markdown setup block. It documents standard dependency and environment setup commands, not hidden shell execution."
+        "confidence": 0.93,
+        "reason": "The finding points to Markdown code fences or documented command examples in SKILL.md. These are visible usage instructions, not Ruby backtick execution or hidden command execution in skill code."
       },
       {
         "id": "external_commands:SKILL.md:72:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points at the close of a Markdown setup block. No runtime code path executes these commands without explicit user action."
+        "confidence": 0.93,
+        "reason": "The finding points to Markdown code fences or documented command examples in SKILL.md. These are visible usage instructions, not Ruby backtick execution or hidden command execution in skill code."
       },
       {
         "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited line wraps a reference file path in Markdown backticks. It is an inline path reference, not shell command substitution."
+        "confidence": 0.96,
+        "reason": "The finding points to descriptive Markdown text around reference documentation and workflow notes. There is no executable Ruby backtick expression or hidden shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited line wraps a reference file path in Markdown backticks. It links documentation and does not execute a command."
+        "confidence": 0.96,
+        "reason": "The finding points to descriptive Markdown text around reference documentation and workflow notes. There is no executable Ruby backtick expression or hidden shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited line wraps a reference file path in Markdown backticks. It is documentation text and not an execution primitive."
+        "confidence": 0.96,
+        "reason": "The finding points to descriptive Markdown text around reference documentation and workflow notes. There is no executable Ruby backtick expression or hidden shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The lines introduce a fenced Markdown block with setup commands. These commands are examples for a developer and are not invoked by the skill automatically."
+        "confidence": 0.93,
+        "reason": "The finding points to Markdown code fences or documented command examples in SKILL.md. These are visible usage instructions, not Ruby backtick execution or hidden command execution in skill code."
       },
       {
         "id": "external_commands:SKILL.md:127:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points at the end of a Markdown command block. There is no embedded code path that executes the block contents."
+        "confidence": 0.93,
+        "reason": "The finding points to Markdown code fences or documented command examples in SKILL.md. These are visible usage instructions, not Ruby backtick execution or hidden command execution in skill code."
       },
       {
         "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The lines introduce a fenced Markdown block with quality-check commands. The block is reference material and contains no dynamic shell execution."
+        "confidence": 0.93,
+        "reason": "The finding points to Markdown code fences or documented command examples in SKILL.md. These are visible usage instructions, not Ruby backtick execution or hidden command execution in skill code."
       },
       {
         "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points at the end of a Markdown command block. It is not Ruby backtick syntax and does not execute during skill loading."
+        "confidence": 0.93,
+        "reason": "The finding points to Markdown code fences or documented command examples in SKILL.md. These are visible usage instructions, not Ruby backtick execution or hidden command execution in skill code."
       },
       {
         "id": "external_commands:SKILL.md:142:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited line is a Markdown list item containing a reference file path. The backticks are formatting, not shell execution."
+        "confidence": 0.98,
+        "reason": "The finding points to inline Markdown references to local documentation files. Backticks are used for formatting file paths, not for shell execution."
       },
       {
         "id": "external_commands:SKILL.md:143:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited line is a Markdown list item containing a reference file path. It does not run or construct a command."
+        "confidence": 0.98,
+        "reason": "The finding points to inline Markdown references to local documentation files. Backticks are used for formatting file paths, not for shell execution."
       },
       {
         "id": "external_commands:SKILL.md:144:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited line is a Markdown list item containing a reference file path. It is not an executable shell expression."
+        "confidence": 0.98,
+        "reason": "The finding points to inline Markdown references to local documentation files. Backticks are used for formatting file paths, not for shell execution."
       },
       {
         "id": "external_commands:SKILL.md:174:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The lines introduce a fenced Markdown block of common developer commands. They require explicit user action and are not executed by skill code."
+        "confidence": 0.93,
+        "reason": "The finding points to Markdown code fences or documented command examples in SKILL.md. These are visible usage instructions, not Ruby backtick execution or hidden command execution in skill code."
       },
       {
         "id": "external_commands:SKILL.md:189:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The finding points at the end of a Markdown common-commands block. No code in the skill executes these commands automatically."
+        "confidence": 0.93,
+        "reason": "The finding points to Markdown code fences or documented command examples in SKILL.md. These are visible usage instructions, not Ruby backtick execution or hidden command execution in skill code."
       },
       {
         "id": "external_commands:SKILL.md:195:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited line formats a documentation path in Markdown backticks. It is a reference to troubleshooting documentation, not shell execution."
+        "confidence": 0.96,
+        "reason": "The finding points to descriptive Markdown text around reference documentation and workflow notes. There is no executable Ruby backtick expression or hidden shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:206:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited line formats a reference document path in Markdown backticks. It does not execute commands or interpolate user input."
+        "confidence": 0.98,
+        "reason": "The finding points to inline Markdown references to local documentation files. Backticks are used for formatting file paths, not for shell execution."
       },
       {
         "id": "external_commands:SKILL.md:207:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited line formats a reference document path in Markdown backticks. It is plain documentation text."
+        "confidence": 0.98,
+        "reason": "The finding points to inline Markdown references to local documentation files. Backticks are used for formatting file paths, not for shell execution."
       },
       {
         "id": "external_commands:SKILL.md:208:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The cited line formats a reference document path in Markdown backticks. No executable behavior is attached to it."
+        "confidence": 0.98,
+        "reason": "The finding points to inline Markdown references to local documentation files. Backticks are used for formatting file paths, not for shell execution."
       },
       {
         "id": "sensitive:SKILL.md:126:environment-file-access",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The line is a standard setup example copying .env.example to .env. It does not read, print, transmit, or parse environment secrets, so the sensitive-access pattern is not confirmed."
+        "confidence": 0.89,
+        "reason": "The command copies .env.example to .env as setup documentation. It does not read, print, upload, or otherwise expose environment secrets."
       },
       {
         "id": "blocker:SKILL.md:83:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a bullet saying the reference includes anti-patterns to avoid. It does not request system reconnaissance or collection of host details."
+        "confidence": 0.96,
+        "reason": "The cited line is a bullet saying the references include anti-patterns to avoid. It is not an instruction to enumerate the host system or collect system details."
       }
     ],
     "semantic_findings": [],
     "critical_findings": [],
     "high_findings": [],
-    "medium_findings": [
-      {
-        "title": "Python file write/append",
-        "description": "with open(args.output, 'w') as f:",
-        "locations": [
-          {
-            "file": "scripts/api_load_tester.py",
-            "line_start": 107,
-            "line_end": 107
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The script writes JSON report output to a user-supplied path without constraining the destination or checking for existing files. This is an opt-in report feature, but it can overwrite arbitrary local files if misused."
-      },
-      {
-        "title": "Python file write/append",
-        "description": "with open(args.output, 'w') as f:",
-        "locations": [
-          {
-            "file": "scripts/api_scaffolder.py",
-            "line_start": 107,
-            "line_end": 107
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The script writes JSON report output to a user-supplied path without constraining the destination or checking for existing files. This is an opt-in report feature, but it can overwrite arbitrary local files if misused."
-      },
-      {
-        "title": "Python file write/append",
-        "description": "with open(args.output, 'w') as f:",
-        "locations": [
-          {
-            "file": "scripts/database_migration_tool.py",
-            "line_start": 107,
-            "line_end": 107
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The script writes JSON report output to a user-supplied path without constraining the destination or checking for existing files. This is an opt-in report feature, but it can overwrite arbitrary local files if misused."
-      }
-    ],
+    "medium_findings": [],
     "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 7,
     "total_lines": 867,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T07:50:20.046Z",
+    "audited_at": "2026-07-09T17:28:47.532Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Build Backend Services With Senior Review",
-    "value_statement": "Backend teams need consistent guidance for APIs, databases, performance, and security. This skill provides scripts, checklists, and references for Claude, Codex, and Claude Code workflows.",
+    "user_title": "Build Reliable Backend APIs",
+    "value_statement": "Backend teams need consistent architecture, database, and security guidance across services. This skill provides focused prompts, references, and helper scripts for API design and backend review.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "backend development",
       "API scaffolding",
-      "database optimization",
+      "database migration",
       "REST API design",
       "GraphQL backend",
       "backend security",
       "load testing"
     ],
     "actual_capabilities": [
-      "Guides API design, database optimization, backend security, performance, and maintainability reviews.",
-      "Provides Python helper scripts that validate a target path and produce basic analysis reports.",
-      "Can write script results as formatted JSON when the user enables JSON output.",
-      "Documents common Node.js, Python, Docker, Kubernetes, test, and lint workflows.",
-      "Includes reference guides for API patterns, database optimization, and backend security practices."
+      "Documents backend topics for API patterns, database optimization, and security practices.",
+      "Provides Python CLI entry points for scaffolding, migration review, and load testing workflows.",
+      "Validates that a target path exists before producing a simple analysis report.",
+      "Prints status, target path, and finding counts for script runs.",
+      "Can emit a JSON results file when users pass --json and --output."
     ],
     "limitations": [
-      "The included scripts are starter templates and do not perform deep static analysis.",
-      "The load tester does not generate real traffic or benchmark live APIs.",
-      "The database migration tool does not inspect schemas or execute migrations.",
-      "Command examples require review before running in a real repository."
+      "The helper scripts contain placeholder analysis logic and do not generate production code.",
+      "The references are generic and require project-specific engineering judgment.",
+      "The skill does not connect to live databases, services, or cloud providers.",
+      "The skill does not replace formal security review or load testing tools."
     ],
     "use_cases": [
       {
-        "title": "Plan an API Surface",
-        "description": "Map resources, endpoints, validation rules, and review questions before implementing a REST or GraphQL backend.",
-        "target_user": "Backend developer"
+        "title": "Plan a New API",
+        "description": "Use the API design notes to outline endpoints, validation, and service boundaries before implementation.",
+        "target_user": "Backend engineer"
       },
       {
-        "title": "Review Database Changes",
-        "description": "Use the database guide to check migration risks, query patterns, indexing concerns, and rollback planning.",
-        "target_user": "Database-focused engineer"
+        "title": "Review Service Readiness",
+        "description": "Check backend changes against database, performance, and security considerations before a release.",
+        "target_user": "Tech lead"
       },
       {
-        "title": "Prepare Service Readiness",
-        "description": "Combine security, testing, deployment, and performance checks into a backend launch review.",
-        "target_user": "Technical lead"
+        "title": "Bootstrap Team Standards",
+        "description": "Create shared backend review prompts and quality checklists for teams using Claude, Codex, or Claude Code.",
+        "target_user": "Engineering manager"
       }
     ],
     "prompt_templates": [
       {
         "title": "Review an API Plan",
-        "scenario": "Beginner request for endpoint feedback",
-        "prompt": "Use the senior-backend skill to review this API plan. Check resource boundaries, validation, error handling, and missing tests."
+        "scenario": "Beginner",
+        "prompt": "Use the senior-backend skill to review my API plan. Check endpoint shape, validation, authentication, database access, and missing tests."
       },
       {
-        "title": "Create a Backend Checklist",
-        "scenario": "Intermediate planning for a new service",
-        "prompt": "Use the senior-backend skill to create a checklist for a new backend service using my stack, database, and deployment target."
+        "title": "Compare Database Options",
+        "scenario": "Intermediate",
+        "prompt": "Use the database optimization guide to compare these schema changes. Identify indexing risks, migration order, rollback needs, and monitoring signals."
       },
       {
-        "title": "Assess Database Changes",
-        "scenario": "Intermediate review before migration work",
-        "prompt": "Use the senior-backend skill to assess this database change plan. Identify migration risks, indexing needs, rollback steps, and observability checks."
+        "title": "Harden a Backend Service",
+        "scenario": "Advanced",
+        "prompt": "Use the backend security practices reference to review this service. Focus on authorization boundaries, input validation, secret handling, and audit logging."
       },
       {
-        "title": "Design a Production Workflow",
-        "scenario": "Advanced service delivery planning",
-        "prompt": "Use the senior-backend skill to review my service requirements, data model, auth constraints, and deployment target. Produce an implementation plan with risks, tests, and rollout checks."
+        "title": "Design a Release Readiness Review",
+        "scenario": "Expert",
+        "prompt": "Use all senior-backend references to create a release review for this backend change. Include API, database, performance, security, and operational checks."
       }
     ],
     "output_examples": [
       {
-        "input": "Review a REST API design for a payments service.",
-        "output": "A focused review covering endpoint boundaries, authentication, validation, idempotency, failure handling, and test gaps."
-      },
-      {
-        "input": "Assess a database migration plan for a high-traffic table.",
+        "input": "Review a proposed user management API before implementation.",
         "output": [
-          "Migration risks are grouped by locking, rollback, indexing, and data integrity.",
-          "The response includes review questions and validation steps before release."
+          "Endpoint boundaries are clear, but role checks need explicit ownership rules.",
+          "Add validation for email updates and rate limits on password flows.",
+          "Plan integration tests for authentication, authorization, and duplicate user handling."
         ]
       },
       {
-        "input": "Prepare a backend readiness checklist before launch.",
-        "output": "A launch checklist covering security controls, quality checks, monitoring, deployment commands, and post-release verification."
+        "input": "Assess a database migration for a high-traffic table.",
+        "output": "The migration should be split into additive schema changes, backfill, and constraint enforcement. Add rollback notes and monitor lock duration."
+      },
+      {
+        "input": "Create a backend security review checklist.",
+        "output": [
+          "Confirm authentication and authorization boundaries for every sensitive action.",
+          "Check input validation, parameterized queries, and secret handling.",
+          "Add logging and monitoring for failed access attempts and unusual traffic."
+        ]
       }
     ],
     "best_practices": [
-      "Review command examples before running them in production repositories.",
-      "Provide target language, framework, database, and deployment constraints in each prompt.",
-      "Use the references as checklists, then validate results with project tests."
+      "Share architecture context, data model notes, and expected traffic before asking for recommendations.",
+      "Ask the skill to separate must-fix risks from optional improvements.",
+      "Review generated command suggestions before running them in a project workspace."
     ],
     "anti_patterns": [
-      "Expecting the starter scripts to replace full test suites or profilers.",
-      "Running deployment or dependency commands without confirming the repository context.",
-      "Asking for broad architecture advice without sharing constraints or failure modes."
+      "Treating generic reference text as project-specific security approval.",
+      "Running helper scripts against sensitive directories without understanding the output path.",
+      "Expecting the placeholder scripts to perform full scaffolding, migration, or load-testing work."
     ],
     "faq": [
       {
-        "question": "Does this skill generate production backend code?",
-        "answer": "It guides backend planning and review. The included scripts are starter helpers, not complete service generators."
+        "question": "What does this skill help with?",
+        "answer": "It helps structure backend API, database, performance, and security reviews for service development."
       },
       {
-        "question": "Which tools can use this skill?",
-        "answer": "The report lists support for Claude, Codex, and Claude Code."
+        "question": "Does it create production backend code?",
+        "answer": "No. The included scripts are basic helpers and the references are guidance."
       },
       {
-        "question": "Can it run load tests against my API?",
-        "answer": "No. The load tester script currently validates a target path and produces a basic report template."
+        "question": "Can I use it with Claude Code and Codex?",
+        "answer": "Yes. It declares support for Claude, Codex, and Claude Code."
       },
       {
-        "question": "Can it execute database migrations?",
-        "answer": "No. It provides review guidance and a starter reporting script, but it does not execute migrations."
+        "question": "Does it require network access?",
+        "answer": "No evidence found that the included scripts make network requests."
       },
       {
-        "question": "Is it safe to run the helper scripts?",
-        "answer": "Review arguments first. The scripts can write report files when JSON output and an output path are provided."
+        "question": "Can it modify files?",
+        "answer": "The scripts can write a JSON report only when you pass --json and --output."
       },
       {
-        "question": "What backend topics does it cover?",
-        "answer": "It covers API patterns, database optimization, security practices, quality checks, performance, and maintainability."
+        "question": "Should I run every command in SKILL.md?",
+        "answer": "No. Review commands first and run only those that match your project and environment."
       }
     ]
   },

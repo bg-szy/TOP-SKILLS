@@ -1,20 +1,22 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T23:52:47.733Z",
+    "generated_at": "2026-07-09T05:40:41.705Z",
     "slug": "agentspace-so-image-inpainting",
     "source_url": "https://github.com/agentspace-so/runcomfy-agent-skills/tree/main/image-inpainting/",
     "source_ref": "main",
-    "model": "codex",
+    "model": "claude",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "ac0654910addb44b1ceaeda38d8e2f0d66c337d0f2bfb6acd15ce74b39cba0b3",
-    "tree_hash": "09040e6462680530ee475841864300629c543731f3cd726c2de2d435b2a8dfd9",
+    "content_hash": "aadb07e33f0db02552b5afbc18cab0d6d35ae55fb75cca933bc4e0088a1b4bac",
+    "tree_hash": "3cb6f843f64006d3258ff03449ef47dcc6ac9cbfd24b45797273dd500775831a",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "claude-sonnet-4.6",
+      "model_effective": "claude:claude-sonnet-4.6",
       "fallback_chain": [
         {
-          "agent": "codex",
+          "agent": "claude",
+          "model": "claude-sonnet-4.6",
           "outcome": "success"
         }
       ],
@@ -23,18 +25,18 @@
   },
   "skill": {
     "name": "image-inpainting",
-    "description": "Mask-driven image inpainting on RunComfy through the runcomfy CLI. It routes masked edits to Z-Image Turbo Inpainting and suggests description-based edit models when no mask is available.",
-    "summary": "Run mask-based image inpainting jobs with RunComfy models from Claude, Codex, or Claude Code.",
+    "description": "Run mask-driven image inpainting jobs on RunComfy with the runcomfy CLI. The skill helps remove or replace masked regions, choose the right edit model, and set inpainting parameters.",
+    "summary": "Run precise image inpainting and local image edits through RunComfy.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "agentspace-so",
     "license": "MIT",
     "tags": [
       "image-inpainting",
-      "runcomfy",
       "image-editing",
+      "runcomfy",
       "mask-editing",
-      "generative-ai"
+      "creative-tools"
     ],
     "supported_tools": [
       "claude",
@@ -53,26 +55,21 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static findings are Markdown formatting, documentation links, placeholder URLs, or model-selection prose rather than executable Ruby or reconnaissance behavior. Confirmed risks are the intentional runcomfy command execution path, package-manager installation guidance, persistent API token storage, and an abuse risk around watermark removal.",
+    "summary": "Most static findings are false positives caused by Markdown backticks, documentation links, placeholder URLs, and explanatory text. The real security surface is limited to intentional runcomfy CLI execution and outbound uploads to RunComfy, plus a semantic misuse risk from explicit watermark-removal guidance.",
     "remediation": [
       {
-        "issue": "External command execution through runcomfy",
-        "suggestion": "Keep the tool boundary limited to Bash(runcomfy *) and avoid expanding this skill to arbitrary shell, npm, or npx execution during normal use.",
+        "issue": "External CLI execution is required for the skill.",
+        "suggestion": "Keep the allowed tool scope limited to Bash(runcomfy *) and avoid recommending arbitrary shell scripts or unpinned remote installers.",
         "severity": "medium"
       },
       {
-        "issue": "Persistent API token storage",
-        "suggestion": "Document token revocation and cleanup steps, and verify that token files are created with owner-only permissions on all supported platforms.",
-        "severity": "high"
+        "issue": "User images and masks are sent to a remote model service.",
+        "suggestion": "State that users should not submit confidential images unless they accept RunComfy processing and retention terms.",
+        "severity": "low"
       },
       {
-        "issue": "External service privacy disclosure",
-        "suggestion": "Require user approval before sending private image URLs, masks, or prompts to RunComfy services.",
-        "severity": "medium"
-      },
-      {
-        "issue": "Watermark removal misuse",
-        "suggestion": "Reframe watermark removal guidance to require ownership, authorization, or licensed cleanup use cases.",
+        "issue": "Watermark removal can support rights abuse.",
+        "suggestion": "Replace broad watermark-removal language with guidance limited to marks the user owns or is authorized to remove.",
         "severity": "medium"
       }
     ],
@@ -1229,484 +1226,479 @@
       {
         "id": "external_commands:SKILL.md:6:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:30:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.78,
-        "reason": "This fenced shell example instructs users to install the runcomfy CLI, sign in, and run a model job. It is legitimate for the skill, but it is real external command execution that can affect the host and remote account.",
+        "confidence": 0.82,
+        "reason": "This fenced bash block tells the agent to install and run the runcomfy CLI. The command scope is narrow, but it is still external command execution from a community skill.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:43:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:51:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:61:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:66:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:71:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:80:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:87:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:89:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:90:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:91:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:92:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:93:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:99:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "This fenced example invokes runcomfy with user-provided image data and writes results to an output directory. The command is expected behavior, but it is still external CLI execution against a remote service.",
+        "confidence": 0.8,
+        "reason": "This bash example invokes runcomfy run with user-supplied image and mask URLs. The command is expected for the skill, but it still executes an external CLI and sends data to a remote service.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:109:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:113:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "This fenced example invokes runcomfy with user-provided image data and writes results to an output directory. The command is expected behavior, but it is still external CLI execution against a remote service.",
+        "confidence": 0.8,
+        "reason": "This bash example invokes runcomfy run for region replacement. It is legitimate workflow documentation, but it is real external command execution through the allowed CLI.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:122:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:128:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:129:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:130:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:132:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:140:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "This fenced example invokes runcomfy with user-provided image data and writes results to an output directory. The command is expected behavior, but it is still external CLI execution against a remote service.",
+        "confidence": 0.8,
+        "reason": "This bash example invokes runcomfy run for a description-based edit. The command is intended, but it executes an external CLI and uploads image input to RunComfy.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:147:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:149:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:160:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:163:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:166:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:169:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:172:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:173:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:179:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:201:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
+        "verdict": "false_positive",
         "confidence": 0.86,
-        "reason": "The prose states that the skill invokes runcomfy, posts to the Model API, polls status, and downloads results. That confirms the external command and remote execution flow behind the skill.",
-        "severity": "medium"
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:205:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.72,
-        "reason": "The skill recommends npm or npx installation of the runcomfy CLI. Installing and executing a package-manager CLI is a real supply-chain and local execution risk even when the source is intended.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:206:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:207:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:212:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:214:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.9,
-        "reason": "The skill declares Bash(runcomfy *) as its command boundary. That intentionally permits an external CLI command, so the static finding represents a real execution capability.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:218:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:219:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:220:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "external_commands:SKILL.md:221:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks are Markdown formatting around prose, model identifiers, schema field names, or code-fence delimiters. This location does not contain Ruby backtick execution or dynamic shell construction."
+        "confidence": 0.86,
+        "reason": "The match is caused by Markdown inline code or fenced code formatting, not Ruby backtick execution. No dynamic shell construction or arbitrary command execution is present at this location."
       },
       {
         "id": "network:SKILL.md:18:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:26:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:43:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:56:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:81:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:103:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:104:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:117:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:118:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:144:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:149:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:166:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:169:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:172:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:173:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:179:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:180:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:197:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:218:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:219:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:220:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:221:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "network:SKILL.md:222:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This URL is documentation, a product catalog link, or a placeholder image URL in an example. The line itself does not implement an outbound request or exfiltrate data."
+        "confidence": 0.9,
+        "reason": "The URL appears in documentation, model catalog links, or placeholder example inputs. It does not show hidden telemetry, credential exfiltration, or unauthorized network access beyond the stated RunComfy workflow."
       },
       {
         "id": "filesystem:SKILL.md:206:hidden-file-in-home-directory",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The skill documents runcomfy login storing an API token under ~/.config/runcomfy/token.json. Persistent credentials in a hidden home-directory file are sensitive and require protection, even with mode 0600.",
-        "severity": "high"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "The line documents the runcomfy CLI token storage path and states mode 0600. There is no instruction to read, modify, or exfiltrate hidden files."
       },
       {
         "id": "filesystem:SKILL.md:206:hidden-file-access",
-        "verdict": "confirmed",
-        "confidence": 0.8,
-        "reason": "The documented CLI behavior writes an API token to a hidden configuration path in the user home directory. This is expected credential storage, but it is still sensitive filesystem access.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "The line documents the runcomfy CLI token storage path and states mode 0600. There is no instruction to read, modify, or exfiltrate hidden files."
       },
       {
         "id": "blocker:SKILL.md:54:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The phrase is model-selection guidance using the word avoid, not host reconnaissance or an instruction to inspect the system. No system probing behavior appears at this location."
+        "confidence": 0.95,
+        "reason": "The word \"Avoid\" is used in model-selection guidance, not system reconnaissance. The text does not probe host state or collect environment information."
       },
       {
         "id": "blocker:SKILL.md:59:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The phrase is model-selection guidance using the word avoid, not host reconnaissance or an instruction to inspect the system. No system probing behavior appears at this location."
+        "confidence": 0.95,
+        "reason": "The word \"Avoid\" is used in model-selection guidance, not system reconnaissance. The text does not probe host state or collect environment information."
       },
       {
         "id": "blocker:SKILL.md:64:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The phrase is model-selection guidance using the word avoid, not host reconnaissance or an instruction to inspect the system. No system probing behavior appears at this location."
+        "confidence": 0.95,
+        "reason": "The word \"Avoid\" is used in model-selection guidance, not system reconnaissance. The text does not probe host state or collect environment information."
       },
       {
         "id": "blocker:SKILL.md:69:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The phrase is model-selection guidance using the word avoid, not host reconnaissance or an instruction to inspect the system. No system probing behavior appears at this location."
+        "confidence": 0.95,
+        "reason": "The word \"Avoid\" is used in model-selection guidance, not system reconnaissance. The text does not probe host state or collect environment information."
       },
       {
         "id": "blocker:SKILL.md:74:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The phrase is model-selection guidance using the word avoid, not host reconnaissance or an instruction to inspect the system. No system probing behavior appears at this location."
+        "confidence": 0.95,
+        "reason": "The word \"Avoid\" is used in model-selection guidance, not system reconnaissance. The text does not probe host state or collect environment information."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Watermark Removal Abuse Risk",
-        "description": "The skill explicitly presents watermark removal as a workflow. This can support unauthorized removal of ownership or licensing marks when user rights are not verified.",
+        "title": "Potential misuse for watermark removal",
+        "description": "The skill explicitly lists watermark removal as a supported use case. That can enable removal of ownership or attribution marks from images without authorization.",
         "severity": "medium",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 11,
+            "line_start": 12,
             "line_end": 12
           },
           {
@@ -1715,29 +1707,12 @@
             "line_end": 157
           }
         ],
-        "confidence": 0.9,
-        "confidence_reasoning": "The description and common-pattern section both directly mention watermark removal. Legitimate uses exist, but the abuse path is explicit and should be disclosed."
+        "confidence": 0.92,
+        "confidence_reasoning": "The stated description and common patterns both name watermark removal. This is a clear content and rights-abuse risk, even though the implementation is a normal image-editing workflow."
       }
     ],
     "critical_findings": [],
-    "high_findings": [
-      {
-        "title": "Hidden file in home directory",
-        "description": "- **Token storage**: `runcomfy login` writes the API token to `~/.config/runcomfy/token.json` with m",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 206,
-            "line_end": 206
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "high",
-        "confidence": 0.82,
-        "confidence_reasoning": "The skill documents runcomfy login storing an API token under ~/.config/runcomfy/token.json. Persistent credentials in a hidden home-directory file are sensitive and require protection, even with mode 0600."
-      }
-    ],
+    "high_findings": [],
     "medium_findings": [
       {
         "title": "Ruby/shell backtick execution",
@@ -1752,8 +1727,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "This fenced shell example instructs users to install the runcomfy CLI, sign in, and run a model job. It is legitimate for the skill, but it is real external command execution that can affect the host and remote account."
+        "confidence": 0.82,
+        "confidence_reasoning": "This fenced bash block tells the agent to install and run the runcomfy CLI. The command scope is narrow, but it is still external command execution from a community skill."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1768,8 +1743,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "This fenced example invokes runcomfy with user-provided image data and writes results to an output directory. The command is expected behavior, but it is still external CLI execution against a remote service."
+        "confidence": 0.8,
+        "confidence_reasoning": "This bash example invokes runcomfy run with user-supplied image and mask URLs. The command is expected for the skill, but it still executes an external CLI and sends data to a remote service."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1784,8 +1759,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "This fenced example invokes runcomfy with user-provided image data and writes results to an output directory. The command is expected behavior, but it is still external CLI execution against a remote service."
+        "confidence": 0.8,
+        "confidence_reasoning": "This bash example invokes runcomfy run for region replacement. It is legitimate workflow documentation, but it is real external command execution through the allowed CLI."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1800,80 +1775,16 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "This fenced example invokes runcomfy with user-provided image data and writes results to an output directory. The command is expected behavior, but it is still external CLI execution against a remote service."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "The skill picks Z-Image Inpainting when a mask is available, falls back to description-based edit ot",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 201,
-            "line_end": 201
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "The prose states that the skill invokes runcomfy, posts to the Model API, polls status, and downloads results. That confirms the external command and remote execution flow behind the skill."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "- **Install via verified package manager only.** Use `npm i -g @runcomfy/cli` or `npx -y @runcomfy/c",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 205,
-            "line_end": 205
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The skill recommends npm or npx installation of the runcomfy CLI. Installing and executing a package-manager CLI is a real supply-chain and local execution risk even when the source is intended."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "- **Scope of bash usage**: `Bash(runcomfy *)` only.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 214,
-            "line_end": 218
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The skill declares Bash(runcomfy *) as its command boundary. That intentionally permits an external CLI command, so the static finding represents a real execution capability."
-      },
-      {
-        "title": "Hidden file access",
-        "description": "- **Token storage**: `runcomfy login` writes the API token to `~/.config/runcomfy/token.json` with m",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 206,
-            "line_end": 206
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
         "confidence": 0.8,
-        "confidence_reasoning": "The documented CLI behavior writes an API token to a hidden configuration path in the user home directory. This is expected credential storage, but it is still sensitive filesystem access."
+        "confidence_reasoning": "This bash example invokes runcomfy run for a description-based edit. The command is intended, but it executes an external CLI and uploads image input to RunComfy."
       },
       {
-        "title": "Watermark Removal Abuse Risk",
-        "description": "The skill explicitly presents watermark removal as a workflow. This can support unauthorized removal of ownership or licensing marks when user rights are not verified.",
+        "title": "Potential misuse for watermark removal",
+        "description": "The skill explicitly lists watermark removal as a supported use case. That can enable removal of ownership or attribution marks from images without authorization.",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 11,
+            "line_start": 12,
             "line_end": 12
           },
           {
@@ -1885,134 +1796,146 @@
         "review_kind": "security",
         "source_category": "semantic",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The description and common-pattern section both directly mention watermark removal. Legitimate uses exist, but the abuse path is explicit and should be disclosed."
+        "confidence": 0.92,
+        "confidence_reasoning": "The stated description and common patterns both name watermark removal. This is a clear content and rights-abuse risk, even though the implementation is a normal image-editing workflow."
       }
     ],
     "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 223,
-    "audit_model": "codex",
-    "audited_at": "2026-07-07T23:52:47.733Z",
+    "audit_model": "claude",
+    "audited_at": "2026-07-09T05:40:41.705Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Repair Masked Image Regions with RunComfy",
-    "value_statement": "Local image edits need clear model routing and mask-aware settings. This skill helps agents prepare RunComfy inpainting commands for object removal, region replacement, and cleanup.",
+    "user_title": "Inpaint Images with RunComfy",
+    "value_statement": "Precise image edits are hard when only one region should change. This skill routes Claude, Codex, or Claude Code to RunComfy inpainting models with mask-aware prompts and safe CLI usage.",
     "seo_keywords": [
-      "Claude",
-      "Codex",
-      "Claude Code",
-      "RunComfy image inpainting",
-      "mask-based image editing",
-      "AI object removal",
-      "Z-Image Turbo Inpainting",
-      "generative fill",
-      "image retouching",
-      "prompt templates for inpainting"
+      "Claude image inpainting",
+      "Codex image editing",
+      "Claude Code image tools",
+      "RunComfy CLI",
+      "mask-driven editing",
+      "AI inpainting",
+      "object removal",
+      "image restoration",
+      "local image edits",
+      "Z-Image inpainting"
     ],
     "actual_capabilities": [
-      "Explains when to use Z-Image Turbo Inpainting for masked region edits.",
-      "Provides runcomfy CLI examples for object removal, background replacement, and description-based edits.",
-      "Documents required input fields such as source image URL, mask image URL, and prompt.",
-      "Suggests strength and control-scale ranges for cleanup, replacement, and full region changes.",
-      "Lists fallback models for edits where a precise binary mask is not available."
+      "Runs RunComfy inpainting jobs with source image, mask image, prompt, strength, and control scale inputs.",
+      "Recommends Z-Image Turbo Inpainting when a binary mask is available.",
+      "Routes no-mask edits to description-based image edit models such as Nano Banana 2 Edit, GPT Image 2 Edit, or FLUX Kontext Pro.",
+      "Provides parameter guidance for retouching, object replacement, and full region replacement.",
+      "Explains expected CLI exit codes and troubleshooting categories."
     ],
     "limitations": [
-      "Requires a configured RunComfy account and runcomfy CLI for execution.",
-      "Requires source images and masks to be available as URLs accepted by the RunComfy API.",
-      "Does not create masks; users must provide masks from another tool.",
-      "Sends image references and prompts to an external RunComfy service."
+      "Requires the runcomfy CLI, an authenticated RunComfy account, and network access.",
+      "Mask-driven inpainting requires a separate image mask URL.",
+      "The skill does not create masks inside the workflow.",
+      "Generated quality depends on the source image, mask quality, model choice, and prompt clarity."
     ],
     "use_cases": [
       {
-        "title": "Clean Product Photos",
-        "description": "Remove distracting objects or replace a masked background while preserving the product area.",
+        "title": "Clean product photos",
+        "description": "Replace a masked background or remove a small defect while preserving the product shape and lighting.",
         "target_user": "Ecommerce designer"
       },
       {
-        "title": "Retouch Editorial Images",
-        "description": "Use low-strength inpainting to repair blemishes, gaps, or small unwanted regions in still images.",
-        "target_user": "Photo editor"
+        "title": "Repair image regions",
+        "description": "Fill a damaged or empty area using a mask and a prompt that describes the desired replacement.",
+        "target_user": "Creative retoucher"
       },
       {
-        "title": "Prototype Local Edits",
-        "description": "Compare mask-driven and description-based edit routes before choosing a model for production workflows.",
-        "target_user": "AI workflow developer"
+        "title": "Localize visual edits",
+        "description": "Use description-based editing when a mask is not available but the target region can be named clearly.",
+        "target_user": "Marketing creator"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Remove a Small Object",
-        "scenario": "Beginner cleanup with an existing mask.",
-        "prompt": "Use image-inpainting to remove the masked object from this image. Preserve the surrounding texture and lighting."
+        "title": "Remove a masked object",
+        "scenario": "Beginner mask-driven cleanup",
+        "prompt": "Inpaint this image using the provided mask. Remove the masked object and preserve the background texture, lighting, and perspective."
       },
       {
-        "title": "Replace a Background",
-        "scenario": "Intermediate masked region replacement.",
-        "prompt": "Inpaint the masked background with a simple studio backdrop. Keep the subject, edges, shadows, and color balance unchanged."
+        "title": "Replace a masked background",
+        "scenario": "Product image background swap",
+        "prompt": "Use the mask to replace only the background with smooth light gray studio paper. Preserve the product edges, shadows, and color."
       },
       {
-        "title": "Repair a Detailed Surface",
-        "scenario": "Advanced preservation with explicit constraints.",
-        "prompt": "Fill the masked damaged area. Match nearby grain, perspective, color, and shadow. Do not change anything outside the mask."
+        "title": "Choose the best edit route",
+        "scenario": "Model selection before running a job",
+        "prompt": "I have an image and this edit goal, but I am not sure if my mask is good enough. Choose the best RunComfy inpainting or edit route and explain the needed inputs."
       },
       {
-        "title": "Choose a No-Mask Fallback",
-        "scenario": "Advanced routing when only a text description identifies the region.",
-        "prompt": "No mask is available. Choose the best description-based RunComfy edit route and remove only the described region while preserving the rest."
+        "title": "Tune an inpainting job",
+        "scenario": "Advanced parameter control",
+        "prompt": "Run an inpainting job for this masked region. Use a lower strength for subtle repair, set control scale for edge preservation, and include a reproducible seed."
       }
     ],
     "output_examples": [
       {
-        "input": "A street photo with a cable mask over the sky area.",
-        "output": "A RunComfy inpainting plan using Z-Image Turbo Inpainting, low strength, and preservation instructions for rooflines and sky tone."
+        "input": "A user provides a street photo and a cable mask, then asks to remove only the overhead cables.",
+        "output": [
+          "The skill selects Z-Image Turbo Inpainting because a mask is available.",
+          "It prepares a prompt that preserves rooflines and sky gradients.",
+          "It runs the job through the runcomfy CLI and saves outputs to the chosen directory."
+        ]
       },
       {
-        "input": "A product image with the full background masked.",
-        "output": "A high-strength replacement workflow that keeps the product unchanged and fills the background with neutral studio paper."
+        "input": "A user has no mask but wants the bottom-right label removed from an image they own.",
+        "output": [
+          "The skill chooses a description-based edit model.",
+          "It writes a spatial instruction that targets only the bottom-right label.",
+          "It reminds the user to confirm they are authorized to remove the mark."
+        ]
       },
       {
-        "input": "A photo where no mask is available, but the unwanted mark is described by position.",
-        "output": "A recommendation to use a description-based edit model with a prompt that constrains changes to the specified area."
+        "input": "A product team wants a masked background changed to a neutral studio backdrop.",
+        "output": [
+          "The skill recommends high strength for full background replacement.",
+          "It preserves product edges and lighting in the prompt.",
+          "It uses the supplied image and mask URLs for the RunComfy request."
+        ]
       }
     ],
     "best_practices": [
-      "Use masks that match the source image dimensions and cover only the intended region.",
-      "State what must remain unchanged outside the mask in every prompt.",
-      "Use lower strength for cleanup and higher strength for full replacement."
+      "Use a clean grayscale mask where white marks the region to change and black marks the region to preserve.",
+      "Name the surrounding details that must stay unchanged in every prompt.",
+      "Use only images and marks you own or have permission to edit."
     ],
     "anti_patterns": [
-      "Do not reuse a mask from a different image or layout.",
-      "Do not send private images to external services without user approval.",
-      "Do not use watermark removal unless the user owns the rights or has permission."
+      "Do not use a vague prompt that fails to describe what should remain unchanged.",
+      "Do not reuse a mask from a different source image.",
+      "Do not submit private or regulated images unless remote processing is approved."
     ],
     "faq": [
       {
         "question": "Does this skill create masks?",
-        "answer": "No. It expects a source image URL and a mask image URL from another tool."
+        "answer": "No. It consumes mask URLs created by another tool, such as an image editor or segmentation workflow."
       },
       {
-        "question": "Which model is the default route?",
-        "answer": "The skill recommends Z-Image Turbo Inpainting when a binary mask is available."
+        "question": "Which model is used by default?",
+        "answer": "The skill prefers Z-Image Turbo Inpainting when a mask is available."
       },
       {
-        "question": "Can it work without a mask?",
-        "answer": "Yes, but it switches to description-based edit models and loses precise mask control."
+        "question": "Can it edit images without a mask?",
+        "answer": "Yes. It can route to description-based edit models when the region can be described clearly."
       },
       {
-        "question": "What data leaves my environment?",
-        "answer": "The runcomfy CLI sends prompts and image references to RunComfy services for processing."
+        "question": "Does it work offline?",
+        "answer": "No. It uses the RunComfy CLI and remote model APIs, so network access is required."
       },
       {
-        "question": "Does it support video inpainting?",
-        "answer": "No. The skill points users to a separate video inpainting workflow."
+        "question": "Where are results saved?",
+        "answer": "The runcomfy CLI writes generated files to the output directory selected in the command."
       },
       {
-        "question": "Can I control how much the masked area changes?",
-        "answer": "Yes. The skill documents strength ranges for cleanup, object replacement, and full region replacement."
+        "question": "Is it safe for confidential images?",
+        "answer": "Only use confidential images if your organization approves remote processing through RunComfy."
       }
     ]
   },

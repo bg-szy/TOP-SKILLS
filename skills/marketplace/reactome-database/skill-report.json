@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T05:56:34.582Z",
+    "generated_at": "2026-07-09T17:07:39.769Z",
     "slug": "davila7-reactome-database",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/scientific/reactome-database",
     "source_ref": "main",
@@ -23,8 +23,8 @@
   },
   "skill": {
     "name": "reactome-database",
-    "description": "Use Reactome REST APIs and a Python helper script to query pathway data, run enrichment analysis, map identifiers, inspect disease pathways, and build browser links.",
-    "summary": "Query Reactome pathways and run gene or expression enrichment workflows.",
+    "description": "Query Reactome REST APIs for pathway retrieval, enrichment analysis, gene-to-pathway mapping, species projection, and pathway browser links for systems biology research.",
+    "summary": "Analyze Reactome pathways, identifiers, enrichment results, and browser links from structured API guidance.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
@@ -33,8 +33,8 @@
       "reactome",
       "pathway-analysis",
       "bioinformatics",
-      "gene-enrichment",
-      "systems-biology"
+      "systems-biology",
+      "gene-enrichment"
     ],
     "supported_tools": [
       "claude",
@@ -49,25 +49,30 @@
     "category": "research"
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "low",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most high and medium static alerts are false positives from Markdown code fences, API reference URLs, and Reactome /dev documentation paths. Confirmed issues are expected outbound Reactome API use and one helper-script output write that can persist or overwrite analysis results. No prompt injection attempt or malicious intent was found in the reviewed files.",
+    "summary": "Most static findings are false positives from Reactome documentation URLs, Markdown code fences, and expected API examples. I found no prompt injection attempt or malicious intent. The remaining risks are external submission of biological identifiers, token exposure in output, and a helper script output path that can overwrite input files.",
     "remediation": [
       {
-        "issue": "The helper script writes results to a path derived from the input filename.",
-        "suggestion": "Require an explicit output path or refuse overwrites unless the user passes an overwrite flag.",
+        "issue": "Output file can overwrite input data",
+        "suggestion": "Generate output paths with pathlib, require an explicit output option, and refuse to write when input and output paths match.",
         "severity": "medium"
       },
       {
-        "issue": "Live analysis submits identifiers, expression rows, search terms, and tokens to reactome.org.",
-        "suggestion": "Add a clear privacy note before live queries and support a dry-run mode that shows the target endpoint.",
+        "issue": "Biological identifiers are submitted to Reactome",
+        "suggestion": "Document the external data transfer clearly and warn users not to submit restricted or patient-derived data without approval.",
         "severity": "low"
       },
       {
-        "issue": "Reactome HTTP requests do not specify timeouts in the helper script.",
-        "suggestion": "Add request timeouts and concise error messages for failed or slow API calls.",
+        "issue": "Analysis tokens appear in terminal and saved results",
+        "suggestion": "Treat Reactome tokens as sensitive, redact them from routine logs, and store result files in approved project locations.",
+        "severity": "low"
+      },
+      {
+        "issue": "Network requests lack timeout settings",
+        "suggestion": "Add request timeouts and clear retry behavior to avoid indefinite waits during Reactome API failures.",
         "severity": "low"
       }
     ],
@@ -324,36 +329,6 @@
             "file": "SKILL.md",
             "line_start": 183,
             "line_end": 183
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 196,
-            "line_end": 196
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 257,
-            "line_end": 257
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 258,
-            "line_end": 258
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 259,
-            "line_end": 259
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 260,
-            "line_end": 260
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 261,
-            "line_end": 261
           }
         ]
       },
@@ -1618,690 +1593,675 @@
     "finding_verdicts": [
       {
         "id": "network:references/api_reference.md:26:python-http-libraries",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "This is a documentation example for Reactome public API usage. The endpoint is scoped to reactome.org and matches the skill purpose."
       },
       {
         "id": "network:references/api_reference.md:57:python-http-libraries",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "This is a documentation example for Reactome public API usage. The endpoint is scoped to reactome.org and matches the skill purpose."
       },
       {
         "id": "network:references/api_reference.md:76:python-http-libraries",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "This is a documentation example for Reactome public API usage. The endpoint is scoped to reactome.org and matches the skill purpose."
       },
       {
         "id": "network:references/api_reference.md:94:python-http-libraries",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "This is a documentation example for Reactome public API usage. The endpoint is scoped to reactome.org and matches the skill purpose."
       },
       {
         "id": "network:references/api_reference.md:126:python-http-libraries",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "This is a documentation example for Reactome public API usage. The endpoint is scoped to reactome.org and matches the skill purpose."
       },
       {
         "id": "network:references/api_reference.md:207:python-http-libraries",
         "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "confidence": 0.66,
+        "reason": "This call submits user-provided gene or expression identifiers to Reactome AnalysisService. It is expected for pathway analysis, but it is real external data disclosure if inputs are sensitive.",
+        "severity": "low"
       },
       {
         "id": "network:references/api_reference.md:258:python-http-libraries",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "This is a documentation example for Reactome public API usage. The endpoint is scoped to reactome.org and matches the skill purpose."
       },
       {
         "id": "network:references/api_reference.md:372:python-http-libraries",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "This is a documentation example for Reactome public API usage. The endpoint is scoped to reactome.org and matches the skill purpose."
       },
       {
         "id": "network:references/api_reference.md:391:python-http-libraries",
         "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "confidence": 0.64,
+        "reason": "This call submits user-provided gene or expression identifiers to Reactome AnalysisService. It is expected for pathway analysis, but it is real external data disclosure if inputs are sensitive.",
+        "severity": "low"
       },
       {
         "id": "network:references/api_reference.md:420:python-http-libraries",
         "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "confidence": 0.66,
+        "reason": "This call submits user-provided gene or expression identifiers to Reactome AnalysisService. It is expected for pathway analysis, but it is real external data disclosure if inputs are sensitive.",
+        "severity": "low"
       },
       {
         "id": "network:references/api_reference.md:26:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:references/api_reference.md:57:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:references/api_reference.md:76:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:references/api_reference.md:95:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:references/api_reference.md:127:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:references/api_reference.md:208:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:references/api_reference.md:258:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:references/api_reference.md:372:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:references/api_reference.md:392:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:references/api_reference.md:421:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:references/api_reference.md:450:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.78,
-        "reason": "The API reference constructs a Reactome browser URL containing an analysis token. This is expected, but token-bearing URLs can expose analysis results if shared."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "filesystem:references/api_reference.md:462:non-standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The /dev substring is part of a reactome.org documentation URL. It is not access to a local device file or special filesystem path."
+        "confidence": 0.9,
+        "reason": "The /dev text appears inside a reactome.org documentation URL path. It is not local device file access."
       },
       {
         "id": "filesystem:references/api_reference.md:463:non-standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The /dev substring is part of a reactome.org documentation URL. It is not access to a local device file or special filesystem path."
+        "confidence": 0.9,
+        "reason": "The /dev text appears inside a reactome.org documentation URL path. It is not local device file access."
       },
       {
         "id": "filesystem:references/api_reference.md:439:python-file-write-append",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "This is an API reference example that writes analysis output to a named results file. It is documentation, not executable skill behavior, and does not show hidden filesystem access."
+        "confidence": 0.9,
+        "reason": "This is a documentation example that writes a named analysis result file. It is not hidden filesystem access in the installed helper script."
       },
       {
         "id": "blocker:references/api_reference.md:262:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged line is API documentation, an example identifier, an HTTP status description, or normal argument validation. It does not perform system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The text is Reactome example metadata or token validity guidance. It does not perform system reconnaissance."
       },
       {
         "id": "blocker:references/api_reference.md:340:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged line is API documentation, an example identifier, an HTTP status description, or normal argument validation. It does not perform system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The text documents HTTP status codes for Reactome API errors. It does not inspect the local system or network."
       },
       {
         "id": "blocker:references/api_reference.md:341:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged line is API documentation, an example identifier, an HTTP status description, or normal argument validation. It does not perform system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The text documents HTTP status codes for Reactome API errors. It does not inspect the local system or network."
       },
       {
         "id": "blocker:references/api_reference.md:365:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged line is API documentation, an example identifier, an HTTP status description, or normal argument validation. It does not perform system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The text is Reactome example metadata or token validity guidance. It does not perform system reconnaissance."
       },
       {
         "id": "blocker:references/api_reference.md:339:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged line is API documentation, an example identifier, an HTTP status description, or normal argument validation. It does not perform system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The text documents HTTP status codes for Reactome API errors. It does not inspect the local system or network."
       },
       {
         "id": "network:scripts/reactome_query.py:36:python-http-libraries",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.91,
-        "reason": "This is expected outbound Reactome API use, not hidden exfiltration. It still sends user-provided identifiers, pathway IDs, search terms, or tokens to reactome.org, so it is a real low-severity network exposure."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The request targets the official Reactome API for the advertised query workflow. I found no credential transfer or unrelated destination at this line."
       },
       {
         "id": "network:scripts/reactome_query.py:42:python-http-libraries",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.91,
-        "reason": "This is expected outbound Reactome API use, not hidden exfiltration. It still sends user-provided identifiers, pathway IDs, search terms, or tokens to reactome.org, so it is a real low-severity network exposure."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The request targets the official Reactome API for the advertised query workflow. I found no credential transfer or unrelated destination at this line."
       },
       {
         "id": "network:scripts/reactome_query.py:48:python-http-libraries",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.91,
-        "reason": "This is expected outbound Reactome API use, not hidden exfiltration. It still sends user-provided identifiers, pathway IDs, search terms, or tokens to reactome.org, so it is a real low-severity network exposure."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The request targets the official Reactome API for the advertised query workflow. I found no credential transfer or unrelated destination at this line."
       },
       {
         "id": "network:scripts/reactome_query.py:56:python-http-libraries",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.91,
-        "reason": "This is expected outbound Reactome API use, not hidden exfiltration. It still sends user-provided identifiers, pathway IDs, search terms, or tokens to reactome.org, so it is a real low-severity network exposure."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The request targets the official Reactome API for the advertised query workflow. I found no credential transfer or unrelated destination at this line."
       },
       {
         "id": "network:scripts/reactome_query.py:66:python-http-libraries",
         "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.91,
-        "reason": "This is expected outbound Reactome API use, not hidden exfiltration. It still sends user-provided identifiers, pathway IDs, search terms, or tokens to reactome.org, so it is a real low-severity network exposure."
+        "confidence": 0.82,
+        "reason": "This call submits user-provided gene or expression identifiers to Reactome AnalysisService. It is expected for pathway analysis, but it is real external data disclosure if inputs are sensitive.",
+        "severity": "low"
       },
       {
         "id": "network:scripts/reactome_query.py:76:python-http-libraries",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.91,
-        "reason": "This is expected outbound Reactome API use, not hidden exfiltration. It still sends user-provided identifiers, pathway IDs, search terms, or tokens to reactome.org, so it is a real low-severity network exposure."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The request targets the official Reactome API for the advertised query workflow. I found no credential transfer or unrelated destination at this line."
       },
       {
         "id": "network:scripts/reactome_query.py:113:python-http-libraries",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line references requests.HTTPError in exception handling, not an outbound request. It does not create network access by itself."
+        "confidence": 0.9,
+        "reason": "This line catches requests.HTTPError and does not create a network request. It is normal error handling for the Reactome client."
       },
       {
         "id": "network:scripts/reactome_query.py:145:python-http-libraries",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line references requests.HTTPError in exception handling, not an outbound request. It does not create network access by itself."
+        "confidence": 0.9,
+        "reason": "This line catches requests.HTTPError and does not create a network request. It is normal error handling for the Reactome client."
       },
       {
         "id": "network:scripts/reactome_query.py:171:python-http-libraries",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line references requests.HTTPError in exception handling, not an outbound request. It does not create network access by itself."
+        "confidence": 0.9,
+        "reason": "This line catches requests.HTTPError and does not create a network request. It is normal error handling for the Reactome client."
       },
       {
         "id": "network:scripts/reactome_query.py:231:python-http-libraries",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line references requests.HTTPError in exception handling, not an outbound request. It does not create network access by itself."
+        "confidence": 0.9,
+        "reason": "This line catches requests.HTTPError and does not create a network request. It is normal error handling for the Reactome client."
       },
       {
         "id": "network:scripts/reactome_query.py:31:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.91,
-        "reason": "This is expected outbound Reactome API use, not hidden exfiltration. It still sends user-provided identifiers, pathway IDs, search terms, or tokens to reactome.org, so it is a real low-severity network exposure."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:scripts/reactome_query.py:32:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.91,
-        "reason": "This is expected outbound Reactome API use, not hidden exfiltration. It still sends user-provided identifiers, pathway IDs, search terms, or tokens to reactome.org, so it is a real low-severity network exposure."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:scripts/reactome_query.py:221:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.78,
-        "reason": "The helper script constructs and prints a Reactome Pathway Browser URL containing an analysis token. This is expected behavior, but sharing the URL can expose token-linked analysis results."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The URL is an official Reactome Pathway Browser link built for visualization. Token exposure from printed browser links is handled as a separate semantic finding."
       },
       {
         "id": "filesystem:scripts/reactome_query.py:227:python-file-write-append",
         "verdict": "confirmed",
-        "severity": "medium",
         "confidence": 0.86,
-        "reason": "The helper script writes full analysis results to a path derived from the user-supplied input file. This can overwrite local files and persist analysis tokens or biological results without an explicit output path."
+        "reason": "The helper script writes analysis output to a path derived from the input file name. If the input path lacks .txt, the output path can equal the input path and overwrite the source data.",
+        "severity": "medium"
       },
       {
         "id": "blocker:scripts/reactome_query.py:196:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged line is API documentation, an example identifier, an HTTP status description, or normal argument validation. It does not perform system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The line prints a Reactome analysis token returned by the API, not host or network reconnaissance. Token exposure is handled as a separate semantic finding."
       },
       {
         "id": "blocker:scripts/reactome_query.py:253:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged line is API documentation, an example identifier, an HTTP status description, or normal argument validation. It does not perform system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The line prints argument validation text for a missing pathway ID. It does not enumerate system or network information."
       },
       {
         "id": "blocker:scripts/reactome_query.py:260:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged line is API documentation, an example identifier, an HTTP status description, or normal argument validation. It does not perform system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The line prints argument validation text for a missing pathway ID. It does not enumerate system or network information."
       },
       {
         "id": "external_commands:SKILL.md:38:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:49:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "This is a Markdown code fence for user-visible command examples, not Ruby backtick execution. The skill does not execute these commands automatically."
       },
       {
         "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:69:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:75:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:84:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:87:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:95:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:99:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:108:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:139:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:142:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:146:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:153:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:158:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:161:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:175:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:179:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:181:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:187:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:193:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:198:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:205:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:235:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:236:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:237:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:242:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:244:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "This is a Markdown code fence for user-visible command examples, not Ruby backtick execution. The skill does not execute these commands automatically."
       },
       {
         "id": "external_commands:SKILL.md:253:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is Markdown inline formatting or a code-fence boundary in SKILL.md, not Ruby backtick execution. No hidden command execution is present at this location."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline text or a code fence boundary, not Ruby backtick execution. No hidden shell execution occurs at this location."
       },
       {
         "id": "network:SKILL.md:72:python-http-libraries",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "This is user-facing guidance for the official Reactome API. The endpoint is expected for the skill and not a hidden network destination."
       },
       {
         "id": "network:SKILL.md:82:python-http-libraries",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "This is user-facing guidance for the official Reactome API. The endpoint is expected for the skill and not a hidden network destination."
       },
       {
         "id": "network:SKILL.md:91:python-http-libraries",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "This is user-facing guidance for the official Reactome API. The endpoint is expected for the skill and not a hidden network destination."
       },
       {
         "id": "network:SKILL.md:127:python-http-libraries",
         "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "confidence": 0.72,
+        "reason": "This call submits user-provided gene or expression identifiers to Reactome AnalysisService. It is expected for pathway analysis, but it is real external data disclosure if inputs are sensitive.",
+        "severity": "low"
       },
       {
         "id": "network:SKILL.md:144:python-http-libraries",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "This is user-facing guidance for the official Reactome API. The endpoint is expected for the skill and not a hidden network destination."
       },
       {
         "id": "network:SKILL.md:168:python-http-libraries",
         "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "confidence": 0.74,
+        "reason": "This call submits user-provided gene or expression identifiers to Reactome AnalysisService. It is expected for pathway analysis, but it is real external data disclosure if inputs are sensitive.",
+        "severity": "low"
       },
       {
         "id": "network:SKILL.md:182:python-http-libraries",
         "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "confidence": 0.72,
+        "reason": "This call submits user-provided gene or expression identifiers to Reactome AnalysisService. It is expected for pathway analysis, but it is real external data disclosure if inputs are sensitive.",
+        "severity": "low"
       },
       {
         "id": "network:SKILL.md:38:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:SKILL.md:49:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:SKILL.md:72:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:SKILL.md:82:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:SKILL.md:92:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:SKILL.md:128:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:SKILL.md:144:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:SKILL.md:169:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:SKILL.md:183:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.84,
-        "reason": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:SKILL.md:196:hardcoded-url",
-        "verdict": "confirmed",
-        "severity": "low",
-        "confidence": 0.78,
-        "reason": "The guidance constructs a Reactome browser URL containing an analysis token. This is expected, but the URL can reveal token-linked results if shared."
+        "verdict": "false_positive",
+        "confidence": 0.9,
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:SKILL.md:257:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The flagged URL is a passive documentation link in the skill text, not code that sends data. It does not create hidden network behavior by itself."
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:SKILL.md:258:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The flagged URL is a passive documentation link in the skill text, not code that sends data. It does not create hidden network behavior by itself."
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:SKILL.md:259:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The flagged URL is a passive documentation link in the skill text, not code that sends data. It does not create hidden network behavior by itself."
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:SKILL.md:260:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The flagged URL is a passive documentation link in the skill text, not code that sends data. It does not create hidden network behavior by itself."
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "network:SKILL.md:261:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The flagged URL is a passive documentation link in the skill text, not code that sends data. It does not create hidden network behavior by itself."
+        "reason": "The hardcoded URL points to official reactome.org API or documentation endpoints that match the skill purpose. It is not an unrelated or suspicious destination."
       },
       {
         "id": "blocker:SKILL.md:81:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged line is API documentation, an example identifier, an HTTP status description, or normal argument validation. It does not perform system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The text is Reactome example metadata or token validity guidance. It does not perform system reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:90:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged line is API documentation, an example identifier, an HTTP status description, or normal argument validation. It does not perform system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The text is Reactome example metadata or token validity guidance. It does not perform system reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:143:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged line is API documentation, an example identifier, an HTTP status description, or normal argument validation. It does not perform system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The text is Reactome example metadata or token validity guidance. It does not perform system reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:195:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged line is API documentation, an example identifier, an HTTP status description, or normal argument validation. It does not perform system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The text is Reactome example metadata or token validity guidance. It does not perform system reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:202:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged line is API documentation, an example identifier, an HTTP status description, or normal argument validation. It does not perform system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The text is Reactome example metadata or token validity guidance. It does not perform system reconnaissance."
       }
     ],
-    "semantic_findings": [],
+    "semantic_findings": [
+      {
+        "title": "Reactome Analysis Tokens Printed and Saved",
+        "description": "The helper script prints the Reactome analysis token and creates browser URLs that include the token. Tokens can retrieve analysis results for 7 days, so they should be treated as sensitive for private studies.",
+        "severity": "low",
+        "locations": [
+          {
+            "file": "scripts/reactome_query.py",
+            "line_start": 196,
+            "line_end": 196
+          },
+          {
+            "file": "scripts/reactome_query.py",
+            "line_start": 221,
+            "line_end": 223
+          },
+          {
+            "file": "scripts/reactome_query.py",
+            "line_start": 227,
+            "line_end": 229
+          }
+        ],
+        "confidence": 0.84,
+        "confidence_reasoning": "The script prints the token, embeds it in a browser URL, and saves full analysis output. The same script states the token remains valid for 7 days."
+      }
+    ],
     "critical_findings": [],
     "high_findings": [],
     "medium_findings": [
@@ -2319,90 +2279,10 @@
         "source_category": "filesystem",
         "source_severity": "medium",
         "confidence": 0.86,
-        "confidence_reasoning": "The helper script writes full analysis results to a path derived from the user-supplied input file. This can overwrite local files and persist analysis tokens or biological results without an explicit output path."
+        "confidence_reasoning": "The helper script writes analysis output to a path derived from the input file name. If the input path lacks .txt, the output path can equal the input path and overwrite the source data."
       }
     ],
     "low_findings": [
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.get(\"https://reactome.org/ContentService/data/database/version\")",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 26,
-            "line_end": 26
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.get(\"https://reactome.org/ContentService/data/query/R-HSA-69278\")",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 57,
-            "line_end": 57
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.get(\"https://reactome.org/ContentService/data/query/R-HSA-69278/displayName\")",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 76,
-            "line_end": 76
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.get(",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 94,
-            "line_end": 94
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.get(",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 126,
-            "line_end": 126
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
       {
         "title": "Python HTTP libraries",
         "description": "response = requests.post(",
@@ -2416,40 +2296,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.get(f\"https://reactome.org/AnalysisService/token/{token}\")",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 258,
-            "line_end": 258
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Python HTTP libraries",
-        "description": "result = requests.get(f\"https://reactome.org/AnalysisService/token/{token}\")",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 372,
-            "line_end": 372
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "confidence": 0.66,
+        "confidence_reasoning": "This call submits user-provided gene or expression identifiers to Reactome AnalysisService. It is expected for pathway analysis, but it is real external data disclosure if inputs are sensitive."
       },
       {
         "title": "Python HTTP libraries",
@@ -2464,8 +2312,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "confidence": 0.64,
+        "confidence_reasoning": "This call submits user-provided gene or expression identifiers to Reactome AnalysisService. It is expected for pathway analysis, but it is real external data disclosure if inputs are sensitive."
       },
       {
         "title": "Python HTTP libraries",
@@ -2480,248 +2328,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "response = requests.get(\"https://reactome.org/ContentService/data/database/version\")",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 26,
-            "line_end": 26
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "response = requests.get(\"https://reactome.org/ContentService/data/query/R-HSA-69278\")",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 57,
-            "line_end": 57
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "response = requests.get(\"https://reactome.org/ContentService/data/query/R-HSA-69278/displayName\")",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 76,
-            "line_end": 76
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "\"https://reactome.org/ContentService/data/event/R-HSA-69278/participatingPhysicalEntities\"",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 95,
-            "line_end": 95
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "\"https://reactome.org/ContentService/data/query\",",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 127,
-            "line_end": 127
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "\"https://reactome.org/AnalysisService/identifiers/\",",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 208,
-            "line_end": 208
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "response = requests.get(f\"https://reactome.org/AnalysisService/token/{token}\")",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 258,
-            "line_end": 258
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "result = requests.get(f\"https://reactome.org/AnalysisService/token/{token}\")",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 372,
-            "line_end": 372
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "\"https://reactome.org/AnalysisService/identifiers/projection/\",",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 392,
-            "line_end": 392
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "\"https://reactome.org/AnalysisService/identifiers/\",",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 421,
-            "line_end": 421
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "url = f\"https://reactome.org/PathwayBrowser/#{top_pathway['stId']}&DTAB=AN&ANALYSIS={token}\"",
-        "locations": [
-          {
-            "file": "references/api_reference.md",
-            "line_start": 450,
-            "line_end": 450
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.78,
-        "confidence_reasoning": "The API reference constructs a Reactome browser URL containing an analysis token. This is expected, but token-bearing URLs can expose analysis results if shared."
-      },
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.get(f\"{self.CONTENT_BASE}/data/database/version\")",
-        "locations": [
-          {
-            "file": "scripts/reactome_query.py",
-            "line_start": 36,
-            "line_end": 36
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.91,
-        "confidence_reasoning": "This is expected outbound Reactome API use, not hidden exfiltration. It still sends user-provided identifiers, pathway IDs, search terms, or tokens to reactome.org, so it is a real low-severity network exposure."
-      },
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.get(f\"{self.CONTENT_BASE}/data/query/{pathway_id}\")",
-        "locations": [
-          {
-            "file": "scripts/reactome_query.py",
-            "line_start": 42,
-            "line_end": 42
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.91,
-        "confidence_reasoning": "This is expected outbound Reactome API use, not hidden exfiltration. It still sends user-provided identifiers, pathway IDs, search terms, or tokens to reactome.org, so it is a real low-severity network exposure."
-      },
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.get(",
-        "locations": [
-          {
-            "file": "scripts/reactome_query.py",
-            "line_start": 48,
-            "line_end": 48
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.91,
-        "confidence_reasoning": "This is expected outbound Reactome API use, not hidden exfiltration. It still sends user-provided identifiers, pathway IDs, search terms, or tokens to reactome.org, so it is a real low-severity network exposure."
-      },
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.get(",
-        "locations": [
-          {
-            "file": "scripts/reactome_query.py",
-            "line_start": 56,
-            "line_end": 56
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.91,
-        "confidence_reasoning": "This is expected outbound Reactome API use, not hidden exfiltration. It still sends user-provided identifiers, pathway IDs, search terms, or tokens to reactome.org, so it is a real low-severity network exposure."
+        "confidence": 0.66,
+        "confidence_reasoning": "This call submits user-provided gene or expression identifiers to Reactome AnalysisService. It is expected for pathway analysis, but it is real external data disclosure if inputs are sensitive."
       },
       {
         "title": "Python HTTP libraries",
@@ -2736,120 +2344,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.91,
-        "confidence_reasoning": "This is expected outbound Reactome API use, not hidden exfiltration. It still sends user-provided identifiers, pathway IDs, search terms, or tokens to reactome.org, so it is a real low-severity network exposure."
-      },
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.get(f\"{self.ANALYSIS_BASE}/token/{token}\")",
-        "locations": [
-          {
-            "file": "scripts/reactome_query.py",
-            "line_start": 76,
-            "line_end": 76
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.91,
-        "confidence_reasoning": "This is expected outbound Reactome API use, not hidden exfiltration. It still sends user-provided identifiers, pathway IDs, search terms, or tokens to reactome.org, so it is a real low-severity network exposure."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "CONTENT_BASE = \"https://reactome.org/ContentService\"",
-        "locations": [
-          {
-            "file": "scripts/reactome_query.py",
-            "line_start": 31,
-            "line_end": 31
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.91,
-        "confidence_reasoning": "This is expected outbound Reactome API use, not hidden exfiltration. It still sends user-provided identifiers, pathway IDs, search terms, or tokens to reactome.org, so it is a real low-severity network exposure."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "ANALYSIS_BASE = \"https://reactome.org/AnalysisService\"",
-        "locations": [
-          {
-            "file": "scripts/reactome_query.py",
-            "line_start": 32,
-            "line_end": 32
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.91,
-        "confidence_reasoning": "This is expected outbound Reactome API use, not hidden exfiltration. It still sends user-provided identifiers, pathway IDs, search terms, or tokens to reactome.org, so it is a real low-severity network exposure."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "url = f\"https://reactome.org/PathwayBrowser/#{top_pathway}&DTAB=AN&ANALYSIS={token}\"",
-        "locations": [
-          {
-            "file": "scripts/reactome_query.py",
-            "line_start": 221,
-            "line_end": 221
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.78,
-        "confidence_reasoning": "The helper script constructs and prints a Reactome Pathway Browser URL containing an analysis token. This is expected behavior, but sharing the URL can expose token-linked analysis results."
-      },
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.get(\"https://reactome.org/ContentService/data/database/version\")",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 72,
-            "line_end": 72
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.get(f\"https://reactome.org/ContentService/data/query/{entity_id}\")",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 82,
-            "line_end": 82
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.get(",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 91,
-            "line_end": 91
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "confidence": 0.82,
+        "confidence_reasoning": "This call submits user-provided gene or expression identifiers to Reactome AnalysisService. It is expected for pathway analysis, but it is real external data disclosure if inputs are sensitive."
       },
       {
         "title": "Python HTTP libraries",
@@ -2864,24 +2360,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Python HTTP libraries",
-        "description": "response = requests.get(f\"https://reactome.org/AnalysisService/token/{token}\")",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 144,
-            "line_end": 144
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "confidence": 0.72,
+        "confidence_reasoning": "This call submits user-provided gene or expression identifiers to Reactome AnalysisService. It is expected for pathway analysis, but it is real external data disclosure if inputs are sensitive."
       },
       {
         "title": "Python HTTP libraries",
@@ -2896,8 +2376,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "confidence": 0.74,
+        "confidence_reasoning": "This call submits user-provided gene or expression identifiers to Reactome AnalysisService. It is expected for pathway analysis, but it is real external data disclosure if inputs are sensitive."
       },
       {
         "title": "Python HTTP libraries",
@@ -2912,294 +2392,160 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
+        "confidence": 0.72,
+        "confidence_reasoning": "This call submits user-provided gene or expression identifiers to Reactome AnalysisService. It is expected for pathway analysis, but it is real external data disclosure if inputs are sensitive."
       },
       {
-        "title": "Hardcoded URL",
-        "description": "**API Base URL:** `https://reactome.org/ContentService`",
+        "title": "Reactome Analysis Tokens Printed and Saved",
+        "description": "The helper script prints the Reactome analysis token and creates browser URLs that include the token. Tokens can retrieve analysis results for 7 days, so they should be treated as sensitive for private studies.",
         "locations": [
           {
-            "file": "SKILL.md",
-            "line_start": 38,
-            "line_end": 38
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "**API Base URL:** `https://reactome.org/AnalysisService`",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 49,
-            "line_end": 49
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "response = requests.get(\"https://reactome.org/ContentService/data/database/version\")",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 72,
-            "line_end": 72
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "response = requests.get(f\"https://reactome.org/ContentService/data/query/{entity_id}\")",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 82,
-            "line_end": 82
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "f\"https://reactome.org/ContentService/data/event/{event_id}/participatingPhysicalEntities\"",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 92,
-            "line_end": 92
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "\"https://reactome.org/AnalysisService/identifiers/\",",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 128,
-            "line_end": 128
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "response = requests.get(f\"https://reactome.org/AnalysisService/token/{token}\")",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 144,
-            "line_end": 144
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "\"https://reactome.org/AnalysisService/identifiers/\",",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 169,
-            "line_end": 169
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "\"https://reactome.org/AnalysisService/identifiers/projection/\",",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 183,
-            "line_end": 183
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.84,
-        "confidence_reasoning": "The line documents or demonstrates calls to Reactome endpoints for the skill's stated purpose. Because following the guidance can send biological identifiers or analysis tokens to reactome.org, this is a real but disclosed low-severity network risk."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "url = f\"https://reactome.org/PathwayBrowser/#{pathway_id}&DTAB=AN&ANALYSIS={token}\"",
-        "locations": [
-          {
-            "file": "SKILL.md",
+            "file": "scripts/reactome_query.py",
             "line_start": 196,
             "line_end": 196
+          },
+          {
+            "file": "scripts/reactome_query.py",
+            "line_start": 221,
+            "line_end": 223
+          },
+          {
+            "file": "scripts/reactome_query.py",
+            "line_start": 227,
+            "line_end": 229
           }
         ],
-        "review_kind": "capability",
-        "source_category": "network",
+        "review_kind": "security",
+        "source_category": "semantic",
         "source_severity": "low",
-        "confidence": 0.78,
-        "confidence_reasoning": "The guidance constructs a Reactome browser URL containing an analysis token. This is expected, but the URL can reveal token-linked results if shared."
+        "confidence": 0.84,
+        "confidence_reasoning": "The script prints the token, embeds it in a browser URL, and saves full analysis output. The same script states the token remains valid for 7 days."
       }
     ],
     "dangerous_patterns": [],
     "files_scanned": 3,
     "total_lines": 1026,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T05:56:34.582Z",
+    "audited_at": "2026-07-09T17:07:39.769Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Analyze Reactome Pathways from Gene Lists",
-    "value_statement": "Pathway analysis requires reliable access to Reactome endpoints and result formats. This skill guides Claude, Codex, and Claude Code through pathway lookup, enrichment analysis, token retrieval, and result review.",
+    "user_title": "Analyze Reactome Pathways",
+    "value_statement": "Pathway analysis requires exact Reactome endpoints and valid data formats. This skill guides Claude, Codex, and Claude Code through queries, enrichment, and result interpretation.",
     "seo_keywords": [
-      "Reactome",
-      "pathway analysis",
-      "gene enrichment",
+      "Reactome database",
+      "pathway enrichment",
       "systems biology",
+      "gene pathway mapping",
+      "Reactome API",
       "Claude",
       "Codex",
       "Claude Code",
-      "Reactome API",
-      "gene pathway mapping",
-      "expression analysis"
+      "expression analysis",
+      "bioinformatics workflow"
     ],
     "actual_capabilities": [
       "Explains Reactome Content Service and Analysis Service endpoints.",
-      "Shows how to query pathway entities, reactions, species, and database version.",
-      "Guides overrepresentation analysis for gene or protein identifier lists.",
-      "Describes expression data submission requirements and result fields.",
-      "Provides a Python helper script for common Reactome lookup and analysis commands.",
+      "Shows REST requests for database version, entity lookup, and pathway molecules.",
+      "Guides overrepresentation and expression analysis with gene lists or TSV data.",
+      "Maps identifiers to human pathways using projection endpoints.",
+      "Provides a Python helper for version, query, search, entities, and analysis commands.",
       "Builds Reactome Pathway Browser URLs from analysis tokens."
     ],
     "limitations": [
-      "Requires network access to reactome.org for live API results.",
-      "Reactome analysis tokens expire after seven days.",
-      "The helper script supports common queries, not every Reactome endpoint.",
-      "Submitted gene or expression data is processed by the external Reactome service."
+      "Requires network access to reactome.org for live queries.",
+      "Analysis submissions may send gene or expression identifiers to Reactome.",
+      "The helper script does not implement retries, rate limiting, or output overwrite protection.",
+      "The reactome2py package is described as functional but not actively maintained."
     ],
     "use_cases": [
       {
-        "title": "Prioritize enriched pathways",
-        "target_user": "Molecular biologist",
-        "description": "Analyze a gene list and identify significant pathways with p-values and FDR values."
+        "title": "Interpret Gene List Enrichment",
+        "description": "Run a Reactome overrepresentation workflow and summarize significant pathways with p-values and FDR values.",
+        "target_user": "Bioinformatics researcher"
       },
       {
-        "title": "Map genes to pathway context",
-        "target_user": "Bioinformatics analyst",
-        "description": "Query pathway IDs, participating molecules, and related entities for annotation work."
+        "title": "Inspect Pathway Membership",
+        "description": "Look up a Reactome pathway and summarize participating proteins, complexes, reactions, and species context.",
+        "target_user": "Molecular biology analyst"
       },
       {
-        "title": "Review disease mechanisms",
-        "target_user": "Translational researcher",
-        "description": "Explore disease-related pathways and create browser links for team review."
+        "title": "Build Reproducible API Workflows",
+        "description": "Create repeatable REST API steps for pathway queries, species projection, token reuse, and browser links.",
+        "target_user": "Computational biology engineer"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Check the database version",
-        "scenario": "First API check",
-        "prompt": "Check the Reactome database version and explain which API service you used."
+        "title": "Check Database Version",
+        "scenario": "Beginner database metadata lookup",
+        "prompt": "Use the Reactome database skill to find the database version endpoint and explain the expected result."
       },
       {
-        "title": "Plan gene enrichment",
-        "scenario": "Beginner pathway analysis",
-        "prompt": "Use this gene list: TP53, BRCA1, EGFR, MYC. Plan an overrepresentation analysis and summarize the expected result fields."
+        "title": "Summarize a Pathway",
+        "scenario": "Intermediate pathway inspection",
+        "prompt": "Query pathway R-HSA-69278 with Reactome guidance and summarize its name, species, entity types, and relevant molecules."
       },
       {
-        "title": "Inspect a pathway",
-        "scenario": "Intermediate pathway lookup",
-        "prompt": "Query pathway R-HSA-69278, list participating entity types, and explain how to inspect the full Reactome response."
+        "title": "Analyze Gene Enrichment",
+        "scenario": "Applied enrichment analysis",
+        "prompt": "Analyze these identifiers with Reactome overrepresentation guidance: TP53, BRCA1, EGFR, MYC, CDK1. Return significant pathways and FDR values."
       },
       {
-        "title": "Design an expression workflow",
-        "scenario": "Advanced reproducible analysis",
-        "prompt": "Design a workflow for expression TSV analysis, token reuse, FDR filtering, and Pathway Browser review. Include privacy and output-file safeguards."
+        "title": "Design a Projection Workflow",
+        "scenario": "Advanced cross-species analysis planning",
+        "prompt": "Create a Reactome workflow for mouse identifiers that projects results to human pathways, stores tokens safely, and summarizes browser links."
       }
     ],
     "output_examples": [
       {
-        "input": "Gene list with TP53, BRCA1, EGFR, and MYC",
-        "output": "A ranked pathway summary with matched identifiers, top enriched pathways, p-values, FDR values, and a browser review link."
+        "input": "A list of cancer-related gene symbols for enrichment analysis.",
+        "output": "A ranked pathway summary with pathway names, identifiers, p-values, FDR values, matched entities, and a browser link."
       },
       {
-        "input": "Pathway ID R-HSA-69278",
-        "output": "A pathway profile containing the display name, species, entity types, participating molecules, and notes for follow-up analysis."
+        "input": "A Reactome stable identifier such as R-HSA-69278.",
+        "output": "A plain-language pathway profile with name, species, schema class, participating molecules, and related reactions."
       },
       {
-        "input": "Expression table with sample columns",
-        "output": "A validation checklist for TSV format, submission steps, token handling, and significance filtering."
+        "input": "Mouse gene identifiers that need human pathway projection.",
+        "output": "A projection workflow that explains the endpoint, submitted data format, token handling, and interpretation steps."
       }
     ],
     "best_practices": [
-      "Confirm that gene lists may be sent to reactome.org before running live analysis.",
-      "Cache analysis tokens and results for reproducibility while respecting the seven-day token window.",
-      "Filter pathways by FDR and review biological context before drawing conclusions."
+      "Review gene lists for sensitive or unpublished data before submitting them to Reactome.",
+      "Cache analysis tokens only in approved project storage and delete them when no longer needed.",
+      "Use batch submissions and filter results by FDR before interpreting biological significance."
     ],
     "anti_patterns": [
-      "Do not submit sensitive clinical data without approval.",
-      "Do not treat pathway enrichment as proof of causation.",
-      "Do not overwrite local files when saving analysis results."
+      "Do not submit patient-derived or restricted datasets without authorization.",
+      "Do not treat pathway enrichment as proof of causation without biological validation.",
+      "Do not run the helper script on a file path that lacks a clear output plan."
     ],
     "faq": [
       {
-        "question": "Does this skill require internet access?",
-        "answer": "Yes. Live queries use Reactome Content Service and Analysis Service at reactome.org."
+        "question": "What does this skill help with?",
+        "answer": "It helps query Reactome pathways, run enrichment analysis, map identifiers, and interpret pathway browser results."
+      },
+      {
+        "question": "Does it require internet access?",
+        "answer": "Yes. Live pathway queries and analysis requests require network access to reactome.org."
       },
       {
         "question": "Can it analyze expression data?",
-        "answer": "Yes. It describes TSV requirements and submission through the Analysis Service."
+        "answer": "Yes. The guidance explains Reactome TSV input requirements for expression analysis."
       },
       {
-        "question": "Does it install software automatically?",
-        "answer": "No. It documents optional reactome2py use and includes a helper script."
+        "question": "Can it map non-human identifiers?",
+        "answer": "Yes. It documents projection endpoints for mapping identifiers to human pathways."
       },
       {
-        "question": "What data leaves my environment?",
-        "answer": "Identifiers, expression rows, search terms, pathway IDs, and tokens may be sent to Reactome when live queries run."
+        "question": "Does it include executable code?",
+        "answer": "Yes. It includes a Python helper script for common Reactome query and analysis commands."
       },
       {
-        "question": "How long do analysis tokens last?",
-        "answer": "Reactome analysis tokens are documented as valid for seven days."
-      },
-      {
-        "question": "Can Codex use the helper script?",
-        "answer": "Yes, when the runtime has Python, requests, and network access to reactome.org."
+        "question": "What data should users avoid submitting?",
+        "answer": "Users should avoid submitting restricted, patient-derived, or unpublished biological data without approval."
       }
     ]
   },

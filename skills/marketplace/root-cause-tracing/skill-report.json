@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-05T13:14:36.713Z",
+    "generated_at": "2026-07-09T08:42:28.838Z",
     "slug": "dyai2025-root-cause-tracing",
     "source_url": "https://github.com/DYAI2025/Stoppclock-page/tree/main/stoppclock_speckit/.claude/commands/skills/root-cause-tracing",
     "source_ref": "main",
@@ -9,7 +9,7 @@
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "287daace001bad319d7b87c0cff917769988b7ea03db685c897479bc347b1c91",
-    "tree_hash": "8f1cf1c852de76bfd31d12fea6676b20b7d661d6d9100078812dd62a018c8df1",
+    "tree_hash": "c7b511f320b3186ef1c185e07b6c898daef49bb14cbfbc302e142998822c22c8",
     "provenance": {
       "model_requested": "gpt-5.5:high",
       "model_effective": "codex:gpt-5.5:high",
@@ -26,8 +26,8 @@
   },
   "skill": {
     "name": "root-cause-tracing",
-    "description": "Guides systematic debugging from a deep failure symptom back to the original trigger, with optional stack trace instrumentation and local test bisection.",
-    "summary": "Trace deep failures backward to the source cause, then add targeted validation.",
+    "description": "Guides developers through tracing bugs backward from observed failures to the original trigger, using stack traces, instrumentation, and test isolation.",
+    "summary": "Trace complex bugs backward to the first invalid input or call path.",
     "icon": "📦",
     "version": "1.0.0",
     "author": "DYAI2025",
@@ -35,9 +35,9 @@
     "tags": [
       "debugging",
       "root-cause-analysis",
-      "testing",
+      "test-isolation",
       "instrumentation",
-      "test-pollution"
+      "tracing"
     ],
     "supported_tools": [
       "claude",
@@ -52,25 +52,25 @@
     "category": "coding"
   },
   "security_audit": {
-    "risk_level": "low",
+    "risk_level": "medium",
     "is_blocked": false,
     "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "AI review found no prompt injection, network access, credential exfiltration, or malicious intent. The static alerts are mainly Markdown code fence false positives and a local helper script that runs quoted repository test commands for explicit debugging. Manual review of SKILL.zip showed it only contains the already reviewed SKILL.md.",
+    "summary": "Most SKILL.md static findings are false positives from Markdown fences, inline code, and examples. The real risk is intentional local command execution through the Bash helper and documented npm workflows. Debug guidance should also avoid broad environment logging.",
     "remediation": [
       {
-        "issue": "Duplicate archive packaged with the skill",
-        "suggestion": "Remove SKILL.zip or publish it separately so scanners do not require manual archive inspection.",
-        "severity": "low"
+        "issue": "Local test execution through npm scripts",
+        "suggestion": "Document that npm test can run project scripts. Require user confirmation, show matched files first, and avoid suppressing output by default.",
+        "severity": "medium"
       },
       {
-        "issue": "Helper script runs project tests repeatedly",
-        "suggestion": "Document that find-polluter.sh executes npm test in the current workspace and should run in a clean checkout.",
-        "severity": "low"
+        "issue": "Environment data in debug logs",
+        "suggestion": "Limit examples to non-sensitive keys like NODE_ENV. Warn users not to print full process.env or secrets.",
+        "severity": "medium"
       },
       {
-        "issue": "Markdown examples trigger command detectors",
-        "suggestion": "Keep shell examples clearly labeled as examples and avoid unnecessary inline command syntax in prose.",
+        "issue": "Bundled archive requires manual review",
+        "suggestion": "Remove SKILL.zip from the marketplace package, or ensure archives are unpacked and scanned during release.",
         "severity": "low"
       }
     ],
@@ -642,236 +642,335 @@
       {
         "id": "external_commands:find-polluter.sh:22:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "The command substitution enumerates local test files with find and a quoted pattern. It does not eval input or build a shell command from untrusted data."
+        "confidence": 0.82,
+        "reason": "This command substitution captures a quoted find result for test discovery. It does not evaluate user input as shell code or contact external systems."
       },
       {
         "id": "external_commands:find-polluter.sh:23:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The command substitution counts the local test file list with wc and tr. It is status reporting and does not access secrets or remote systems."
+        "confidence": 0.88,
+        "reason": "This pipeline only counts already discovered test file lines with wc and tr. It is benign local bookkeeping, not command injection or exfiltration."
       },
       {
         "id": "external_commands:find-polluter.sh:30:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.98,
-        "reason": "This line is arithmetic expansion, not shell command substitution. It only increments a local loop counter."
+        "reason": "This is Bash arithmetic expansion that increments a counter. It does not spawn a command or execute attacker-controlled input."
       },
       {
         "id": "external_commands:find-polluter.sh:1:unix-shell-invocation",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The shebang declares bash for a user-invoked helper script. It does not execute during skill load, and the script is local test bisection tooling."
+        "verdict": "confirmed",
+        "confidence": 0.78,
+        "severity": "medium",
+        "reason": "The shebang identifies an executable Bash helper that runs local workspace commands, including npm tests. This is intentional, but it creates script-execution risk for users."
       },
       {
         "id": "filesystem:find-polluter.sh:42:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The /dev/null redirect discards test output and does not read sensitive device files. The line runs local tests only when the helper script is invoked."
+        "confidence": 0.93,
+        "reason": "The /dev/null access only suppresses command output. It is not reading sensitive files or writing persistent data."
       },
       {
         "id": "external_commands:SKILL.md:16:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.96,
+        "reason": "This is a Markdown code fence for a Graphviz diagram. It is documentation text, not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.96,
+        "reason": "This line closes a Markdown code fence. It is formatting only and cannot execute commands."
       },
       {
         "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.95,
+        "reason": "This is a Markdown fence around an example error message. It contains no executable shell or Ruby backtick expression."
       },
       {
         "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.95,
+        "reason": "This line closes a Markdown example block. It is documentation formatting, not an execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:46:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.92,
+        "reason": "This opens a TypeScript documentation snippet. The example shows debugging context but is not code that the skill executes automatically."
       },
       {
         "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.95,
+        "reason": "This line closes a Markdown TypeScript snippet. It is formatting only and does not execute a command."
       },
       {
         "id": "external_commands:SKILL.md:51:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.95,
+        "reason": "This opens a TypeScript call-chain example. It is explanatory text and contains no executable shell backtick expression."
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.95,
+        "reason": "This line closes a Markdown code fence. It is not command execution."
       },
       {
         "id": "external_commands:SKILL.md:60:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.94,
+        "reason": "The backticks mark an inline value in documentation. They do not invoke a shell or Ruby command."
       },
       {
         "id": "external_commands:SKILL.md:61:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.94,
+        "reason": "The inline backticks format cwd and process.cwd in prose. This is explanatory documentation, not executable code."
       },
       {
         "id": "external_commands:SKILL.md:66:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.95,
+        "reason": "This opens a TypeScript example block. It is not shell backtick execution and does not run as part of the skill."
       },
       {
         "id": "external_commands:SKILL.md:69:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.95,
+        "reason": "This line closes a Markdown code fence. It is formatting, not command execution."
       },
       {
         "id": "external_commands:SKILL.md:75:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.91,
+        "reason": "This opens a TypeScript instrumentation example. The static pattern is Markdown fencing, not actual shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.95,
+        "reason": "This line closes a Markdown code fence. It does not execute code."
       },
       {
         "id": "external_commands:SKILL.md:90:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "reason": "The backticks format console.error in documentation. This is not shell execution."
       },
       {
         "id": "external_commands:SKILL.md:93:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.88,
+        "reason": "This opens a documented Bash example for the user to run intentionally. The finding is a Markdown fence, not hidden execution by the skill."
       },
       {
         "id": "external_commands:SKILL.md:95:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.9,
+        "reason": "This line closes a Bash documentation block. It is not an automatic command execution path."
       },
       {
         "id": "external_commands:SKILL.md:108:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.88,
+        "reason": "This opens a documented Bash example for invoking the helper. The Markdown fence itself is not executable code."
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.9,
+        "reason": "This line closes a Bash documentation block. It does not execute the helper automatically."
       },
       {
         "id": "external_commands:SKILL.md:116:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "reason": "The backticks format .git in prose. This is documentation, not shell execution."
       },
       {
         "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.9,
+        "reason": "The inline git init text describes a past debugging symptom. It is not executed by the skill."
       },
       {
         "id": "external_commands:SKILL.md:122:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "reason": "The backticks format a property name in prose. They are not shell or Ruby command delimiters."
       },
       {
         "id": "external_commands:SKILL.md:123:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "reason": "The inline object example is documentation text. It does not invoke a shell or evaluate code."
       },
       {
         "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.96,
+        "reason": "This is a Markdown code fence for a Graphviz diagram. It is not executable shell or Ruby code."
       },
       {
         "id": "external_commands:SKILL.md:157:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "confidence": 0.96,
+        "reason": "This line closes a Markdown diagram block. It is formatting only."
       },
       {
         "id": "external_commands:SKILL.md:163:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is Markdown documentation with code fences or inline code examples, not executable skill code. The detected backticks explain debugging steps and are not shell evaluation."
+        "reason": "The backticks format console.error in prose. This is not command execution."
       },
       {
         "id": "env_access:SKILL.md:82:environment-variable-access-dot-notation",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "process.env.NODE_ENV appears in a TypeScript documentation example and references a non-secret environment flag. The skill does not read runtime environment variables itself."
+        "confidence": 0.88,
+        "reason": "The snippet reads only process.env.NODE_ENV in documentation. It does not access secrets or run inside the skill package."
       },
       {
         "id": "env_access:SKILL.md:82:environment-variable-object",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "process.env.NODE_ENV appears in a TypeScript documentation example and references a non-secret environment flag. The skill does not enumerate or exfiltrate environment variables."
+        "confidence": 0.88,
+        "reason": "The process.env reference is a TypeScript example limited to NODE_ENV. There is no code path that enumerates or exfiltrates environment variables."
       },
       {
         "id": "sensitive:SKILL.md:82:environment-file-access",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The cited line references process.env.NODE_ENV in example instrumentation, not an environment file. No .env file access or credential handling is present."
+        "confidence": 0.91,
+        "reason": "This is not environment file access. It is a documentation snippet showing NODE_ENV, which is generally non-secret."
       },
       {
         "id": "blocker:SKILL.md:3:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The description uses tracing language for debugging program failures. It does not instruct system reconnaissance or host enumeration."
+        "confidence": 0.94,
+        "reason": "The description explains debugging root-cause tracing. It does not instruct system reconnaissance or collection of host inventory."
       },
       {
         "id": "blocker:SKILL.md:34:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line discusses finding where invalid data originated inside application behavior. It is debugging guidance, not system reconnaissance."
+        "confidence": 0.95,
+        "reason": "This line describes finding where invalid application data originated. It is normal debugging guidance, not system reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:65:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The question asks where an empty string value came from in a code path. It is data-flow debugging, not reconnaissance."
+        "confidence": 0.95,
+        "reason": "This question asks where an empty string came from in a code path. It is not host or network reconnaissance."
       },
       {
         "id": "metadata:SKILL.zip:1:unscanned-file-binary-manual-review-required",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "Manual archive review showed SKILL.zip contains only SKILL.md, and the extracted content matches the reviewed markdown. No unreviewed executable or extra payload is present."
+        "confidence": 0.91,
+        "reason": "Manual review showed the archive contains only SKILL.md, matching the reviewed top-level file. No additional executable or hidden payload was found."
       }
     ],
-    "semantic_findings": [],
+    "semantic_findings": [
+      {
+        "title": "Local Test Command Execution",
+        "description": "The skill instructs users to run npm test and a helper script that runs npm test for matched files. This can execute arbitrary project test scripts in the workspace.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 92,
+            "line_end": 110
+          },
+          {
+            "file": "find-polluter.sh",
+            "line_start": 41,
+            "line_end": 42
+          }
+        ],
+        "confidence": 0.86,
+        "confidence_reasoning": "The documentation shows npm test usage and the helper directly invokes npm test. This is intentional local execution, so the risk is clear but not malicious by itself."
+      },
+      {
+        "title": "Debug Logging May Expose Environment Data",
+        "description": "The guidance recommends logging runtime context, including environment variables. Agents could copy sensitive values into test output or shared logs if not constrained.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 75,
+            "line_end": 87
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 163,
+            "line_end": 166
+          }
+        ],
+        "confidence": 0.74,
+        "confidence_reasoning": "The concrete example logs NODE_ENV, and the later guidance mentions environment variables broadly. The risk depends on how users apply the advice."
+      }
+    ],
     "critical_findings": [],
     "high_findings": [],
-    "medium_findings": [],
+    "medium_findings": [
+      {
+        "title": "Unix shell invocation",
+        "description": "#!/bin/bash",
+        "locations": [
+          {
+            "file": "find-polluter.sh",
+            "line_start": 1,
+            "line_end": 1
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.78,
+        "confidence_reasoning": "The shebang identifies an executable Bash helper that runs local workspace commands, including npm tests. This is intentional, but it creates script-execution risk for users."
+      },
+      {
+        "title": "Local Test Command Execution",
+        "description": "The skill instructs users to run npm test and a helper script that runs npm test for matched files. This can execute arbitrary project test scripts in the workspace.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 92,
+            "line_end": 110
+          },
+          {
+            "file": "find-polluter.sh",
+            "line_start": 41,
+            "line_end": 42
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "The documentation shows npm test usage and the helper directly invokes npm test. This is intentional local execution, so the risk is clear but not malicious by itself."
+      },
+      {
+        "title": "Debug Logging May Expose Environment Data",
+        "description": "The guidance recommends logging runtime context, including environment variables. Agents could copy sensitive values into test output or shared logs if not constrained.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 75,
+            "line_end": 87
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 163,
+            "line_end": 166
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.74,
+        "confidence_reasoning": "The concrete example logs NODE_ENV, and the later guidance mentions environment variables broadly. The risk depends on how users apply the advice."
+      }
+    ],
     "low_findings": [
       {
         "title": "Unscanned file (binary) — manual review required",
@@ -883,149 +982,135 @@
             "line_end": 1
           }
         ],
-        "review_kind": "false_positive",
+        "review_kind": "security",
         "source_category": "metadata",
         "source_severity": "low",
         "confidence": 1,
-        "confidence_reasoning": "Force-confirmed metadata/low static finding; AI dismissal overridden."
+        "confidence_reasoning": "Force-confirmed metadata/low static finding; AI false-positive verdict rejected."
       }
     ],
     "dangerous_patterns": [],
     "files_scanned": 2,
     "total_lines": 239,
     "audit_model": "codex",
-    "audited_at": "2026-07-05T13:14:36.713Z",
+    "audited_at": "2026-07-09T08:42:28.838Z",
     "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Trace Root Causes in Debugging Workflows",
-    "value_statement": "Deep failures often hide the original bad input or state change. This skill guides Claude, Codex, and Claude Code through backward tracing, instrumentation, and test bisection.",
+    "user_title": "Trace Root Causes in Complex Bugs",
+    "value_statement": "Complex bugs often appear far from their original trigger. This skill guides backward tracing, targeted instrumentation, and test isolation to find the source.",
     "seo_keywords": [
       "Claude root cause tracing",
-      "Codex debugging workflow",
-      "Claude Code bug tracing",
+      "Codex debugging skill",
+      "Claude Code debugging",
       "root cause analysis",
-      "debug stack traces",
+      "bug tracing",
       "test pollution detection",
-      "software debugging",
-      "instrumentation workflow",
-      "failure analysis",
-      "local test bisection"
+      "stack trace instrumentation",
+      "debugging workflow",
+      "AI coding assistant"
     ],
     "actual_capabilities": [
-      "Guides backward tracing from a symptom to the original trigger.",
-      "Explains how to inspect call chains and passed values.",
-      "Shows where to add temporary stack trace instrumentation.",
-      "Includes a helper script for local test pollution bisection.",
-      "Recommends validation and defense layers after the source fix.",
-      "Provides examples for empty directory and test setup failures."
+      "Explains when to trace backward from a deep failure instead of patching the symptom.",
+      "Provides a step-by-step workflow for following callers, inputs, and invalid state.",
+      "Shows how to add stack trace instrumentation before a problematic operation.",
+      "Includes a shell helper that runs matched npm tests to identify unwanted state creation.",
+      "Recommends validation and defense layers after the original trigger is fixed."
     ],
     "limitations": [
-      "It needs logs, stack traces, or reproducible behavior to guide analysis.",
-      "The helper script assumes npm test and may need changes for other test runners.",
-      "It can run local tests repeatedly when the user invokes the script.",
-      "It does not replace security review for production data handling."
+      "Requires developer judgment to choose safe commands and interpret stack traces.",
+      "The helper script assumes an npm test workflow and may not fit every project.",
+      "Examples focus on TypeScript and Node.js debugging patterns.",
+      "Does not automatically analyze logs, source files, or test output without user-provided context."
     ],
     "use_cases": [
       {
         "title": "Trace a Deep Runtime Failure",
-        "description": "Walk from the failing operation back through callers until the bad value or state change is found.",
-        "target_user": "Backend engineer"
+        "description": "Follow a failure from the visible error back through callers until the first invalid input is found.",
+        "target_user": "Application developers"
       },
       {
-        "title": "Find a Test Polluter",
-        "description": "Use local bisection to identify which test creates unwanted files or shared state.",
-        "target_user": "QA engineer"
+        "title": "Identify a Polluting Test",
+        "description": "Run tests in isolation to find which test creates unexpected files or persistent state.",
+        "target_user": "QA engineers and test maintainers"
       },
       {
-        "title": "Review a Regression Fix",
-        "description": "Check whether a proposed fix addresses the source cause and adds useful boundary validation.",
-        "target_user": "Project maintainer"
+        "title": "Add Defensive Validation",
+        "description": "Turn a traced root cause into source-level validation and guardrails across the call chain.",
+        "target_user": "Technical leads and maintainers"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Trace This Failure",
-        "scenario": "Beginner debugging with an error and stack trace.",
-        "prompt": "Trace this failure from the symptom to the likely source. Use the root-cause-tracing process and ask for missing logs if needed: [paste error and stack trace]."
-      },
-      {
-        "title": "Find the Bad Input",
-        "scenario": "Intermediate debugging with a known wrong value.",
-        "prompt": "The wrong value is [value] at [function or file]. Trace backward through callers and identify where it first becomes wrong."
+        "title": "Trace a Visible Error",
+        "scenario": "Beginner debugging session",
+        "prompt": "Use root-cause-tracing for this error: [paste symptom]. Walk backward through likely callers and identify the earliest input to inspect."
       },
       {
         "title": "Plan Instrumentation",
-        "scenario": "Advanced debugging when manual tracing is incomplete.",
-        "prompt": "Create a temporary instrumentation plan for this failure. Include what to log, where to log it, and how to remove it after diagnosis."
+        "scenario": "Intermediate stack tracing",
+        "prompt": "Use root-cause-tracing to plan safe instrumentation for this failing operation: [operation]. Include what to log and what to avoid logging."
       },
       {
-        "title": "Design Test Bisection",
-        "scenario": "Advanced test pollution investigation.",
-        "prompt": "Design a test bisection workflow to find which test creates [file or state]. Include pre-checks, expected evidence, and cleanup precautions."
+        "title": "Find Test Pollution",
+        "scenario": "Advanced test isolation",
+        "prompt": "Use root-cause-tracing to identify which test creates [file or state]. Suggest a safe isolation workflow before running commands."
+      },
+      {
+        "title": "Design Source Fixes",
+        "scenario": "Maintainer remediation",
+        "prompt": "Use root-cause-tracing on this call chain: [call chain]. Propose a source fix and defense layers that prevent recurrence."
       }
     ],
     "output_examples": [
       {
-        "input": "A command fails because it runs in the repository root instead of a temporary directory.",
-        "output": [
-          "Immediate cause: the operation received an empty working directory.",
-          "Trace target: find where that empty value entered the call chain.",
-          "Likely fix: validate the value during setup and at the operation boundary."
-        ]
+        "input": "A test suite leaves a .git directory inside a package folder.",
+        "output": "Immediate cause: a git initialization used the wrong working directory. Trace callers until the empty project directory value is introduced."
       },
       {
-        "input": "A test suite leaves a hidden metadata directory in the source tree.",
-        "output": [
-          "Start by checking whether the directory exists before tests run.",
-          "Run targeted test bisection in a clean workspace.",
-          "Inspect the first polluting test for shared setup or early access to temporary paths."
-        ]
+        "input": "A database opens in the project root instead of a temporary directory.",
+        "output": "Start at the open call. Record the directory argument, caller stack, and test setup timing. Fix the first invalid path source."
       },
       {
-        "input": "A patch fixes the failure where it appears but not the caller chain.",
-        "output": [
-          "The patch may hide the symptom without fixing the source cause.",
-          "Trace one level higher and inspect the value passed into the failing function.",
-          "Add validation after the source fix to prevent recurrence."
-        ]
+        "input": "A failing operation only appears after the full test suite runs.",
+        "output": "Run focused test groups, watch for the unwanted state, and stop at the first reproducing test. Then inspect that test setup path."
       }
     ],
     "best_practices": [
-      "Start at the symptom, then move one caller upward at a time.",
-      "Log stack traces before the operation that mutates state.",
-      "Fix the source cause, then add validation at later boundaries."
+      "Start with the exact symptom, then move one caller up at a time.",
+      "Log only the context needed to prove data flow, and avoid secrets.",
+      "Fix the original trigger, then add validation at important boundaries."
     ],
     "anti_patterns": [
-      "Patching only the failing line without tracing the bad value.",
-      "Adding broad logging that exposes secrets or floods test output.",
-      "Running the helper script in a dirty workspace without checking existing pollution."
+      "Patching only the line where the error appears.",
+      "Running broad shell commands before confirming their workspace impact.",
+      "Dumping full environment variables or large logs into debug output."
     ],
     "faq": [
       {
-        "question": "Does this skill execute commands automatically?",
-        "answer": "No. It documents commands and includes a helper script, but execution requires an explicit user or agent action."
+        "question": "When should I use this skill?",
+        "answer": "Use it when an error appears deep in execution and the original bad input is unclear."
       },
       {
-        "question": "What bugs fit this skill best?",
-        "answer": "It works best when the visible failure is far from the original bad input, setup mistake, or state mutation."
+        "question": "Does it run commands automatically?",
+        "answer": "The skill provides command examples and a helper script. Users should approve and review commands before running them."
       },
       {
-        "question": "Can it help with test pollution?",
-        "answer": "Yes. It includes a bisection approach for finding which test creates unwanted files or shared state."
+        "question": "What projects fit best?",
+        "answer": "It fits codebases with stack traces, tests, and layered calls where data changes across boundaries."
       },
       {
-        "question": "What information should I provide?",
-        "answer": "Provide the error, stack trace, recent changes, reproduction steps, and any known wrong values."
+        "question": "Can it find test pollution?",
+        "answer": "Yes. The included helper can run matched npm tests and stop when unwanted state appears."
       },
       {
-        "question": "Does it only work with npm?",
-        "answer": "The included script uses npm test, but the tracing method can be adapted to other test runners."
+        "question": "What should I avoid logging?",
+        "answer": "Avoid secrets, tokens, full environment dumps, private paths, and customer data unless they are redacted."
       },
       {
-        "question": "How should temporary instrumentation be handled?",
-        "answer": "Add focused logs near the risky operation, avoid secrets, and remove the instrumentation after diagnosis."
+        "question": "Is it limited to TypeScript?",
+        "answer": "No. The examples use TypeScript, but the tracing method applies to many languages and test frameworks."
       }
     ]
   },

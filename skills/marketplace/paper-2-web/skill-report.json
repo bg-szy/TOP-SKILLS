@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T03:04:26.957Z",
+    "generated_at": "2026-07-09T16:45:53.787Z",
     "slug": "davila7-paper-2-web",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/scientific/paper-2-web",
     "source_ref": "main",
@@ -23,18 +23,18 @@
   },
   "skill": {
     "name": "paper-2-web",
-    "description": "Convert academic papers into interactive websites, presentation videos, and conference posters using Paper2All workflow guidance.",
-    "summary": "Guides Paper2All workflows for research websites, video abstracts, and conference posters.",
+    "description": "Convert academic papers into research websites, presentation videos, and conference posters using Paper2All workflows for LaTeX or PDF sources.",
+    "summary": "Guides Paper2All workflows for websites, videos, and posters from academic papers.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
     "license": "MIT",
     "tags": [
       "academic-papers",
-      "paper-to-website",
-      "research-poster",
-      "video-abstract",
-      "latex"
+      "research-websites",
+      "conference-posters",
+      "video-abstracts",
+      "paper-dissemination"
     ],
     "supported_tools": [
       "claude",
@@ -49,26 +49,36 @@
     "category": "research"
   },
   "security_audit": {
-    "risk_level": "medium",
+    "risk_level": "high",
     "is_blocked": false,
-    "safe_to_publish": true,
+    "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "Most static findings are false positives from Markdown fences, inline option names, placeholder API keys, and benign documentation prose. The real risks are a sudo system package installation step and an unpinned external Paper2All installation workflow.",
+    "summary": "High-severity confirmed findings are mainly credential handling and sudo-based system package installation, not direct malicious code. Most SKILL.md external-command findings are false positives from Markdown code fences or inline command examples. No prompt injection text was found, but the workflow depends on unpinned third-party code and optional external logo search.",
     "remediation": [
       {
-        "issue": "Privileged system dependency installation",
-        "suggestion": "Do not instruct agents to run sudo automatically. Present system packages as manual prerequisites that require explicit user approval.",
+        "issue": "Sudo package installation in community documentation",
+        "suggestion": "Prefer a container, documented manual prerequisites, or explicit user confirmation before any elevated package installation.",
+        "severity": "high"
+      },
+      {
+        "issue": "API credentials stored in .env files",
+        "suggestion": "Document .env file permissions, warn users never to commit it, and recommend least-privilege keys or a local secret manager.",
         "severity": "high"
       },
       {
         "issue": "Unpinned external repository and dependencies",
-        "suggestion": "Pin Paper2All to a specific commit or release and provide dependency hashes or lock files for reproducible installation.",
+        "suggestion": "Pin Paper2All to a reviewed commit or release and provide checksum or lockfile verification for dependencies.",
+        "severity": "high"
+      },
+      {
+        "issue": "Automatic logo search can call external services",
+        "suggestion": "Keep logo search disabled by default, require explicit consent, and validate downloaded image sources before use.",
         "severity": "medium"
       },
       {
-        "issue": "API key handling guidance is minimal",
-        "suggestion": "State that .env files must stay local, must not be printed in logs, and should use least-privilege keys where possible.",
-        "severity": "low"
+        "issue": "Executable Bash examples appear throughout the skill",
+        "suggestion": "Label commands as manual examples and require confirmation before running clone, install, batch, or generation commands.",
+        "severity": "medium"
       }
     ],
     "risk_factor_evidence": [
@@ -324,26 +334,6 @@
             "file": "SKILL.md",
             "line_start": 438,
             "line_end": 458
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 458,
-            "line_end": 459
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 459,
-            "line_end": 460
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 460,
-            "line_end": 461
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 461,
-            "line_end": 462
           }
         ]
       },
@@ -1194,498 +1184,535 @@
       {
         "id": "external_commands:references/installation.md:39:sudo-privilege-escalation",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "The installation guide instructs running apt-get with sudo, which changes system packages with root privileges. This is a legitimate dependency step, but agents should not perform it without explicit user approval.",
+        "confidence": 0.74,
+        "reason": "The installation guide tells users to run sudo apt-get install for system packages. This is a legitimate dependency step, but it modifies the host with elevated privileges from community documentation.",
         "severity": "high"
       },
       {
         "id": "network:references/installation.md:20:hardcoded-url",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The URL is a visible GitHub or project reference used for installation or documentation. It does not send user data to a hidden endpoint or perform credential exfiltration."
+        "verdict": "confirmed",
+        "confidence": 0.76,
+        "reason": "The guide directs users to clone an external GitHub repository. The URL is legitimate project documentation, but it creates a network dependency on third-party code outside this skill package.",
+        "severity": "low"
       },
       {
         "id": "env_access:references/installation.md:59:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is a placeholder API key name in setup documentation, not code that reads or exports secrets. The text instructs users to configure credentials locally."
+        "verdict": "confirmed",
+        "confidence": 0.66,
+        "reason": "The value is a placeholder, not a leaked OpenAI secret. It still instructs users to place API credentials into a .env file consumed by external tooling, so credential handling risk remains.",
+        "severity": "high"
       },
       {
         "id": "env_access:references/installation.md:64:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is a placeholder API key name in setup documentation, not code that reads or exports secrets. The text instructs users to configure credentials locally."
+        "verdict": "confirmed",
+        "confidence": 0.66,
+        "reason": "The value is a placeholder, not a leaked OpenRouter secret. It still instructs users to place API credentials into a .env file consumed by external tooling, so credential handling risk remains.",
+        "severity": "high"
       },
       {
         "id": "env_access:references/installation.md:71:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is a placeholder API key name in setup documentation, not code that reads or exports secrets. The text instructs users to configure credentials locally."
+        "verdict": "confirmed",
+        "confidence": 0.66,
+        "reason": "The value is a placeholder, not a leaked Google secret. It still instructs users to place API credentials into a .env file consumed by external tooling, so credential handling risk remains.",
+        "severity": "high"
       },
       {
         "id": "sensitive:references/installation.md:53:environment-file-access",
-        "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The .env reference is configuration guidance or troubleshooting text. I found no instruction to print, upload, or otherwise disclose the file contents."
+        "verdict": "confirmed",
+        "confidence": 0.67,
+        "reason": "The guide explicitly asks users to create a .env file with API credentials. This is expected setup, but it introduces sensitive local secret storage for a community workflow.",
+        "severity": "high"
       },
       {
         "id": "sensitive:references/installation.md:121:environment-file-access",
-        "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The .env reference is configuration guidance or troubleshooting text. I found no instruction to print, upload, or otherwise disclose the file contents."
+        "verdict": "confirmed",
+        "confidence": 0.67,
+        "reason": "The troubleshooting section tells users to verify the .env file location. It is not malicious, but it keeps the skill dependent on a credential file that must be protected.",
+        "severity": "high"
       },
       {
         "id": "sensitive:references/installation.md:123:environment-file-access",
-        "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The .env reference is configuration guidance or troubleshooting text. I found no instruction to print, upload, or otherwise disclose the file contents."
+        "verdict": "confirmed",
+        "confidence": 0.67,
+        "reason": "The guide discusses formatting keys inside .env. This is setup guidance, but it confirms that sensitive credentials are expected in local files.",
+        "severity": "high"
       },
       {
         "id": "sensitive:references/installation.md:131:environment-file-access",
-        "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The .env reference is configuration guidance or troubleshooting text. I found no instruction to print, upload, or otherwise disclose the file contents."
+        "verdict": "confirmed",
+        "confidence": 0.67,
+        "reason": "The directory layout includes .env as API credentials. This documents sensitive secret storage that should not be committed or exposed.",
+        "severity": "high"
       },
       {
         "id": "blocker:references/installation.md:122:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged phrase is ordinary documentation language about quality checks, layout, printing, or input requirements. It is not system or network reconnaissance."
+        "confidence": 0.94,
+        "reason": "This is troubleshooting advice to check API key validity and credits. It does not probe the host system or collect system information."
       },
       {
         "id": "blocker:references/paper2poster.md:276:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged phrase is ordinary documentation language about quality checks, layout, printing, or input requirements. It is not system or network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The line recommends physical poster backing material. It has no relationship to system reconnaissance."
       },
       {
         "id": "blocker:references/paper2poster.md:314:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged phrase is ordinary documentation language about quality checks, layout, printing, or input requirements. It is not system or network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The line is poster design advice about limiting text. It does not inspect or enumerate a system."
       },
       {
         "id": "blocker:references/paper2poster.md:322:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged phrase is ordinary documentation language about quality checks, layout, printing, or input requirements. It is not system or network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The line is layout guidance about balancing poster content. It is unrelated to system reconnaissance."
       },
       {
         "id": "blocker:references/paper2poster.md:337:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged phrase is ordinary documentation language about quality checks, layout, printing, or input requirements. It is not system or network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The line says custom branding may need manual specification or API access. It does not scan networks or discover network services."
       },
       {
         "id": "blocker:references/paper2video.md:108:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged phrase is ordinary documentation language about quality checks, layout, printing, or input requirements. It is not system or network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The line requires valid LaTeX source that compiles. This is input validation guidance, not host reconnaissance."
       },
       {
         "id": "blocker:references/paper2video.md:205:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged phrase is ordinary documentation language about quality checks, layout, printing, or input requirements. It is not system or network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The line lists audio quality as an output metric. It does not request network probing."
       },
       {
         "id": "blocker:references/paper2web.md:123:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged phrase is ordinary documentation language about quality checks, layout, printing, or input requirements. It is not system or network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The line describes content completeness as an evaluation metric. It does not enumerate or probe networks."
       },
       {
         "id": "blocker:references/paper2web.md:130:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged phrase is ordinary documentation language about quality checks, layout, printing, or input requirements. It is not system or network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The line describes mobile responsiveness as a web quality metric. It is not network reconnaissance."
       },
       {
         "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown link to local reference documentation. It is not command execution or dynamic evaluation."
+        "confidence": 0.91,
+        "reason": "This line links to reference documentation using Markdown formatting. It is not shell execution and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:105:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown link to local reference documentation. It is not command execution or dynamic evaluation."
+        "confidence": 0.91,
+        "reason": "This line links to reference documentation using Markdown formatting. It is not shell execution and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:122:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown link to local reference documentation. It is not command execution or dynamic evaluation."
+        "confidence": 0.91,
+        "reason": "This line links to reference documentation using Markdown formatting. It is not shell execution and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:139:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is a Markdown documentation example, not an implementation that executes shell input. No Ruby backtick execution is present in SKILL.md."
+        "confidence": 0.87,
+        "reason": "The backticks mark .env or an API-key term as inline documentation, not shell execution. The credential-handling concern is covered by the separate sensitive or env_access finding."
       },
       {
         "id": "external_commands:SKILL.md:140:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.87,
+        "reason": "The backticks mark .env or an API-key term as inline documentation, not shell execution. The credential-handling concern is covered by the separate sensitive or env_access finding."
       },
       {
         "id": "external_commands:SKILL.md:143:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.87,
+        "reason": "The backticks mark .env or an API-key term as inline documentation, not shell execution. The credential-handling concern is covered by the separate sensitive or env_access finding."
       },
       {
         "id": "external_commands:SKILL.md:150:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown link to local reference documentation. It is not command execution or dynamic evaluation."
+        "confidence": 0.91,
+        "reason": "This line links to reference documentation using Markdown formatting. It is not shell execution and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:157:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:162:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:165:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:171:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:174:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:182:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:185:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:191:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:193:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown link to local reference documentation. It is not command execution or dynamic evaluation."
+        "confidence": 0.91,
+        "reason": "This line links to reference documentation using Markdown formatting. It is not shell execution and contains no command injection path."
       },
       {
         "id": "external_commands:SKILL.md:201:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.88,
+        "reason": "This is a Markdown directory tree or output example. It is not shell execution and does not run commands."
       },
       {
         "id": "external_commands:SKILL.md:218:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.88,
+        "reason": "This is a Markdown directory tree or output example. It is not shell execution and does not run commands."
       },
       {
         "id": "external_commands:SKILL.md:225:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.88,
+        "reason": "This is a Markdown directory tree or output example. It is not shell execution and does not run commands."
       },
       {
         "id": "external_commands:SKILL.md:232:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.88,
+        "reason": "This is a Markdown directory tree or output example. It is not shell execution and does not run commands."
       },
       {
         "id": "external_commands:SKILL.md:242:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:248:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:251:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:259:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:264:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is an inline command-line option name in documentation. It is not executed and does not create a command injection path."
+        "confidence": 0.91,
+        "reason": "This is an inline command-line option description in documentation. It is not Ruby backtick execution and does not run by itself."
       },
       {
         "id": "external_commands:SKILL.md:265:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is an inline command-line option name in documentation. It is not executed and does not create a command injection path."
+        "confidence": 0.91,
+        "reason": "This is an inline command-line option description in documentation. It is not Ruby backtick execution and does not run by itself."
       },
       {
         "id": "external_commands:SKILL.md:266:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is an inline command-line option name in documentation. It is not executed and does not create a command injection path."
+        "confidence": 0.91,
+        "reason": "This is an inline command-line option description in documentation. It is not Ruby backtick execution and does not run by itself."
       },
       {
         "id": "external_commands:SKILL.md:269:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is an inline command-line option name in documentation. It is not executed and does not create a command injection path."
+        "confidence": 0.91,
+        "reason": "This is an inline command-line option description in documentation. It is not Ruby backtick execution and does not run by itself."
       },
       {
         "id": "external_commands:SKILL.md:270:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is an inline command-line option name in documentation. It is not executed and does not create a command injection path."
+        "confidence": 0.91,
+        "reason": "This is an inline command-line option description in documentation. It is not Ruby backtick execution and does not run by itself."
       },
       {
         "id": "external_commands:SKILL.md:271:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is an inline command-line option name in documentation. It is not executed and does not create a command injection path."
+        "confidence": 0.91,
+        "reason": "This is an inline command-line option description in documentation. It is not Ruby backtick execution and does not run by itself."
       },
       {
         "id": "external_commands:SKILL.md:272:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is an inline command-line option name in documentation. It is not executed and does not create a command injection path."
+        "confidence": 0.91,
+        "reason": "This is an inline command-line option description in documentation. It is not Ruby backtick execution and does not run by itself."
       },
       {
         "id": "external_commands:SKILL.md:275:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is an inline command-line option name in documentation. It is not executed and does not create a command injection path."
+        "confidence": 0.91,
+        "reason": "This is an inline command-line option description in documentation. It is not Ruby backtick execution and does not run by itself."
       },
       {
         "id": "external_commands:SKILL.md:276:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is an inline command-line option name in documentation. It is not executed and does not create a command injection path."
+        "confidence": 0.91,
+        "reason": "This is an inline command-line option description in documentation. It is not Ruby backtick execution and does not run by itself."
       },
       {
         "id": "external_commands:SKILL.md:277:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is an inline command-line option name in documentation. It is not executed and does not create a command injection path."
+        "confidence": 0.91,
+        "reason": "This is an inline command-line option description in documentation. It is not Ruby backtick execution and does not run by itself."
       },
       {
         "id": "external_commands:SKILL.md:278:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is an inline command-line option name in documentation. It is not executed and does not create a command injection path."
+        "confidence": 0.91,
+        "reason": "This is an inline command-line option description in documentation. It is not Ruby backtick execution and does not run by itself."
       },
       {
         "id": "external_commands:SKILL.md:284:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.88,
+        "reason": "This is a Markdown directory tree or output example. It is not shell execution and does not run commands."
       },
       {
         "id": "external_commands:SKILL.md:300:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.88,
+        "reason": "This is a Markdown directory tree or output example. It is not shell execution and does not run commands."
       },
       {
         "id": "external_commands:SKILL.md:352:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is an inline troubleshooting example for compiling a local LaTeX file. It is not Ruby backtick execution or hidden shell invocation by the skill itself."
+        "confidence": 0.86,
+        "reason": "This is troubleshooting or quality guidance with inline command formatting. It is not Ruby backtick execution or an automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:372:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The flagged text is a Markdown documentation example, not an implementation that executes shell input. No Ruby backtick execution is present in SKILL.md."
+        "confidence": 0.87,
+        "reason": "The backticks mark .env or an API-key term as inline documentation, not shell execution. The credential-handling concern is covered by the separate sensitive or env_access finding."
       },
       {
         "id": "external_commands:SKILL.md:383:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is troubleshooting or quality guidance with inline command formatting. It is not Ruby backtick execution or an automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:386:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is troubleshooting or quality guidance with inline command formatting. It is not Ruby backtick execution or an automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:389:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is troubleshooting or quality guidance with inline command formatting. It is not Ruby backtick execution or an automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:392:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is troubleshooting or quality guidance with inline command formatting. It is not Ruby backtick execution or an automatic shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:429:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:438:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code-fence delimiter, not executable Ruby or shell backtick syntax. The file is documentation and contains no code path that evaluates it."
+        "confidence": 0.86,
+        "reason": "This is a fenced Bash example in documentation, not hidden Ruby backtick execution. Any listed commands are visible setup or usage examples that should be run only with user approval."
       },
       {
         "id": "external_commands:SKILL.md:458:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is a Markdown link to local reference documentation. It is not command execution or dynamic evaluation."
+        "reason": "This is a Markdown list of reference files. It does not execute commands or invoke a shell."
       },
       {
         "id": "external_commands:SKILL.md:459:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is a Markdown link to local reference documentation. It is not command execution or dynamic evaluation."
+        "reason": "This is a Markdown list of reference files. It does not execute commands or invoke a shell."
       },
       {
         "id": "external_commands:SKILL.md:460:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is a Markdown link to local reference documentation. It is not command execution or dynamic evaluation."
+        "reason": "This is a Markdown list of reference files. It does not execute commands or invoke a shell."
       },
       {
         "id": "external_commands:SKILL.md:461:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This is a Markdown link to local reference documentation. It is not command execution or dynamic evaluation."
+        "reason": "This is a Markdown list of reference files. It does not execute commands or invoke a shell."
       },
       {
         "id": "network:SKILL.md:132:hardcoded-url",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The URL is a visible GitHub or project reference used for installation or documentation. It does not send user data to a hidden endpoint or perform credential exfiltration."
+        "verdict": "confirmed",
+        "confidence": 0.76,
+        "reason": "The quick start tells users to clone the Paper2All GitHub repository. This is legitimate setup documentation, but it pulls third-party code over the network.",
+        "severity": "low"
       },
       {
         "id": "network:SKILL.md:465:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.82,
-        "reason": "The URL is a visible GitHub or project reference used for installation or documentation. It does not send user data to a hidden endpoint or perform credential exfiltration."
+        "reason": "This is a reference link to the upstream GitHub repository, not an instruction to transmit data or execute a network request. The executable clone step is covered separately."
       },
       {
         "id": "env_access:SKILL.md:141:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is a placeholder API key name in setup documentation, not code that reads or exports secrets. The text instructs users to configure credentials locally."
+        "verdict": "confirmed",
+        "confidence": 0.66,
+        "reason": "The snippet uses placeholder OpenAI API key names rather than real secrets. It still asks users to configure credentials for a community pipeline, which is sensitive setup.",
+        "severity": "high"
       },
       {
         "id": "env_access:SKILL.md:142:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is a placeholder API key name in setup documentation, not code that reads or exports secrets. The text instructs users to configure credentials locally."
+        "verdict": "confirmed",
+        "confidence": 0.66,
+        "reason": "The snippet uses placeholder Google Search API key names rather than real secrets. It still asks users to configure credentials for a community pipeline, which is sensitive setup.",
+        "severity": "high"
       },
       {
         "id": "sensitive:SKILL.md:139:environment-file-access",
-        "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The .env reference is configuration guidance or troubleshooting text. I found no instruction to print, upload, or otherwise disclose the file contents."
+        "verdict": "confirmed",
+        "confidence": 0.67,
+        "reason": "The quick start instructs users to create a .env file for API keys. This is expected configuration, but it introduces local secret-management risk.",
+        "severity": "high"
       },
       {
         "id": "sensitive:SKILL.md:372:environment-file-access",
-        "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The .env reference is configuration guidance or troubleshooting text. I found no instruction to print, upload, or otherwise disclose the file contents."
+        "verdict": "confirmed",
+        "confidence": 0.67,
+        "reason": "The troubleshooting advice tells users to verify API keys in .env. This confirms that sensitive credentials are part of the workflow.",
+        "severity": "high"
       },
       {
         "id": "blocker:SKILL.md:489:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged phrase is ordinary documentation language about quality checks, layout, printing, or input requirements. It is not system or network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The line lists standards such as valid HTML/CSS and print-ready PDFs. It does not inspect system state."
       },
       {
         "id": "blocker:SKILL.md:486:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The flagged phrase is ordinary documentation language about quality checks, layout, printing, or input requirements. It is not system or network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The line lists performance metrics such as load times and responsiveness. It does not perform or request network reconnaissance."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Unpinned External Pipeline Installation",
-        "description": "The skill directs users to clone the Paper2All repository and install its requirements without pinning a commit, release, or dependency hashes. Future upstream changes could run unexpected code in the local environment.",
+        "title": "Unpinned Third-Party Pipeline Installation",
+        "description": "The skill directs users to clone Paper2All from GitHub and install requirements without pinning a commit, release, or checksum. This can execute changed upstream code and dependencies outside marketplace review.",
+        "severity": "high",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 130,
+            "line_end": 136
+          },
+          {
+            "file": "references/installation.md",
+            "line_start": 18,
+            "line_end": 32
+          }
+        ],
+        "confidence": 0.86,
+        "confidence_reasoning": "The installation steps directly combine git clone with dependency installation from the live repository. The files show no commit pinning or integrity verification."
+      },
+      {
+        "title": "External Logo Search May Disclose Affiliation Data",
+        "description": "The documentation describes automatic institution logo discovery through Google Search API and matching author affiliations. This optional feature may send affiliation metadata to an external search service and download untrusted assets.",
         "severity": "medium",
         "locations": [
           {
-            "file": "references/installation.md",
-            "line_start": 20,
-            "line_end": 32
+            "file": "SKILL.md",
+            "line_start": 278,
+            "line_end": 278
           },
           {
-            "file": "SKILL.md",
-            "line_start": 132,
-            "line_end": 136
+            "file": "references/paper2web.md",
+            "line_start": 136,
+            "line_end": 141
+          },
+          {
+            "file": "references/paper2poster.md",
+            "line_start": 296,
+            "line_end": 300
           }
         ],
-        "confidence": 0.88,
-        "confidence_reasoning": "The clone and requirements installation steps are explicit in the setup documentation. This is a supply-chain risk, not direct evidence of malicious exfiltration."
+        "confidence": 0.78,
+        "confidence_reasoning": "The cited documentation explicitly says logo discovery uses Google Search API, matches author affiliations, and downloads logo images. The feature appears optional, so the severity is medium."
       }
     ],
     "critical_findings": [],
@@ -1703,158 +1730,405 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "high",
+        "confidence": 0.74,
+        "confidence_reasoning": "The installation guide tells users to run sudo apt-get install for system packages. This is a legitimate dependency step, but it modifies the host with elevated privileges from community documentation."
+      },
+      {
+        "title": "Generic API/secret keys",
+        "description": "OPENAI_API_KEY=your_openai_api_key_here",
+        "locations": [
+          {
+            "file": "references/installation.md",
+            "line_start": 59,
+            "line_end": 59
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "env_access",
+        "source_severity": "high",
+        "confidence": 0.66,
+        "confidence_reasoning": "The value is a placeholder, not a leaked OpenAI secret. It still instructs users to place API credentials into a .env file consumed by external tooling, so credential handling risk remains."
+      },
+      {
+        "title": "Generic API/secret keys",
+        "description": "OPENROUTER_API_KEY=your_openrouter_api_key_here",
+        "locations": [
+          {
+            "file": "references/installation.md",
+            "line_start": 64,
+            "line_end": 64
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "env_access",
+        "source_severity": "high",
+        "confidence": 0.66,
+        "confidence_reasoning": "The value is a placeholder, not a leaked OpenRouter secret. It still instructs users to place API credentials into a .env file consumed by external tooling, so credential handling risk remains."
+      },
+      {
+        "title": "Generic API/secret keys",
+        "description": "GOOGLE_API_KEY=your_google_api_key_here",
+        "locations": [
+          {
+            "file": "references/installation.md",
+            "line_start": 71,
+            "line_end": 71
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "env_access",
+        "source_severity": "high",
+        "confidence": 0.66,
+        "confidence_reasoning": "The value is a placeholder, not a leaked Google secret. It still instructs users to place API credentials into a .env file consumed by external tooling, so credential handling risk remains."
+      },
+      {
+        "title": "Environment file access",
+        "description": "Create a `.env` file in the project root with the following credentials:",
+        "locations": [
+          {
+            "file": "references/installation.md",
+            "line_start": 53,
+            "line_end": 53
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.67,
+        "confidence_reasoning": "The guide explicitly asks users to create a .env file with API credentials. This is expected setup, but it introduces sensitive local secret storage for a community workflow."
+      },
+      {
+        "title": "Environment file access",
+        "description": "- Verify `.env` file is in the project root",
+        "locations": [
+          {
+            "file": "references/installation.md",
+            "line_start": 121,
+            "line_end": 121
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.67,
+        "confidence_reasoning": "The troubleshooting section tells users to verify the .env file location. It is not malicious, but it keeps the skill dependent on a credential file that must be protected."
+      },
+      {
+        "title": "Environment file access",
+        "description": "- Ensure no extra spaces or quotes around keys in `.env`",
+        "locations": [
+          {
+            "file": "references/installation.md",
+            "line_start": 123,
+            "line_end": 123
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.67,
+        "confidence_reasoning": "The guide discusses formatting keys inside .env. This is setup guidance, but it confirms that sensitive credentials are expected in local files."
+      },
+      {
+        "title": "Environment file access",
+        "description": "├── .env                  # API credentials",
+        "locations": [
+          {
+            "file": "references/installation.md",
+            "line_start": 131,
+            "line_end": 131
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.67,
+        "confidence_reasoning": "The directory layout includes .env as API credentials. This documents sensitive secret storage that should not be committed or exposed."
+      },
+      {
+        "title": "Generic API/secret keys",
+        "description": "OPENAI_API_KEY=your_openai_api_key_here",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 141,
+            "line_end": 141
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "env_access",
+        "source_severity": "high",
+        "confidence": 0.66,
+        "confidence_reasoning": "The snippet uses placeholder OpenAI API key names rather than real secrets. It still asks users to configure credentials for a community pipeline, which is sensitive setup."
+      },
+      {
+        "title": "Generic API/secret keys",
+        "description": "# Optional: GOOGLE_API_KEY and GOOGLE_CSE_ID for logo search",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 142,
+            "line_end": 142
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "env_access",
+        "source_severity": "high",
+        "confidence": 0.66,
+        "confidence_reasoning": "The snippet uses placeholder Google Search API key names rather than real secrets. It still asks users to configure credentials for a community pipeline, which is sensitive setup."
+      },
+      {
+        "title": "Environment file access",
+        "description": "2. **Configure API Keys** (create `.env` file):",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 139,
+            "line_end": 139
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.67,
+        "confidence_reasoning": "The quick start instructs users to create a .env file for API keys. This is expected configuration, but it introduces local secret-management risk."
+      },
+      {
+        "title": "Environment file access",
+        "description": "- Verify API keys in `.env` file",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 372,
+            "line_end": 372
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.67,
+        "confidence_reasoning": "The troubleshooting advice tells users to verify API keys in .env. This confirms that sensitive credentials are part of the workflow."
+      },
+      {
+        "title": "Unpinned Third-Party Pipeline Installation",
+        "description": "The skill directs users to clone Paper2All from GitHub and install requirements without pinning a commit, release, or checksum. This can execute changed upstream code and dependencies outside marketplace review.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 130,
+            "line_end": 136
+          },
+          {
+            "file": "references/installation.md",
+            "line_start": 18,
+            "line_end": 32
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "high",
         "confidence": 0.86,
-        "confidence_reasoning": "The installation guide instructs running apt-get with sudo, which changes system packages with root privileges. This is a legitimate dependency step, but agents should not perform it without explicit user approval."
+        "confidence_reasoning": "The installation steps directly combine git clone with dependency installation from the live repository. The files show no commit pinning or integrity verification."
       }
     ],
     "medium_findings": [
       {
-        "title": "Unpinned External Pipeline Installation",
-        "description": "The skill directs users to clone the Paper2All repository and install its requirements without pinning a commit, release, or dependency hashes. Future upstream changes could run unexpected code in the local environment.",
+        "title": "External Logo Search May Disclose Affiliation Data",
+        "description": "The documentation describes automatic institution logo discovery through Google Search API and matching author affiliations. This optional feature may send affiliation metadata to an external search service and download untrusted assets.",
         "locations": [
           {
-            "file": "references/installation.md",
-            "line_start": 20,
-            "line_end": 32
+            "file": "SKILL.md",
+            "line_start": 278,
+            "line_end": 278
           },
           {
-            "file": "SKILL.md",
-            "line_start": 132,
-            "line_end": 136
+            "file": "references/paper2web.md",
+            "line_start": 136,
+            "line_end": 141
+          },
+          {
+            "file": "references/paper2poster.md",
+            "line_start": 296,
+            "line_end": 300
           }
         ],
         "review_kind": "security",
         "source_category": "semantic",
         "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The clone and requirements installation steps are explicit in the setup documentation. This is a supply-chain risk, not direct evidence of malicious exfiltration."
+        "confidence": 0.78,
+        "confidence_reasoning": "The cited documentation explicitly says logo discovery uses Google Search API, matches author affiliations, and downloads logo images. The feature appears optional, so the severity is medium."
       }
     ],
-    "low_findings": [],
+    "low_findings": [
+      {
+        "title": "Hardcoded URL",
+        "description": "git clone https://github.com/YuhangChen1/Paper2All.git",
+        "locations": [
+          {
+            "file": "references/installation.md",
+            "line_start": 20,
+            "line_end": 20
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.76,
+        "confidence_reasoning": "The guide directs users to clone an external GitHub repository. The URL is legitimate project documentation, but it creates a network dependency on third-party code outside this skill package."
+      },
+      {
+        "title": "Hardcoded URL",
+        "description": "git clone https://github.com/YuhangChen1/Paper2All.git",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 132,
+            "line_end": 132
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.76,
+        "confidence_reasoning": "The quick start tells users to clone the Paper2All GitHub repository. This is legitimate setup documentation, but it pulls third-party code over the network."
+      }
+    ],
     "dangerous_patterns": [],
     "files_scanned": 6,
     "total_lines": 1912,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T03:04:26.957Z",
-    "agent_auto_install_policy": "allowed",
+    "audited_at": "2026-07-09T16:45:53.787Z",
+    "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Convert Papers into Web, Video, and Posters",
-    "value_statement": "Academic teams spend time turning papers into websites, videos, and posters. This skill guides Paper2All workflows that transform LaTeX or PDF papers into dissemination assets.",
+    "user_title": "Transform Papers Into Research Websites and Media",
+    "value_statement": "Academic papers are hard to share beyond static PDFs. This skill guides Paper2All workflows for websites, posters, and videos from LaTeX or PDF inputs.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "Paper2Web",
-      "Paper2Video",
-      "Paper2Poster",
-      "academic paper conversion",
-      "research website generator",
-      "conference poster generation",
-      "video abstract automation"
+      "Paper2All",
+      "academic paper website",
+      "conference poster generator",
+      "research video abstract",
+      "LaTeX to website",
+      "AI research dissemination"
     ],
     "actual_capabilities": [
-      "Guides setup for Paper2All, Conda, LibreOffice, Poppler, and API key configuration.",
-      "Selects Paper2Web, Paper2Video, Paper2Poster, or combined workflows based on dissemination goals.",
-      "Provides input and output structure guidance for LaTeX, PDF, figures, tables, and bibliography files.",
-      "Explains website generation features, including responsive pages, interactive figures, citations, and logo discovery.",
-      "Documents poster sizing, QR code options, institution branding, print preparation, and review checklists.",
-      "Documents video generation options, including slides, narration, timing, and optional talking-head requirements."
+      "Guides Paper2Web generation of responsive academic homepages from LaTeX or PDF inputs.",
+      "Provides Paper2Video workflows for narrated presentation videos and optional talking-head output.",
+      "Provides Paper2Poster workflows for print-ready conference posters with custom dimensions.",
+      "Documents installation, API key setup, model selection, and system dependencies.",
+      "Supports single-paper and batch workflows with branding and multi-language options.",
+      "Lists quality checks for websites, posters, videos, accessibility, and print readiness."
     ],
     "limitations": [
-      "Requires the external Paper2All project and local system dependencies before generation can run.",
-      "Needs API keys for LLM-backed generation and optional Google logo search.",
-      "Talking-head video generation requires a large NVIDIA GPU and may not work on standard laptops.",
-      "Generated websites, posters, and videos still require human review for scientific accuracy."
+      "The skill does not include the Paper2All pipeline code.",
+      "Generation may require paid LLM APIs and local API key configuration.",
+      "Talking-head videos require a high-memory NVIDIA GPU.",
+      "Scientific accuracy, citations, accessibility, and print quality still need human review."
     ],
     "use_cases": [
       {
         "title": "Create a Paper Homepage",
-        "description": "Turn a published paper or preprint into an explorable website for readers and collaborators.",
+        "description": "Turn a completed paper into a responsive website with figures, results, citations, and author information.",
         "target_user": "Researcher"
       },
       {
         "title": "Prepare Conference Materials",
-        "description": "Generate a poster plan and video abstract from a LaTeX or PDF paper before a conference deadline.",
-        "target_user": "Graduate student"
+        "description": "Generate a poster, short video abstract, and companion website for a conference submission.",
+        "target_user": "Conference presenter"
       },
       {
-        "title": "Package Lab Dissemination",
-        "description": "Create consistent web, poster, and video assets for several papers from one research group.",
-        "target_user": "Lab communications manager"
+        "title": "Publish Lab Research Assets",
+        "description": "Plan consistent websites, posters, and videos for several papers from one lab or project group.",
+        "target_user": "Lab communications team"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Choose an Output Format",
-        "scenario": "Beginner planning request",
-        "prompt": "I have a research paper and need help sharing it. Recommend whether I should create a website, video, poster, or all three."
+        "title": "Create a Website",
+        "scenario": "Beginner website generation",
+        "prompt": "Use paper-2-web to turn my paper folder into an interactive research website. Ask for any missing inputs before running commands."
       },
       {
-        "title": "Create a Website Workflow",
-        "scenario": "Paper2Web setup",
-        "prompt": "Guide me through creating an interactive Paper2Web homepage from my LaTeX paper. Include input preparation and review steps."
+        "title": "Plan Conference Assets",
+        "scenario": "Intermediate conference preparation",
+        "prompt": "Use paper-2-web to plan a website, poster, and short video for my conference paper. Include required inputs and review steps."
       },
       {
-        "title": "Prepare Conference Assets",
-        "scenario": "Poster and video planning",
-        "prompt": "Help me plan a conference poster and short video abstract from my paper. Include sizing, narration, and accuracy checks."
+        "title": "Review Generation Readiness",
+        "scenario": "Intermediate input validation",
+        "prompt": "Use paper-2-web to check whether my LaTeX or PDF source is ready for Paper2All generation. Report missing files and risks."
       },
       {
-        "title": "Run a Batch Dissemination Plan",
-        "scenario": "Advanced multi-paper workflow",
-        "prompt": "Design a batch workflow for several papers that need websites, posters, and videos. Include dependencies, outputs, and quality review."
+        "title": "Run a Batch Workflow",
+        "scenario": "Advanced multi-paper production",
+        "prompt": "Use paper-2-web to design a batch workflow for several papers. Prioritize websites first, then posters, then videos, with QA for each output."
       }
     ],
     "output_examples": [
       {
-        "input": "A user asks for an interactive homepage from a LaTeX research paper.",
-        "output": "A Paper2Web workflow with prerequisites, source folder checks, generation steps, and final review tasks for content and links."
+        "input": "A researcher asks for an interactive homepage from a LaTeX paper.",
+        "output": [
+          "A Paper2Web workflow with required input files and output folders.",
+          "A website plan covering abstract, methods, results, figures, citations, and author details.",
+          "A review checklist for responsive layout, working links, and figure quality."
+        ]
       },
       {
-        "input": "A student needs a poster for a 36 by 48 inch conference board.",
-        "output": "A poster plan covering section priorities, figure quality, QR code placement, print resolution, and manual review points."
+        "input": "A conference presenter needs a poster and short video.",
+        "output": [
+          "A production plan for poster size, visual hierarchy, narration length, and branding.",
+          "A list of assets needed before generation, including figures and bibliography files.",
+          "Review steps for print readability, audio synchronization, and scientific accuracy."
+        ]
       },
       {
-        "input": "A lab wants video abstracts for multiple accepted papers.",
-        "output": "A batch plan that separates paper inputs, selects video options, notes GPU needs, and defines review checkpoints for narration and timing."
+        "input": "A lab wants dissemination assets for several accepted papers.",
+        "output": [
+          "A batch approach with one output folder per paper.",
+          "A priority order that creates websites first, then posters, then videos.",
+          "A final review checklist for content accuracy, branding, and publication readiness."
+        ]
       }
     ],
     "best_practices": [
-      "Use clean LaTeX sources with all figures, tables, and bibliography files included.",
-      "Review generated claims, citations, figures, and links before publishing any output.",
-      "Pin external dependencies and keep API keys in local configuration files only."
+      "Use clean LaTeX sources with complete figures, tables, and bibliography files.",
+      "Review generated claims, citations, links, accessibility, and figure quality before publishing.",
+      "Keep API keys outside version control and run generation in an isolated environment."
     ],
     "anti_patterns": [
-      "Do not publish generated research claims without author review.",
-      "Do not run privileged installation commands automatically from an agent session.",
-      "Do not use low-resolution figures for posters or public research websites."
+      "Running installation commands in a production environment without isolation or confirmation.",
+      "Publishing generated materials without checking scientific accuracy and author approvals.",
+      "Enabling external logo search without verifying licensing, sources, and downloaded assets."
     ],
     "faq": [
       {
-        "question": "What inputs does this skill expect?",
-        "answer": "It works best with LaTeX source, figures, tables, and bibliography files. It can also guide PDF-based workflows."
+        "question": "Does this skill generate the website by itself?",
+        "answer": "It guides Paper2All workflows and may run approved commands. The external Paper2All project performs the generation."
       },
       {
-        "question": "Can it create only a website?",
-        "answer": "Yes. The workflow can focus on Paper2Web without generating posters or videos."
-      },
-      {
-        "question": "Does video generation require special hardware?",
-        "answer": "Basic video workflows need normal local tools. Talking-head generation requires a large NVIDIA GPU."
+        "question": "What inputs work best?",
+        "answer": "Clean LaTeX with figures, tables, and bibliography works best. High-quality PDFs can also be used."
       },
       {
         "question": "Are API keys required?",
-        "answer": "LLM-backed generation requires an OpenAI or OpenRouter key. Logo discovery can require Google API credentials."
+        "answer": "Most LLM-powered generation requires OpenAI, OpenRouter, or Google API keys. Store keys securely and avoid committing them."
       },
       {
-        "question": "Can it create print-ready posters?",
-        "answer": "Yes. The references cover poster dimensions, QR codes, institution branding, and print preparation checks."
+        "question": "Can it create posters and videos too?",
+        "answer": "Yes. The skill covers Paper2Web, Paper2Poster, and Paper2Video workflows from the same research source."
       },
       {
-        "question": "Does it replace scientific review?",
-        "answer": "No. Authors should verify all summaries, claims, figures, citations, links, and accessibility details."
+        "question": "Can I use only a PDF?",
+        "answer": "Yes, but selectable text and high-resolution figures improve extraction quality. LaTeX usually gives better structure."
+      },
+      {
+        "question": "What security precautions should I use?",
+        "answer": "Use an isolated environment, review commands before execution, pin trusted sources, and protect the .env file."
       }
     ]
   },

@@ -1,20 +1,23 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T00:59:55.212Z",
+    "generated_at": "2026-07-09T08:17:54.409Z",
     "slug": "agentspace-so-wan-2-7",
     "source_url": "https://github.com/agentspace-so/runcomfy-agent-skills/tree/main/wan-2-7/",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "0c38b830e5a8273b62e61069161af937441dc0bedd5567da8032ebec88e6f6b9",
-    "tree_hash": "488cc712067a56e5655d035e27a0606b1a98a310bfda4bc537060f700f305202",
+    "content_hash": "939e1ebd76811835cb1aecef853a933d577cd4134432a352862b2aec4a0ff8d5",
+    "tree_hash": "2046a3a24c76336b8a4ce3b8c26d91abcb0acc0e0cfe902121b53c1ac7cd165e",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
       "fallback_chain": [
         {
           "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -23,17 +26,17 @@
   },
   "skill": {
     "name": "wan-2-7",
-    "description": "Generate short Wan 2.7 text-to-video clips on RunComfy with documented prompt, audio, duration, resolution, and output settings.",
-    "summary": "Guide Claude, Codex, and Claude Code to generate Wan 2.7 videos through the RunComfy CLI.",
+    "description": "Use Wan 2.7 on RunComfy to create short text-to-video clips, including lip-synced videos from an audio URL. The skill documents RunComfy CLI inputs for duration, resolution, aspect ratio, prompt expansion, negative prompts, seeds, and output handling.",
+    "summary": "Generate short Wan 2.7 videos through the RunComfy CLI.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "agentspace-so",
     "license": "MIT",
     "tags": [
-      "text-to-video",
+      "ai-video",
       "runcomfy",
       "wan-2-7",
-      "ai-video",
+      "text-to-video",
       "lip-sync"
     ],
     "supported_tools": [
@@ -49,30 +52,30 @@
     "category": "design"
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "medium",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static findings are Markdown backtick false positives from inline parameters, fenced examples, and links. Confirmed risks are the intended RunComfy CLI execution, npm or npx installation guidance, and outbound RunComfy API submission and download behavior. No prompt injection attempt or hidden malicious intent was found in SKILL.md.",
+    "summary": "Most static backtick findings are Markdown formatting false positives, but the skill does document real RunComfy CLI execution and a hosted API workflow. I confirmed the external command and outbound network risks, found no prompt injection attempt, and found no malicious hidden-file behavior.",
     "remediation": [
       {
-        "issue": "External command execution through RunComfy CLI",
-        "suggestion": "Require explicit user confirmation before running installation, login, generation, or download commands. Keep command arguments structured and avoid shell interpolation.",
+        "issue": "External CLI commands are required for generation.",
+        "suggestion": "Show the exact RunComfy command, destination service, and output directory before execution. Require explicit user approval before running installs, login, or generation commands.",
         "severity": "medium"
       },
       {
-        "issue": "Global npm and npx installation guidance",
-        "suggestion": "Pin the RunComfy CLI version in examples and prefer local project installation when possible. Tell users that global installs run third-party package code.",
+        "issue": "Prompts and media references are processed by a third-party service.",
+        "suggestion": "Warn users not to submit confidential prompts, private audio, or restricted media URLs unless their organization approves RunComfy data handling.",
         "severity": "medium"
       },
       {
-        "issue": "Outbound third-party API processing",
-        "suggestion": "Clearly disclose that prompts, audio URLs, and generated outputs pass through RunComfy domains. Ask before sending sensitive or private media.",
+        "issue": "Credential handling depends on local RunComfy CLI behavior.",
+        "suggestion": "Document token storage and recommend environment tokens for CI. Do not read, print, or copy the token file from the skill workflow.",
         "severity": "low"
       },
       {
-        "issue": "Credential handling for RunComfy tokens",
-        "suggestion": "Document token scope, rotation, and storage expectations. Recommend RUNCOMFY_TOKEN only in controlled CI environments and avoid logging it.",
+        "issue": "The placeholder audio URL resembles a path traversal pattern to static scanners.",
+        "suggestion": "Replace https://.../voiceover.mp3 with a neutral placeholder such as an example.com media URL.",
         "severity": "low"
       }
     ],
@@ -814,302 +817,323 @@
       {
         "id": "external_commands:SKILL.md:7:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is Markdown inline code naming the audio_url parameter, not Ruby or shell execution. It is safe documentation of an input field."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:10:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.78,
-        "reason": "This line states that the skill calls the RunComfy CLI to generate video. That is intentional local external command execution with network side effects.",
+        "confidence": 0.88,
+        "reason": "The skill states it calls the local RunComfy CLI for Wan 2.7 video generation. That is real external command execution and sends work to a hosted service.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:23:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.88,
-        "reason": "The fenced block includes an npx command to add the skill globally. npx and global installation can execute third-party package code and change the host environment.",
+        "confidence": 0.86,
+        "reason": "The fenced snippet runs npx to install a skill globally from a GitHub source. Global package or skill installation is external command execution with supply-chain impact.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is a Markdown code fence closing marker and nearby table text, not executable code. The actual install command is covered by a separate confirmed finding."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is a Markdown table row with an inline parameter name. It does not execute a command or interpolate user input into a shell."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:43:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "reason": "This prerequisite tells users to install @runcomfy/cli globally with npm. Global CLI installation runs third-party package code and changes the local toolchain.",
+        "confidence": 0.86,
+        "reason": "The prerequisite tells users to install the RunComfy CLI globally with npm. Installing global packages can execute package lifecycle code and modifies the host environment.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:44:ruby-shell-backtick-execution",
         "verdict": "confirmed",
         "confidence": 0.82,
-        "reason": "This prerequisite runs runcomfy login, which starts an authentication flow and creates local credentials. It is expected setup but remains a security-sensitive external command.",
+        "reason": "The prerequisite tells users to run the RunComfy login command, which launches an authentication flow and changes local credential state. It is legitimate but still external command execution.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line documents an environment variable and compares it with login. It does not execute a command, and the token guidance is descriptive setup text."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:49:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This is a Markdown heading containing the endpoint name in inline code. It is not shell execution."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:53:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This table row documents the prompt parameter in inline code. It is not an executable shell or Ruby backtick expression."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This table row documents the audio_url parameter and media limits. It is not a command execution path."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This table row lists aspect ratio values in Markdown inline code. It is documentation, not executable code."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This table row lists resolution values in Markdown inline code. It does not invoke a shell."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This table row documents the duration field in inline code. No command execution is present."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This table row documents the negative_prompt parameter. It is not Ruby or shell backtick execution."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This table row documents enable_prompt_expansion as a boolean option. It does not execute code."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:60:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This table row documents the seed parameter and allowed range. It is safe Markdown inline code."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:66:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.88,
-        "reason": "The example runs the RunComfy CLI with a prompt and output directory. It launches a local binary and submits data to an external service.",
+        "confidence": 0.9,
+        "reason": "The default invocation runs the RunComfy CLI with user prompt input and an output directory. This is intended behavior, but it is real local command execution.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:70:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This finding points at a Markdown fence boundary, not the command itself. The adjacent RunComfy invocation is covered by another confirmed finding."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:74:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.88,
-        "reason": "The lip-sync example runs the RunComfy CLI and includes an external audio URL field. It launches a local binary and sends user-supplied media metadata to RunComfy.",
+        "confidence": 0.9,
+        "reason": "The audio-driven example runs the RunComfy CLI with prompt and audio URL inputs. It is intended behavior, but it combines local command execution with remote media processing.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:83:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This finding points at a Markdown fence boundary and nearby prose. It is not a separate executable command path."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:87:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.87,
-        "reason": "The literal-control example runs the RunComfy CLI with prompt and negative-prompt inputs. It is expected functionality but still external command execution.",
+        "confidence": 0.9,
+        "reason": "The literal-control example runs the RunComfy CLI and passes user-controlled generation settings. This is real external command execution even though the command is documented.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:95:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points at a Markdown fence boundary and prompt guidance text. No shell command is present in this specific finding."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:103:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This line uses Markdown inline code to name negative_prompt. It is prompting advice, not command execution."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:105:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This line uses Markdown inline code to name enable_prompt_expansion. It is documentation, not executable code."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:107:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This section documents audio_url and prompt constraints in Markdown. It does not run a command or create shell interpolation."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:121:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This table row states that audio_url accepts a track. It is not executable shell or Ruby syntax."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:122:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This table row references audio_url for language variants. It is safe documentation and not command execution."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is a Markdown fence around a plain-language sample prompt. It is not a shell command."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:135:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is a Markdown fence closing a sample prompt. It does not execute code."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This heading names audio_url in inline code. It is descriptive text, not a command."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:139:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is a Markdown fence around a plain-language sample prompt. It is not shell or Ruby execution."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:143:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is a Markdown fence boundary near a sample prompt. It does not introduce an executable command."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:147:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is a Markdown fence around a plain-language vertical video prompt. It is not executable code."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:151:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is a Markdown fence boundary before the limitations section. It is not a command execution path."
+        "confidence": 0.86,
+        "reason": "The match is Markdown inline code, a table field name, or a fenced prompt example rather than executable code. No shell command is being invoked at this location."
       },
       {
         "id": "external_commands:SKILL.md:177:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "reason": "The implementation description confirms the skill invokes runcomfy run and posts to the RunComfy model API. This is an intended command path with outbound network and file download side effects.",
+        "confidence": 0.93,
+        "reason": "The prose confirms the skill invokes the RunComfy CLI, posts to the model API, polls the request, and downloads results. That confirms the external command and network workflow.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:181:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This line documents credential storage and mentions runcomfy login. It is not arbitrary command execution, and it states owner-only file permissions."
+        "verdict": "confirmed",
+        "confidence": 0.78,
+        "reason": "The line confirms the login command writes an API token to a local config path. It documents a credential-changing command, so the external command usage is security-sensitive.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:182:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This line documents the input boundary and explicitly says the prompt is not shell-expanded. It is not a command injection pattern."
+        "confidence": 0.86,
+        "reason": "The line explains that prompt input is passed as JSON and is not shell-expanded. It discusses the input boundary rather than instructing a shell command."
       },
       {
         "id": "external_commands:SKILL.md:184:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line lists allowed outbound endpoint names in Markdown inline code. It does not execute a command."
+        "confidence": 0.86,
+        "reason": "The line lists outbound endpoint names in Markdown code formatting. It does not contain a shell command or dynamic command execution."
       },
       {
         "id": "network:SKILL.md:13:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is the skill homepage URL in frontmatter. It is not an automatic network request or exfiltration endpoint."
+        "confidence": 0.86,
+        "reason": "The URL is homepage metadata for RunComfy, not an unrequested network call. It is a documentation link rather than executable behavior."
       },
       {
         "id": "network:SKILL.md:19:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "These are user-facing documentation links to RunComfy and GitHub. They do not create hidden network behavior."
+        "confidence": 0.86,
+        "reason": "The URLs are Markdown links to the provider, model page, and GitHub repository. They document the skill source and service rather than performing network activity."
       },
       {
         "id": "network:SKILL.md:78:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is a placeholder audio_url value using an ellipsis, not a real hardcoded destination. The user must supply their own media URL."
+        "confidence": 0.86,
+        "reason": "The value is a placeholder audio URL in an example, not a hardcoded destination controlled by the skill. The broader third-party media transfer risk is covered separately."
       },
       {
         "id": "network:SKILL.md:173:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is a documentation link to RunComfy troubleshooting. It does not perform a network request from the skill."
+        "confidence": 0.86,
+        "reason": "The URL points to RunComfy troubleshooting documentation. It is a reference link and does not cause the agent to contact that endpoint."
       },
       {
         "id": "network:SKILL.md:177:hardcoded-url",
         "verdict": "confirmed",
-        "confidence": 0.91,
-        "reason": "This line names the RunComfy model API and output download domains. The external network flow is intended but submits prompts or media references and downloads generated files.",
-        "severity": "low"
+        "confidence": 0.92,
+        "reason": "The line identifies the concrete RunComfy model API endpoint and output download domains. This is intended behavior, but it is real outbound network traffic.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:SKILL.md:78:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The flagged sequence is the ellipsis in a placeholder HTTPS URL. It is not a local filesystem path traversal sequence."
+        "confidence": 0.86,
+        "reason": "The match comes from the ellipsis in the placeholder URL https://.../voiceover.mp3. It is not a filesystem path and does not traverse directories."
       },
       {
         "id": "filesystem:SKILL.md:181:hidden-file-in-home-directory",
         "verdict": "false_positive",
         "confidence": 0.86,
-        "reason": "This line documents standard RunComfy CLI token storage at ~/.config/runcomfy/token.json with mode 0600. It does not describe hidden malware persistence or arbitrary home-directory file access."
+        "reason": "The line documents the RunComfy CLI credential path and states the token file uses owner-only permissions. It is not hidden malicious file access by the skill itself."
       },
       {
         "id": "filesystem:SKILL.md:181:hidden-file-access",
         "verdict": "false_positive",
         "confidence": 0.86,
-        "reason": "The hidden path is documented credential storage for the RunComfy CLI with owner-only permissions. No evidence shows the skill reading unrelated hidden files."
+        "reason": "The line documents the RunComfy CLI credential path and states the token file uses owner-only permissions. It is not hidden malicious file access by the skill itself."
       },
       {
         "id": "blocker:SKILL.md:39:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This is model-routing guidance based on the user explicitly asking for Wan 2.7. It does not inspect the host system or perform reconnaissance."
+        "confidence": 0.86,
+        "reason": "The line routes explicit Wan 2.7 model requests to this skill. It does not inspect the host, enumerate system data, or ask the agent to perform reconnaissance."
       }
     ],
-    "semantic_findings": [],
+    "semantic_findings": [
+      {
+        "title": "Third-Party Prompt and Media Transfer",
+        "description": "The skill sends the prompt body to RunComfy hosted Model API and says external media URLs are fetched by RunComfy model servers. Users could expose confidential prompts, audio, or private media URLs to a third party.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 177,
+            "line_end": 177
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 183,
+            "line_end": 183
+          }
+        ],
+        "confidence": 0.9,
+        "confidence_reasoning": "The workflow explicitly describes posting requests to RunComfy and server-side fetching of supplied URLs. This is clear privacy and data-handling risk, although it is documented and expected."
+      }
+    ],
     "critical_findings": [],
     "high_findings": [],
     "medium_findings": [
@@ -1126,8 +1150,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "This line states that the skill calls the RunComfy CLI to generate video. That is intentional local external command execution with network side effects."
+        "confidence": 0.88,
+        "confidence_reasoning": "The skill states it calls the local RunComfy CLI for Wan 2.7 video generation. That is real external command execution and sends work to a hosted service."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1142,8 +1166,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The fenced block includes an npx command to add the skill globally. npx and global installation can execute third-party package code and change the host environment."
+        "confidence": 0.86,
+        "confidence_reasoning": "The fenced snippet runs npx to install a skill globally from a GitHub source. Global package or skill installation is external command execution with supply-chain impact."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1158,8 +1182,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "This prerequisite tells users to install @runcomfy/cli globally with npm. Global CLI installation runs third-party package code and changes the local toolchain."
+        "confidence": 0.86,
+        "confidence_reasoning": "The prerequisite tells users to install the RunComfy CLI globally with npm. Installing global packages can execute package lifecycle code and modifies the host environment."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1175,7 +1199,7 @@
         "source_category": "external_commands",
         "source_severity": "medium",
         "confidence": 0.82,
-        "confidence_reasoning": "This prerequisite runs runcomfy login, which starts an authentication flow and creates local credentials. It is expected setup but remains a security-sensitive external command."
+        "confidence_reasoning": "The prerequisite tells users to run the RunComfy login command, which launches an authentication flow and changes local credential state. It is legitimate but still external command execution."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1190,8 +1214,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The example runs the RunComfy CLI with a prompt and output directory. It launches a local binary and submits data to an external service."
+        "confidence": 0.9,
+        "confidence_reasoning": "The default invocation runs the RunComfy CLI with user prompt input and an output directory. This is intended behavior, but it is real local command execution."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1206,8 +1230,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The lip-sync example runs the RunComfy CLI and includes an external audio URL field. It launches a local binary and sends user-supplied media metadata to RunComfy."
+        "confidence": 0.9,
+        "confidence_reasoning": "The audio-driven example runs the RunComfy CLI with prompt and audio URL inputs. It is intended behavior, but it combines local command execution with remote media processing."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1222,8 +1246,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.87,
-        "confidence_reasoning": "The literal-control example runs the RunComfy CLI with prompt and negative-prompt inputs. It is expected functionality but still external command execution."
+        "confidence": 0.9,
+        "confidence_reasoning": "The literal-control example runs the RunComfy CLI and passes user-controlled generation settings. This is real external command execution even though the command is documented."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1238,11 +1262,25 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The implementation description confirms the skill invokes runcomfy run and posts to the RunComfy model API. This is an intended command path with outbound network and file download side effects."
-      }
-    ],
-    "low_findings": [
+        "confidence": 0.93,
+        "confidence_reasoning": "The prose confirms the skill invokes the RunComfy CLI, posts to the model API, polls the request, and downloads results. That confirms the external command and network workflow."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- **Token storage**: `runcomfy login` writes the API token to `~/.config/runcomfy/token.json` with m",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 181,
+            "line_end": 181
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.78,
+        "confidence_reasoning": "The line confirms the login command writes an API token to a local config path. It documents a credential-changing command, so the external command usage is security-sensitive."
+      },
       {
         "title": "Hardcoded URL",
         "description": "The skill invokes `runcomfy run wan-ai/wan-2-7/text-to-video` with a JSON body matching the schema. ",
@@ -1256,134 +1294,155 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.91,
-        "confidence_reasoning": "This line names the RunComfy model API and output download domains. The external network flow is intended but submits prompts or media references and downloads generated files."
+        "confidence": 0.92,
+        "confidence_reasoning": "The line identifies the concrete RunComfy model API endpoint and output download domains. This is intended behavior, but it is real outbound network traffic."
+      },
+      {
+        "title": "Third-Party Prompt and Media Transfer",
+        "description": "The skill sends the prompt body to RunComfy hosted Model API and says external media URLs are fetched by RunComfy model servers. Users could expose confidential prompts, audio, or private media URLs to a third party.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 177,
+            "line_end": 177
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 183,
+            "line_end": 183
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.9,
+        "confidence_reasoning": "The workflow explicitly describes posting requests to RunComfy and server-side fetching of supplied URLs. This is clear privacy and data-handling risk, although it is documented and expected."
       }
     ],
+    "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 186,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T00:59:55.212Z",
+    "audited_at": "2026-07-09T08:17:54.409Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Generate Wan 2.7 Videos with RunComfy",
-    "value_statement": "Creating short AI video clips usually requires model-specific parameters and service setup. This skill guides Claude, Codex, and Claude Code to use Wan 2.7 on RunComfy with clear inputs and limits.",
+    "user_title": "Generate Wan 2.7 Videos on RunComfy",
+    "value_statement": "Short video generation needs precise model inputs and clear output controls. This skill helps Claude, Codex, and Claude Code prepare Wan 2.7 requests through the RunComfy CLI.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "Wan 2.7",
       "RunComfy",
-      "text-to-video",
+      "text to video",
       "AI video generation",
-      "lip-sync video",
-      "prompt templates",
-      "model API"
+      "lip sync video",
+      "prompt expansion",
+      "video model API"
     ],
     "actual_capabilities": [
-      "Explains when to choose Wan 2.7 instead of related video models.",
-      "Documents prompt, audio_url, aspect ratio, resolution, duration, negative prompt, and seed inputs.",
-      "Shows RunComfy CLI invocation patterns for basic generation, lip-sync, and literal prompt control.",
-      "Describes audio requirements for lip-sync clips, including format, length, and size limits.",
-      "Lists expected exit codes and troubleshooting reference points for RunComfy CLI runs.",
-      "Summarizes security and privacy boundaries for tokens, outbound domains, and downloads."
+      "Explains when to choose Wan 2.7 instead of related RunComfy video models.",
+      "Documents the text-to-video endpoint and inputs for prompt, audio URL, aspect ratio, resolution, duration, negative prompt, prompt expansion, and seed.",
+      "Provides RunComfy CLI examples for default, lip-synced, and literal-control video generations.",
+      "Lists prompt guidance for camera motion, single-action clips, negative prompts, audio specs, and seed iteration.",
+      "Documents exit codes, remote endpoint behavior, token storage, and output download boundaries."
     ],
     "limitations": [
-      "Requires a RunComfy account and the RunComfy CLI.",
-      "Sends prompts and media references to the external RunComfy model API.",
-      "Supports clips up to 15 seconds and up to 1080p resolution.",
-      "Does not generate voice internally; supplied audio drives lip-sync behavior."
+      "The skill depends on the local RunComfy CLI and a RunComfy account or token.",
+      "Wan 2.7 outputs are limited to 15 seconds and 1080p in the documented guidance.",
+      "Audio input must be a reachable WAV or MP3 URL within the documented size and duration limits.",
+      "The skill does not generate videos locally; requests are sent to RunComfy hosted Model API."
     ],
     "use_cases": [
       {
-        "title": "Product Video Concepts",
-        "description": "Create short product shots with controlled camera motion, lighting, and aspect ratio settings.",
-        "target_user": "Marketing teams"
+        "title": "Create Product Showcase Clips",
+        "description": "Prepare concise Wan 2.7 prompts for short product videos with controlled camera motion, duration, and aspect ratio.",
+        "target_user": "Marketing creators"
       },
       {
-        "title": "Localized Spokesperson Clips",
-        "description": "Use one visual prompt with different audio tracks to create language-specific lip-sync variants.",
-        "target_user": "Content producers"
+        "title": "Produce Lip-Synced Voiceover Variants",
+        "description": "Use an audio URL with matching duration settings to create short spokesperson or localization clips.",
+        "target_user": "Localization producers"
       },
       {
-        "title": "Video Model Routing",
-        "description": "Decide when Wan 2.7 is the right model compared with Seedance, Kling, HappyHorse, or LTX.",
-        "target_user": "AI workflow builders"
+        "title": "Test Prompt and Seed Variations",
+        "description": "Iterate negative prompts, prompt expansion, and seed values while keeping the RunComfy request structure consistent.",
+        "target_user": "Creative technologists"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Basic Text-to-Video",
-        "scenario": "Beginner request for a simple short clip.",
-        "prompt": "Use Wan 2.7 on RunComfy to create a five-second 1080p horizontal video of a product on a clean studio surface. Include camera movement, lighting, and one clear action."
+        "title": "Create a Basic Clip",
+        "scenario": "Beginner text-to-video request",
+        "prompt": "Create a Wan 2.7 request for a five second 1080p product video. Include camera motion, one main action, aspect ratio, and output directory guidance."
       },
       {
-        "title": "Vertical Social Clip",
-        "scenario": "Specify format and motion for a platform-native short.",
-        "prompt": "Create a 9:16 Wan 2.7 prompt for a short cafe scene. Make the action simple, describe the camera movement, and include a negative prompt for flicker, subtitles, and watermarks."
+        "title": "Add Lip Sync",
+        "scenario": "Intermediate audio-driven generation",
+        "prompt": "Prepare a Wan 2.7 lip-sync video request using this audio URL: [audio URL]. Match the duration, choose the aspect ratio, and include prompt details for a stable close-up shot."
       },
       {
-        "title": "Lip-Sync With Supplied Audio",
-        "scenario": "Use an external audio track to drive a spokesperson clip.",
-        "prompt": "Prepare a Wan 2.7 RunComfy request for a 12-second lip-synced spokesperson video. Use my audio URL, match the duration, and describe a locked camera with warm studio lighting."
+        "title": "Control Prompt Expansion",
+        "scenario": "Advanced literal prompt control",
+        "prompt": "Build a Wan 2.7 request that keeps my prompt literal. Disable prompt expansion, add a focused negative prompt, and explain which fields affect consistency."
       },
       {
-        "title": "Advanced Variant Planning",
-        "scenario": "Plan controlled iterations across model settings.",
-        "prompt": "Design three Wan 2.7 video variants for the same product prompt. Keep the seed stable for two variants, change one camera movement, and explain when prompt expansion should be disabled."
+        "title": "Plan Production Variants",
+        "scenario": "Advanced batch planning",
+        "prompt": "Design three Wan 2.7 variants for the same concept. Keep the core prompt stable, vary seed and framing choices, and summarize expected tradeoffs for review."
       }
     ],
     "output_examples": [
       {
-        "input": "Create a five-second product showcase video with a slow push-in and clean studio lighting.",
-        "output": "The assistant selects Wan 2.7, keeps the clip horizontal at 1080p, writes a concise motion-focused prompt, and recommends a targeted negative prompt."
+        "input": "A creator asks for a five second product video in landscape format.",
+        "output": "The skill produces a RunComfy generation plan with Wan 2.7 selected, 1080p resolution, 16:9 framing, a single product action, and a named output folder."
       },
       {
-        "input": "Make a vertical spokesperson clip that follows my 12-second voiceover.",
-        "output": "The assistant checks that the audio length is within range, uses the supplied audio URL for lip-sync, and prepares a vertical RunComfy generation plan."
+        "input": "A producer provides a voiceover URL and asks for a vertical spokesperson clip.",
+        "output": "The skill maps the audio URL to lip-sync generation, sets vertical framing, matches duration, and recommends a close-up prompt with stable lighting."
       },
       {
-        "input": "I need strict brand wording and do not want the prompt expanded.",
-        "output": "The assistant disables prompt expansion, keeps the prompt literal, and adds only concrete quality exclusions such as no subtitles and no watermark."
+        "input": "A team wants brand-strict wording without automatic prompt changes.",
+        "output": "The skill recommends disabling prompt expansion, using a precise negative prompt, and reusing a seed for controlled comparisons."
       }
     ],
     "best_practices": [
-      "Describe one primary action per clip and put camera movement near the start.",
-      "Use concrete negative prompts for visible problems such as flicker, subtitles, or watermarking.",
-      "Confirm RunComfy commands before sending private prompts, audio URLs, or reference media."
+      "Use one primary action per clip and describe camera movement early in the prompt.",
+      "Keep audio files within the documented duration, size, and format limits before using lip sync.",
+      "Confirm the output directory and remote service before running RunComfy CLI commands."
     ],
     "anti_patterns": [
-      "Combining many unrelated actions in one short clip.",
-      "Using vague exclusions such as bad lighting or poor quality.",
-      "Sending sensitive media URLs without checking sharing permissions and retention needs."
+      "Do not combine many unrelated actions in one short clip.",
+      "Do not use vague negative prompts such as requests for better quality without specific defects.",
+      "Do not submit confidential prompts, private media URLs, or tokens in shared chats."
     ],
     "faq": [
       {
-        "question": "What does this skill generate?",
-        "answer": "It guides short text-to-video generation with Wan 2.7 through the RunComfy CLI."
+        "question": "Does this skill generate videos locally?",
+        "answer": "No. It prepares and runs requests through the RunComfy CLI against RunComfy hosted Model API."
       },
       {
-        "question": "Does it support lip-sync?",
-        "answer": "Yes. Wan 2.7 can use a supplied audio_url to drive lip-sync for supported WAV or MP3 files."
+        "question": "What credentials are required?",
+        "answer": "You need a RunComfy account login or a RunComfy token configured for the CLI environment."
       },
       {
-        "question": "What clip length can I request?",
-        "answer": "The documented duration range is 2 to 15 seconds, with whole-second values."
+        "question": "Can I use my own audio?",
+        "answer": "Yes. The skill documents audio URL input for lip-sync generation with WAV or MP3 files within the stated limits."
       },
       {
-        "question": "Can it create 4K video?",
-        "answer": "No. The documented resolution options are 720p and 1080p."
+        "question": "What output limits should I expect?",
+        "answer": "The documented guidance supports short clips up to 15 seconds, 720p or 1080p resolution, and five aspect ratios."
       },
       {
-        "question": "Where does generation run?",
-        "answer": "Generation runs through RunComfy model API endpoints, not only on the local machine."
+        "question": "Can I disable prompt expansion?",
+        "answer": "Yes. The skill explains when to disable prompt expansion for literal or brand-strict prompts."
       },
       {
-        "question": "Which assistants can use this skill?",
-        "answer": "The report lists support for Claude, Codex, and Claude Code."
+        "question": "Is sensitive media safe to send?",
+        "answer": "Treat RunComfy as a third-party processor. Do not send confidential prompts, audio, or private media URLs unless approved."
       }
     ]
   },

@@ -1,20 +1,23 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T03:37:23.414Z",
+    "generated_at": "2026-07-09T08:11:26.351Z",
     "slug": "cam10001110101-pdf",
     "source_url": "https://github.com/Cam10001110101/claude-skills-base/tree/main/mnt/skills/public/pdf",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "6c17133c12d30173ab5c32db3f37fa303ef473b90ec7da4a66443337deb28131",
-    "tree_hash": "ecb0eb39158be5b58551cea33549c11eda5b57ec6d94775a4d64fa3d23eae5b4",
+    "content_hash": "f69ec4912f832a97b7fe939686702babb45e73f02befd7e02bf369a0c31d8692",
+    "tree_hash": "e82401a277c38740b628991f57106d83c039f8bd1ab826a607ea62077e310555",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
       "fallback_chain": [
         {
           "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -23,17 +26,17 @@
   },
   "skill": {
     "name": "pdf",
-    "description": "PDF manipulation toolkit for extracting text and tables, creating PDFs, merging and splitting documents, converting pages to images, and filling PDF forms.",
-    "summary": "Process, create, extract, merge, split, and fill PDF documents with guided examples and helper scripts.",
+    "description": "Process PDF documents with Python and command-line workflows for text extraction, tables, forms, merging, splitting, OCR, and PDF generation.",
+    "summary": "Guide Claude through practical PDF extraction, editing, form filling, and generation workflows.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "Cam10001110101",
     "license": "Proprietary. LICENSE.txt has complete terms",
     "tags": [
       "pdf",
-      "document-processing",
-      "form-filling",
-      "text-extraction",
+      "documents",
+      "forms",
+      "ocr",
       "automation"
     ],
     "supported_tools": [
@@ -53,27 +56,22 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static external-command, network, and blocker findings are false positives caused by markdown backticks, comments, or reference links. Confirmed findings are expected local filesystem reads and writes plus a few documented shell utility examples. No prompt injection, exfiltration, or malicious intent was found.",
+    "summary": "Most static detections are false positives from markdown backticks, Python f-strings, comments, and documentation URLs. The remaining confirmed issues are expected local filesystem reads and writes used to create, modify, split, merge, and fill PDFs; no prompt injection, hidden network behavior, credential access, or malicious intent was found.",
     "remediation": [
       {
-        "issue": "Local file writes can overwrite user files.",
-        "suggestion": "Require explicit output paths, avoid writing over inputs, and use a dedicated working directory for generated PDFs and JSON files.",
+        "issue": "The skill frequently writes output files from examples and helper scripts.",
+        "suggestion": "Require users to choose explicit output paths and warn before overwriting existing files.",
         "severity": "medium"
       },
       {
-        "issue": "Documented shell utilities run outside the Python process.",
-        "suggestion": "Ask for confirmation before running qpdf, pdftk, pdftotext, or pdfimages, especially on untrusted PDFs.",
-        "severity": "medium"
-      },
-      {
-        "issue": "Helper scripts accept caller-provided paths.",
-        "suggestion": "Validate output paths against a user-approved workspace and reject parent-directory traversal when possible.",
-        "severity": "medium"
-      },
-      {
-        "issue": "PDF parsing dependencies process complex untrusted files.",
-        "suggestion": "Keep PDF libraries updated and prefer sandboxed execution for unknown or externally supplied documents.",
+        "issue": "Documentation includes command-line examples for qpdf, pdftk, poppler, and OCR tools.",
+        "suggestion": "Clarify that commands should be reviewed before execution and should only run on trusted local documents.",
         "severity": "low"
+      },
+      {
+        "issue": "Form-filling scripts process user-supplied PDFs and JSON files.",
+        "suggestion": "Validate input paths and keep generated images, JSON, and PDFs in a dedicated working directory.",
+        "severity": "medium"
       }
     ],
     "risk_factor_evidence": [
@@ -329,66 +327,6 @@
             "file": "SKILL.md",
             "line_start": 200,
             "line_end": 209
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 209,
-            "line_end": 214
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 214,
-            "line_end": 230
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 230,
-            "line_end": 233
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 233,
-            "line_end": 249
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 249,
-            "line_end": 252
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 252,
-            "line_end": 257
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 257,
-            "line_end": 260
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 260,
-            "line_end": 274
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 274,
-            "line_end": 280
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 280,
-            "line_end": 282
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 282,
-            "line_end": 283
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 283,
-            "line_end": 285
           }
         ]
       },
@@ -1589,655 +1527,651 @@
       {
         "id": "external_commands:FORMS.md:60:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "blocker:FORMS.md:60:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text refers to PDF form field identifiers, validation messages, or implementation notes. It is not system reconnaissance and does not collect host information."
+        "confidence": 0.95,
+        "reason": "The flagged identifier is form-field processing text or documentation, not host reconnaissance. It handles PDF field IDs and validation messages only."
       },
       {
         "id": "external_commands:REFERENCE.md:64:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited snippet is a JavaScript template literal or markdown formatting in reference documentation. It does not invoke a shell or execute a backtick command."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:REFERENCE.md:186:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited snippet is a JavaScript template literal or markdown formatting in reference documentation. It does not invoke a shell or execute a backtick command."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:REFERENCE.md:227:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited snippet is a JavaScript template literal or markdown formatting in reference documentation. It does not invoke a shell or execute a backtick command."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:REFERENCE.md:257:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited snippet is a JavaScript template literal or markdown formatting in reference documentation. It does not invoke a shell or execute a backtick command."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:REFERENCE.md:258:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited snippet is a JavaScript template literal or markdown formatting in reference documentation. It does not invoke a shell or execute a backtick command."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:REFERENCE.md:259:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited snippet is a JavaScript template literal or markdown formatting in reference documentation. It does not invoke a shell or execute a backtick command."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "filesystem:REFERENCE.md:59:node-js-fs-operations",
         "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "medium",
-        "reason": "The reference demonstrates reading local PDF files from disk. This is legitimate PDF processing, but it grants local filesystem access when the example is run."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:REFERENCE.md:76:node-js-fs-operations",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:REFERENCE.md:137:node-js-fs-operations",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:REFERENCE.md:151:node-js-fs-operations",
         "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "medium",
-        "reason": "The reference demonstrates reading local PDF files from disk. This is legitimate PDF processing, but it grants local filesystem access when the example is run."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:REFERENCE.md:152:node-js-fs-operations",
         "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "medium",
-        "reason": "The reference demonstrates reading local PDF files from disk. This is legitimate PDF processing, but it grants local filesystem access when the example is run."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:REFERENCE.md:166:node-js-fs-operations",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:REFERENCE.md:59:synchronous-file-operations",
         "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "medium",
-        "reason": "The reference demonstrates reading local PDF files from disk. This is legitimate PDF processing, but it grants local filesystem access when the example is run."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:REFERENCE.md:76:synchronous-file-operations",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:REFERENCE.md:137:synchronous-file-operations",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:REFERENCE.md:151:synchronous-file-operations",
         "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "medium",
-        "reason": "The reference demonstrates reading local PDF files from disk. This is legitimate PDF processing, but it grants local filesystem access when the example is run."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:REFERENCE.md:152:synchronous-file-operations",
         "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "medium",
-        "reason": "The reference demonstrates reading local PDF files from disk. This is legitimate PDF processing, but it grants local filesystem access when the example is run."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:REFERENCE.md:166:synchronous-file-operations",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:REFERENCE.md:488:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:REFERENCE.md:500:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:REFERENCE.md:524:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:REFERENCE.md:563:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:REFERENCE.md:474:python-glob-pattern-matching",
         "verdict": "confirmed",
-        "confidence": 0.66,
-        "severity": "low",
-        "reason": "The batch-processing example enumerates PDF files under a caller-provided directory. This is expected behavior, but it is still local directory scanning."
+        "confidence": 0.62,
+        "reason": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run.",
+        "severity": "low"
       },
       {
         "id": "blocker:REFERENCE.md:538:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text refers to PDF form field identifiers, validation messages, or implementation notes. It is not system reconnaissance and does not collect host information."
+        "confidence": 0.95,
+        "reason": "The flagged identifier is form-field processing text or documentation, not host reconnaissance. It handles PDF field IDs and validation messages only."
       },
       {
         "id": "external_commands:scripts/check_bounding_boxes.py:6:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "external_commands:scripts/check_bounding_boxes.py:41:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "external_commands:scripts/check_bounding_boxes.py:43:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "external_commands:scripts/check_bounding_boxes.py:53:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "external_commands:scripts/check_bounding_boxes.py:66:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "external_commands:scripts/convert_pdf_to_images.py:14:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "external_commands:scripts/create_validation_image.py:12:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "external_commands:scripts/extract_form_field_info.py:11:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "external_commands:scripts/extract_form_field_info.py:38:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "network:scripts/extract_form_field_info.py:32:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The URL is present only in a comment that cites external documentation or an issue report. The script does not perform a network request at this location."
+        "confidence": 0.98,
+        "reason": "The URL appears only in a source comment documenting PDF behavior or an upstream issue. The script does not make any network request from this location."
       },
       {
         "id": "network:scripts/extract_form_field_info.py:81:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The URL is present only in a comment that cites external documentation or an issue report. The script does not perform a network request at this location."
+        "confidence": 0.98,
+        "reason": "The URL appears only in a source comment documenting PDF behavior or an upstream issue. The script does not make any network request from this location."
       },
       {
         "id": "filesystem:scripts/extract_form_field_info.py:143:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.88,
-        "severity": "medium",
-        "reason": "The helper script writes JSON or PDF output to a path supplied on the command line. This is expected for the skill, but it can overwrite local files if the path is unsafe."
+        "confidence": 0.72,
+        "reason": "This writes an explicit user-provided output file as part of the PDF workflow. It is local filesystem access but expected for a PDF editing skill and shows no hidden overwrite or exfiltration behavior.",
+        "severity": "medium"
       },
       {
         "id": "blocker:scripts/extract_form_field_info.py:65:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text refers to PDF form field identifiers, validation messages, or implementation notes. It is not system reconnaissance and does not collect host information."
+        "confidence": 0.95,
+        "reason": "The flagged identifier is form-field processing text or documentation, not host reconnaissance. It handles PDF field IDs and validation messages only."
       },
       {
         "id": "blocker:scripts/extract_form_field_info.py:82:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text refers to PDF form field identifiers, validation messages, or implementation notes. It is not system reconnaissance and does not collect host information."
+        "confidence": 0.95,
+        "reason": "The flagged identifier is form-field processing text or documentation, not host reconnaissance. It handles PDF field IDs and validation messages only."
       },
       {
         "id": "blocker:scripts/extract_form_field_info.py:87:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text refers to PDF form field identifiers, validation messages, or implementation notes. It is not system reconnaissance and does not collect host information."
+        "confidence": 0.95,
+        "reason": "The flagged identifier is form-field processing text or documentation, not host reconnaissance. It handles PDF field IDs and validation messages only."
       },
       {
         "id": "blocker:scripts/extract_form_field_info.py:88:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text refers to PDF form field identifiers, validation messages, or implementation notes. It is not system reconnaissance and does not collect host information."
+        "confidence": 0.95,
+        "reason": "The flagged identifier is form-field processing text or documentation, not host reconnaissance. It handles PDF field IDs and validation messages only."
       },
       {
         "id": "blocker:scripts/extract_form_field_info.py:91:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text refers to PDF form field identifiers, validation messages, or implementation notes. It is not system reconnaissance and does not collect host information."
+        "confidence": 0.95,
+        "reason": "The flagged identifier is form-field processing text or documentation, not host reconnaissance. It handles PDF field IDs and validation messages only."
       },
       {
         "id": "blocker:scripts/extract_form_field_info.py:100:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text refers to PDF form field identifiers, validation messages, or implementation notes. It is not system reconnaissance and does not collect host information."
+        "confidence": 0.95,
+        "reason": "The flagged identifier is form-field processing text or documentation, not host reconnaissance. It handles PDF field IDs and validation messages only."
       },
       {
         "id": "external_commands:scripts/fill_fillable_fields.py:34:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "external_commands:scripts/fill_fillable_fields.py:37:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "external_commands:scripts/fill_fillable_fields.py:84:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "external_commands:scripts/fill_fillable_fields.py:86:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "external_commands:scripts/fill_fillable_fields.py:87:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "external_commands:scripts/fill_fillable_fields.py:88:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "external_commands:scripts/fill_fillable_fields.py:89:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "filesystem:scripts/fill_fillable_fields.py:55:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.88,
-        "severity": "medium",
-        "reason": "The helper script writes JSON or PDF output to a path supplied on the command line. This is expected for the skill, but it can overwrite local files if the path is unsafe."
+        "confidence": 0.72,
+        "reason": "This writes an explicit user-provided output file as part of the PDF workflow. It is local filesystem access but expected for a PDF editing skill and shows no hidden overwrite or exfiltration behavior.",
+        "severity": "medium"
       },
       {
         "id": "blocker:scripts/fill_fillable_fields.py:19:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text refers to PDF form field identifiers, validation messages, or implementation notes. It is not system reconnaissance and does not collect host information."
+        "confidence": 0.95,
+        "reason": "The flagged identifier is form-field processing text or documentation, not host reconnaissance. It handles PDF field IDs and validation messages only."
       },
       {
         "id": "blocker:scripts/fill_fillable_fields.py:34:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text refers to PDF form field identifiers, validation messages, or implementation notes. It is not system reconnaissance and does not collect host information."
+        "confidence": 0.95,
+        "reason": "The flagged identifier is form-field processing text or documentation, not host reconnaissance. It handles PDF field IDs and validation messages only."
       },
       {
         "id": "blocker:scripts/fill_fillable_fields.py:61:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text refers to PDF form field identifiers, validation messages, or implementation notes. It is not system reconnaissance and does not collect host information."
+        "confidence": 0.95,
+        "reason": "The flagged identifier is form-field processing text or documentation, not host reconnaissance. It handles PDF field IDs and validation messages only."
       },
       {
         "id": "blocker:scripts/fill_fillable_fields.py:66:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text refers to PDF form field identifiers, validation messages, or implementation notes. It is not system reconnaissance and does not collect host information."
+        "confidence": 0.95,
+        "reason": "The flagged identifier is form-field processing text or documentation, not host reconnaissance. It handles PDF field IDs and validation messages only."
       },
       {
         "id": "blocker:scripts/fill_fillable_fields.py:70:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text refers to PDF form field identifiers, validation messages, or implementation notes. It is not system reconnaissance and does not collect host information."
+        "confidence": 0.95,
+        "reason": "The flagged identifier is form-field processing text or documentation, not host reconnaissance. It handles PDF field IDs and validation messages only."
       },
       {
         "id": "blocker:scripts/fill_fillable_fields.py:74:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The cited text refers to PDF form field identifiers, validation messages, or implementation notes. It is not system reconnaissance and does not collect host information."
+        "confidence": 0.95,
+        "reason": "The flagged identifier is form-field processing text or documentation, not host reconnaissance. It handles PDF field IDs and validation messages only."
       },
       {
         "id": "external_commands:scripts/fill_pdf_form_with_annotations.py:8:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "external_commands:scripts/fill_pdf_form_with_annotations.py:31:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks appear in comments or formatted status messages around field names. They are not shell execution and do not pass data to a command interpreter."
+        "confidence": 0.96,
+        "reason": "The flagged text is a Python comment or f-string used for user-facing status and validation messages. No shell invocation or dynamic command execution is present at this location."
       },
       {
         "id": "network:scripts/fill_pdf_form_with_annotations.py:78:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The URL is present only in a comment that cites external documentation or an issue report. The script does not perform a network request at this location."
+        "confidence": 0.98,
+        "reason": "The URL appears only in a source comment documenting PDF behavior or an upstream issue. The script does not make any network request from this location."
       },
       {
         "id": "filesystem:scripts/fill_pdf_form_with_annotations.py:93:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.88,
-        "severity": "medium",
-        "reason": "The helper script writes JSON or PDF output to a path supplied on the command line. This is expected for the skill, but it can overwrite local files if the path is unsafe."
+        "confidence": 0.72,
+        "reason": "This writes an explicit user-provided output file as part of the PDF workflow. It is local filesystem access but expected for a PDF editing skill and shows no hidden overwrite or exfiltration behavior.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:15:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:33:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:44:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:47:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:64:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:77:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:89:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:92:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:100:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:103:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:124:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:140:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:143:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:167:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:172:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "severity": "medium",
-        "reason": "This markdown bash block instructs users or agents to run local PDF utilities on user-selected files. The commands are legitimate for PDF work, but they are still external command execution."
+        "verdict": "false_positive",
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:181:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:184:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "severity": "medium",
-        "reason": "This markdown bash block instructs users or agents to run local PDF utilities on user-selected files. The commands are legitimate for PDF work, but they are still external command execution."
+        "verdict": "false_positive",
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:197:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:200:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "severity": "medium",
-        "reason": "This markdown bash block instructs users or agents to run local PDF utilities on user-selected files. The commands are legitimate for PDF work, but they are still external command execution."
+        "verdict": "false_positive",
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:209:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:214:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:230:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:233:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:249:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:252:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "severity": "medium",
-        "reason": "This markdown bash block instructs users or agents to run local PDF utilities on user-selected files. The commands are legitimate for PDF work, but they are still external command execution."
+        "verdict": "false_positive",
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:257:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:260:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:274:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:280:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:282:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "external_commands:SKILL.md:283:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The cited backticks are markdown code fencing or inline formatting, not Ruby or shell backtick execution. No command is executed by this line."
+        "confidence": 0.96,
+        "reason": "This is markdown code formatting, a Python or JavaScript f-string, or a documented shell example, not Ruby backtick execution. The reviewed context does not execute this text automatically."
       },
       {
         "id": "filesystem:SKILL.md:42:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.66,
+        "reason": "This is a documented example that writes local PDF outputs such as merged, rotated, watermarked, or encrypted files. It is expected filesystem behavior for PDF processing, but users should review paths before running examples.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:SKILL.md:52:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.66,
+        "reason": "This is a documented example that writes local PDF outputs such as merged, rotated, watermarked, or encrypted files. It is expected filesystem behavior for PDF processing, but users should review paths before running examples.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:SKILL.md:75:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.66,
+        "reason": "This is a documented example that writes local PDF outputs such as merged, rotated, watermarked, or encrypted files. It is expected filesystem behavior for PDF processing, but users should review paths before running examples.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:SKILL.md:247:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.66,
+        "reason": "This is a documented example that writes local PDF outputs such as merged, rotated, watermarked, or encrypted files. It is expected filesystem behavior for PDF processing, but users should review paths before running examples.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:SKILL.md:272:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.66,
+        "reason": "This is a documented example that writes local PDF outputs such as merged, rotated, watermarked, or encrypted files. It is expected filesystem behavior for PDF processing, but users should review paths before running examples.",
+        "severity": "medium"
       }
     ],
     "semantic_findings": [],
@@ -2257,8 +2191,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The reference demonstrates reading local PDF files from disk. This is legitimate PDF processing, but it grants local filesystem access when the example is run."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       },
       {
         "title": "Node.js fs operations",
@@ -2273,8 +2207,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       },
       {
         "title": "Node.js fs operations",
@@ -2289,8 +2223,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       },
       {
         "title": "Node.js fs operations",
@@ -2305,8 +2239,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The reference demonstrates reading local PDF files from disk. This is legitimate PDF processing, but it grants local filesystem access when the example is run."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       },
       {
         "title": "Node.js fs operations",
@@ -2321,8 +2255,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The reference demonstrates reading local PDF files from disk. This is legitimate PDF processing, but it grants local filesystem access when the example is run."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       },
       {
         "title": "Node.js fs operations",
@@ -2337,8 +2271,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       },
       {
         "title": "Synchronous file operations",
@@ -2353,8 +2287,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The reference demonstrates reading local PDF files from disk. This is legitimate PDF processing, but it grants local filesystem access when the example is run."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       },
       {
         "title": "Synchronous file operations",
@@ -2369,8 +2303,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       },
       {
         "title": "Synchronous file operations",
@@ -2385,8 +2319,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       },
       {
         "title": "Synchronous file operations",
@@ -2401,8 +2335,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The reference demonstrates reading local PDF files from disk. This is legitimate PDF processing, but it grants local filesystem access when the example is run."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       },
       {
         "title": "Synchronous file operations",
@@ -2417,8 +2351,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The reference demonstrates reading local PDF files from disk. This is legitimate PDF processing, but it grants local filesystem access when the example is run."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       },
       {
         "title": "Synchronous file operations",
@@ -2433,8 +2367,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       },
       {
         "title": "Python file write/append",
@@ -2449,8 +2383,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       },
       {
         "title": "Python file write/append",
@@ -2465,8 +2399,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       },
       {
         "title": "Python file write/append",
@@ -2481,8 +2415,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       },
       {
         "title": "Python file write/append",
@@ -2497,8 +2431,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       },
       {
         "title": "Python file write/append",
@@ -2513,8 +2447,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The helper script writes JSON or PDF output to a path supplied on the command line. This is expected for the skill, but it can overwrite local files if the path is unsafe."
+        "confidence": 0.72,
+        "confidence_reasoning": "This writes an explicit user-provided output file as part of the PDF workflow. It is local filesystem access but expected for a PDF editing skill and shows no hidden overwrite or exfiltration behavior."
       },
       {
         "title": "Python file write/append",
@@ -2529,8 +2463,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The helper script writes JSON or PDF output to a path supplied on the command line. This is expected for the skill, but it can overwrite local files if the path is unsafe."
+        "confidence": 0.72,
+        "confidence_reasoning": "This writes an explicit user-provided output file as part of the PDF workflow. It is local filesystem access but expected for a PDF editing skill and shows no hidden overwrite or exfiltration behavior."
       },
       {
         "title": "Python file write/append",
@@ -2545,72 +2479,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The helper script writes JSON or PDF output to a path supplied on the command line. This is expected for the skill, but it can overwrite local files if the path is unsafe."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 172,
-            "line_end": 181
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "This markdown bash block instructs users or agents to run local PDF utilities on user-selected files. The commands are legitimate for PDF work, but they are still external command execution."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 184,
-            "line_end": 197
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "This markdown bash block instructs users or agents to run local PDF utilities on user-selected files. The commands are legitimate for PDF work, but they are still external command execution."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 200,
-            "line_end": 209
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "This markdown bash block instructs users or agents to run local PDF utilities on user-selected files. The commands are legitimate for PDF work, but they are still external command execution."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 252,
-            "line_end": 257
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "This markdown bash block instructs users or agents to run local PDF utilities on user-selected files. The commands are legitimate for PDF work, but they are still external command execution."
+        "confidence": 0.72,
+        "confidence_reasoning": "This writes an explicit user-provided output file as part of the PDF workflow. It is local filesystem access but expected for a PDF editing skill and shows no hidden overwrite or exfiltration behavior."
       },
       {
         "title": "Python file write/append",
@@ -2625,8 +2495,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.66,
+        "confidence_reasoning": "This is a documented example that writes local PDF outputs such as merged, rotated, watermarked, or encrypted files. It is expected filesystem behavior for PDF processing, but users should review paths before running examples."
       },
       {
         "title": "Python file write/append",
@@ -2641,8 +2511,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.66,
+        "confidence_reasoning": "This is a documented example that writes local PDF outputs such as merged, rotated, watermarked, or encrypted files. It is expected filesystem behavior for PDF processing, but users should review paths before running examples."
       },
       {
         "title": "Python file write/append",
@@ -2657,8 +2527,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.66,
+        "confidence_reasoning": "This is a documented example that writes local PDF outputs such as merged, rotated, watermarked, or encrypted files. It is expected filesystem behavior for PDF processing, but users should review paths before running examples."
       },
       {
         "title": "Python file write/append",
@@ -2673,8 +2543,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.66,
+        "confidence_reasoning": "This is a documented example that writes local PDF outputs such as merged, rotated, watermarked, or encrypted files. It is expected filesystem behavior for PDF processing, but users should review paths before running examples."
       },
       {
         "title": "Python file write/append",
@@ -2689,8 +2559,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The skill documentation demonstrates writing generated PDF or text outputs to local disk. This is expected, but it can overwrite files in the working directory if used carelessly."
+        "confidence": 0.66,
+        "confidence_reasoning": "This is a documented example that writes local PDF outputs such as merged, rotated, watermarked, or encrypted files. It is expected filesystem behavior for PDF processing, but users should review paths before running examples."
       }
     ],
     "low_findings": [
@@ -2707,156 +2577,138 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "low",
-        "confidence": 0.66,
-        "confidence_reasoning": "The batch-processing example enumerates PDF files under a caller-provided directory. This is expected behavior, but it is still local directory scanning."
+        "confidence": 0.62,
+        "confidence_reasoning": "This is reference documentation showing local PDF reads and writes for examples. It is not automatically executed, but the examples do perform filesystem operations if copied and run."
       }
     ],
     "dangerous_patterns": [],
     "files_scanned": 12,
     "total_lines": 1909,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T03:37:23.414Z",
+    "audited_at": "2026-07-09T08:11:26.351Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Process PDF Documents",
-    "value_statement": "PDF workflows often need extraction, form filling, and document assembly across many files. This skill gives Claude, Codex, and Claude Code practical PDF recipes and helper scripts.",
+    "user_title": "Process PDFs with Claude",
+    "value_statement": "PDF work often requires many libraries and exact file workflows. This skill gives Claude practical steps for extraction, editing, form filling, OCR, and document generation.",
     "seo_keywords": [
-      "Claude",
-      "Codex",
-      "Claude Code",
-      "PDF manipulation",
+      "Claude PDF processing",
+      "Codex PDF automation",
+      "Claude Code PDF tools",
       "PDF form filling",
       "PDF text extraction",
       "PDF table extraction",
-      "merge split PDFs",
-      "document automation",
-      "pypdf workflow"
+      "PDF OCR workflow",
+      "merge PDF documents",
+      "split PDF files",
+      "generate PDF reports"
     ],
     "actual_capabilities": [
-      "Extract text, metadata, annotations, and tables from PDF documents.",
-      "Merge, split, rotate, crop, watermark, encrypt, and decrypt PDFs.",
+      "Extract text and tables from PDFs using pypdf and pdfplumber examples.",
+      "Create new PDFs and reports with reportlab workflows.",
+      "Merge, split, rotate, crop, watermark, encrypt, and decrypt PDF files.",
       "Convert PDF pages to images for visual review and OCR workflows.",
-      "Detect fillable form fields and generate field information files.",
-      "Fill PDF forms through native fields or text annotations.",
-      "Create new PDFs with Python and JavaScript library examples."
+      "Fill both interactive PDF forms and non-fillable forms using helper scripts.",
+      "Validate form bounding boxes before adding annotations to PDFs."
     ],
     "limitations": [
-      "Requires local Python libraries or command-line tools before examples can run.",
-      "Does not guarantee accurate OCR for low-quality scanned documents.",
-      "Non-fillable form workflows need manual validation of bounding boxes.",
-      "Scripts write local output files and can overwrite paths chosen by the user."
+      "Requires local Python packages or command-line tools that may not be installed.",
+      "Scanned PDFs need OCR and may produce imperfect text extraction.",
+      "Complex forms require manual visual validation of field positions.",
+      "The helper scripts read and write local files, so output paths must be reviewed."
     ],
     "use_cases": [
       {
-        "title": "Fill Recurring Forms",
-        "description": "Prepare completed PDF forms by extracting field names, mapping values, and writing a finished document.",
-        "target_user": "Operations coordinator"
+        "title": "Fill application forms",
+        "description": "Extract fields, map user answers, validate coordinates, and create a completed PDF form.",
+        "target_user": "Operations teams"
       },
       {
-        "title": "Extract Document Data",
-        "description": "Pull text, tables, metadata, or annotations from PDFs for review, reporting, or migration work.",
-        "target_user": "Data analyst"
+        "title": "Extract document data",
+        "description": "Pull text, tables, images, and metadata from PDFs for review or downstream analysis.",
+        "target_user": "Analysts"
       },
       {
-        "title": "Automate Document Assembly",
-        "description": "Merge, split, watermark, encrypt, or create PDFs as part of a repeatable document workflow.",
-        "target_user": "Software developer"
+        "title": "Prepare PDF batches",
+        "description": "Merge, split, rotate, crop, watermark, or encrypt groups of PDF documents.",
+        "target_user": "Administrative staff"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Extract Text From a PDF",
+        "title": "Extract text from a PDF",
         "scenario": "Beginner document review",
-        "prompt": "Use the PDF skill to extract readable text from this PDF. Tell me which method fits the document and save the output as a text file."
+        "prompt": "Use the PDF skill to extract readable text from this PDF. Tell me which tool you will use and save the result as a text file."
       },
       {
-        "title": "Fill a Simple PDF Form",
-        "scenario": "Guided form completion",
-        "prompt": "Check whether this PDF has fillable fields. Extract the field list, ask me for missing values, validate the entries, and create a filled PDF."
+        "title": "Merge and split documents",
+        "scenario": "Routine file preparation",
+        "prompt": "Use the PDF skill to merge these PDFs in order, then split the final document into separate files by section."
       },
       {
-        "title": "Prepare a PDF Packet",
-        "scenario": "Document assembly",
-        "prompt": "Merge these PDFs in the order I provide, rotate any pages that need correction, and produce one final packet with clear output naming."
+        "title": "Fill a PDF form",
+        "scenario": "Form completion workflow",
+        "prompt": "Use the PDF skill to check whether this PDF has fillable fields, extract the field information, and create a filled version from my answers."
       },
       {
-        "title": "Design a Batch Workflow",
-        "scenario": "Advanced automation",
-        "prompt": "Create a safe batch workflow for a folder of PDFs. Extract text, preserve per-file outputs, log failures, and avoid overwriting source files."
+        "title": "Analyze a scanned form",
+        "scenario": "Advanced visual workflow",
+        "prompt": "Use the PDF skill to convert this scanned PDF to images, identify form entry boxes, validate bounding boxes, and add the requested annotations."
       }
     ],
     "output_examples": [
       {
-        "input": "A user provides a benefits form PDF and the values to enter.",
-        "output": "The assistant identifies fillable fields, maps each value, validates checkbox options, and creates a completed PDF for review."
+        "input": "Extract all tables from a quarterly report PDF.",
+        "output": "A spreadsheet-ready table set, with page numbers and notes for rows that need manual review."
       },
       {
-        "input": "A user provides several PDFs that must become one packet.",
-        "output": "The assistant lists the chosen order, merges the files, checks page count, and saves a single combined document."
+        "input": "Fill a non-fillable PDF intake form from supplied answers.",
+        "output": "A completed PDF plus validation images showing where each answer was placed."
       },
       {
-        "input": "A user needs tables from a monthly PDF report.",
-        "output": "The assistant selects a table extraction method, extracts the tables, and summarizes any pages that need manual review."
+        "input": "Merge three PDFs and add password protection.",
+        "output": "A single merged PDF with encryption applied and a short summary of the files included."
       }
     ],
     "best_practices": [
-      "Keep source PDFs and generated files in a dedicated working folder.",
-      "Inspect converted page images before writing annotations to a non-fillable form.",
-      "Verify final PDFs in a viewer after form filling, encryption, or page changes."
+      "Keep source PDFs, generated images, JSON files, and outputs in a dedicated working folder.",
+      "Visually inspect validation images before writing annotations to a final PDF.",
+      "Use OCR only when normal text extraction fails or the PDF is scanned."
     ],
     "anti_patterns": [
-      "Running command-line examples on untrusted PDFs without a sandbox.",
-      "Guessing form field locations without validation images.",
-      "Writing generated outputs over original documents."
+      "Do not run command examples on unknown PDFs without reviewing the file paths first.",
+      "Do not assume extracted text preserves reading order for complex layouts.",
+      "Do not skip bounding-box validation when filling non-interactive forms."
     ],
     "faq": [
       {
-        "question": "Can this skill fill PDF forms?",
-        "answer": "Yes. It supports fillable fields and annotation-based filling for PDFs without form fields."
+        "question": "Can this skill fill interactive PDF forms?",
+        "answer": "Yes. It includes steps to detect form fields, extract field metadata, validate values, and write a filled PDF."
+      },
+      {
+        "question": "Can it fill scanned or non-fillable forms?",
+        "answer": "Yes. It converts pages to images, guides visual field mapping, validates bounding boxes, and adds text annotations."
+      },
+      {
+        "question": "Does it require installed dependencies?",
+        "answer": "Yes. Some workflows need packages such as pypdf, pdfplumber, reportlab, pdf2image, or command-line tools."
       },
       {
         "question": "Can it extract tables?",
-        "answer": "Yes. It includes pdfplumber examples for extracting tables and converting them into structured data."
+        "answer": "Yes. The skill provides pdfplumber workflows for extracting tables and converting them into structured data."
       },
       {
-        "question": "Does it work with scanned PDFs?",
-        "answer": "It can guide OCR workflows, but OCR quality depends on scan clarity and installed OCR tools."
+        "question": "Does it send PDF data to external services?",
+        "answer": "No evidence found. The reviewed scripts perform local file processing and contain only documentation links."
       },
       {
-        "question": "Does it require local dependencies?",
-        "answer": "Yes. Many workflows require Python packages or command-line PDF utilities installed locally."
-      },
-      {
-        "question": "Can it modify existing PDFs?",
-        "answer": "Yes. It includes examples for merging, splitting, rotating, cropping, watermarking, encrypting, and filling documents."
-      },
-      {
-        "question": "Is it safe for sensitive PDFs?",
-        "answer": "Use a private working directory and avoid running external tools on untrusted files without isolation."
+        "question": "What should users check before running it?",
+        "answer": "Users should review input and output paths, confirm dependencies, and inspect generated validation images for forms."
       }
     ]
   },
   "file_structure": [
-    {
-      "name": "FORMS.md",
-      "type": "file",
-      "path": "FORMS.md",
-      "lines": 206
-    },
-    {
-      "name": "LICENSE.txt",
-      "type": "file",
-      "path": "LICENSE.txt",
-      "lines": 31
-    },
-    {
-      "name": "REFERENCE.md",
-      "type": "file",
-      "path": "REFERENCE.md",
-      "lines": 612
-    },
     {
       "name": "scripts",
       "type": "dir",
@@ -2911,6 +2763,24 @@
           "lines": 108
         }
       ]
+    },
+    {
+      "name": "FORMS.md",
+      "type": "file",
+      "path": "FORMS.md",
+      "lines": 206
+    },
+    {
+      "name": "LICENSE.txt",
+      "type": "file",
+      "path": "LICENSE.txt",
+      "lines": 31
+    },
+    {
+      "name": "REFERENCE.md",
+      "type": "file",
+      "path": "REFERENCE.md",
+      "lines": 612
     },
     {
       "name": "SKILL.md",

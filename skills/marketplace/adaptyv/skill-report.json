@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T00:44:09.222Z",
+    "generated_at": "2026-07-09T14:40:20.792Z",
     "slug": "davila7-adaptyv",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/scientific/adaptyv",
     "source_ref": "main",
@@ -23,8 +23,8 @@
   },
   "skill": {
     "name": "adaptyv",
-    "description": "Use Adaptyv to plan protein validation experiments, submit sequences through the API, track experiment status, retrieve results, and apply protein optimization workflows before wet-lab testing.",
-    "summary": "Guide Adaptyv protein validation workflows from sequence design to lab result retrieval.",
+    "description": "Use Adaptyv to prepare cloud laboratory workflows for protein validation assays. The skill explains API authentication, experiment submission, status tracking, result retrieval, and sequence optimization references.",
+    "summary": "Guides Adaptyv API workflows for protein assay submission, tracking, results, and sequence optimization.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
@@ -32,9 +32,9 @@
     "tags": [
       "adaptyv",
       "protein-design",
-      "lab-automation",
+      "cloud-lab",
       "bioinformatics",
-      "assay-validation"
+      "wet-lab-validation"
     ],
     "supported_tools": [
       "claude",
@@ -50,26 +50,31 @@
     "category": "research"
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "high",
     "is_blocked": false,
-    "safe_to_publish": true,
+    "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "The skill is documentation for Adaptyv protein validation workflows and contains real outbound API usage. Most high and critical static findings are false positives caused by placeholders, markdown code fences, `.env` examples, or biological sequence terminology. No prompt injection text or hidden malicious intent was found in the reviewed files.",
+    "summary": "The skill is mostly documentation and examples for a declared protein-testing API. Most secret, reconnaissance, and shell-execution flags are false positives, but the content does instruct outbound submissions to an opaque AWS Lambda endpoint and local result-file writes. No prompt injection evidence was found in the reviewed files.",
     "remediation": [
       {
-        "issue": "External API and prediction service calls handle protein sequences and metadata.",
-        "suggestion": "Clearly disclose all external services and require user approval before submitting confidential sequences.",
-        "severity": "low"
+        "issue": "Opaque API endpoint receives authenticated submissions.",
+        "suggestion": "Use a documented Adaptyv-owned API domain, or clearly document endpoint provenance and require user confirmation before use.",
+        "severity": "high"
       },
       {
-        "issue": "API token examples rely on local environment variables and `.env` files.",
-        "suggestion": "Keep the existing warnings and add a reminder to exclude `.env` files from shared logs and support bundles.",
-        "severity": "low"
+        "issue": "Protein sequences and metadata are sent to external services.",
+        "suggestion": "Add explicit privacy guidance and require user approval before submitting confidential biological data.",
+        "severity": "medium"
       },
       {
-        "issue": "The Adaptyv endpoint is an opaque AWS Lambda URL rather than a branded API domain.",
-        "suggestion": "Document the official endpoint provenance or replace it with a stable branded domain when available.",
-        "severity": "low"
+        "issue": "Examples use bearer tokens for API authentication.",
+        "suggestion": "Keep tokens in environment variables or a secrets manager, and add checks that reject placeholder or missing tokens.",
+        "severity": "medium"
+      },
+      {
+        "issue": "Result examples write files using dynamic names and directories.",
+        "suggestion": "Sanitize experiment identifiers and restrict output paths to user-approved directories.",
+        "severity": "medium"
       }
     ],
     "risk_factor_evidence": [
@@ -1450,633 +1455,737 @@
       {
         "id": "network:reference/api_reference.md:6:hardcoded-url",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "reference/api_reference.md:6 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service.",
+        "confidence": 0.82,
+        "reason": "The skill directs requests to an opaque AWS Lambda URL used as the Adaptyv API host. This is declared functionality, but it is real outbound network access.",
         "severity": "low"
       },
       {
         "id": "network:reference/api_reference.md:43:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/api_reference.md:43 contains a placeholder URL in documentation, not a real endpoint controlled by the skill. It is example data for users to replace."
+        "confidence": 0.96,
+        "reason": "This is placeholder documentation for a user-supplied URL or result download URL. It is not a fixed exfiltration destination."
       },
       {
         "id": "network:reference/api_reference.md:147:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/api_reference.md:147 contains a placeholder URL in documentation, not a real endpoint controlled by the skill. It is example data for users to replace."
+        "confidence": 0.96,
+        "reason": "This is placeholder documentation for a user-supplied URL or result download URL. It is not a fixed exfiltration destination."
       },
       {
         "id": "network:reference/api_reference.md:148:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/api_reference.md:148 contains a placeholder URL in documentation, not a real endpoint controlled by the skill. It is example data for users to replace."
+        "confidence": 0.96,
+        "reason": "This is placeholder documentation for a user-supplied URL or result download URL. It is not a fixed exfiltration destination."
       },
       {
         "id": "network:reference/api_reference.md:149:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/api_reference.md:149 contains a placeholder URL in documentation, not a real endpoint controlled by the skill. It is example data for users to replace."
+        "confidence": 0.96,
+        "reason": "This is placeholder documentation for a user-supplied URL or result download URL. It is not a fixed exfiltration destination."
       },
       {
         "id": "filesystem:reference/api_reference.md:40:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "reference/api_reference.md:40 is a FASTA sequence example beginning with `>protein`, not a filesystem path. There is no traversal sequence or file access at this location."
+        "confidence": 0.98,
+        "reason": "The snippet is a FASTA sequence example using greater-than headers and newline escapes. It is not a filesystem path or traversal attempt."
       },
       {
         "id": "env_access:reference/api_reference.md:14:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "reference/api_reference.md:14 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.84,
+        "reason": "The bearer header is expected authentication for the documented API call and does not contain a real embedded secret. Endpoint trust is addressed separately in semantic findings."
       },
       {
         "id": "env_access:reference/api_reference.md:23:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "reference/api_reference.md:23 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.93,
+        "reason": "The snippet uses placeholder token names such as ADAPTYV_API_KEY or YOUR_API_KEY. No real credential value is embedded in the skill files."
       },
       {
         "id": "sensitive:reference/api_reference.md:25:environment-file-access",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "reference/api_reference.md:25 gives standard local `.env` setup guidance and warns about safe credential storage. It does not read or exfiltrate environment files."
+        "reason": "The documentation recommends a .env file with .gitignore for local development. It does not instruct the assistant to read arbitrary environment files."
       },
       {
         "id": "blocker:reference/api_reference.md:54:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/api_reference.md:54 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/api_reference.md:250:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/api_reference.md:250 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/api_reference.md:261:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/api_reference.md:261 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/api_reference.md:262:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/api_reference.md:262 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/api_reference.md:266:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/api_reference.md:266 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/api_reference.md:285:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/api_reference.md:285 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/api_reference.md:287:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/api_reference.md:287 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/api_reference.md:88:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/api_reference.md:88 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.96,
+        "reason": "The snippet describes experiment status or protein optimization guidance. It does not scan networks or discover hosts."
       },
       {
         "id": "network:reference/examples.md:777:http-client-library",
         "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "reference/examples.md:777 is a generic retry helper that can issue outbound HTTP requests to a caller-supplied URL. The context is legitimate API tooling, but network access is real.",
+        "confidence": 0.72,
+        "reason": "The retry helper can send HTTP requests to a caller-supplied URL. It is useful documentation, but production use should constrain allowed endpoints.",
         "severity": "low"
       },
       {
         "id": "network:reference/examples.md:28:python-http-libraries",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:28 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service.",
+        "confidence": 0.78,
+        "reason": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment.",
         "severity": "low"
       },
       {
         "id": "network:reference/examples.md:33:python-http-libraries",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "reference/examples.md:33 references the requests exception API, not an outbound request. There is no data transfer or network target at this location."
+        "confidence": 0.93,
+        "reason": "This line handles or imports request exceptions and does not initiate a network call. The surrounding examples describe normal API error handling."
       },
       {
         "id": "network:reference/examples.md:79:python-http-libraries",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:79 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service.",
+        "confidence": 0.78,
+        "reason": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment.",
         "severity": "low"
       },
       {
         "id": "network:reference/examples.md:129:python-http-libraries",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:129 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service.",
+        "confidence": 0.78,
+        "reason": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment.",
         "severity": "low"
       },
       {
         "id": "network:reference/examples.md:185:python-http-libraries",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:185 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service.",
+        "confidence": 0.78,
+        "reason": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment.",
         "severity": "low"
       },
       {
         "id": "network:reference/examples.md:221:python-http-libraries",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:221 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service.",
+        "confidence": 0.78,
+        "reason": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment.",
         "severity": "low"
       },
       {
         "id": "network:reference/examples.md:263:python-http-libraries",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:263 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service.",
+        "confidence": 0.78,
+        "reason": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment.",
         "severity": "low"
       },
       {
         "id": "network:reference/examples.md:338:python-http-libraries",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:338 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service.",
+        "confidence": 0.78,
+        "reason": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment.",
         "severity": "low"
       },
       {
         "id": "network:reference/examples.md:479:python-http-libraries",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:479 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service.",
+        "confidence": 0.78,
+        "reason": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment.",
         "severity": "low"
       },
       {
         "id": "network:reference/examples.md:528:python-http-libraries",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:528 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service.",
+        "confidence": 0.78,
+        "reason": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment.",
         "severity": "low"
       },
       {
         "id": "network:reference/examples.md:755:python-http-libraries",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "reference/examples.md:755 references the requests exception API, not an outbound request. There is no data transfer or network target at this location."
+        "confidence": 0.93,
+        "reason": "This line handles or imports request exceptions and does not initiate a network call. The surrounding examples describe normal API error handling."
       },
       {
         "id": "network:reference/examples.md:777:python-http-libraries",
         "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "reference/examples.md:777 is a generic retry helper that can issue outbound HTTP requests to a caller-supplied URL. The context is legitimate API tooling, but network access is real.",
+        "confidence": 0.72,
+        "reason": "The retry helper can send HTTP requests to a caller-supplied URL. It is useful documentation, but production use should constrain allowed endpoints.",
         "severity": "low"
       },
       {
         "id": "network:reference/examples.md:17:hardcoded-url",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:17 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service.",
+        "confidence": 0.82,
+        "reason": "The skill directs requests to an opaque AWS Lambda URL used as the Adaptyv API host. This is declared functionality, but it is real outbound network access.",
         "severity": "low"
       },
       {
         "id": "network:reference/examples.md:201:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/examples.md:201 contains a placeholder URL in documentation, not a real endpoint controlled by the skill. It is example data for users to replace."
+        "confidence": 0.96,
+        "reason": "This is placeholder documentation for a user-supplied URL or result download URL. It is not a fixed exfiltration destination."
       },
       {
         "id": "filesystem:reference/examples.md:350:python-file-write-append",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "reference/examples.md:350 writes experiment results to a user-selected local output file in an example script. It is expected result export behavior, not stealthy or unsafe filesystem access."
+        "verdict": "confirmed",
+        "confidence": 0.68,
+        "reason": "The example writes result data to a path built from output_dir and experiment_id. Without sanitization, copied code could overwrite unexpected files.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:reference/examples.md:589:python-file-write-append",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "reference/examples.md:589 writes experiment results to a user-selected local output file in an example script. It is expected result export behavior, not stealthy or unsafe filesystem access."
+        "verdict": "confirmed",
+        "confidence": 0.62,
+        "reason": "The filename is derived from an experiment identifier returned by the API. If reused directly, an unexpected identifier could influence the output path.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:reference/examples.md:347:python-os-file-operations",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "reference/examples.md:347 writes experiment results to a user-selected local output file in an example script. It is expected result export behavior, not stealthy or unsafe filesystem access."
+        "verdict": "confirmed",
+        "confidence": 0.66,
+        "reason": "The example creates a caller-supplied output directory without path constraints. This is intended result storage, but copied code could write outside the expected workspace.",
+        "severity": "medium"
       },
       {
         "id": "env_access:reference/examples.md:16:python-getenv-function",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:16 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.91,
+        "reason": "The code reads only ADAPTYV_API_KEY for declared API authentication. This is a standard credential pattern, not broad secret harvesting."
       },
       {
         "id": "env_access:reference/examples.md:16:getenv-function-call",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:16 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.91,
+        "reason": "The code reads only ADAPTYV_API_KEY for declared API authentication. This is a standard credential pattern, not broad secret harvesting."
       },
       {
         "id": "env_access:reference/examples.md:10:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:10 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.91,
+        "reason": "The dotenv usage is documented local configuration for one named API token. It does not enumerate environment variables or load unrelated secrets."
       },
       {
         "id": "env_access:reference/examples.md:13:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:13 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.91,
+        "reason": "The dotenv usage is documented local configuration for one named API token. It does not enumerate environment variables or load unrelated secrets."
       },
       {
         "id": "env_access:reference/examples.md:47:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:47 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.91,
+        "reason": "The dotenv usage is documented local configuration for one named API token. It does not enumerate environment variables or load unrelated secrets."
       },
       {
         "id": "env_access:reference/examples.md:10:python-dotenv-loader",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:10 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.91,
+        "reason": "The dotenv usage is documented local configuration for one named API token. It does not enumerate environment variables or load unrelated secrets."
       },
       {
         "id": "env_access:reference/examples.md:13:python-dotenv-loader",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:13 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.91,
+        "reason": "The dotenv usage is documented local configuration for one named API token. It does not enumerate environment variables or load unrelated secrets."
       },
       {
         "id": "env_access:reference/examples.md:16:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:16 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.91,
+        "reason": "The code reads only ADAPTYV_API_KEY for declared API authentication. This is a standard credential pattern, not broad secret harvesting."
       },
       {
         "id": "env_access:reference/examples.md:21:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:21 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.84,
+        "reason": "The bearer header is expected authentication for the documented API call and does not contain a real embedded secret. Endpoint trust is addressed separately in semantic findings."
       },
       {
         "id": "env_access:reference/examples.md:42:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "reference/examples.md:42 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.93,
+        "reason": "The snippet uses placeholder token names such as ADAPTYV_API_KEY or YOUR_API_KEY. No real credential value is embedded in the skill files."
       },
       {
         "id": "sensitive:reference/examples.md:40:environment-file-access",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "reference/examples.md:40 gives standard local `.env` setup guidance and warns about safe credential storage. It does not read or exfiltrate environment files."
+        "reason": "The documentation recommends a .env file with .gitignore for local development. It does not instruct the assistant to read arbitrary environment files."
       },
       {
         "id": "blocker:reference/examples.md:60:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/examples.md:60 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/examples.md:77:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/examples.md:77 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/examples.md:407:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/examples.md:407 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/examples.md:524:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/examples.md:524 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/examples.md:576:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/examples.md:576 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/examples.md:585:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/examples.md:585 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/examples.md:608:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/examples.md:608 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/examples.md:618:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/examples.md:618 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/examples.md:688:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/examples.md:688 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/examples.md:710:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/examples.md:710 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/examples.md:721:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/examples.md:721 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/examples.md:726:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/examples.md:726 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/examples.md:860:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/examples.md:860 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/examples.md:863:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/examples.md:863 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/examples.md:899:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/examples.md:899 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "network:reference/experiments.md:84:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/experiments.md:84 contains a placeholder URL in documentation, not a real endpoint controlled by the skill. It is example data for users to replace."
+        "confidence": 0.96,
+        "reason": "This is placeholder documentation for a user-supplied URL or result download URL. It is not a fixed exfiltration destination."
       },
       {
         "id": "blocker:reference/experiments.md:59:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/experiments.md:59 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "network:reference/protein_optimization.md:84:python-http-libraries",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "reference/protein_optimization.md:84 documents a real request to the NetSolP external prediction service. This is expected functionality, but it sends protein sequence data outside the local environment.",
+        "confidence": 0.78,
+        "reason": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment.",
         "severity": "low"
       },
       {
         "id": "network:reference/protein_optimization.md:599:python-http-libraries",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "reference/protein_optimization.md:599 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service.",
+        "confidence": 0.78,
+        "reason": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment.",
         "severity": "low"
       },
       {
         "id": "network:reference/protein_optimization.md:77:hardcoded-url",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "reference/protein_optimization.md:77 documents a real request to the NetSolP external prediction service. This is expected functionality, but it sends protein sequence data outside the local environment.",
+        "confidence": 0.86,
+        "reason": "The example posts protein sequence data to the DTU NetSolP web service. This is part of the optimization workflow, but it shares data with a third party.",
         "severity": "low"
       },
       {
         "id": "network:reference/protein_optimization.md:600:hardcoded-url",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "reference/protein_optimization.md:600 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service.",
+        "confidence": 0.82,
+        "reason": "The skill directs requests to an opaque AWS Lambda URL used as the Adaptyv API host. This is declared functionality, but it is real outbound network access.",
         "severity": "low"
       },
       {
         "id": "env_access:reference/protein_optimization.md:601:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "reference/protein_optimization.md:601 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.84,
+        "reason": "The bearer header is expected authentication for the documented API call and does not contain a real embedded secret. Endpoint trust is addressed separately in semantic findings."
       },
       {
         "id": "sensitive:reference/protein_optimization.md:600:aws-credentials-directory",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "reference/protein_optimization.md:600 is an AWS Lambda URL string, not a filesystem path to AWS credentials. The static rule matched a cloud URL incorrectly."
+        "confidence": 0.99,
+        "reason": "The match comes from the public domain suffix .on.aws inside an HTTPS URL. It does not reference an AWS credentials directory or local credential file."
       },
       {
         "id": "blocker:reference/protein_optimization.md:163:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/protein_optimization.md:163 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/protein_optimization.md:253:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/protein_optimization.md:253 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/protein_optimization.md:578:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/protein_optimization.md:578 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       },
       {
         "id": "blocker:reference/protein_optimization.md:630:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "reference/protein_optimization.md:630 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.96,
+        "reason": "The snippet describes experiment status or protein optimization guidance. It does not scan networks or discover hosts."
       },
       {
         "id": "external_commands:SKILL.md:20:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "SKILL.md:20 is markdown documentation around code fences or references, not Ruby backtick execution. The skill text does not execute these strings."
+        "confidence": 0.9,
+        "reason": "The match is caused by Markdown fenced examples and prose references. The skill does not use Ruby backticks or execute shell commands automatically."
       },
       {
         "id": "external_commands:SKILL.md:22:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "SKILL.md:22 is markdown documentation around code fences or references, not Ruby backtick execution. The skill text does not execute these strings."
+        "confidence": 0.9,
+        "reason": "The match is caused by Markdown fenced examples and prose references. The skill does not use Ruby backticks or execute shell commands automatically."
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "SKILL.md:24 is markdown documentation around code fences or references, not Ruby backtick execution. The skill text does not execute these strings."
+        "confidence": 0.9,
+        "reason": "The match is caused by Markdown fenced examples and prose references. The skill does not use Ruby backticks or execute shell commands automatically."
       },
       {
         "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "SKILL.md:26 is markdown documentation around code fences or references, not Ruby backtick execution. The skill text does not execute these strings."
+        "confidence": 0.9,
+        "reason": "The match is caused by Markdown fenced examples and prose references. The skill does not use Ruby backticks or execute shell commands automatically."
       },
       {
         "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "SKILL.md:28 is markdown documentation around code fences or references, not Ruby backtick execution. The skill text does not execute these strings."
+        "confidence": 0.9,
+        "reason": "The match is caused by Markdown fenced examples and prose references. The skill does not use Ruby backticks or execute shell commands automatically."
       },
       {
         "id": "external_commands:SKILL.md:34:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "SKILL.md:34 is markdown documentation around code fences or references, not Ruby backtick execution. The skill text does not execute these strings."
+        "confidence": 0.9,
+        "reason": "The match is caused by Markdown fenced examples and prose references. The skill does not use Ruby backticks or execute shell commands automatically."
       },
       {
         "id": "external_commands:SKILL.md:36:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "SKILL.md:36 is markdown documentation around code fences or references, not Ruby backtick execution. The skill text does not execute these strings."
+        "confidence": 0.9,
+        "reason": "The match is caused by Markdown fenced examples and prose references. The skill does not use Ruby backticks or execute shell commands automatically."
       },
       {
         "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "SKILL.md:42 is markdown documentation around code fences or references, not Ruby backtick execution. The skill text does not execute these strings."
+        "confidence": 0.9,
+        "reason": "The match is caused by Markdown fenced examples and prose references. The skill does not use Ruby backticks or execute shell commands automatically."
       },
       {
         "id": "external_commands:SKILL.md:69:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "SKILL.md:69 is markdown documentation around code fences or references, not Ruby backtick execution. The skill text does not execute these strings."
+        "confidence": 0.9,
+        "reason": "The match is caused by Markdown fenced examples and prose references. The skill does not use Ruby backticks or execute shell commands automatically."
       },
       {
         "id": "external_commands:SKILL.md:80:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "SKILL.md:80 is markdown documentation around code fences or references, not Ruby backtick execution. The skill text does not execute these strings."
+        "confidence": 0.9,
+        "reason": "The match is caused by Markdown fenced examples and prose references. The skill does not use Ruby backticks or execute shell commands automatically."
       },
       {
         "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "SKILL.md:98 is markdown documentation around code fences or references, not Ruby backtick execution. The skill text does not execute these strings."
+        "confidence": 0.9,
+        "reason": "The match is caused by Markdown fenced examples and prose references. The skill does not use Ruby backticks or execute shell commands automatically."
       },
       {
         "id": "external_commands:SKILL.md:102:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "SKILL.md:102 is markdown documentation around code fences or references, not Ruby backtick execution. The skill text does not execute these strings."
+        "confidence": 0.9,
+        "reason": "The match is caused by Markdown fenced examples and prose references. The skill does not use Ruby backticks or execute shell commands automatically."
       },
       {
         "id": "network:SKILL.md:58:python-http-libraries",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "SKILL.md:58 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service.",
+        "confidence": 0.78,
+        "reason": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment.",
         "severity": "low"
       },
       {
         "id": "network:SKILL.md:50:hardcoded-url",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "SKILL.md:50 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service.",
+        "confidence": 0.82,
+        "reason": "The skill directs requests to an opaque AWS Lambda URL used as the Adaptyv API host. This is declared functionality, but it is real outbound network access.",
         "severity": "low"
       },
       {
         "id": "network:SKILL.md:64:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "SKILL.md:64 contains a placeholder URL in documentation, not a real endpoint controlled by the skill. It is example data for users to replace."
+        "confidence": 0.96,
+        "reason": "This is placeholder documentation for a user-supplied URL or result download URL. It is not a fixed exfiltration destination."
       },
       {
         "id": "env_access:SKILL.md:49:python-getenv-function",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "SKILL.md:49 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.91,
+        "reason": "The code reads only ADAPTYV_API_KEY for declared API authentication. This is a standard credential pattern, not broad secret harvesting."
       },
       {
         "id": "env_access:SKILL.md:49:getenv-function-call",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "SKILL.md:49 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.91,
+        "reason": "The code reads only ADAPTYV_API_KEY for declared API authentication. This is a standard credential pattern, not broad secret harvesting."
       },
       {
         "id": "env_access:SKILL.md:35:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "SKILL.md:35 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.91,
+        "reason": "The dotenv usage is documented local configuration for one named API token. It does not enumerate environment variables or load unrelated secrets."
       },
       {
         "id": "env_access:SKILL.md:45:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "SKILL.md:45 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.91,
+        "reason": "The dotenv usage is documented local configuration for one named API token. It does not enumerate environment variables or load unrelated secrets."
       },
       {
         "id": "env_access:SKILL.md:47:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "SKILL.md:47 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.91,
+        "reason": "The dotenv usage is documented local configuration for one named API token. It does not enumerate environment variables or load unrelated secrets."
       },
       {
         "id": "env_access:SKILL.md:45:python-dotenv-loader",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "SKILL.md:45 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.91,
+        "reason": "The dotenv usage is documented local configuration for one named API token. It does not enumerate environment variables or load unrelated secrets."
       },
       {
         "id": "env_access:SKILL.md:47:python-dotenv-loader",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "SKILL.md:47 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.91,
+        "reason": "The dotenv usage is documented local configuration for one named API token. It does not enumerate environment variables or load unrelated secrets."
       },
       {
         "id": "env_access:SKILL.md:21:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "SKILL.md:21 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.93,
+        "reason": "The snippet uses placeholder token names such as ADAPTYV_API_KEY or YOUR_API_KEY. No real credential value is embedded in the skill files."
       },
       {
         "id": "env_access:SKILL.md:27:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "SKILL.md:27 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.93,
+        "reason": "The snippet uses placeholder token names such as ADAPTYV_API_KEY or YOUR_API_KEY. No real credential value is embedded in the skill files."
       },
       {
         "id": "env_access:SKILL.md:49:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "SKILL.md:49 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.91,
+        "reason": "The code reads only ADAPTYV_API_KEY for declared API authentication. This is a standard credential pattern, not broad secret harvesting."
       },
       {
         "id": "env_access:SKILL.md:53:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "SKILL.md:53 shows user-provided Adaptyv API credential handling for documented authentication. No hardcoded secret or unauthorized secret harvesting is present."
+        "confidence": 0.84,
+        "reason": "The bearer header is expected authentication for the documented API call and does not contain a real embedded secret. Endpoint trust is addressed separately in semantic findings."
       },
       {
         "id": "sensitive:SKILL.md:24:environment-file-access",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "SKILL.md:24 gives standard local `.env` setup guidance and warns about safe credential storage. It does not read or exfiltrate environment files."
+        "reason": "The documentation recommends a .env file with .gitignore for local development. It does not instruct the assistant to read arbitrary environment files."
       },
       {
         "id": "blocker:SKILL.md:68:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "SKILL.md:68 uses terms like sequence, target, invalid, or monitor in a protein experiment context. This is biological workflow documentation, not system or network reconnaissance."
+        "confidence": 0.97,
+        "reason": "The matched terms are domain concepts such as amino acids, experiment IDs, validation errors, or workflow status. They are not system reconnaissance."
       }
     ],
-    "semantic_findings": [],
+    "semantic_findings": [
+      {
+        "title": "Opaque External API Endpoint Receives Tokens and Sequences",
+        "description": "The skill routes authenticated experiment submissions to a raw AWS Lambda URL instead of a clearly branded Adaptyv domain. The same examples attach bearer tokens and protein sequences, so users cannot verify endpoint ownership from the skill content alone.",
+        "severity": "high",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 49,
+            "line_end": 64
+          },
+          {
+            "file": "reference/examples.md",
+            "line_start": 16,
+            "line_end": 21
+          },
+          {
+            "file": "reference/protein_optimization.md",
+            "line_start": 599,
+            "line_end": 601
+          }
+        ],
+        "confidence": 0.78,
+        "confidence_reasoning": "The cited lines directly combine an unbranded AWS Lambda host with bearer authentication and sequence submission. The files do not provide independent proof that the endpoint is controlled by Adaptyv."
+      }
+    ],
     "critical_findings": [],
-    "high_findings": [],
-    "medium_findings": [],
+    "high_findings": [
+      {
+        "title": "Opaque External API Endpoint Receives Tokens and Sequences",
+        "description": "The skill routes authenticated experiment submissions to a raw AWS Lambda URL instead of a clearly branded Adaptyv domain. The same examples attach bearer tokens and protein sequences, so users cannot verify endpoint ownership from the skill content alone.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 49,
+            "line_end": 64
+          },
+          {
+            "file": "reference/examples.md",
+            "line_start": 16,
+            "line_end": 21
+          },
+          {
+            "file": "reference/protein_optimization.md",
+            "line_start": 599,
+            "line_end": 601
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "high",
+        "confidence": 0.78,
+        "confidence_reasoning": "The cited lines directly combine an unbranded AWS Lambda host with bearer authentication and sequence submission. The files do not provide independent proof that the endpoint is controlled by Adaptyv."
+      }
+    ],
+    "medium_findings": [
+      {
+        "title": "Python file write/append",
+        "description": "with open(output_file, 'w') as f:",
+        "locations": [
+          {
+            "file": "reference/examples.md",
+            "line_start": 350,
+            "line_end": 350
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "filesystem",
+        "source_severity": "medium",
+        "confidence": 0.68,
+        "confidence_reasoning": "The example writes result data to a path built from output_dir and experiment_id. Without sanitization, copied code could overwrite unexpected files."
+      },
+      {
+        "title": "Python file write/append",
+        "description": "with open(f\"{experiment_id}_info.json\", 'w') as f:",
+        "locations": [
+          {
+            "file": "reference/examples.md",
+            "line_start": 589,
+            "line_end": 589
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "filesystem",
+        "source_severity": "medium",
+        "confidence": 0.62,
+        "confidence_reasoning": "The filename is derived from an experiment identifier returned by the API. If reused directly, an unexpected identifier could influence the output path."
+      },
+      {
+        "title": "Python os file operations",
+        "description": "os.makedirs(output_dir, exist_ok=True)",
+        "locations": [
+          {
+            "file": "reference/examples.md",
+            "line_start": 347,
+            "line_end": 347
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "filesystem",
+        "source_severity": "medium",
+        "confidence": 0.66,
+        "confidence_reasoning": "The example creates a caller-supplied output directory without path constraints. This is intended result storage, but copied code could write outside the expected workspace."
+      }
+    ],
     "low_findings": [
       {
         "title": "Hardcoded URL",
@@ -2091,8 +2200,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "reference/api_reference.md:6 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service."
+        "confidence": 0.82,
+        "confidence_reasoning": "The skill directs requests to an opaque AWS Lambda URL used as the Adaptyv API host. This is declared functionality, but it is real outbound network access."
       },
       {
         "title": "HTTP client library",
@@ -2107,8 +2216,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.76,
-        "confidence_reasoning": "reference/examples.md:777 is a generic retry helper that can issue outbound HTTP requests to a caller-supplied URL. The context is legitimate API tooling, but network access is real."
+        "confidence": 0.72,
+        "confidence_reasoning": "The retry helper can send HTTP requests to a caller-supplied URL. It is useful documentation, but production use should constrain allowed endpoints."
       },
       {
         "title": "Python HTTP libraries",
@@ -2123,8 +2232,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "reference/examples.md:28 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service."
+        "confidence": 0.78,
+        "confidence_reasoning": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment."
       },
       {
         "title": "Python HTTP libraries",
@@ -2139,8 +2248,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "reference/examples.md:79 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service."
+        "confidence": 0.78,
+        "confidence_reasoning": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment."
       },
       {
         "title": "Python HTTP libraries",
@@ -2155,8 +2264,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "reference/examples.md:129 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service."
+        "confidence": 0.78,
+        "confidence_reasoning": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment."
       },
       {
         "title": "Python HTTP libraries",
@@ -2171,8 +2280,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "reference/examples.md:185 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service."
+        "confidence": 0.78,
+        "confidence_reasoning": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment."
       },
       {
         "title": "Python HTTP libraries",
@@ -2187,8 +2296,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "reference/examples.md:221 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service."
+        "confidence": 0.78,
+        "confidence_reasoning": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment."
       },
       {
         "title": "Python HTTP libraries",
@@ -2203,8 +2312,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "reference/examples.md:263 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service."
+        "confidence": 0.78,
+        "confidence_reasoning": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment."
       },
       {
         "title": "Python HTTP libraries",
@@ -2219,8 +2328,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "reference/examples.md:338 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service."
+        "confidence": 0.78,
+        "confidence_reasoning": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment."
       },
       {
         "title": "Python HTTP libraries",
@@ -2235,8 +2344,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "reference/examples.md:479 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service."
+        "confidence": 0.78,
+        "confidence_reasoning": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment."
       },
       {
         "title": "Python HTTP libraries",
@@ -2251,8 +2360,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "reference/examples.md:528 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service."
+        "confidence": 0.78,
+        "confidence_reasoning": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment."
       },
       {
         "title": "Python HTTP libraries",
@@ -2267,8 +2376,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.76,
-        "confidence_reasoning": "reference/examples.md:777 is a generic retry helper that can issue outbound HTTP requests to a caller-supplied URL. The context is legitimate API tooling, but network access is real."
+        "confidence": 0.72,
+        "confidence_reasoning": "The retry helper can send HTTP requests to a caller-supplied URL. It is useful documentation, but production use should constrain allowed endpoints."
       },
       {
         "title": "Hardcoded URL",
@@ -2283,8 +2392,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "reference/examples.md:17 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service."
+        "confidence": 0.82,
+        "confidence_reasoning": "The skill directs requests to an opaque AWS Lambda URL used as the Adaptyv API host. This is declared functionality, but it is real outbound network access."
       },
       {
         "title": "Python HTTP libraries",
@@ -2299,8 +2408,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.82,
-        "confidence_reasoning": "reference/protein_optimization.md:84 documents a real request to the NetSolP external prediction service. This is expected functionality, but it sends protein sequence data outside the local environment."
+        "confidence": 0.78,
+        "confidence_reasoning": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment."
       },
       {
         "title": "Python HTTP libraries",
@@ -2315,8 +2424,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "reference/protein_optimization.md:599 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service."
+        "confidence": 0.78,
+        "confidence_reasoning": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment."
       },
       {
         "title": "Hardcoded URL",
@@ -2331,8 +2440,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.82,
-        "confidence_reasoning": "reference/protein_optimization.md:77 documents a real request to the NetSolP external prediction service. This is expected functionality, but it sends protein sequence data outside the local environment."
+        "confidence": 0.86,
+        "confidence_reasoning": "The example posts protein sequence data to the DTU NetSolP web service. This is part of the optimization workflow, but it shares data with a third party."
       },
       {
         "title": "Hardcoded URL",
@@ -2347,8 +2456,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "reference/protein_optimization.md:600 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service."
+        "confidence": 0.82,
+        "confidence_reasoning": "The skill directs requests to an opaque AWS Lambda URL used as the Adaptyv API host. This is declared functionality, but it is real outbound network access."
       },
       {
         "title": "Python HTTP libraries",
@@ -2363,8 +2472,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "SKILL.md:58 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service."
+        "confidence": 0.78,
+        "confidence_reasoning": "The example performs outbound HTTP requests for the declared Adaptyv workflow. This is expected behavior, but it still sends data outside the local environment."
       },
       {
         "title": "Hardcoded URL",
@@ -2379,134 +2488,134 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "SKILL.md:50 documents real outbound calls to the Adaptyv cloud API. This is core functionality, but it transfers sequences, metadata, or API-authenticated requests to an external service."
+        "confidence": 0.82,
+        "confidence_reasoning": "The skill directs requests to an opaque AWS Lambda URL used as the Adaptyv API host. This is declared functionality, but it is real outbound network access."
       }
     ],
     "dangerous_patterns": [],
     "files_scanned": 5,
     "total_lines": 2337,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T00:44:09.222Z",
-    "agent_auto_install_policy": "allowed",
+    "audited_at": "2026-07-09T14:40:20.792Z",
+    "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Submit Protein Validation Experiments",
-    "value_statement": "Protein design teams need a clear path from generated sequences to lab validation. This skill guides Adaptyv API setup, experiment submission, status tracking, result retrieval, and optimization workflows.",
+    "user_title": "Validate Protein Designs with Adaptyv",
+    "value_statement": "Protein teams need clear workflows for outsourced wet-lab validation. This skill guides Adaptyv API setup, assay submission, tracking, and result review.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "Adaptyv",
-      "protein design",
-      "cloud lab",
+      "protein testing",
       "protein validation",
       "binding assays",
-      "bioinformatics workflows",
-      "API experiments"
+      "protein optimization",
+      "cloud lab",
+      "wet lab automation"
     ],
     "actual_capabilities": [
-      "Explains Adaptyv API authentication, base endpoints, and request structure.",
-      "Provides workflows for single, batch, and webhook-backed experiment submissions.",
-      "Guides experiment status checks, result retrieval, and local result organization.",
-      "Summarizes binding, expression, thermostability, and enzyme activity assay workflows.",
-      "Describes sequence optimization with NetSolP, SoluProt, SolubleMPNN, and ESM.",
-      "Shows FASTA formatting and validation patterns for protein sequence submissions."
+      "Explains Adaptyv API authentication with ADAPTYV_API_KEY.",
+      "Shows how to submit single and batch FASTA experiments.",
+      "Covers binding, expression, thermostability, and enzyme activity assays.",
+      "Guides experiment status checks, result retrieval, and webhook use.",
+      "Describes optimization references for NetSolP, SoluProt, SolubleMPNN, and ESM.",
+      "Includes examples for retry handling and FASTA validation."
     ],
     "limitations": [
-      "Requires user-provided Adaptyv API access and valid organization credits.",
-      "Uses external Adaptyv and prediction services, so users must approve data sharing.",
-      "Describes an alpha or beta API that may change without full backward compatibility.",
-      "Does not perform wet-lab work itself or guarantee assay success."
+      "Requires Adaptyv API access and a valid account.",
+      "Uses external APIs, so users must verify endpoint ownership and data policies.",
+      "Does not run wet-lab experiments inside the assistant.",
+      "Results timing depends on the provider and is described as about 21 days."
     ],
     "use_cases": [
       {
-        "title": "Submit Design Libraries",
-        "target_user": "Protein engineers",
-        "description": "Prepare FASTA libraries and submit expression or binding assays through the Adaptyv API."
+        "title": "Submit Protein Variants",
+        "description": "Prepare FASTA sequences, choose assay types, and submit validation jobs through the Adaptyv API.",
+        "target_user": "Protein engineer"
       },
       {
-        "title": "Track Experiment Progress",
-        "target_user": "Lab operations teams",
-        "description": "Check status, configure webhooks, and plan around expected result delivery windows."
+        "title": "Prioritize Optimized Sequences",
+        "description": "Review solubility and naturalness checks before selecting variants for wet-lab testing.",
+        "target_user": "Computational biologist"
       },
       {
-        "title": "Prioritize Variants",
-        "target_user": "Computational biologists",
-        "description": "Filter protein candidates with solubility and naturalness scores before ordering lab validation."
+        "title": "Track Lab Workflows",
+        "description": "Plan status polling, webhook notifications, and result download steps for ongoing experiments.",
+        "target_user": "Research operations lead"
       }
     ],
     "prompt_templates": [
       {
         "title": "Set Up Access",
-        "scenario": "Beginner setup",
-        "prompt": "Help me set up Adaptyv API access for protein testing. Explain the credentials, environment variables, and first connection check."
+        "scenario": "Beginner setup for a new account.",
+        "prompt": "Help me set up an Adaptyv API workflow with ADAPTYV_API_KEY, required packages, and a connection check."
       },
       {
-        "title": "Submit A Sequence",
-        "scenario": "Single experiment",
-        "prompt": "I have one protein sequence for expression testing. Guide me through FASTA formatting, request fields, and submission steps."
+        "title": "Submit One Sequence",
+        "scenario": "Basic assay submission.",
+        "prompt": "Prepare an Adaptyv submission plan for one protein sequence, including FASTA formatting, assay type, and metadata."
       },
       {
-        "title": "Plan A Batch Assay",
-        "scenario": "Team workflow",
-        "prompt": "Create a batch validation plan for 50 antibody variants with metadata, target selection, webhook tracking, and result review steps."
+        "title": "Run Batch Validation",
+        "scenario": "Multiple variants for lab testing.",
+        "prompt": "Design a batch Adaptyv validation workflow for these variants, with metadata, target details, and status tracking."
       },
       {
-        "title": "Optimize Then Validate",
-        "scenario": "Advanced workflow",
-        "prompt": "Design an optimization workflow that ranks protein variants with solubility and ESM checks before submitting the top candidates to Adaptyv."
+        "title": "Optimize Before Testing",
+        "scenario": "Advanced sequence optimization workflow.",
+        "prompt": "Build an end-to-end workflow that screens sequences for solubility, selects top candidates, and submits them to Adaptyv."
       }
     ],
     "output_examples": [
       {
-        "input": "I need to test whether three variants express well.",
-        "output": "A submission checklist with FASTA preparation, expression assay selection, metadata fields, authentication reminders, and status tracking steps."
+        "input": "Plan a binding assay for three antibody variants against a known target.",
+        "output": "The response outlines FASTA preparation, target metadata, binding assay selection, submission steps, and follow-up status checks."
       },
       {
-        "input": "My binding assay finished and I need to interpret results.",
-        "output": "A review outline covering affinity values, kinetic rates, quality metrics, confidence flags, and next iteration decisions."
+        "input": "Compare sequence optimization checks before expression testing.",
+        "output": "The response summarizes solubility predictors, residue constraints, naturalness checks, and candidate selection criteria."
       },
       {
-        "input": "I want to improve a low-solubility sequence before testing.",
-        "output": "A staged optimization plan using solubility screening, sequence redesign, naturalness scoring, and final experimental validation."
+        "input": "Explain how to retrieve completed Adaptyv results.",
+        "output": "The response describes status lookup, result download planning, local file naming, and webhook-based notification handling."
       }
     ],
     "best_practices": [
-      "Confirm API access, credits, and data-sharing approval before submitting sequences.",
-      "Validate FASTA formatting and sequence quality locally before each experiment.",
-      "Use webhooks or controlled polling for long-running experiments."
+      "Verify endpoint ownership before sending API keys or proprietary sequences.",
+      "Store API tokens in environment variables or a secrets manager.",
+      "Validate FASTA content and metadata before submitting experiments."
     ],
     "anti_patterns": [
-      "Do not commit API keys or `.env` files to version control.",
-      "Do not submit confidential protein sequences without organizational approval.",
-      "Do not treat computational scores as replacements for experimental validation."
+      "Submit confidential sequences without legal and data-handling approval.",
+      "Hard-code API keys or webhook secrets in prompts, notebooks, or repositories.",
+      "Poll long-running experiments aggressively instead of using webhooks or backoff."
     ],
     "faq": [
       {
-        "question": "What does this skill help me do?",
-        "answer": "It helps plan Adaptyv protein validation workflows, submit experiments, track status, retrieve results, and optimize sequences."
+        "question": "Do I need an Adaptyv account?",
+        "answer": "Yes. The skill describes API workflows that require approved Adaptyv access and a valid token."
       },
       {
-        "question": "Do I need an Adaptyv API key?",
-        "answer": "Yes. The examples require a user-provided API token from Adaptyv."
+        "question": "Which assay types are covered?",
+        "answer": "The references cover binding, expression, thermostability, and enzyme activity assays."
       },
       {
-        "question": "Can it run assays directly?",
-        "answer": "No. It guides API workflows for a cloud laboratory service that performs the experimental work."
+        "question": "Does this skill require network access?",
+        "answer": "Yes. The examples send requests to external laboratory and prediction services."
       },
       {
-        "question": "Does it send data to external services?",
-        "answer": "Yes. The documented workflows submit protein sequences and metadata to Adaptyv or prediction services."
+        "question": "Can it design new proteins by itself?",
+        "answer": "No. It helps prepare optimization and validation workflows for sequences you provide."
       },
       {
-        "question": "What experiment types are covered?",
-        "answer": "It covers binding assays, expression testing, thermostability measurements, and enzyme activity assays."
+        "question": "How long do results take?",
+        "answer": "The skill documentation says Adaptyv results are typically delivered in about 21 days."
       },
       {
-        "question": "Can Claude, Codex, and Claude Code use it?",
-        "answer": "Yes. The report lists support for Claude, Codex, and Claude Code compatible workflows."
+        "question": "Is it safe for confidential sequences?",
+        "answer": "Only after users verify endpoint ownership, provider agreements, and internal approval for external submission."
       }
     ]
   },

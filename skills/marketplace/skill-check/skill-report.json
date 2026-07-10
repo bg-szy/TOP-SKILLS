@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-05T18:37:30.841Z",
+    "generated_at": "2026-07-09T07:02:44.847Z",
     "slug": "jckjhns-skill-check",
     "source_url": "https://github.com/JckJhns/skill-check/tree/main/",
     "source_ref": "main",
@@ -9,7 +9,7 @@
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "2f7c205aa7cae3e8e4f14e4197ab85b1093272cb97e9c939420291e9b1dc0720",
-    "tree_hash": "8daf9eccb11a434b40683cda5c5308a472df9b09aac92f03053d46c30dcbb40e",
+    "tree_hash": "1b31a79f2337142fec7e5dfe9e98d0d1b930eeea0abd97a9a8c198ed87ca6e75",
     "provenance": {
       "model_requested": "gpt-5.5:high",
       "model_effective": "codex:gpt-5.5:high",
@@ -26,18 +26,18 @@
   },
   "skill": {
     "name": "skill-check",
-    "description": "Tests and audits Agent Skills for structure, security, eval coverage, script behavior, I/O contracts, and best-practice compliance.",
-    "summary": "Audit Agent Skills with structured static, functional, security, and quality checks.",
+    "description": "Tests and validates Agent Skills for Claude, Codex, and Claude Code. Use it to run quick, standard, or deep checks on an existing skill directory, including structure, security, evals, scripts, and output quality.",
+    "summary": "Validates existing Agent Skills with structured checks for quality, security, evals, scripts, and outputs.",
     "icon": "📦",
     "version": "1.0.0",
     "author": "JckJhns",
     "license": "MIT",
     "tags": [
-      "skill-audit",
-      "testing",
-      "security-review",
+      "agent-skills",
+      "skill-testing",
+      "security-audit",
       "evals",
-      "quality-assurance"
+      "quality-check"
     ],
     "supported_tools": [
       "claude",
@@ -54,26 +54,26 @@
     "category": "security"
   },
   "security_audit": {
-    "risk_level": "critical",
-    "is_blocked": true,
+    "risk_level": "high",
+    "is_blocked": false,
     "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "Most static pattern hits are documentation examples, Markdown formatting, or deliberately unsafe eval fixtures rather than active malicious code. No prompt injection evidence was found in the reviewed files. Two semantic risks remain: target script execution in Standard and Deep checks, and unpinned pip installation guidance using --break-system-packages.",
+    "summary": "Most static findings are false positives from Markdown examples, validation documentation, and deliberate eval fixtures. I found two semantic risks: execution of target skill scripts during Standard or Deep checks, and package installation guidance that can alter system Python. No prompt injection attempt was found in the reviewed files.",
     "remediation": [
       {
-        "issue": "Untrusted target scripts can be executed during Standard and Deep checks.",
-        "suggestion": "Require explicit user confirmation before every target script execution, run scripts in a sandbox, and disable network access unless requested.",
+        "issue": "Standard and Deep checks execute scripts from the target skill.",
+        "suggestion": "Require explicit confirmation before all script execution, recommend sandboxing, and default unknown community skills to Quick Check.",
         "severity": "high"
       },
       {
-        "issue": "Mock dependency guidance installs packages with --break-system-packages.",
-        "suggestion": "Use a virtual environment, pin package versions, avoid --break-system-packages, and ask before installing any dependency.",
-        "severity": "high"
-      },
-      {
-        "issue": "Dangerous fixture scripts are bundled as normal Python files under evals.",
-        "suggestion": "Keep insecure fixtures clearly labeled, do not execute them in evals, and add guard comments near each dangerous function.",
+        "issue": "Mock generation guidance uses pip install with --break-system-packages.",
+        "suggestion": "Replace these commands with virtual environment guidance, dependency preflight checks, or user-approved project-local installs.",
         "severity": "medium"
+      },
+      {
+        "issue": "Skill discovery can search common personal and private skill locations.",
+        "suggestion": "Ask for a path first and confirm before searching broad user skill directories or MCP filesystem roots.",
+        "severity": "low"
       }
     ],
     "risk_factor_evidence": [
@@ -1634,722 +1634,722 @@
       {
         "id": "blocker:CONTRIBUTING.md:59:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line is contributor guidance about cross-platform compatibility. It does not instruct host reconnaissance or data collection."
+        "confidence": 0.95,
+        "reason": "The line discusses cross-platform compatibility for contributors. It is not collecting system information or probing the host."
       },
       {
         "id": "scripts:evals/evals.json:60:dynamic-code-evaluation-with-eval",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The JSON text describes expected security findings for the intentionally insecure fixture. It is not executable code and does not evaluate dynamic input."
+        "reason": "This is eval metadata describing expected security findings for test fixtures. The JSON text does not execute code or perform reconnaissance."
       },
       {
         "id": "scripts:evals/evals.json:67:dynamic-code-evaluation-with-eval",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The JSON text describes expected security findings for the intentionally insecure fixture. It is not executable code and does not evaluate dynamic input."
+        "reason": "This is eval metadata describing expected security findings for test fixtures. The JSON text does not execute code or perform reconnaissance."
       },
       {
         "id": "blocker:evals/evals.json:88:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The finding points to an expected-output sentence in the eval catalog. It does not inspect the system or reveal host information."
+        "confidence": 0.96,
+        "reason": "This is eval metadata describing expected security findings for test fixtures. The JSON text does not execute code or perform reconnaissance."
       },
       {
         "id": "filesystem:evals/files/broken-skill/scripts/convert.py:15:python-file-write-append",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The write occurs in a bundled broken-skill eval fixture and targets the caller-selected output file for conversion testing. No hidden path, exfiltration, or command behavior is present."
+        "confidence": 0.88,
+        "reason": "This fixture writes a conversion output path during a controlled broken-skill test. It does not target hidden or sensitive locations."
       },
       {
         "id": "blocker:evals/files/healthy-skill/scripts/extract_key_points.py:16:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line only prints an input validation error for non-UTF-8 text. It does not gather system information or perform reconnaissance."
+        "confidence": 0.94,
+        "reason": "The line reports a UTF-8 validation error for a supplied text file. It is normal error handling, not system reconnaissance."
       },
       {
         "id": "scripts:evals/files/insecure-skill/scripts/fetch_data.py:27:dynamic-code-evaluation-with-eval",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This file is an eval fixture explicitly labeled as deliberately insecure test material. The pattern is real inside the fixture, but it is not active skill logic or hidden behavior."
+        "reason": "The file is explicitly marked as a test fixture containing deliberate anti-patterns for SkillCheck to detect. It is not active skill runtime code."
       },
       {
         "id": "external_commands:evals/files/insecure-skill/scripts/fetch_data.py:21:python-os-system",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This file is an eval fixture explicitly labeled as deliberately insecure test material. The pattern is real inside the fixture, but it is not active skill logic or hidden behavior."
+        "reason": "The file is explicitly marked as a test fixture containing deliberate anti-patterns for SkillCheck to detect. It is not active skill runtime code."
       },
       {
         "id": "network:evals/files/insecure-skill/scripts/fetch_data.py:15:python-http-libraries",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This file is an eval fixture explicitly labeled as deliberately insecure test material. The pattern is real inside the fixture, but it is not active skill logic or hidden behavior."
+        "reason": "The file is explicitly marked as a test fixture containing deliberate anti-patterns for SkillCheck to detect. It is not active skill runtime code."
       },
       {
         "id": "filesystem:evals/files/insecure-skill/scripts/fetch_data.py:16:python-file-write-append",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This file is an eval fixture explicitly labeled as deliberately insecure test material. The pattern is real inside the fixture, but it is not active skill logic or hidden behavior."
+        "reason": "The file is explicitly marked as a test fixture containing deliberate anti-patterns for SkillCheck to detect. It is not active skill runtime code."
       },
       {
         "id": "filesystem:evals/files/insecure-skill/scripts/fetch_data.py:32:python-file-write-append",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This file is an eval fixture explicitly labeled as deliberately insecure test material. The pattern is real inside the fixture, but it is not active skill logic or hidden behavior."
+        "reason": "The file is explicitly marked as a test fixture containing deliberate anti-patterns for SkillCheck to detect. It is not active skill runtime code."
       },
       {
         "id": "env_access:evals/files/insecure-skill/scripts/fetch_data.py:11:generic-api-secret-keys",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "This file is an eval fixture explicitly labeled as deliberately insecure test material. The pattern is real inside the fixture, but it is not active skill logic or hidden behavior."
+        "reason": "The file is explicitly marked as a test fixture containing deliberate anti-patterns for SkillCheck to detect. It is not active skill runtime code."
       },
       {
         "id": "filesystem:README.md:46:hidden-file-in-home-directory",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The line is a manual installation example that copies the skill into the user's Claude skills directory. It does not read hidden files or access secrets."
+        "confidence": 0.95,
+        "reason": "The README shows normal installation into the Claude skills directory. It does not read secrets or access hidden user data."
       },
       {
         "id": "filesystem:README.md:46:hidden-file-access",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The line is a manual installation example that copies the skill into the user's Claude skills directory. It does not read hidden files or access secrets."
+        "confidence": 0.95,
+        "reason": "The README shows normal installation into the Claude skills directory. It does not read secrets or access hidden user data."
       },
       {
         "id": "blocker:references/best-practices.md:150:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line is best-practice guidance or a sample score entry. It does not instruct reconnaissance or access to system data."
+        "confidence": 0.93,
+        "reason": "The line is best-practice guidance for evaluating skill quality. It does not collect host information or access sensitive files."
       },
       {
         "id": "blocker:references/best-practices.md:190:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line is best-practice guidance or a sample score entry. It does not instruct reconnaissance or access to system data."
+        "confidence": 0.93,
+        "reason": "The line is best-practice guidance for evaluating skill quality. It does not collect host information or access sensitive files."
       },
       {
         "id": "blocker:references/best-practices.md:255:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line is best-practice guidance or a sample score entry. It does not instruct reconnaissance or access to system data."
+        "confidence": 0.93,
+        "reason": "The line is best-practice guidance for evaluating skill quality. It does not collect host information or access sensitive files."
       },
       {
         "id": "blocker:references/best-practices.md:298:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line is best-practice guidance or a sample score entry. It does not instruct reconnaissance or access to system data."
+        "confidence": 0.93,
+        "reason": "The line is best-practice guidance for evaluating skill quality. It does not collect host information or access sensitive files."
       },
       {
         "id": "blocker:references/best-practices.md:340:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line is best-practice guidance or a sample score entry. It does not instruct reconnaissance or access to system data."
+        "confidence": 0.93,
+        "reason": "The line is best-practice guidance for evaluating skill quality. It does not collect host information or access sensitive files."
       },
       {
         "id": "blocker:references/best-practices.md:401:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line is best-practice guidance or a sample score entry. It does not instruct reconnaissance or access to system data."
+        "confidence": 0.93,
+        "reason": "The line is best-practice guidance for evaluating skill quality. It does not collect host information or access sensitive files."
       },
       {
         "id": "blocker:references/deep-check.md:20:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line describes test input categories or output evaluation in Deep Check. It does not inspect host configuration or gather system information."
+        "confidence": 0.91,
+        "reason": "The line describes edge-case or workflow validation for a user-requested skill test. It is not system reconnaissance."
       },
       {
         "id": "blocker:references/deep-check.md:23:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line describes test input categories or output evaluation in Deep Check. It does not inspect host configuration or gather system information."
+        "confidence": 0.91,
+        "reason": "The line describes edge-case or workflow validation for a user-requested skill test. It is not system reconnaissance."
       },
       {
         "id": "blocker:references/deep-check.md:59:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line describes test input categories or output evaluation in Deep Check. It does not inspect host configuration or gather system information."
+        "confidence": 0.91,
+        "reason": "The line describes edge-case or workflow validation for a user-requested skill test. It is not system reconnaissance."
       },
       {
         "id": "blocker:references/eval-schema.md:24:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line is eval schema documentation or an example expected output. It is not host reconnaissance or system inspection."
+        "confidence": 0.93,
+        "reason": "This schema reference describes eval fields, validation, and example expectations. It does not perform reconnaissance or execute code."
       },
       {
         "id": "blocker:references/eval-schema.md:36:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line is eval schema documentation or an example expected output. It is not host reconnaissance or system inspection."
+        "confidence": 0.93,
+        "reason": "This schema reference describes eval fields, validation, and example expectations. It does not perform reconnaissance or execute code."
       },
       {
         "id": "blocker:references/eval-schema.md:73:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line is eval schema documentation or an example expected output. It is not host reconnaissance or system inspection."
+        "confidence": 0.93,
+        "reason": "This schema reference describes eval fields, validation, and example expectations. It does not perform reconnaissance or execute code."
       },
       {
         "id": "blocker:references/eval-schema.md:80:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line is eval schema documentation or an example expected output. It is not host reconnaissance or system inspection."
+        "confidence": 0.93,
+        "reason": "This schema reference describes eval fields, validation, and example expectations. It does not perform reconnaissance or execute code."
       },
       {
         "id": "blocker:references/eval-schema.md:96:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line is eval schema documentation or an example expected output. It is not host reconnaissance or system inspection."
+        "confidence": 0.93,
+        "reason": "This schema reference describes eval fields, validation, and example expectations. It does not perform reconnaissance or execute code."
       },
       {
         "id": "blocker:references/eval-schema.md:148:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line is eval schema documentation or an example expected output. It is not host reconnaissance or system inspection."
+        "confidence": 0.93,
+        "reason": "This schema reference describes eval fields, validation, and example expectations. It does not perform reconnaissance or execute code."
       },
       {
         "id": "blocker:references/eval-schema.md:153:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line is eval schema documentation or an example expected output. It is not host reconnaissance or system inspection."
+        "confidence": 0.93,
+        "reason": "This schema reference describes eval fields, validation, and example expectations. It does not perform reconnaissance or execute code."
       },
       {
         "id": "blocker:references/eval-schema.md:171:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line is eval schema documentation or an example expected output. It is not host reconnaissance or system inspection."
+        "confidence": 0.93,
+        "reason": "This schema reference describes eval fields, validation, and example expectations. It does not perform reconnaissance or execute code."
       },
       {
         "id": "external_commands:references/example-run.md:59:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticked command is inside a worked example showing a target skill invocation. It is reference documentation, not hidden execution by this package."
+        "confidence": 0.87,
+        "reason": "The command is a worked example for testing a sample skill script. It is documentation, not hidden execution by this skill package."
       },
       {
         "id": "blocker:references/example-run.md:147:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line is sample report text from a worked example. It does not perform reconnaissance or access host state."
+        "confidence": 0.91,
+        "reason": "The line is sample report evidence from a worked example. It does not inspect or enumerate the host system."
       },
       {
         "id": "blocker:references/example-run.md:172:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line is sample report text from a worked example. It does not perform reconnaissance or access host state."
+        "confidence": 0.91,
+        "reason": "The line is sample report evidence from a worked example. It does not inspect or enumerate the host system."
       },
       {
         "id": "blocker:references/example-run.md:194:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line is sample report text from a worked example. It does not perform reconnaissance or access host state."
+        "confidence": 0.91,
+        "reason": "The line is sample report evidence from a worked example. It does not inspect or enumerate the host system."
       },
       {
         "id": "blocker:references/example-run.md:279:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line is sample report text from a worked example. It does not perform reconnaissance or access host state."
+        "confidence": 0.91,
+        "reason": "The line is sample report evidence from a worked example. It does not inspect or enumerate the host system."
       },
       {
         "id": "blocker:references/example-run.md:288:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line is sample report text from a worked example. It does not perform reconnaissance or access host state."
+        "confidence": 0.91,
+        "reason": "The line is sample report evidence from a worked example. It does not inspect or enumerate the host system."
       },
       {
         "id": "blocker:references/example-run.md:406:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line is sample report text from a worked example. It does not perform reconnaissance or access host state."
+        "confidence": 0.91,
+        "reason": "The line is sample report evidence from a worked example. It does not inspect or enumerate the host system."
       },
       {
         "id": "filesystem:references/finding-the-skill.md:31:hidden-file-in-home-directory",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The hidden path is listed as a normal Claude Code personal skill location for user-requested skill discovery. The workflow asks for confirmation before proceeding and is not secret harvesting."
+        "confidence": 0.84,
+        "reason": "The path is a documented Claude skills location used to find a user-requested skill. It is not credential access or secret file access."
       },
       {
         "id": "filesystem:references/finding-the-skill.md:31:hidden-file-access",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The hidden path is listed as a normal Claude Code personal skill location for user-requested skill discovery. The workflow asks for confirmation before proceeding and is not secret harvesting."
+        "confidence": 0.84,
+        "reason": "The path is a documented Claude skills location used to find a user-requested skill. It is not credential access or secret file access."
       },
       {
         "id": "blocker:references/finding-the-skill.md:10:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The line describes how to locate the user-requested skill from conversation context or common skill directories. This is bounded discovery for the audit task, not host reconnaissance."
+        "confidence": 0.9,
+        "reason": "The text helps locate a skill from conversation context or uploads. It does not instruct broad host reconnaissance."
       },
       {
         "id": "blocker:references/finding-the-skill.md:11:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The line describes how to locate the user-requested skill from conversation context or common skill directories. This is bounded discovery for the audit task, not host reconnaissance."
+        "confidence": 0.9,
+        "reason": "The text helps locate a skill from conversation context or uploads. It does not instruct broad host reconnaissance."
       },
       {
         "id": "blocker:references/finding-the-skill.md:13:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The line describes how to locate the user-requested skill from conversation context or common skill directories. This is bounded discovery for the audit task, not host reconnaissance."
+        "confidence": 0.9,
+        "reason": "The text helps locate a skill from conversation context or uploads. It does not instruct broad host reconnaissance."
       },
       {
         "id": "filesystem:references/mock-files.md:59:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The command redirects import-check errors to /dev/null while checking optional package availability. This is a benign shell redirection in documentation."
+        "confidence": 0.92,
+        "reason": "The shell examples redirect stderr to /dev/null while checking optional package availability. This is standard command-line output handling."
       },
       {
         "id": "filesystem:references/mock-files.md:60:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The command redirects import-check errors to /dev/null while checking optional package availability. This is a benign shell redirection in documentation."
+        "confidence": 0.92,
+        "reason": "The shell examples redirect stderr to /dev/null while checking optional package availability. This is standard command-line output handling."
       },
       {
         "id": "filesystem:references/mock-files.md:61:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The command redirects import-check errors to /dev/null while checking optional package availability. This is a benign shell redirection in documentation."
+        "confidence": 0.92,
+        "reason": "The shell examples redirect stderr to /dev/null while checking optional package availability. This is standard command-line output handling."
       },
       {
         "id": "filesystem:references/mock-files.md:62:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The command redirects import-check errors to /dev/null while checking optional package availability. This is a benign shell redirection in documentation."
+        "confidence": 0.92,
+        "reason": "The shell examples redirect stderr to /dev/null while checking optional package availability. This is standard command-line output handling."
       },
       {
         "id": "filesystem:references/mock-files.md:63:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The command redirects import-check errors to /dev/null while checking optional package availability. This is a benign shell redirection in documentation."
+        "confidence": 0.92,
+        "reason": "The shell examples redirect stderr to /dev/null while checking optional package availability. This is standard command-line output handling."
       },
       {
         "id": "filesystem:references/mock-files.md:98:python-file-write-append",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The file writes appear in documented mock-file generator examples that write to explicit output paths. They are not hidden writes, persistence, or exfiltration logic."
+        "confidence": 0.88,
+        "reason": "The write examples create mock test inputs at caller-provided output paths. They are documented generators, not hidden or sensitive file writes."
       },
       {
         "id": "filesystem:references/mock-files.md:135:python-file-write-append",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The file writes appear in documented mock-file generator examples that write to explicit output paths. They are not hidden writes, persistence, or exfiltration logic."
+        "confidence": 0.88,
+        "reason": "The write examples create mock test inputs at caller-provided output paths. They are documented generators, not hidden or sensitive file writes."
       },
       {
         "id": "filesystem:references/mock-files.md:157:python-file-write-append",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The file writes appear in documented mock-file generator examples that write to explicit output paths. They are not hidden writes, persistence, or exfiltration logic."
+        "confidence": 0.88,
+        "reason": "The write examples create mock test inputs at caller-provided output paths. They are documented generators, not hidden or sensitive file writes."
       },
       {
         "id": "filesystem:references/mock-files.md:182:python-file-write-append",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The file writes appear in documented mock-file generator examples that write to explicit output paths. They are not hidden writes, persistence, or exfiltration logic."
+        "confidence": 0.88,
+        "reason": "The write examples create mock test inputs at caller-provided output paths. They are documented generators, not hidden or sensitive file writes."
       },
       {
         "id": "filesystem:references/mock-files.md:324:python-file-write-append",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The file writes appear in documented mock-file generator examples that write to explicit output paths. They are not hidden writes, persistence, or exfiltration logic."
+        "confidence": 0.88,
+        "reason": "The write examples create mock test inputs at caller-provided output paths. They are documented generators, not hidden or sensitive file writes."
       },
       {
         "id": "filesystem:references/mock-files.md:336:python-archive-libraries",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The archive usage is a ZIP mock-file generation example for testing skills that accept archives. It does not extract untrusted archives or write outside the requested output."
+        "reason": "The zipfile usage builds a mock archive for input testing. There is no extraction of untrusted archives or path traversal behavior."
       },
       {
         "id": "filesystem:references/mock-files.md:340:python-archive-libraries",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The archive usage is a ZIP mock-file generation example for testing skills that accept archives. It does not extract untrusted archives or write outside the requested output."
+        "reason": "The zipfile usage builds a mock archive for input testing. There is no extraction of untrusted archives or path traversal behavior."
       },
       {
         "id": "blocker:references/mock-files.md:305:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The text describes mock input generation or validation examples. It does not perform system reconnaissance."
+        "confidence": 0.91,
+        "reason": "The line describes generating benign mock files for tests. It is not reconnaissance or unsafe filesystem access."
       },
       {
         "id": "blocker:references/mock-files.md:350:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The text describes mock input generation or validation examples. It does not perform system reconnaissance."
+        "confidence": 0.91,
+        "reason": "The line describes generating benign mock files for tests. It is not reconnaissance or unsafe filesystem access."
       },
       {
         "id": "blocker:references/mock-files.md:352:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The text describes mock input generation or validation examples. It does not perform system reconnaissance."
+        "confidence": 0.91,
+        "reason": "The line describes generating benign mock files for tests. It is not reconnaissance or unsafe filesystem access."
       },
       {
         "id": "blocker:references/mock-files.md:362:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The text describes mock input generation or validation examples. It does not perform system reconnaissance."
+        "confidence": 0.91,
+        "reason": "The line describes generating benign mock files for tests. It is not reconnaissance or unsafe filesystem access."
       },
       {
         "id": "scripts:references/quick-check.md:300:dynamic-code-evaluation-with-eval",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This line is part of the security-review checklist that tells reviewers which dangerous patterns to flag. It is documentation about detection, not an instruction to execute or access those targets."
+        "confidence": 0.97,
+        "reason": "This section lists dangerous patterns that SkillCheck should flag in other skills. It is not instructing the agent to execute or access those paths."
       },
       {
         "id": "external_commands:references/quick-check.md:298:python-subprocess-run",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This line is part of the security-review checklist that tells reviewers which dangerous patterns to flag. It is documentation about detection, not an instruction to execute or access those targets."
+        "confidence": 0.97,
+        "reason": "This section lists dangerous patterns that SkillCheck should flag in other skills. It is not instructing the agent to execute or access those paths."
       },
       {
         "id": "external_commands:references/quick-check.md:298:python-os-system",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This line is part of the security-review checklist that tells reviewers which dangerous patterns to flag. It is documentation about detection, not an instruction to execute or access those targets."
+        "confidence": 0.97,
+        "reason": "This section lists dangerous patterns that SkillCheck should flag in other skills. It is not instructing the agent to execute or access those paths."
       },
       {
         "id": "filesystem:references/quick-check.md:306:hidden-file-in-home-directory",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This line is part of the security-review checklist that tells reviewers which dangerous patterns to flag. It is documentation about detection, not an instruction to execute or access those targets."
+        "confidence": 0.97,
+        "reason": "This section lists dangerous patterns that SkillCheck should flag in other skills. It is not instructing the agent to execute or access those paths."
       },
       {
         "id": "filesystem:references/quick-check.md:306:hidden-file-access",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This line is part of the security-review checklist that tells reviewers which dangerous patterns to flag. It is documentation about detection, not an instruction to execute or access those targets."
+        "confidence": 0.97,
+        "reason": "This section lists dangerous patterns that SkillCheck should flag in other skills. It is not instructing the agent to execute or access those paths."
       },
       {
         "id": "filesystem:references/quick-check.md:112:python-archive-libraries",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The ZIP usage is a static file validity check for Office-style documents. It checks file type only and does not extract archive contents."
+        "reason": "The zipfile check validates document containers such as DOCX, PPTX, and XLSX. It does not extract untrusted archive contents."
       },
       {
         "id": "filesystem:references/quick-check.md:113:python-archive-libraries",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The ZIP usage is a static file validity check for Office-style documents. It checks file type only and does not extract archive contents."
+        "reason": "The zipfile check validates document containers such as DOCX, PPTX, and XLSX. It does not extract untrusted archive contents."
       },
       {
         "id": "obfuscation:references/quick-check.md:142:hex-encoded-characters",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The bytes are documented file signature constants for font validation. They are not obfuscated payload content."
+        "reason": "The hex bytes are known font magic headers used to validate font files. They are not obfuscated executable content."
       },
       {
         "id": "sensitive:references/quick-check.md:306:ssh-directory-access",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This line is part of the security-review checklist that tells reviewers which dangerous patterns to flag. It is documentation about detection, not an instruction to execute or access those targets."
+        "confidence": 0.97,
+        "reason": "This section lists dangerous patterns that SkillCheck should flag in other skills. It is not instructing the agent to execute or access those paths."
       },
       {
         "id": "blocker:references/quick-check.md:57:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "The line is a validation instruction or expected output example in the Quick Check guide. It does not gather host information."
+        "reason": "The text is part of validation guidance for safe file integrity checks. It is not system reconnaissance."
       },
       {
         "id": "blocker:references/quick-check.md:71:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "The line is a validation instruction or expected output example in the Quick Check guide. It does not gather host information."
+        "reason": "The text is part of validation guidance for safe file integrity checks. It is not system reconnaissance."
       },
       {
         "id": "blocker:references/quick-check.md:78:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "The line is a validation instruction or expected output example in the Quick Check guide. It does not gather host information."
+        "reason": "The text is part of validation guidance for safe file integrity checks. It is not system reconnaissance."
       },
       {
         "id": "blocker:references/quick-check.md:108:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "The line is a validation instruction or expected output example in the Quick Check guide. It does not gather host information."
+        "reason": "The text is part of validation guidance for safe file integrity checks. It is not system reconnaissance."
       },
       {
         "id": "blocker:references/quick-check.md:113:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "The line is a validation instruction or expected output example in the Quick Check guide. It does not gather host information."
+        "reason": "The text is part of validation guidance for safe file integrity checks. It is not system reconnaissance."
       },
       {
         "id": "blocker:references/quick-check.md:114:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "The line is a validation instruction or expected output example in the Quick Check guide. It does not gather host information."
+        "reason": "The text is part of validation guidance for safe file integrity checks. It is not system reconnaissance."
       },
       {
         "id": "blocker:references/quick-check.md:128:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "The line is a validation instruction or expected output example in the Quick Check guide. It does not gather host information."
+        "reason": "The text is part of validation guidance for safe file integrity checks. It is not system reconnaissance."
       },
       {
         "id": "external_commands:references/report-format.md:238:python-subprocess-run",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line is an example report entry that describes sanitized subprocess usage. It is not code in this skill and does not run a command."
+        "confidence": 0.94,
+        "reason": "This file contains report examples and placeholder filenames. The backticks mark Markdown code spans, not shell execution."
       },
       {
         "id": "external_commands:references/report-format.md:234:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticks are Markdown formatting around example paths or error text in a report template. They are not shell backtick execution."
+        "confidence": 0.94,
+        "reason": "This file contains report examples and placeholder filenames. The backticks mark Markdown code spans, not shell execution."
       },
       {
         "id": "external_commands:references/report-format.md:238:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticks are Markdown formatting around example paths or error text in a report template. They are not shell backtick execution."
+        "confidence": 0.94,
+        "reason": "This file contains report examples and placeholder filenames. The backticks mark Markdown code spans, not shell execution."
       },
       {
         "id": "external_commands:references/report-format.md:281:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticks are Markdown formatting around example paths or error text in a report template. They are not shell backtick execution."
+        "confidence": 0.94,
+        "reason": "This file contains report examples and placeholder filenames. The backticks mark Markdown code spans, not shell execution."
       },
       {
         "id": "external_commands:references/report-format.md:282:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticks are Markdown formatting around example paths or error text in a report template. They are not shell backtick execution."
+        "confidence": 0.94,
+        "reason": "This file contains report examples and placeholder filenames. The backticks mark Markdown code spans, not shell execution."
       },
       {
         "id": "external_commands:references/report-format.md:302:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticks are Markdown formatting around example paths or error text in a report template. They are not shell backtick execution."
+        "confidence": 0.94,
+        "reason": "This file contains report examples and placeholder filenames. The backticks mark Markdown code spans, not shell execution."
       },
       {
         "id": "external_commands:references/report-format.md:304:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticks are Markdown formatting around example paths or error text in a report template. They are not shell backtick execution."
+        "confidence": 0.94,
+        "reason": "This file contains report examples and placeholder filenames. The backticks mark Markdown code spans, not shell execution."
       },
       {
         "id": "external_commands:references/report-format.md:370:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticks are Markdown formatting around example paths or error text in a report template. They are not shell backtick execution."
+        "confidence": 0.94,
+        "reason": "This file contains report examples and placeholder filenames. The backticks mark Markdown code spans, not shell execution."
       },
       {
         "id": "external_commands:references/report-format.md:377:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticks are Markdown formatting around example paths or error text in a report template. They are not shell backtick execution."
+        "confidence": 0.94,
+        "reason": "This file contains report examples and placeholder filenames. The backticks mark Markdown code spans, not shell execution."
       },
       {
         "id": "external_commands:references/report-format.md:378:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticks are Markdown formatting around example paths or error text in a report template. They are not shell backtick execution."
+        "confidence": 0.94,
+        "reason": "This file contains report examples and placeholder filenames. The backticks mark Markdown code spans, not shell execution."
       },
       {
         "id": "external_commands:references/report-format.md:391:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The backticks are Markdown formatting around example paths or error text in a report template. They are not shell backtick execution."
+        "confidence": 0.94,
+        "reason": "This file contains report examples and placeholder filenames. The backticks mark Markdown code spans, not shell execution."
       },
       {
         "id": "blocker:references/report-format.md:211:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "The line is sample report formatting text. It does not collect system information."
+        "reason": "This file contains report examples and placeholder filenames. The backticks mark Markdown code spans, not shell execution."
       },
       {
         "id": "blocker:references/report-format.md:213:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "The line is sample report formatting text. It does not collect system information."
+        "reason": "This file contains report examples and placeholder filenames. The backticks mark Markdown code spans, not shell execution."
       },
       {
         "id": "blocker:references/report-format.md:350:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.94,
-        "reason": "The line is sample report formatting text. It does not collect system information."
+        "reason": "This file contains report examples and placeholder filenames. The backticks mark Markdown code spans, not shell execution."
       },
       {
         "id": "scripts:references/standard-check.md:124:dynamic-code-evaluation-with-eval",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The detector matched the word Eval in eval regression, not a call to eval(). This is a testing concept, not dynamic code execution."
+        "confidence": 0.94,
+        "reason": "The word eval refers to regression test cases, not Python eval() or dynamic code execution. It is documentation terminology."
       },
       {
         "id": "filesystem:references/standard-check.md:73:temp-directory-access",
         "verdict": "false_positive",
-        "confidence": 0.89,
-        "reason": "The /tmp path is a documented temporary output location for a mock script execution test. It is not a hidden or sensitive path."
+        "confidence": 0.86,
+        "reason": "The command writes a sample test output under /tmp during script validation. Temporary output for tests is expected and bounded."
       },
       {
         "id": "blocker:references/standard-check.md:29:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The line describes validation, mock input, or output checks within the Standard workflow. It does not collect system information."
+        "confidence": 0.91,
+        "reason": "The text describes validation steps and output checks for a requested skill test. It is not host reconnaissance."
       },
       {
         "id": "blocker:references/standard-check.md:40:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The line describes validation, mock input, or output checks within the Standard workflow. It does not collect system information."
+        "confidence": 0.91,
+        "reason": "The text describes validation steps and output checks for a requested skill test. It is not host reconnaissance."
       },
       {
         "id": "blocker:references/standard-check.md:68:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The line describes validation, mock input, or output checks within the Standard workflow. It does not collect system information."
+        "confidence": 0.91,
+        "reason": "The text describes validation steps and output checks for a requested skill test. It is not host reconnaissance."
       },
       {
         "id": "blocker:references/standard-check.md:80:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The line describes validation, mock input, or output checks within the Standard workflow. It does not collect system information."
+        "confidence": 0.91,
+        "reason": "The text describes validation steps and output checks for a requested skill test. It is not host reconnaissance."
       },
       {
         "id": "external_commands:SKILL.md:43:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:49:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:69:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:74:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:79:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:89:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:99:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:100:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:101:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:104:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:132:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:134:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:142:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:154:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:156:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:157:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:158:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:160:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:193:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       },
       {
         "id": "external_commands:SKILL.md:204:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detector matched Markdown inline code formatting for filenames, directories, or reference documents. These backticks are not Ruby or shell command execution."
+        "confidence": 0.93,
+        "reason": "The hit is a Markdown code span or reference to bundled skill documentation. It is not Ruby backtick execution or a shell command."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Untrusted Target Script Execution",
-        "description": "Standard and Deep workflows instruct the agent to execute scripts from the skill being tested after static review. This can run untrusted code from a user-selected skill directory if the review misses a dangerous pattern.",
+        "title": "Target Skill Script Execution During Standard Checks",
+        "description": "Standard and Deep workflows include executing scripts from the skill being tested. This can run untrusted community code if the user selects an unsafe target skill.",
         "severity": "high",
         "locations": [
           {
-            "file": "references/standard-check.md",
-            "line_start": 16,
-            "line_end": 19
+            "file": "SKILL.md",
+            "line_start": 157,
+            "line_end": 159
           },
           {
             "file": "references/standard-check.md",
@@ -2357,13 +2357,13 @@
             "line_end": 75
           }
         ],
-        "confidence": 0.92,
-        "confidence_reasoning": "The guide explicitly runs scripts from the target skill and only requires a warning when Critical findings were detected. This is a real execution risk for untrusted skills, although it supports the testing purpose."
+        "confidence": 0.88,
+        "confidence_reasoning": "The instructions explicitly include script execution with mock inputs and sample commands. Existing warnings reduce risk, but execution remains part of the default Standard path."
       },
       {
-        "title": "Unpinned Package Installation With System Package Override",
-        "description": "Mock generation guidance tells the agent to install third-party packages with pip and --break-system-packages when binary formats are needed. This can modify the host Python environment and exposes users to dependency supply-chain risk.",
-        "severity": "high",
+        "title": "System Python Package Installation Guidance",
+        "description": "The mock file guidance tells agents to install packages with --break-system-packages. That can modify the host Python environment and bypass package manager safeguards.",
+        "severity": "medium",
         "locations": [
           {
             "file": "references/mock-files.md",
@@ -2372,36 +2372,19 @@
           }
         ],
         "confidence": 0.9,
-        "confidence_reasoning": "The dependency section directly recommends pip install commands without pinning, hashes, virtual environments, or mandatory user confirmation. The --break-system-packages flag increases the environment modification risk."
+        "confidence_reasoning": "The commands are explicit pip install examples using --break-system-packages. The packages are common, but the installation method is risky for shared environments."
       }
     ],
-    "critical_findings": [
-      {
-        "title": "SSH directory access",
-        "description": "- Writing to sensitive paths: `/etc/`, `/usr/`, `~/.ssh/`, `~/.config/`, system dirs",
-        "locations": [
-          {
-            "file": "references/quick-check.md",
-            "line_start": 306,
-            "line_end": 306
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "sensitive",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed sensitive/critical static finding; AI dismissal overridden."
-      }
-    ],
+    "critical_findings": [],
     "high_findings": [
       {
-        "title": "Untrusted Target Script Execution",
-        "description": "Standard and Deep workflows instruct the agent to execute scripts from the skill being tested after static review. This can run untrusted code from a user-selected skill directory if the review misses a dangerous pattern.",
+        "title": "Target Skill Script Execution During Standard Checks",
+        "description": "Standard and Deep workflows include executing scripts from the skill being tested. This can run untrusted community code if the user selects an unsafe target skill.",
         "locations": [
           {
-            "file": "references/standard-check.md",
-            "line_start": 16,
-            "line_end": 19
+            "file": "SKILL.md",
+            "line_start": 157,
+            "line_end": 159
           },
           {
             "file": "references/standard-check.md",
@@ -2412,12 +2395,14 @@
         "review_kind": "security",
         "source_category": "semantic",
         "source_severity": "high",
-        "confidence": 0.92,
-        "confidence_reasoning": "The guide explicitly runs scripts from the target skill and only requires a warning when Critical findings were detected. This is a real execution risk for untrusted skills, although it supports the testing purpose."
-      },
+        "confidence": 0.88,
+        "confidence_reasoning": "The instructions explicitly include script execution with mock inputs and sample commands. Existing warnings reduce risk, but execution remains part of the default Standard path."
+      }
+    ],
+    "medium_findings": [
       {
-        "title": "Unpinned Package Installation With System Package Override",
-        "description": "Mock generation guidance tells the agent to install third-party packages with pip and --break-system-packages when binary formats are needed. This can modify the host Python environment and exposes users to dependency supply-chain risk.",
+        "title": "System Python Package Installation Guidance",
+        "description": "The mock file guidance tells agents to install packages with --break-system-packages. That can modify the host Python environment and bypass package manager safeguards.",
         "locations": [
           {
             "file": "references/mock-files.md",
@@ -2427,165 +2412,136 @@
         ],
         "review_kind": "security",
         "source_category": "semantic",
-        "source_severity": "high",
+        "source_severity": "medium",
         "confidence": 0.9,
-        "confidence_reasoning": "The dependency section directly recommends pip install commands without pinning, hashes, virtual environments, or mandatory user confirmation. The --break-system-packages flag increases the environment modification risk."
+        "confidence_reasoning": "The commands are explicit pip install examples using --break-system-packages. The packages are common, but the installation method is risky for shared environments."
       }
     ],
-    "medium_findings": [],
     "low_findings": [],
-    "dangerous_patterns": [
-      {
-        "title": "SSH directory access",
-        "description": "- Writing to sensitive paths: `/etc/`, `/usr/`, `~/.ssh/`, `~/.config/`, system dirs",
-        "locations": [
-          {
-            "file": "references/quick-check.md",
-            "line_start": 306,
-            "line_end": 306
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "sensitive",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed sensitive/critical static finding; AI dismissal overridden."
-      }
-    ],
+    "dangerous_patterns": [],
     "files_scanned": 22,
     "total_lines": 3439,
     "audit_model": "codex",
-    "audited_at": "2026-07-05T18:37:30.841Z",
-    "agent_auto_install_policy": "blocked",
-    "manual_install_policy": "allowed_with_warning"
+    "audited_at": "2026-07-09T07:02:44.847Z",
+    "agent_auto_install_policy": "confirmation_required",
+    "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Audit Agent Skills Before Release",
-    "value_statement": "Skill authors need reliable evidence before sharing a skill. SkillCheck guides Claude, Codex, and Claude Code through structured audits, eval checks, and security review.",
+    "user_title": "Validate Agent Skills Before Release",
+    "value_statement": "Skill authors need evidence that a skill works and does not expose users to avoidable risk. SkillCheck reviews structure, security, evals, scripts, and outputs through tiered checks.",
     "seo_keywords": [
-      "Claude",
-      "Codex",
-      "Claude Code",
+      "Claude skill testing",
+      "Codex skill audit",
+      "Claude Code validation",
       "Agent Skills",
-      "skill testing",
-      "skill audit",
-      "security review",
+      "skill security review",
       "eval regression",
-      "skill validation",
-      "best practices"
+      "skill quality checklist",
+      "AI skill marketplace",
+      "script execution checks",
+      "skill validation workflow"
     ],
     "actual_capabilities": [
-      "Runs Quick, Standard, and Deep audit workflows for Agent Skills.",
-      "Checks SKILL.md metadata, references, assets, scripts, and eval files.",
-      "Compares script invocations against actual script arguments.",
-      "Reviews bundled scripts and instructions for security risks.",
-      "Generates mock inputs for functional and I/O contract testing.",
-      "Produces structured reports with findings, evidence, and recommendations."
+      "Runs Quick, Standard, and Deep validation workflows for existing skill directories.",
+      "Checks SKILL.md frontmatter, references, assets, paths, dependencies, and cross-file consistency.",
+      "Compares documented script invocations with actual script arguments and outputs.",
+      "Reviews skill scripts and instructions for dangerous security patterns.",
+      "Processes evals/evals.json cases and records pass or fail evidence.",
+      "Generates mock inputs for common text, document, image, archive, and code file types."
     ],
     "limitations": [
-      "Standard and Deep workflows may execute scripts from the skill under test.",
-      "Some binary mock files need optional Python packages.",
-      "Security review is guidance-based and can miss novel malicious behavior.",
-      "Subjective output quality checks still require reviewer judgment."
+      "Standard and Deep checks may execute target skill scripts, so unsafe skills need sandboxing.",
+      "Binary mock generation may require optional Python packages that are not installed.",
+      "Static review can miss novel vulnerabilities or context-specific misuse.",
+      "It reports findings for existing skills and does not create or edit skills."
     ],
     "use_cases": [
       {
-        "title": "Validate a New Skill",
-        "description": "Run a release check before uploading or publishing a custom Agent Skill.",
+        "title": "Pre-release skill validation",
+        "description": "Run a structured check before publishing a new skill to users or a marketplace.",
         "target_user": "Skill author"
       },
       {
-        "title": "Review a Community Skill",
-        "description": "Inspect structure, scripts, and security risks before installing an unfamiliar skill.",
-        "target_user": "Marketplace reviewer"
+        "title": "Regression testing after changes",
+        "description": "Re-run evals, script tests, and output checks after updating a skill.",
+        "target_user": "Maintainer"
       },
       {
-        "title": "Regression Test Skill Changes",
-        "description": "Use existing evals and generated tests to catch behavior changes after edits.",
-        "target_user": "Maintainer"
+        "title": "Security-focused marketplace review",
+        "description": "Inspect scripts, file access, instructions, and execution risks before accepting a community skill.",
+        "target_user": "Marketplace reviewer"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Run a Quick Check",
-        "scenario": "Basic structural and security review",
-        "prompt": "Run a Quick Check on the skill in this folder and report the main issues."
+        "title": "Quick structure check",
+        "scenario": "Beginner validation before sharing a skill.",
+        "prompt": "Run a Quick Check on the skill at ./my-skill. Report structural, security, and best practice issues."
       },
       {
-        "title": "Check a Specific Skill Path",
-        "scenario": "User knows the skill location",
-        "prompt": "Audit the Agent Skill at <skill-path>. Focus on metadata, references, scripts, and security risks."
+        "title": "Standard functional check",
+        "scenario": "Routine validation for a skill with scripts or evals.",
+        "prompt": "Run a Standard Check on the skill at ./my-skill. Include eval regression, script checks, and I/O contract validation."
       },
       {
-        "title": "Run Standard Functional Tests",
-        "scenario": "Functional validation with mock inputs",
-        "prompt": "Run a Standard Check on <skill-path>. Show the test plan before executing any bundled scripts."
+        "title": "Security review only",
+        "scenario": "Focused review before executing any target skill code.",
+        "prompt": "Audit the skill at ./my-skill for instruction security and script risks. Ask before running any code that is flagged."
       },
       {
-        "title": "Perform Deep Release Review",
-        "scenario": "Pre-publication quality gate",
-        "prompt": "Run a Deep Check on <skill-path>. Include edge cases, eval regression, script behavior, and release recommendations."
+        "title": "Deep release gate",
+        "scenario": "Advanced review for public release.",
+        "prompt": "Run a Deep Check on ./my-skill. Include edge cases, workflow simulation, eval regression, and prioritized remediation."
       }
     ],
     "output_examples": [
       {
-        "input": "Run a Quick Check on a chart-generation skill.",
-        "output": [
-          "Summary verdict with passed and failed checks.",
-          "Security section listing any risky scripts or instructions.",
-          "Best-practice score with the most important fixes."
-        ]
+        "input": "Quick Check the chart skill before I share it.",
+        "output": "A concise report with a verdict, passed checks, failed checks, security findings, and prioritized fixes."
       },
       {
-        "input": "Run a Standard Check on a skill with one Python script.",
-        "output": [
-          "Test plan for static checks, eval regression, script tests, and I/O tests.",
-          "Execution results with stdout, stderr, exit status, and generated file checks.",
-          "Recommendations ordered by security and functional impact."
-        ]
+        "input": "Run a Standard Check on a skill that converts CSV files to reports.",
+        "output": "A validation report covering eval results, script execution status, mock input files, output format checks, and warnings."
       },
       {
-        "input": "Review an incomplete skill draft.",
-        "output": [
-          "Progress report that separates finished parts from missing parts.",
-          "Specific next steps for placeholders, missing files, and unclear outputs."
-        ]
+        "input": "Review this community skill for marketplace safety.",
+        "output": "A security-focused assessment that separates confirmed risks, false positives, execution concerns, and required remediation."
       }
     ],
     "best_practices": [
-      "Start with Quick Check before running any target skill scripts.",
-      "Review the proposed Standard or Deep test plan before execution.",
-      "Run script and dependency tests in a sandbox when reviewing community skills."
+      "Start with Quick Check for unknown skills, then decide whether execution-based tests are safe.",
+      "Review the test plan before Standard or Deep checks run target skill scripts.",
+      "Use an isolated workspace for mock files, generated outputs, and captured test evidence."
     ],
     "anti_patterns": [
-      "Do not execute target scripts before reading the security findings.",
-      "Do not treat the best-practice score as the whole release verdict.",
-      "Do not ignore cross-reference mismatches between SKILL.md and scripts."
+      "Do not run target scripts after critical security findings without explicit user approval.",
+      "Do not treat the best practice score as the same thing as the functional verdict.",
+      "Do not skip discovery and read only SKILL.md when a skill has supporting files."
     ],
     "faq": [
       {
-        "question": "What does SkillCheck test?",
-        "answer": "It checks skill structure, references, scripts, evals, security risks, I/O contracts, and best practices."
+        "question": "Does SkillCheck create or modify skills?",
+        "answer": "No. It tests existing skills and reports findings, recommendations, and evidence."
       },
       {
-        "question": "Which tools can use this skill?",
-        "answer": "The skill declares support for Claude, Codex, and Claude Code."
+        "question": "What is the default check depth?",
+        "answer": "Standard is the default. It includes static checks, eval regression, script tests, and basic output validation."
       },
       {
-        "question": "Does it execute code?",
-        "answer": "Quick Check does not execute target scripts. Standard and Deep checks can execute scripts after review."
+        "question": "Can it run without executing target scripts?",
+        "answer": "Yes. Use Quick Check for static structure, security, and best practice review only."
       },
       {
-        "question": "Can it prove a skill is secure?",
-        "answer": "No. It helps find common risks, but reviewers should still inspect high-risk code manually."
+        "question": "How does it handle dangerous scripts?",
+        "answer": "It runs security review first and instructs the agent to warn before executing scripts with critical findings."
       },
       {
-        "question": "When should I use Deep Check?",
-        "answer": "Use Deep Check before broad distribution or when you need edge-case and workflow coverage."
+        "question": "Does it support Claude, Codex, and Claude Code?",
+        "answer": "Yes. The skill is declared for Claude, Codex, and Claude Code compatible environments."
       },
       {
-        "question": "Does it create new skills?",
-        "answer": "No. SkillCheck tests existing skills. Use a separate authoring workflow to create or edit skills."
+        "question": "What evidence does a report include?",
+        "answer": "Reports include test IDs, pass or fail status, observed behavior, affected files, and suggested fixes."
       }
     ]
   },

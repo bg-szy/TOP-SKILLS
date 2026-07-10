@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T08:09:29.731Z",
+    "generated_at": "2026-07-09T17:37:41.037Z",
     "slug": "davila7-senior-frontend",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/development/senior-frontend",
     "source_ref": "main",
@@ -23,8 +23,8 @@
   },
   "skill": {
     "name": "senior-frontend",
-    "description": "Frontend development skill for React, Next.js, TypeScript, and Tailwind CSS workflows. It includes reference guidance and simple Python scripts for component scaffolding, bundle analysis, and frontend project review.",
-    "summary": "Guides React and Next.js frontend work with references and simple analysis scripts.",
+    "description": "Frontend development guidance for React, Next.js, TypeScript, and Tailwind projects. It includes reference docs and helper scripts for analysis-oriented workflows.",
+    "summary": "Guide React and Next.js frontend work with references and helper scripts.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
@@ -52,12 +52,22 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static command findings are false positives caused by Markdown code fences and inline file paths, not executable shell calls. The only confirmed findings are the three Python scripts that can overwrite caller-supplied output paths without checks. No prompt injection or malicious exfiltration intent was found.",
+    "summary": "Most static command findings are false positives from Markdown code fences and reference paths, not executable backtick code. Three scripts write reports to user-supplied output paths, which creates a bounded overwrite risk. No prompt injection, network access, credential exfiltration, or malicious intent was found.",
     "remediation": [
       {
-        "issue": "Unrestricted report output paths in Python scripts",
-        "suggestion": "Add overwrite confirmation, normalize the output path, and restrict writes to the project or a documented reports directory.",
+        "issue": "Unrestricted report output paths",
+        "suggestion": "Validate --output paths, avoid overwriting existing files by default, and prefer writing inside the requested project directory.",
         "severity": "medium"
+      },
+      {
+        "issue": "Impactful command examples in documentation",
+        "suggestion": "Mark install, Docker, and kubectl commands as examples that require explicit user confirmation before execution.",
+        "severity": "medium"
+      },
+      {
+        "issue": "Environment setup command can overwrite .env",
+        "suggestion": "Use a non-overwriting copy step or instruct users to check for an existing .env file first.",
+        "severity": "low"
       }
     ],
     "risk_factor_evidence": [
@@ -533,197 +543,199 @@
       {
         "id": "blocker:references/frontend_best_practices.md:81:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The matched text is an anti-patterns heading or bullet in frontend documentation. It does not request system reconnaissance, host enumeration, or bypass of security review."
+        "confidence": 0.96,
+        "reason": "The cited text is a frontend documentation heading or bullet about anti-patterns. It does not perform system reconnaissance or request host, user, process, or network enumeration."
       },
       {
         "id": "blocker:references/nextjs_optimization_guide.md:81:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The matched text is an anti-patterns heading or bullet in frontend documentation. It does not request system reconnaissance, host enumeration, or bypass of security review."
+        "confidence": 0.96,
+        "reason": "The cited text is a frontend documentation heading or bullet about anti-patterns. It does not perform system reconnaissance or request host, user, process, or network enumeration."
       },
       {
         "id": "blocker:references/react_patterns.md:81:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The matched text is an anti-patterns heading or bullet in frontend documentation. It does not request system reconnaissance, host enumeration, or bypass of security review."
+        "confidence": 0.96,
+        "reason": "The cited text is a frontend documentation heading or bullet about anti-patterns. It does not perform system reconnaissance or request host, user, process, or network enumeration."
       },
       {
         "id": "filesystem:scripts/bundle_analyzer.py:107:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.78,
-        "reason": "The script writes JSON output to args.output with no overwrite check or path restriction. This is explicit user-requested output, but it can overwrite local files if invoked with an unsafe path.",
+        "confidence": 0.66,
+        "reason": "The script writes JSON results to args.output without restricting the destination path. The write is user-directed, but it can overwrite any writable file path supplied by the caller.",
         "severity": "medium"
       },
       {
         "id": "filesystem:scripts/component_generator.py:107:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.78,
-        "reason": "The script writes JSON output to args.output with no overwrite check or path restriction. This is explicit user-requested output, but it can overwrite local files if invoked with an unsafe path.",
+        "confidence": 0.66,
+        "reason": "The script writes JSON results to args.output without restricting the destination path. The write is user-directed, but it can overwrite any writable file path supplied by the caller.",
         "severity": "medium"
       },
       {
         "id": "filesystem:scripts/frontend_scaffolder.py:107:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.78,
-        "reason": "The script writes JSON output to args.output with no overwrite check or path restriction. This is explicit user-requested output, but it can overwrite local files if invoked with an unsafe path.",
+        "confidence": 0.66,
+        "reason": "The script writes JSON results to args.output without restricting the destination path. The write is user-directed, but it can overwrite any writable file path supplied by the caller.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:16:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The finding is caused by Markdown code-fence backticks around usage examples. These fences are documentation syntax, not Ruby backtick execution or dynamic shell execution."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The finding is caused by Markdown code-fence backticks around usage examples. These fences are documentation syntax, not Ruby backtick execution or dynamic shell execution."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The finding is caused by Markdown code-fence backticks around usage examples. These fences are documentation syntax, not Ruby backtick execution or dynamic shell execution."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The finding is caused by Markdown code-fence backticks around usage examples. These fences are documentation syntax, not Ruby backtick execution or dynamic shell execution."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The finding is caused by Markdown code-fence backticks around usage examples. These fences are documentation syntax, not Ruby backtick execution or dynamic shell execution."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The finding is caused by Markdown code-fence backticks around usage examples. These fences are documentation syntax, not Ruby backtick execution or dynamic shell execution."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:70:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The finding is caused by Markdown code-fence backticks around usage examples. These fences are documentation syntax, not Ruby backtick execution or dynamic shell execution."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:72:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The finding is caused by Markdown code-fence backticks around usage examples. These fences are documentation syntax, not Ruby backtick execution or dynamic shell execution."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is an inline Markdown file path reference, not command execution. It does not create a shell invocation or interpolate user input."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is an inline Markdown file path reference, not command execution. It does not create a shell invocation or interpolate user input."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is an inline Markdown file path reference, not command execution. It does not create a shell invocation or interpolate user input."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The finding is caused by Markdown code-fence backticks around usage examples. These fences are documentation syntax, not Ruby backtick execution or dynamic shell execution."
+        "verdict": "confirmed",
+        "confidence": 0.68,
+        "reason": "The Markdown setup block asks users to run npm or pip install and copy an environment template. These commands can execute dependency scripts or modify local configuration if an agent runs them automatically.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:127:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The finding is caused by Markdown code-fence backticks around usage examples. These fences are documentation syntax, not Ruby backtick execution or dynamic shell execution."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The finding is caused by Markdown code-fence backticks around usage examples. These fences are documentation syntax, not Ruby backtick execution or dynamic shell execution."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The finding is caused by Markdown code-fence backticks around usage examples. These fences are documentation syntax, not Ruby backtick execution or dynamic shell execution."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:142:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is an inline Markdown file path reference, not command execution. It does not create a shell invocation or interpolate user input."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:143:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is an inline Markdown file path reference, not command execution. It does not create a shell invocation or interpolate user input."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:144:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is an inline Markdown file path reference, not command execution. It does not create a shell invocation or interpolate user input."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:174:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The matched section is a Markdown list of common development commands. It documents optional commands and contains no executable code path in the skill itself."
+        "verdict": "confirmed",
+        "confidence": 0.78,
+        "reason": "The common commands block includes npm scripts, Docker commands, docker-compose, and kubectl apply. If auto-executed, these commands can run project code and change containers or Kubernetes resources.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:189:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The finding is caused by Markdown code-fence backticks around usage examples. These fences are documentation syntax, not Ruby backtick execution or dynamic shell execution."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:195:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is an inline Markdown file path reference, not command execution. It does not create a shell invocation or interpolate user input."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:206:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is an inline Markdown file path reference, not command execution. It does not create a shell invocation or interpolate user input."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:207:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is an inline Markdown file path reference, not command execution. It does not create a shell invocation or interpolate user input."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "external_commands:SKILL.md:208:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The matched text is an inline Markdown file path reference, not command execution. It does not create a shell invocation or interpolate user input."
+        "confidence": 0.91,
+        "reason": "This range is Markdown code fencing or an inline reference path, not Ruby backtick execution. It documents local scripts or reference files without shell interpolation or hidden execution."
       },
       {
         "id": "sensitive:SKILL.md:126:environment-file-access",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The line copies .env.example to .env as setup guidance and does not read, print, or transmit secrets. No credential access or exfiltration behavior is present."
+        "confidence": 0.82,
+        "reason": "The command copies .env.example to .env for local setup and does not read, print, or transmit existing secrets. The remaining concern is possible overwrite, not credential exposure."
       },
       {
         "id": "blocker:SKILL.md:83:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The matched text is an anti-patterns heading or bullet in frontend documentation. It does not request system reconnaissance, host enumeration, or bypass of security review."
+        "confidence": 0.96,
+        "reason": "The cited text is a frontend documentation heading or bullet about anti-patterns. It does not perform system reconnaissance or request host, user, process, or network enumeration."
       }
     ],
     "semantic_findings": [],
@@ -743,8 +755,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The script writes JSON output to args.output with no overwrite check or path restriction. This is explicit user-requested output, but it can overwrite local files if invoked with an unsafe path."
+        "confidence": 0.66,
+        "confidence_reasoning": "The script writes JSON results to args.output without restricting the destination path. The write is user-directed, but it can overwrite any writable file path supplied by the caller."
       },
       {
         "title": "Python file write/append",
@@ -759,8 +771,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The script writes JSON output to args.output with no overwrite check or path restriction. This is explicit user-requested output, but it can overwrite local files if invoked with an unsafe path."
+        "confidence": 0.66,
+        "confidence_reasoning": "The script writes JSON results to args.output without restricting the destination path. The write is user-directed, but it can overwrite any writable file path supplied by the caller."
       },
       {
         "title": "Python file write/append",
@@ -775,8 +787,40 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
+        "confidence": 0.66,
+        "confidence_reasoning": "The script writes JSON results to args.output without restricting the destination path. The write is user-directed, but it can overwrite any writable file path supplied by the caller."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 119,
+            "line_end": 127
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.68,
+        "confidence_reasoning": "The Markdown setup block asks users to run npm or pip install and copy an environment template. These commands can execute dependency scripts or modify local configuration if an agent runs them automatically."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 174,
+            "line_end": 189
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
         "confidence": 0.78,
-        "confidence_reasoning": "The script writes JSON output to args.output with no overwrite check or path restriction. This is explicit user-requested output, but it can overwrite local files if invoked with an unsafe path."
+        "confidence_reasoning": "The common commands block includes npm scripts, Docker commands, docker-compose, and kubectl apply. If auto-executed, these commands can run project code and change containers or Kubernetes resources."
       }
     ],
     "low_findings": [],
@@ -784,126 +828,125 @@
     "files_scanned": 7,
     "total_lines": 867,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T08:09:29.731Z",
+    "audited_at": "2026-07-09T17:37:41.037Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Build Modern Frontend Workflows",
-    "value_statement": "Frontend work needs consistent React, Next.js, and performance decisions. This skill provides scripts and reference guidance for scaffolding, analysis, and reviews.",
+    "user_title": "Build Production-Ready Frontend Features",
+    "value_statement": "Frontend teams need consistent React and Next.js guidance across projects. This skill provides reference workflows, quality practices, and helper scripts for frontend analysis.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
-      "frontend development",
-      "React components",
+      "React frontend skill",
       "Next.js optimization",
-      "TypeScript UI",
-      "bundle analysis",
+      "TypeScript frontend",
       "Tailwind CSS",
-      "component scaffolding"
+      "bundle analysis",
+      "component scaffolding",
+      "frontend best practices"
     ],
     "actual_capabilities": [
-      "Documents React patterns, Next.js optimization, and frontend best practices.",
-      "Provides Python scripts for component generation, bundle analysis, and frontend scaffolding.",
-      "Validates that a target path exists before script analysis runs.",
-      "Prints simple status and finding counts for a target path.",
-      "Writes JSON results to an explicit output file when requested.",
-      "Includes command examples for development, analysis, and deployment workflows."
+      "Explains React patterns, anti-patterns, and code organization guidance.",
+      "Provides Next.js optimization topics for performance and troubleshooting.",
+      "Lists frontend quality, security, performance, and maintainability practices.",
+      "Includes helper scripts that validate a target path and print an analysis report.",
+      "Can optionally write script results as formatted JSON to a chosen output file."
     ],
     "limitations": [
-      "The scripts are minimal templates and do not perform deep bundle inspection.",
-      "Generated reports contain status, target path, and empty findings unless extended.",
-      "The skill does not install dependencies or run external services automatically.",
-      "Output file paths are caller supplied and should be reviewed before use."
+      "The helper scripts are generic scaffolds, not full component generators or bundle analyzers.",
+      "The reference guides use placeholder examples and require project-specific review.",
+      "The documentation includes shell commands that should not run without confirmation.",
+      "No tests, lint configuration, or framework integrations are included."
     ],
     "use_cases": [
       {
-        "title": "Plan a React Feature",
-        "description": "Use the references to choose component structure, state boundaries, and review criteria before implementation.",
+        "title": "Plan a Frontend Feature",
+        "description": "Use the references to choose React structure, state boundaries, and quality checks before implementation.",
         "target_user": "Frontend engineer"
       },
       {
-        "title": "Standardize Frontend Reviews",
-        "description": "Use the best practice sections to check code quality, performance, security, and maintainability during reviews.",
-        "target_user": "Engineering lead"
+        "title": "Review Web App Performance",
+        "description": "Run the analysis helper and use the optimization guide to organize follow-up work.",
+        "target_user": "Technical lead"
       },
       {
-        "title": "Prepare Project Analysis",
-        "description": "Run the included scripts against a target path to produce simple status output for follow-up work.",
-        "target_user": "AI coding agent operator"
+        "title": "Standardize Team Practices",
+        "description": "Turn the included quality, security, and maintainability guidance into shared project conventions.",
+        "target_user": "Engineering manager"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Review a Component Idea",
-        "scenario": "Beginner planning for a new UI component.",
-        "prompt": "Use the senior-frontend skill to review this component idea. Identify the component boundaries, state needs, accessibility concerns, and test coverage."
+        "title": "Review a Component Plan",
+        "scenario": "Beginner review before coding",
+        "prompt": "Use this skill to review my React component plan. Identify structure issues, missing states, accessibility needs, and simple improvements."
       },
       {
-        "title": "Create a Frontend Scaffold",
-        "scenario": "Intermediate setup for a feature area.",
-        "prompt": "Use the component generator guidance to plan a scaffold for this feature. Include file responsibilities, naming, styling, and validation steps."
+        "title": "Improve a Next.js Page",
+        "scenario": "Intermediate optimization task",
+        "prompt": "Use this skill to review this Next.js page for performance, data loading, caching, and rendering improvements. Prioritize actionable changes."
       },
       {
-        "title": "Analyze Performance Risks",
-        "scenario": "Advanced review of a Next.js route or page.",
-        "prompt": "Use the Next.js optimization guidance to inspect this page. Find rendering, bundle, caching, data loading, and image optimization risks."
+        "title": "Create Frontend Standards",
+        "scenario": "Team convention planning",
+        "prompt": "Use this skill to draft frontend standards for React, TypeScript, Tailwind CSS, testing, and maintainability. Keep the rules practical."
       },
       {
-        "title": "Design a Production Migration",
-        "scenario": "Advanced modernization of an existing frontend.",
-        "prompt": "Use all senior-frontend references to design a migration plan. Cover architecture, dependency risk, rollout order, quality gates, and monitoring."
+        "title": "Audit a Frontend Architecture",
+        "scenario": "Advanced system review",
+        "prompt": "Use this skill to audit a frontend architecture. Assess state management, component boundaries, bundle risk, security practices, and migration steps."
       }
     ],
     "output_examples": [
       {
-        "input": "Review a proposed React dashboard component before implementation.",
-        "output": "A structured review covering component boundaries, state ownership, accessibility checks, performance risks, and recommended tests."
+        "input": "Review this React dashboard component for maintainability.",
+        "output": "A prioritized review covering component boundaries, repeated state, accessibility gaps, and targeted refactor steps."
       },
       {
-        "input": "Analyze a Next.js page that feels slow during navigation.",
-        "output": "A performance review that prioritizes rendering mode, data loading, bundle size, image handling, and caching improvements."
+        "input": "Analyze this Next.js route for performance problems.",
+        "output": "A concise performance report with rendering concerns, caching opportunities, asset notes, and measurement steps."
       },
       {
-        "input": "Prepare frontend review guidance for a pull request.",
-        "output": "A concise checklist for code organization, security, maintainability, testing, and production readiness."
+        "input": "Help define frontend rules for a new team project.",
+        "output": "A team checklist covering structure, naming, state ownership, security basics, testing, and review expectations."
       }
     ],
     "best_practices": [
-      "Review generated script commands before running them on a project.",
-      "Use the references as review criteria, then verify changes with project tests.",
-      "Keep output files inside the project or a dedicated reports directory."
+      "Review generated guidance against the actual framework version and project constraints.",
+      "Ask before running install, deployment, or file-writing commands from the documentation.",
+      "Use the helper scripts for reporting only after confirming target and output paths."
     ],
     "anti_patterns": [
       "Do not treat the placeholder scripts as complete production analyzers.",
-      "Do not run deployment commands from examples without environment review.",
-      "Do not write report output over existing project files."
+      "Do not run Docker, kubectl, npm, or pip commands automatically from this skill.",
+      "Do not copy environment files over existing local configuration without checking first."
     ],
     "faq": [
       {
-        "question": "What frontend stacks does this skill target?",
-        "answer": "It targets React, Next.js, TypeScript, Tailwind CSS, and common frontend review workflows."
+        "question": "Does this skill generate complete React components?",
+        "answer": "No. The component script is a generic scaffold and does not generate production-ready component code."
       },
       {
-        "question": "Does it generate production-ready components automatically?",
-        "answer": "No. The scripts are simple templates and should be extended before production use."
+        "question": "Can it optimize a Next.js application automatically?",
+        "answer": "No. It provides guidance and reporting structure, but changes require human review and implementation."
       },
       {
-        "question": "Can it help with performance reviews?",
-        "answer": "Yes. It provides Next.js and frontend performance guidance for reviews and planning."
+        "question": "Does it support Claude, Codex, and Claude Code?",
+        "answer": "Yes. The report lists support for Claude, Codex, and Claude Code workflows."
       },
       {
-        "question": "Does it run commands automatically?",
-        "answer": "No. It documents commands and includes scripts that users or agents must choose to run."
+        "question": "Does the skill access the network?",
+        "answer": "No evidence of network access was found in the reviewed files."
       },
       {
-        "question": "Is it compatible with Claude Code and Codex?",
-        "answer": "Yes. The report declares support for Claude, Codex, and Claude Code."
+        "question": "Why are command examples a risk?",
+        "answer": "Install and deployment commands can execute local project code or affect infrastructure if run without confirmation."
       },
       {
-        "question": "What should I check before using the output option?",
-        "answer": "Confirm the output path is safe and does not overwrite important project files."
+        "question": "Should users run the helper scripts directly?",
+        "answer": "Users should inspect target paths and output paths first, then run scripts only when they understand the effect."
       }
     ]
   },

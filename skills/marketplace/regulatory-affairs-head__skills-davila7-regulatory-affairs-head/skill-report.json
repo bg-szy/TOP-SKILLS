@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T06:05:16.451Z",
+    "generated_at": "2026-07-09T17:13:00.612Z",
     "slug": "davila7-regulatory-affairs-head",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/enterprise-communication/regulatory-affairs-head",
     "source_ref": "main",
@@ -23,18 +23,18 @@
   },
   "skill": {
     "name": "regulatory-affairs-head",
-    "description": "Regulatory affairs guidance for HealthTech and MedTech teams planning FDA, EU MDR, and global medical device submissions.",
-    "summary": "Plan medical device regulatory strategy, submission work, and compliance tracking.",
+    "description": "Regulatory affairs guidance for HealthTech and MedTech teams planning FDA, EU MDR, ISO, and global medical device submissions.",
+    "summary": "Plan regulatory pathways, submissions, risks, and team coordination for medical device programs.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
     "license": "MIT",
     "tags": [
-      "regulatory-affairs",
-      "medtech",
-      "fda",
-      "eu-mdr",
-      "compliance"
+      "regulatory affairs",
+      "medical devices",
+      "FDA submissions",
+      "EU MDR",
+      "MedTech compliance"
     ],
     "supported_tools": [
       "claude",
@@ -52,11 +52,11 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The audit confirmed one filesystem side effect in scripts/regulatory_tracker.py, where submission data is written to a local JSON file. The remaining static findings are false positives from regulatory prose, Markdown code fences, and inline file names. No prompt injection, network access, external command execution, or exfiltration intent was found.",
+    "summary": "Most static findings are false positives from Markdown formatting and regulatory terminology. One filesystem finding is confirmed because the tracker writes local submission data to self.data_file. No evidence found of prompt injection, network access, or command execution in the reviewed files.",
     "remediation": [
       {
-        "issue": "Local tracker script can overwrite the configured submissions data file.",
-        "suggestion": "Constrain the data file to a documented skill data path, and warn before overwriting an existing file.",
+        "issue": "Tracker writes local submission data",
+        "suggestion": "Document the output file, require explicit user approval before writes, and restrict data_file to a safe workspace path.",
         "severity": "medium"
       }
     ],
@@ -338,117 +338,117 @@
       {
         "id": "blocker:references/eu-mdr-submission-guide.md:89:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The flagged text is a section heading for common EU MDR submission pitfalls. It does not request system enumeration or operational reconnaissance."
+        "confidence": 0.96,
+        "reason": "The flagged lines are a heading and checklist items about MDR submission pitfalls. They do not request host, OS, process, or environment reconnaissance."
       },
       {
         "id": "blocker:references/fda-submission-guide.md:60:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The phrase describes FDA facility inspection readiness for manufacturing review. It is regulatory content, not network discovery or scanning guidance."
+        "confidence": 0.97,
+        "reason": "The line describes facility inspection readiness for FDA manufacturing information. It contains no network probing, scanning, or connection logic."
       },
       {
         "id": "blocker:references/fda-submission-guide.md:126:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The line references post-market compliance effectiveness as a regulatory metric. It contains no networking instructions or reconnaissance behavior."
+        "confidence": 0.97,
+        "reason": "The line is a regulatory KPI about post-market compliance effectiveness. It has no network discovery intent or executable behavior."
       },
       {
         "id": "filesystem:scripts/regulatory_tracker.py:92:python-file-write-append",
         "verdict": "confirmed",
         "confidence": 0.78,
         "severity": "medium",
-        "reason": "The tracker writes submission data to the path stored in self.data_file, which can overwrite a local file. This appears to be legitimate persistence, but it is a real filesystem side effect."
+        "reason": "The tracker writes serialized submission data to self.data_file. This is intended local persistence, but it can create or overwrite a local file and should require clear user approval."
       },
       {
         "id": "blocker:scripts/regulatory_tracker.py:105:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The line checks whether a submission identifier exists in an in-memory dictionary. It is not system reconnaissance or host inspection."
+        "confidence": 0.98,
+        "reason": "The line checks whether a submission id exists in an in-memory dictionary. It does not inspect system state or collect host information."
       },
       {
         "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The flagged backticks open a Markdown code fence for a text framework diagram. They are not Ruby command substitution or executable shell syntax."
+        "confidence": 0.98,
+        "reason": "The flagged backticks open a Markdown code fence for a plain text risk framework diagram. No shell command, Ruby execution, or dynamic execution path is present."
       },
       {
         "id": "external_commands:SKILL.md:66:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The flagged backticks close a Markdown code fence in documentation. There is no command execution instruction at this location."
+        "confidence": 0.98,
+        "reason": "The flagged backticks close the Markdown diagram block. They are formatting syntax, not command execution syntax."
       },
       {
         "id": "external_commands:SKILL.md:112:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The backticks format a script filename in a resource list. The text does not instruct the agent to execute a command."
+        "confidence": 0.97,
+        "reason": "The line uses inline backticks around a script filename in a resources list. It does not execute the file or instruct the model to run a command."
       },
       {
         "id": "external_commands:SKILL.md:113:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The backticks format a referenced filename. This is Markdown presentation, not shell execution."
+        "confidence": 0.97,
+        "reason": "The line uses inline backticks around a missing tool filename. It is documentation text and contains no executable shell construct."
       },
       {
         "id": "external_commands:SKILL.md:114:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The backticks identify a project timeline script by name. They do not create an executable command path or command substitution."
+        "confidence": 0.97,
+        "reason": "The line documents a script name with Markdown formatting. There is no shell invocation, argument construction, or command execution."
       },
       {
         "id": "external_commands:SKILL.md:117:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The backticks format an EU MDR reference filename. It is documentation text, not an external command."
+        "confidence": 0.97,
+        "reason": "The line formats a reference document filename with inline backticks. It is a resource pointer, not a command execution pattern."
       },
       {
         "id": "external_commands:SKILL.md:118:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The backticks format an FDA reference filename in a resources section. No executable instruction is present."
+        "confidence": 0.97,
+        "reason": "The line formats the FDA guide filename in a references list. It has no executable content or instruction to invoke an external command."
       },
       {
         "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The backticks format an ISO reference filename. The content is a file listing, not shell command execution."
+        "confidence": 0.97,
+        "reason": "The line uses Markdown backticks for a standards reference filename. No command execution semantics are present."
       },
       {
         "id": "external_commands:SKILL.md:120:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The backticks format a global pathways reference filename. There is no command invocation or user-controlled shell input."
+        "confidence": 0.97,
+        "reason": "The line names a global regulatory pathways document using inline code formatting. It is documentation, not executable shell syntax."
       },
       {
         "id": "external_commands:SKILL.md:121:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The backticks format an escalation procedures filename. This is a documentation reference and not executable syntax."
+        "confidence": 0.97,
+        "reason": "The line formats an escalation procedures filename in a reference list. It does not contain a command, interpreter call, or shell expansion."
       },
       {
         "id": "external_commands:SKILL.md:124:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The backticks format an assets directory name. It does not instruct command execution or shell interpolation."
+        "confidence": 0.97,
+        "reason": "The line uses inline backticks around an assets directory name. Directory formatting in Markdown is not command execution."
       },
       {
         "id": "external_commands:SKILL.md:125:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The backticks format a submission checklists directory name. This is Markdown text, not Ruby or shell execution."
+        "confidence": 0.97,
+        "reason": "The line uses inline backticks around a checklist directory name. It is descriptive text and does not launch a command."
       },
       {
         "id": "external_commands:SKILL.md:126:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The backticks format a training materials directory name. No external command behavior is present."
+        "confidence": 0.97,
+        "reason": "The line formats a training materials directory name in Markdown. No external process execution or command injection vector is present."
       },
       {
         "id": "blocker:SKILL.md:98:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The line names a project coordination KPI. It has no network scanning, connection discovery, or reconnaissance instructions."
+        "confidence": 0.97,
+        "reason": "The line is a KPI for cross-functional project coordination effectiveness. It contains no network discovery, scanning, or remote access behavior."
       }
     ],
     "semantic_findings": [],
@@ -469,7 +469,7 @@
         "source_category": "filesystem",
         "source_severity": "medium",
         "confidence": 0.78,
-        "confidence_reasoning": "The tracker writes submission data to the path stored in self.data_file, which can overwrite a local file. This appears to be legitimate persistence, but it is a real filesystem side effect."
+        "confidence_reasoning": "The tracker writes serialized submission data to self.data_file. This is intended local persistence, but it can create or overwrite a local file and should require clear user approval."
       }
     ],
     "low_findings": [],
@@ -477,136 +477,125 @@
     "files_scanned": 5,
     "total_lines": 577,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T06:05:16.451Z",
+    "audited_at": "2026-07-09T17:13:00.612Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Plan MedTech Regulatory Submissions",
-    "value_statement": "MedTech teams need clear regulatory pathways and submission plans. This skill structures FDA, EU MDR, and compliance work into practical regulatory guidance.",
+    "user_title": "Plan Medical Device Regulatory Strategy",
+    "value_statement": "Medical device teams need clear regulatory plans before submission work starts. This skill helps structure pathways, timelines, risks, and stakeholder coordination.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "regulatory affairs",
-      "MedTech compliance",
-      "FDA submission",
+      "medical device submissions",
+      "FDA 510(k)",
       "EU MDR",
-      "medical device regulatory",
-      "510(k) planning",
-      "regulatory strategy"
+      "MedTech compliance",
+      "regulatory strategy",
+      "submission planning"
     ],
     "actual_capabilities": [
-      "Guides FDA pathway planning for 510(k), PMA, De Novo, SaMD, and quality system topics.",
-      "Explains EU MDR classification, conformity assessment routes, technical documentation, and submission timelines.",
-      "Provides a regulatory decision framework for impact assessment, stakeholder alignment, implementation, and monitoring.",
-      "Supports submission status tracking through a local Python tracker script.",
-      "Helps define regulatory KPIs, risk mitigation steps, and cross-functional coordination practices."
+      "Build regulatory pathway plans for FDA, EU MDR, ISO, and global markets.",
+      "Outline submission preparation steps and review milestones.",
+      "Identify regulatory risks, mitigation actions, and escalation points.",
+      "Coordinate cross-functional responsibilities for regulatory programs.",
+      "Use the included tracker script to store and report submission status."
     ],
     "limitations": [
-      "It does not replace legal advice or formal regulatory authority feedback.",
-      "It does not provide live updates from FDA, EU, or notified body sources.",
-      "Several referenced companion guides and folders are not present in the package.",
-      "The tracker script stores data locally and does not include access controls."
+      "Does not replace legal, clinical, or regulatory authority advice.",
+      "Reference material may require updates for current laws and guidance.",
+      "Several resources named in SKILL.md are not present in the package.",
+      "Tracker data is local and does not integrate with agency systems."
     ],
     "use_cases": [
       {
-        "title": "Prepare a Submission Pathway",
-        "description": "Compare likely FDA or EU MDR pathways and list key evidence, quality, and timeline needs.",
-        "target_user": "Regulatory affairs manager"
+        "title": "Define a submission pathway",
+        "description": "Regulatory leads compare FDA 510(k), De Novo, PMA, EU MDR, and ISO options before planning evidence.",
+        "target_user": "Regulatory affairs managers"
       },
       {
-        "title": "Coordinate Cross-Functional Readiness",
-        "description": "Turn regulatory milestones into team responsibilities, review checkpoints, and escalation topics.",
-        "target_user": "MedTech program lead"
+        "title": "Prepare an approval plan",
+        "description": "Product teams organize documentation, timelines, risk controls, and authority interactions for a medical device launch.",
+        "target_user": "MedTech product teams"
       },
       {
-        "title": "Track Submission Status",
-        "description": "Use the local tracker concept to monitor active submissions, overdue items, and authority review status.",
-        "target_user": "Regulatory operations specialist"
+        "title": "Monitor active submissions",
+        "description": "Program managers track submission status, overdue items, and approvals using local tracker data.",
+        "target_user": "Regulatory program managers"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Identify a Regulatory Pathway",
-        "scenario": "Beginner planning for a new device concept.",
-        "prompt": "Help me identify likely regulatory pathways for a medical device. Device type: [describe device]. Market: [US or EU]. Risk level: [known or unknown]."
+        "title": "Summarize Pathway Options",
+        "scenario": "Early planning",
+        "prompt": "Summarize likely regulatory pathways for a Class II medical device entering the United States and European Union. Include key evidence needs."
       },
       {
-        "title": "Build a Submission Checklist",
-        "scenario": "Intermediate preparation for a planned submission.",
-        "prompt": "Create a submission preparation checklist for [510(k), PMA, De Novo, or EU MDR]. Include evidence, quality system, labeling, and review milestones."
+        "title": "Build Submission Checklist",
+        "scenario": "Submission preparation",
+        "prompt": "Create a practical submission checklist for an FDA 510(k). Include documentation, testing, labeling, quality system, and review milestones."
       },
       {
         "title": "Assess Regulatory Risk",
-        "scenario": "Advanced review before program approval.",
-        "prompt": "Assess regulatory risks for this product plan: [summary]. Include market access impact, timeline risk, evidence gaps, mitigations, and decision points."
+        "scenario": "Risk review",
+        "prompt": "Review this product plan for regulatory risks. Identify likely submission blockers, mitigation actions, owners, and escalation points."
       },
       {
-        "title": "Design a Global Submission Strategy",
-        "scenario": "Advanced coordination across markets and teams.",
-        "prompt": "Create a global regulatory strategy for [product]. Compare FDA and EU MDR needs, sequence submissions, define responsibilities, and propose KPIs."
+        "title": "Plan Global Market Access",
+        "scenario": "Advanced strategy",
+        "prompt": "Create a phased global regulatory strategy for a connected medical device. Compare FDA, EU MDR, ISO, and selected international pathways."
       }
     ],
     "output_examples": [
       {
-        "input": "Plan a 510(k) readiness review for a connected patient monitoring device.",
-        "output": [
-          "Recommended pathway: Traditional 510(k), pending predicate confirmation.",
-          "Core evidence: performance testing, software documentation, cybersecurity risk management, labeling, and quality system readiness.",
-          "Next actions: confirm predicate, schedule a Q-Sub if uncertainty remains, and assign owners for evidence gaps."
-        ]
+        "input": "A team asks which pathway fits a moderate-risk device without a predicate.",
+        "output": "A De Novo strategy summary with evidence gaps, FDA interaction steps, and decision points for market access."
       },
       {
-        "input": "Summarize EU MDR preparation needs for a Class IIa device.",
-        "output": [
-          "Class IIa devices usually require notified body involvement and technical documentation review.",
-          "Preparation should cover clinical evidence, risk management, UDI planning, QMS readiness, and post-market surveillance.",
-          "Timeline risk is highest when clinical evidence or notified body engagement starts late."
-        ]
+        "input": "A product manager needs a 510(k) preparation plan.",
+        "output": "A checklist covering predicate comparison, performance testing, software documentation, labeling, eCopy preparation, and review timelines."
       },
       {
-        "input": "Create KPIs for a regulatory affairs team managing active submissions.",
-        "output": [
-          "Track submission approval rate, review cycle time, authority question response time, overdue actions, and market access progress.",
-          "Review metrics monthly with regulatory, quality, clinical, product, and executive stakeholders."
-        ]
+        "input": "A program manager wants to know which submissions need attention.",
+        "output": "A status report showing active submissions, overdue target dates, responsible owners, and next regulatory actions."
       }
     ],
     "best_practices": [
-      "Provide device type, intended use, market, risk class, and current evidence status in each request.",
-      "Ask for assumptions and evidence gaps so the output can support regulatory decision making.",
-      "Verify final plans against current authority guidance and qualified regulatory counsel."
+      "Verify all regulatory assumptions against current agency guidance before use.",
+      "Provide product classification, target markets, risk profile, and evidence status in prompts.",
+      "Keep tracker data limited to non-sensitive project metadata unless storage controls are approved."
     ],
     "anti_patterns": [
-      "Do not treat the output as an official regulatory determination.",
-      "Do not omit device risk, intended use, or target market details from planning prompts.",
-      "Do not rely on the bundled references for current legal deadlines without checking primary sources."
+      "Treating generated guidance as final legal or regulatory advice.",
+      "Using outdated EU MDR or FDA guidance without review.",
+      "Storing protected health information in local tracker files."
     ],
     "faq": [
       {
-        "question": "What regulatory regions does this skill cover?",
-        "answer": "It includes FDA and EU MDR guidance, plus general global regulatory planning concepts."
+        "question": "Can this skill make final regulatory decisions?",
+        "answer": "No. It supports planning and documentation, but qualified regulatory experts must approve final decisions."
       },
       {
-        "question": "Can it choose the final pathway for my device?",
-        "answer": "It can suggest likely pathways and assumptions, but final decisions require qualified regulatory review."
+        "question": "Does it submit documents to FDA or EU authorities?",
+        "answer": "No. It provides guidance and local planning support only."
       },
       {
-        "question": "Does it include live regulatory updates?",
-        "answer": "No. You should verify dates, forms, and guidance against official regulatory sources."
+        "question": "What markets does it cover?",
+        "answer": "It includes FDA, EU MDR, ISO, and general global regulatory planning references."
       },
       {
-        "question": "Can it help with software as a medical device?",
-        "answer": "Yes. The FDA guide includes SaMD considerations such as software documentation, cybersecurity, and lifecycle controls."
+        "question": "Can it track submission status?",
+        "answer": "Yes. The included Python tracker stores local submission records and generates status reports."
       },
       {
-        "question": "Does it run external commands?",
-        "answer": "No external command execution was found in the reviewed skill content."
+        "question": "Does it need internet access?",
+        "answer": "No evidence found of network calls in the reviewed files."
       },
       {
-        "question": "What data does the tracker script store?",
-        "answer": "The tracker stores submission status details in a local JSON file when used."
+        "question": "Is it suitable for sensitive data?",
+        "answer": "Use caution. The tracker writes local files, so sensitive data needs approved storage controls."
       }
     ]
   },

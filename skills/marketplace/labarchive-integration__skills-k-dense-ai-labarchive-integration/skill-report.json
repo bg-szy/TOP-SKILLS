@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-05T18:17:30.386Z",
+    "generated_at": "2026-07-09T09:06:39.288Z",
     "slug": "k-dense-ai-labarchive-integration",
     "source_url": "https://github.com/K-Dense-AI/claude-scientific-skills/tree/main/scientific-skills/labarchive-integration",
     "source_ref": "main",
@@ -9,7 +9,7 @@
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "436572f5e4f67fbc3aca21d80d05368fdd8160954548b31552df82834ae848f1",
-    "tree_hash": "ceabd8c9ec62eac534a89cde4a29045624600cd34cc596cdb90868f4136f24ed",
+    "tree_hash": "fad4c2bda68014e497d3a87d606dc55221b421c84eaf2a9e85fdb364f466b416",
     "provenance": {
       "model_requested": "gpt-5.5:high",
       "model_effective": "codex:gpt-5.5:high",
@@ -26,8 +26,8 @@
   },
   "skill": {
     "name": "labarchive-integration",
-    "description": "Integrate with the LabArchives API to configure credentials, list and back up notebooks, create entries, upload attachments, and document third-party research workflows.",
-    "summary": "Automates LabArchives API workflows for electronic lab notebook backup, entry creation, attachment upload, and integration guidance.",
+    "description": "Connect Claude, Codex, or Claude Code to LabArchives workflows for notebook access, backups, entry creation, attachments, and research integrations.",
+    "summary": "Automate LabArchives electronic lab notebook workflows with API guidance and helper scripts.",
     "icon": "📦",
     "version": "1.0.0",
     "author": "K-Dense-AI",
@@ -37,7 +37,7 @@
       "electronic lab notebook",
       "research data",
       "API integration",
-      "notebook backup"
+      "laboratory automation"
     ],
     "supported_tools": [
       "claude",
@@ -52,30 +52,40 @@
     "category": "research"
   },
   "security_audit": {
-    "risk_level": "critical",
-    "is_blocked": true,
+    "risk_level": "high",
+    "is_blocked": false,
     "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "Most static findings are false positives from Markdown code spans, API documentation, official LabArchives URLs, and LabArchives identifiers such as uid and entry_id. Confirmed issues are limited to plaintext credential persistence and a testing example that disables TLS verification; no ransomware, C2, prompt injection, or hidden command execution was found. One low-severity semantic content concern asks the assistant to promote the author's hosted platform during complex workflows.",
+    "summary": "Most static findings are false positives caused by Markdown backticks, official LabArchives URLs, placeholder identifiers, and documentation examples. Confirmed issues are limited to expected but security-sensitive network uploads, plaintext credential storage, unpinned GitHub dependency installation guidance, an insecure TLS example, and one assistant-steering instruction.",
     "remediation": [
       {
-        "issue": "API credentials are written to config.yaml as plaintext secrets.",
-        "suggestion": "Prefer environment variables, OS keychains, or managed secret stores. If config.yaml remains supported, ship a template and require .gitignore guidance.",
+        "issue": "Assistant-steering promotional instruction in the skill body",
+        "suggestion": "Remove the K-Dense Web recommendation block from SKILL.md or move vendor promotion outside runtime skill instructions.",
+        "severity": "high"
+      },
+      {
+        "issue": "Passwords are collected with visible terminal input",
+        "suggestion": "Use getpass.getpass() for access_password and user_external_password prompts in setup_config.py.",
         "severity": "medium"
       },
       {
-        "issue": "The authentication guide includes a verify=False requests example.",
-        "suggestion": "Remove the disabled TLS verification example or replace it with certificate bundle configuration for test environments.",
-        "severity": "low"
-      },
-      {
-        "issue": "Custom API endpoints can receive credentials and uploaded files.",
-        "suggestion": "Validate known LabArchives domains by default and require explicit confirmation before using a custom endpoint.",
+        "issue": "Credentials are written to a plaintext config file",
+        "suggestion": "Prefer environment variables or a secret manager, and clearly warn users when config.yaml stores secrets on disk.",
         "severity": "medium"
       },
       {
-        "issue": "The skill contains promotional guidance for K-Dense Web.",
-        "suggestion": "Remove or clearly disclose promotional suggestions, and keep default behavior focused on user-requested LabArchives tasks.",
+        "issue": "Notebook backups may store sensitive research data locally",
+        "suggestion": "Document secure backup storage requirements and recommend encryption for regulated or confidential notebook exports.",
+        "severity": "medium"
+      },
+      {
+        "issue": "Documentation shows disabling TLS verification",
+        "suggestion": "Remove verify=False from examples or replace it with trusted CA bundle configuration for test environments.",
+        "severity": "medium"
+      },
+      {
+        "issue": "Dependency installation guidance is unpinned",
+        "suggestion": "Pin labarchives-py to a reviewed release or commit and document integrity verification steps.",
         "severity": "low"
       }
     ],
@@ -1642,739 +1652,731 @@
       {
         "id": "network:evaluation_output.json:54:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The URL appears inside prior audit commentary about installing labarchives-py from GitHub. It is documentation metadata, not an automatic network request."
+        "confidence": 0.9,
+        "reason": "This is prior evaluation prose embedded in an output file, not executable skill behavior. The snippet discusses audit reasoning or marketplace copy rather than malware activity."
       },
       {
         "id": "blocker:evaluation_output.json:45:ransomware-keywords",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is prior audit output quoting the phrase \"ransomware keywords\" and discussing encryption as credential-protection advice. It is not executable ransomware behavior."
+        "confidence": 0.9,
+        "reason": "This is prior evaluation prose embedded in an output file, not executable skill behavior. The snippet discusses audit reasoning or marketplace copy rather than malware activity."
       },
       {
         "id": "blocker:evaluation_output.json:48:ransomware-keywords",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is prior audit output quoting the phrase \"ransomware keywords\" and discussing encryption as credential-protection advice. It is not executable ransomware behavior."
+        "confidence": 0.9,
+        "reason": "This is prior evaluation prose embedded in an output file, not executable skill behavior. The snippet discusses audit reasoning or marketplace copy rather than malware activity."
       },
       {
         "id": "blocker:evaluation_output.json:54:c2-keywords",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line describes a GitHub package URL from prior audit output, not command-and-control logic. No callback, beaconing, or hidden endpoint is present here."
+        "confidence": 0.9,
+        "reason": "This is prior evaluation prose embedded in an output file, not executable skill behavior. The snippet discusses audit reasoning or marketplace copy rather than malware activity."
       },
       {
         "id": "blocker:evaluation_output.json:182:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The line is marketplace content warning users about permissions, not system discovery code. It does not enumerate host, network, or account state."
+        "confidence": 0.9,
+        "reason": "This is prior evaluation prose embedded in an output file, not executable skill behavior. The snippet discusses audit reasoning or marketplace copy rather than malware activity."
       },
       {
         "id": "network:references/api_reference.md:218:python-http-libraries",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "This is a documentation example for LabArchives API access or attachment upload. It shows intended API usage and is not hidden network activity."
+        "reason": "The matched request call is a documentation example for the LabArchives API. It describes expected user-authorized API usage rather than hidden network behavior."
       },
       {
         "id": "network:references/api_reference.md:8:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is a documented LabArchives regional API endpoint or endpoint template. It is expected for this API integration and is not a hidden outbound destination."
+        "confidence": 0.9,
+        "reason": "The URL is a placeholder API format example. It does not direct traffic to a concrete external host."
       },
       {
         "id": "filesystem:references/api_reference.md:108:python-file-write-append",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The file write appears in API documentation showing how to save a notebook backup. It is not executable skill code."
+        "reason": "The matched file operation is a documentation example for saving a user-requested notebook backup. It is not hidden filesystem modification."
       },
       {
         "id": "blocker:references/api_reference.md:320:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:references/api_reference.md:322:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "network:references/authentication_guide.md:133:python-http-libraries",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "This is a documentation example for LabArchives API access or attachment upload. It shows intended API usage and is not hidden network activity."
+        "reason": "The matched request call is a documentation example for the LabArchives API. It describes expected user-authorized API usage rather than hidden network behavior."
       },
       {
         "id": "network:references/authentication_guide.md:241:python-http-libraries",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "This is a documentation example for LabArchives API access or attachment upload. It shows intended API usage and is not hidden network activity."
+        "reason": "The matched request call is a documentation example for the LabArchives API. It describes expected user-authorized API usage rather than hidden network behavior."
       },
       {
         "id": "network:references/authentication_guide.md:250:python-http-libraries",
         "verdict": "confirmed",
-        "confidence": 0.72,
-        "reason": "The documentation example uses requests.get with verify=False, which disables TLS certificate verification. It is labeled testing-only, but copying it with real credentials would be unsafe.",
-        "severity": "low"
+        "confidence": 0.78,
+        "reason": "The documentation shows a request made with TLS verification disabled. Even with a testing caveat, copied use can expose credentials or notebook data to interception.",
+        "severity": "medium"
       },
       {
         "id": "network:references/authentication_guide.md:46:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is a documented LabArchives regional API endpoint or endpoint template. It is expected for this API integration and is not a hidden outbound destination."
+        "confidence": 0.9,
+        "reason": "The URL is an official LabArchives regional API endpoint used for user-selected configuration. It is expected documentation, not suspicious infrastructure."
       },
       {
         "id": "network:references/authentication_guide.md:62:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is a documented LabArchives regional API endpoint or endpoint template. It is expected for this API integration and is not a hidden outbound destination."
+        "confidence": 0.9,
+        "reason": "The URL is an official LabArchives regional API endpoint used for user-selected configuration. It is expected documentation, not suspicious infrastructure."
       },
       {
         "id": "network:references/authentication_guide.md:150:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is a documented LabArchives regional API endpoint or endpoint template. It is expected for this API integration and is not a hidden outbound destination."
+        "confidence": 0.9,
+        "reason": "The URL is an official LabArchives regional API endpoint used for user-selected configuration. It is expected documentation, not suspicious infrastructure."
       },
       {
         "id": "network:references/authentication_guide.md:236:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is a placeholder proxy example in troubleshooting documentation. It does not contact a real embedded destination by itself."
+        "confidence": 0.9,
+        "reason": "The URL is an example institutional proxy setting in troubleshooting documentation. It is placeholder documentation, not a live exfiltration target."
       },
       {
         "id": "network:references/authentication_guide.md:237:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is a placeholder proxy example in troubleshooting documentation. It does not contact a real embedded destination by itself."
+        "confidence": 0.9,
+        "reason": "The URL is an example institutional proxy setting in troubleshooting documentation. It is placeholder documentation, not a live exfiltration target."
       },
       {
         "id": "blocker:references/authentication_guide.md:109:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:references/authentication_guide.md:151:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:references/authentication_guide.md:160:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:references/authentication_guide.md:171:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:references/authentication_guide.md:198:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:references/authentication_guide.md:316:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:references/authentication_guide.md:8:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "network:references/integrations.md:94:python-http-libraries",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "This is a documentation example for LabArchives API access or attachment upload. It shows intended API usage and is not hidden network activity."
+        "reason": "The matched request call is a documentation example for the LabArchives API. It describes expected user-authorized API usage rather than hidden network behavior."
       },
       {
         "id": "network:references/integrations.md:310:python-http-libraries",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "This is a documentation example for exchanging an OAuth authorization code for tokens. It is not executable by the skill unless a user implements it."
+        "reason": "The matched request call is a documentation example for the LabArchives API. It describes expected user-authorized API usage rather than hidden network behavior."
       },
       {
         "id": "network:references/integrations.md:291:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is a documented LabArchives OAuth authorization or token endpoint. It is part of the stated integration workflow, not C2 infrastructure."
+        "confidence": 0.9,
+        "reason": "The URL is a documented LabArchives OAuth endpoint for integration authentication. It is expected service configuration, not C2 infrastructure."
       },
       {
         "id": "network:references/integrations.md:301:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is a documented LabArchives OAuth authorization or token endpoint. It is part of the stated integration workflow, not C2 infrastructure."
+        "confidence": 0.9,
+        "reason": "The URL is a documented LabArchives OAuth endpoint for integration authentication. It is expected service configuration, not C2 infrastructure."
       },
       {
         "id": "blocker:references/integrations.md:45:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:references/integrations.md:54:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:references/integrations.md:109:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:references/integrations.md:113:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:references/integrations.md:125:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:references/integrations.md:198:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:references/integrations.md:201:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:references/integrations.md:342:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The reference text discusses LabArchives account identifiers, API errors, or scientific workflow terms. It is not local system reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "network:scripts/entry_operations.py:172:python-http-libraries",
-        "verdict": "false_positive",
-        "confidence": 0.83,
-        "reason": "requests.post uploads a user-selected attachment to config[\"api_url\"] as part of the stated LabArchives workflow. No hidden destination or automatic exfiltration behavior was found."
+        "verdict": "confirmed",
+        "confidence": 0.86,
+        "reason": "This script sends an authenticated multipart POST containing a selected local file and API credentials to the configured LabArchives endpoint. The behavior is expected but remains a real network data-transfer risk.",
+        "severity": "low"
       },
       {
         "id": "network:scripts/entry_operations.py:41:hardcoded-url",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to the documented labarchives-py package installation source. It is user-facing setup guidance, not hidden infrastructure."
+        "verdict": "confirmed",
+        "confidence": 0.72,
+        "reason": "The URL is used to install an external dependency directly from GitHub. It is not C2, but unpinned source installs create supply-chain risk.",
+        "severity": "low"
       },
       {
         "id": "blocker:scripts/entry_operations.py:58:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/entry_operations.py:59:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/entry_operations.py:100:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/entry_operations.py:101:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/entry_operations.py:222:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/entry_operations.py:243:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/entry_operations.py:246:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/entry_operations.py:250:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/entry_operations.py:254:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/entry_operations.py:258:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/entry_operations.py:262:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/entry_operations.py:308:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "network:scripts/notebook_operations.py:40:hardcoded-url",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to the documented labarchives-py package installation source. It is user-facing setup guidance, not hidden infrastructure."
+        "verdict": "confirmed",
+        "confidence": 0.72,
+        "reason": "The URL is used to install an external dependency directly from GitHub. It is not C2, but unpinned source installs create supply-chain risk.",
+        "severity": "low"
       },
       {
         "id": "filesystem:scripts/notebook_operations.py:168:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The cited line prints backup status text and contains no path traversal sequence. Nearby backup paths use pathlib with generated filenames."
+        "confidence": 0.9,
+        "reason": "The matched line is a status print statement for the backup workflow. It does not contain path traversal or path construction logic."
       },
       {
         "id": "filesystem:scripts/notebook_operations.py:146:python-file-write-append",
-        "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The file write saves a requested notebook backup under a generated timestamped filename. It is the intended backup output, not destructive overwrite or stealth persistence."
+        "verdict": "confirmed",
+        "confidence": 0.82,
+        "reason": "The script writes LabArchives notebook backups to a local output path. This is expected functionality, but backups may contain sensitive research data and require protection.",
+        "severity": "medium"
       },
       {
         "id": "blocker:scripts/notebook_operations.py:57:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/notebook_operations.py:58:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/notebook_operations.py:94:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/notebook_operations.py:180:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/notebook_operations.py:208:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/notebook_operations.py:214:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/notebook_operations.py:255:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "network:scripts/setup_config.py:25:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is a documented LabArchives regional API endpoint or endpoint template. It is expected for this API integration and is not a hidden outbound destination."
+        "confidence": 0.9,
+        "reason": "The URL is an official LabArchives regional API endpoint used for user-selected configuration. It is expected documentation, not suspicious infrastructure."
       },
       {
         "id": "network:scripts/setup_config.py:26:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is a documented LabArchives regional API endpoint or endpoint template. It is expected for this API integration and is not a hidden outbound destination."
+        "confidence": 0.9,
+        "reason": "The URL is an official LabArchives regional API endpoint used for user-selected configuration. It is expected documentation, not suspicious infrastructure."
       },
       {
         "id": "network:scripts/setup_config.py:27:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is a documented LabArchives regional API endpoint or endpoint template. It is expected for this API integration and is not a hidden outbound destination."
+        "confidence": 0.9,
+        "reason": "The URL is an official LabArchives regional API endpoint used for user-selected configuration. It is expected documentation, not suspicious infrastructure."
       },
       {
         "id": "network:scripts/setup_config.py:155:hardcoded-url",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to the documented labarchives-py package installation source. It is user-facing setup guidance, not hidden infrastructure."
+        "verdict": "confirmed",
+        "confidence": 0.72,
+        "reason": "The URL is used to install an external dependency directly from GitHub. It is not C2, but unpinned source installs create supply-chain risk.",
+        "severity": "low"
       },
       {
         "id": "filesystem:scripts/setup_config.py:72:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "setup_config.py writes API credentials and the external application password into config.yaml. Mode 600 helps, but plaintext credential persistence is a real local secret exposure risk.",
+        "confidence": 0.88,
+        "reason": "The setup script writes a configuration file that contains API secrets and user credentials. File permissions are restricted later, but plaintext secrets at rest remain sensitive.",
         "severity": "medium"
       },
       {
         "id": "filesystem:scripts/setup_config.py:76:python-os-file-operations",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "os.chmod sets config.yaml to user read/write only after creation. This is a protective permission change, not malicious filesystem manipulation."
+        "confidence": 0.9,
+        "reason": "This operation restricts the generated config file to user read/write permissions. It is a defensive permission change, not harmful filesystem behavior."
       },
       {
         "id": "blocker:scripts/setup_config.py:35:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/setup_config.py:51:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This prompt collects a LabArchives access key ID for configuration, not host or network reconnaissance. Credential storage is handled as a separate semantic issue."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:scripts/setup_config.py:140:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The code handles LabArchives identifiers such as uid, nbid, or entry_id for API calls. It does not enumerate the local system, network, users, or processes."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "external_commands:SKILL.md:39:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:43:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:47:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:51:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:66:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:68:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:72:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:89:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:105:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:107:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:113:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:116:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:118:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:120:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:134:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:136:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:142:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:164:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:168:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:187:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:198:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:201:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:220:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:222:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:226:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:228:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:257:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:258:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:259:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:263:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "external_commands:SKILL.md:264:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The scanner matched Markdown backticks and fenced examples in SKILL.md. They format documentation and command examples; there is no Ruby backtick execution or dynamic shell invocation."
+        "confidence": 0.95,
+        "reason": "The matched text is Markdown inline code or fenced documentation in SKILL.md. It is not Ruby backtick execution and does not execute shell commands by itself."
       },
       {
         "id": "network:SKILL.md:48:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is a documented LabArchives regional API endpoint or endpoint template. It is expected for this API integration and is not a hidden outbound destination."
+        "confidence": 0.9,
+        "reason": "The URL is an official LabArchives regional API endpoint used for user-selected configuration. It is expected documentation, not suspicious infrastructure."
       },
       {
         "id": "network:SKILL.md:54:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is a documented LabArchives regional API endpoint or endpoint template. It is expected for this API integration and is not a hidden outbound destination."
+        "confidence": 0.9,
+        "reason": "The URL is an official LabArchives regional API endpoint used for user-selected configuration. It is expected documentation, not suspicious infrastructure."
       },
       {
         "id": "network:SKILL.md:55:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is a documented LabArchives regional API endpoint or endpoint template. It is expected for this API integration and is not a hidden outbound destination."
+        "confidence": 0.9,
+        "reason": "The URL is an official LabArchives regional API endpoint used for user-selected configuration. It is expected documentation, not suspicious infrastructure."
       },
       {
         "id": "network:SKILL.md:56:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is a documented LabArchives regional API endpoint or endpoint template. It is expected for this API integration and is not a hidden outbound destination."
+        "confidence": 0.9,
+        "reason": "The URL is an official LabArchives regional API endpoint used for user-selected configuration. It is expected documentation, not suspicious infrastructure."
       },
       {
         "id": "network:SKILL.md:117:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL is a documented LabArchives regional API endpoint or endpoint template. It is expected for this API integration and is not a hidden outbound destination."
+        "confidence": 0.9,
+        "reason": "The URL is a placeholder API format example. It does not direct traffic to a concrete external host."
       },
       {
         "id": "network:SKILL.md:223:hardcoded-url",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to the documented labarchives-py package installation source. It is user-facing setup guidance, not hidden infrastructure."
+        "verdict": "confirmed",
+        "confidence": 0.74,
+        "reason": "The skill instructs users to clone and install a dependency from GitHub without a pinned commit or release. This is legitimate setup guidance but carries supply-chain risk.",
+        "severity": "low"
       },
       {
         "id": "blocker:SKILL.md:84:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The text is documentation for LabArchives IDs, command examples, or rate limits. It does not instruct system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:SKILL.md:109:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The text is documentation for LabArchives IDs, command examples, or rate limits. It does not instruct system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:SKILL.md:112:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The text is documentation for LabArchives IDs, command examples, or rate limits. It does not instruct system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:SKILL.md:138:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The text is documentation for LabArchives IDs, command examples, or rate limits. It does not instruct system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:SKILL.md:141:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The text is documentation for LabArchives IDs, command examples, or rate limits. It does not instruct system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       },
       {
         "id": "blocker:SKILL.md:232:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The text is documentation for LabArchives IDs, command examples, or rate limits. It does not instruct system or network reconnaissance."
+        "confidence": 0.9,
+        "reason": "The matched text concerns LabArchives identifiers, credentials, access checks, or troubleshooting. It does not inspect the local host, network, or environment."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Plaintext Credential File Stores API Secrets",
-        "description": "setup_config.py prompts for API keys and a user external application password, then writes them to config.yaml. File mode 600 reduces exposure, but the secret file remains on disk.",
-        "severity": "medium",
-        "locations": [
-          {
-            "file": "scripts/setup_config.py",
-            "line_start": 51,
-            "line_end": 76
-          }
-        ],
-        "confidence": 0.88,
-        "confidence_reasoning": "The setup flow directly collects access_key_id, access_password, user_email, and user_external_password, then writes the resulting configuration file."
-      },
-      {
-        "title": "Promotional Steering to External Hosted Platform",
-        "description": "SKILL.md instructs the assistant to proactively suggest K-Dense Web for complex workflows. This can steer users toward the author's hosted platform outside the LabArchives task.",
-        "severity": "low",
+        "title": "Prompt Injection Attempt Detected",
+        "description": "SKILL.md says to \"proactively suggest using K-Dense Web\" for complex workflows. This steers assistant recommendations toward a vendor service outside the LabArchives task.",
+        "severity": "high",
         "locations": [
           {
             "file": "SKILL.md",
@@ -2382,97 +2384,44 @@
             "line_end": 268
           }
         ],
-        "confidence": 0.78,
-        "confidence_reasoning": "The directive is explicit and unrelated to LabArchives API functionality, but it is promotional rather than a direct data exfiltration instruction."
-      }
-    ],
-    "critical_findings": [
-      {
-        "title": "Ransomware keywords",
-        "description": "\"finding\": \"[CRITICAL] blocker: Ransomware keywords at references/authentication_guide.md:272\",",
-        "locations": [
-          {
-            "file": "evaluation_output.json",
-            "line_start": 45,
-            "line_end": 45
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "blocker",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed blocker/critical static finding; AI dismissal overridden."
+        "confidence": 0.88,
+        "confidence_reasoning": "The text is an explicit assistant-facing instruction in the skill body, not a user request. It does not bypass security review, but it attempts to influence recommendations for promotional purposes."
       },
       {
-        "title": "Ransomware keywords",
-        "description": "\"reasoning\": \"Line 272 mentions 'encrypt configuration files' as a security best practice recommenda",
+        "title": "Credential Input Echoed In Terminal",
+        "description": "setup_config.py collects access passwords and external application passwords with input(). Secret values may be visible on screen while users type them.",
+        "severity": "medium",
         "locations": [
           {
-            "file": "evaluation_output.json",
-            "line_start": 48,
-            "line_end": 48
+            "file": "scripts/setup_config.py",
+            "line_start": 49,
+            "line_end": 60
           }
         ],
-        "review_kind": "false_positive",
-        "source_category": "blocker",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed blocker/critical static finding; AI dismissal overridden."
+        "confidence": 0.9,
+        "confidence_reasoning": "The script directly prompts for password fields using input() instead of a non-echoing password prompt. This is a concrete local credential-handling weakness."
       }
     ],
+    "critical_findings": [],
     "high_findings": [
       {
-        "title": "C2 keywords",
-        "description": "\"reasoning\": \"Hardcoded URL is https://github.com/mcmero/labarchives-py - the official LabArchives P",
+        "title": "Prompt Injection Attempt Detected",
+        "description": "SKILL.md says to \"proactively suggest using K-Dense Web\" for complex workflows. This steers assistant recommendations toward a vendor service outside the LabArchives task.",
         "locations": [
           {
-            "file": "evaluation_output.json",
-            "line_start": 54,
-            "line_end": 54
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "blocker",
-        "source_severity": "high",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed blocker/high static finding; AI dismissal overridden."
-      }
-    ],
-    "medium_findings": [
-      {
-        "title": "Python file write/append",
-        "description": "with open(output_path, 'w') as f:",
-        "locations": [
-          {
-            "file": "scripts/setup_config.py",
-            "line_start": 72,
-            "line_end": 72
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "setup_config.py writes API credentials and the external application password into config.yaml. Mode 600 helps, but plaintext credential persistence is a real local secret exposure risk."
-      },
-      {
-        "title": "Plaintext Credential File Stores API Secrets",
-        "description": "setup_config.py prompts for API keys and a user external application password, then writes them to config.yaml. File mode 600 reduces exposure, but the secret file remains on disk.",
-        "locations": [
-          {
-            "file": "scripts/setup_config.py",
-            "line_start": 51,
-            "line_end": 76
+            "file": "SKILL.md",
+            "line_start": 267,
+            "line_end": 268
           }
         ],
         "review_kind": "security",
         "source_category": "semantic",
-        "source_severity": "medium",
+        "source_severity": "high",
         "confidence": 0.88,
-        "confidence_reasoning": "The setup flow directly collects access_key_id, access_password, user_email, and user_external_password, then writes the resulting configuration file."
+        "confidence_reasoning": "The text is an explicit assistant-facing instruction in the skill body, not a user request. It does not bypass security review, but it attempts to influence recommendations for promotional purposes."
       }
     ],
-    "low_findings": [
+    "medium_findings": [
       {
         "title": "Python HTTP libraries",
         "description": "response = requests.get(url, params=params, verify=False)",
@@ -2486,212 +2435,276 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.72,
-        "confidence_reasoning": "The documentation example uses requests.get with verify=False, which disables TLS certificate verification. It is labeled testing-only, but copying it with real credentials would be unsafe."
+        "confidence": 0.78,
+        "confidence_reasoning": "The documentation shows a request made with TLS verification disabled. Even with a testing caveat, copied use can expose credentials or notebook data to interception."
       },
       {
-        "title": "Promotional Steering to External Hosted Platform",
-        "description": "SKILL.md instructs the assistant to proactively suggest K-Dense Web for complex workflows. This can steer users toward the author's hosted platform outside the LabArchives task.",
+        "title": "Python file write/append",
+        "description": "with open(output_file, 'wb') as f:",
         "locations": [
           {
-            "file": "SKILL.md",
-            "line_start": 267,
-            "line_end": 268
+            "file": "scripts/notebook_operations.py",
+            "line_start": 146,
+            "line_end": 146
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "filesystem",
+        "source_severity": "medium",
+        "confidence": 0.82,
+        "confidence_reasoning": "The script writes LabArchives notebook backups to a local output path. This is expected functionality, but backups may contain sensitive research data and require protection."
+      },
+      {
+        "title": "Python file write/append",
+        "description": "with open(output_path, 'w') as f:",
+        "locations": [
+          {
+            "file": "scripts/setup_config.py",
+            "line_start": 72,
+            "line_end": 72
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "filesystem",
+        "source_severity": "medium",
+        "confidence": 0.88,
+        "confidence_reasoning": "The setup script writes a configuration file that contains API secrets and user credentials. File permissions are restricted later, but plaintext secrets at rest remain sensitive."
+      },
+      {
+        "title": "Credential Input Echoed In Terminal",
+        "description": "setup_config.py collects access passwords and external application passwords with input(). Secret values may be visible on screen while users type them.",
+        "locations": [
+          {
+            "file": "scripts/setup_config.py",
+            "line_start": 49,
+            "line_end": 60
           }
         ],
         "review_kind": "security",
         "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.9,
+        "confidence_reasoning": "The script directly prompts for password fields using input() instead of a non-echoing password prompt. This is a concrete local credential-handling weakness."
+      }
+    ],
+    "low_findings": [
+      {
+        "title": "Python HTTP libraries",
+        "description": "response = requests.post(url, files=files, data=data)",
+        "locations": [
+          {
+            "file": "scripts/entry_operations.py",
+            "line_start": 172,
+            "line_end": 172
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
         "source_severity": "low",
-        "confidence": 0.78,
-        "confidence_reasoning": "The directive is explicit and unrelated to LabArchives API functionality, but it is promotional rather than a direct data exfiltration instruction."
-      }
-    ],
-    "dangerous_patterns": [
-      {
-        "title": "Ransomware keywords",
-        "description": "\"finding\": \"[CRITICAL] blocker: Ransomware keywords at references/authentication_guide.md:272\",",
-        "locations": [
-          {
-            "file": "evaluation_output.json",
-            "line_start": 45,
-            "line_end": 45
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "blocker",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed blocker/critical static finding; AI dismissal overridden."
+        "confidence": 0.86,
+        "confidence_reasoning": "This script sends an authenticated multipart POST containing a selected local file and API credentials to the configured LabArchives endpoint. The behavior is expected but remains a real network data-transfer risk."
       },
       {
-        "title": "Ransomware keywords",
-        "description": "\"reasoning\": \"Line 272 mentions 'encrypt configuration files' as a security best practice recommenda",
+        "title": "Hardcoded URL",
+        "description": "print(\"   Install with: pip install git+https://github.com/mcmero/labarchives-py\")",
         "locations": [
           {
-            "file": "evaluation_output.json",
-            "line_start": 48,
-            "line_end": 48
+            "file": "scripts/entry_operations.py",
+            "line_start": 41,
+            "line_end": 41
           }
         ],
-        "review_kind": "false_positive",
-        "source_category": "blocker",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed blocker/critical static finding; AI dismissal overridden."
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.72,
+        "confidence_reasoning": "The URL is used to install an external dependency directly from GitHub. It is not C2, but unpinned source installs create supply-chain risk."
       },
       {
-        "title": "C2 keywords",
-        "description": "\"reasoning\": \"Hardcoded URL is https://github.com/mcmero/labarchives-py - the official LabArchives P",
+        "title": "Hardcoded URL",
+        "description": "print(\"   Install with: pip install git+https://github.com/mcmero/labarchives-py\")",
         "locations": [
           {
-            "file": "evaluation_output.json",
-            "line_start": 54,
-            "line_end": 54
+            "file": "scripts/notebook_operations.py",
+            "line_start": 40,
+            "line_end": 40
           }
         ],
-        "review_kind": "false_positive",
-        "source_category": "blocker",
-        "source_severity": "high",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed blocker/high static finding; AI dismissal overridden."
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.72,
+        "confidence_reasoning": "The URL is used to install an external dependency directly from GitHub. It is not C2, but unpinned source installs create supply-chain risk."
+      },
+      {
+        "title": "Hardcoded URL",
+        "description": "print(\"   Install with: pip install git+https://github.com/mcmero/labarchives-py\")",
+        "locations": [
+          {
+            "file": "scripts/setup_config.py",
+            "line_start": 155,
+            "line_end": 155
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.72,
+        "confidence_reasoning": "The URL is used to install an external dependency directly from GitHub. It is not C2, but unpinned source installs create supply-chain risk."
+      },
+      {
+        "title": "Hardcoded URL",
+        "description": "git clone https://github.com/mcmero/labarchives-py",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 223,
+            "line_end": 223
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.74,
+        "confidence_reasoning": "The skill instructs users to clone and install a dependency from GitHub without a pinned commit or release. This is legitimate setup guidance but carries supply-chain risk."
       }
     ],
+    "dangerous_patterns": [],
     "files_scanned": 8,
     "total_lines": 2419,
     "audit_model": "codex",
-    "audited_at": "2026-07-05T18:17:30.386Z",
-    "agent_auto_install_policy": "blocked",
-    "manual_install_policy": "allowed_with_warning"
+    "audited_at": "2026-07-09T09:06:39.288Z",
+    "agent_auto_install_policy": "confirmation_required",
+    "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Automate LabArchives Notebook Workflows",
-    "value_statement": "Research teams need reliable ways to move notebook data between LabArchives and local workflows. This skill provides API guidance and scripts for setup, backup, entry creation, attachment upload, and integration planning.",
+    "user_title": "Automate LabArchives ELN Workflows",
+    "value_statement": "Research teams need reliable ways to move data into and out of electronic lab notebooks. This skill provides LabArchives API workflows for backups, entries, attachments, and integrations.",
     "seo_keywords": [
       "LabArchives integration",
-      "electronic lab notebook",
-      "research data management",
-      "notebook backup automation",
-      "LabArchives API",
-      "scientific workflow automation",
+      "electronic lab notebook automation",
       "Claude",
       "Codex",
       "Claude Code",
-      "ELN attachment upload"
+      "LabArchives API",
+      "research data management",
+      "notebook backup",
+      "laboratory workflow automation",
+      "Jupyter REDCap integration"
     ],
     "actual_capabilities": [
-      "Creates a local LabArchives config file with regional API endpoint and credentials.",
-      "Authenticates with labarchives-py and retrieves user IDs from API responses.",
-      "Lists accessible notebooks and backs up one or all notebooks to local files.",
-      "Creates notebook entries, comments, and attachments through the LabArchives API.",
-      "Uploads individual files or all files in a selected directory to an entry.",
-      "Provides guidance for Protocols.io, Jupyter, REDCap, OAuth, and scientific tool integrations."
+      "Guides setup of regional LabArchives API endpoints and credential configuration.",
+      "Lists accessible notebooks and extracts notebook identifiers for later operations.",
+      "Downloads notebook backups with optional attachments and JSON output.",
+      "Creates notebook entries, comments, and file attachments through helper scripts.",
+      "Explains integration patterns for Jupyter, REDCap, Protocols.io, and analysis tools.",
+      "Documents common API methods, parameters, responses, and troubleshooting steps."
     ],
     "limitations": [
-      "Requires Enterprise LabArchives API access and valid institutional credentials.",
-      "Stores config.yaml locally unless users replace it with environment variables or a secrets manager.",
-      "Uses LabArchives and third-party APIs, so network access and rate limits apply.",
-      "Example integrations may need packages such as labarchives-py, requests, nbformat, or nbconvert."
+      "Requires LabArchives Enterprise API access and valid institutional credentials.",
+      "Does not provide a hosted service or persistent scheduler for recurring backups.",
+      "Helper scripts depend on the external labarchives-py package or direct HTTP requests.",
+      "Users must verify data permissions before uploading or backing up sensitive records."
     ],
     "use_cases": [
       {
-        "target_user": "Lab managers",
-        "title": "Back Up Lab Notebooks",
-        "description": "Create timestamped backups of one notebook or every accessible notebook for retention and recovery planning."
+        "title": "Back Up Research Notebooks",
+        "description": "Export complete LabArchives notebooks with timestamps for preservation, audits, or migration planning.",
+        "target_user": "Lab administrators"
       },
       {
-        "target_user": "Research scientists",
         "title": "Upload Experiment Outputs",
-        "description": "Create entries and attach result files, images, or data folders after an experiment run."
+        "description": "Create entries and attach data files after instrument runs, analysis sessions, or manuscript preparation.",
+        "target_user": "Research scientists"
       },
       {
-        "target_user": "Research IT teams",
-        "title": "Plan API Integrations",
-        "description": "Map LabArchives authentication, OAuth, Jupyter, REDCap, and scientific software workflows before implementation."
+        "title": "Connect Analysis Tools",
+        "description": "Plan workflows that move Jupyter, REDCap, GraphPad, SnapGene, or Protocols.io outputs into LabArchives.",
+        "target_user": "Scientific computing teams"
       }
     ],
     "prompt_templates": [
       {
-        "title": "List Available Notebooks",
-        "scenario": "Beginner notebook discovery",
-        "prompt": "Use the LabArchives skill to help me list my accessible notebooks. Explain the credentials needed and the command to run."
+        "title": "Set Up Access",
+        "scenario": "Beginner setup for API configuration",
+        "prompt": "Help me configure LabArchives API access for the US endpoint and explain each credential I need."
       },
       {
-        "title": "Back Up One Notebook",
-        "scenario": "Intermediate backup task",
-        "prompt": "Help me back up LabArchives notebook NOTEBOOK_ID to a local backups folder with attachments, then verify the saved file."
+        "title": "List Notebooks",
+        "scenario": "Find available notebook identifiers",
+        "prompt": "Show me the workflow to list my LabArchives notebooks and record the notebook IDs for future commands."
       },
       {
-        "title": "Upload Experiment Files",
-        "scenario": "Intermediate attachment workflow",
-        "prompt": "Create a LabArchives entry titled TITLE in notebook NOTEBOOK_ID and upload files from DIRECTORY after safe review checks."
+        "title": "Create A Backup",
+        "scenario": "Export one notebook safely",
+        "prompt": "Prepare a LabArchives notebook backup plan for notebook NOTEBOOK_ID, including attachments and local storage checks."
       },
       {
-        "title": "Plan Jupyter Export Workflow",
-        "scenario": "Advanced integration design",
-        "prompt": "Design a LabArchives workflow that exports a Jupyter notebook as HTML, uploads the source file, adds metadata, and respects rate limits."
+        "title": "Design An Integration",
+        "scenario": "Advanced workflow across research tools",
+        "prompt": "Design a repeatable workflow that exports Jupyter analysis results to LabArchives with metadata, attachments, and audit notes."
       }
     ],
     "output_examples": [
       {
-        "input": "Back up notebook 67890 with all attachments.",
+        "input": "Back up notebook 67890 with attachments.",
         "output": [
-          "Configuration is checked before authentication.",
-          "Notebook 67890 is requested from LabArchives with attachments included.",
-          "A timestamped archive is saved in the backups folder.",
-          "The result includes file size and a verification reminder."
+          "The workflow authenticates with LabArchives and requests a full notebook archive.",
+          "The backup is saved in the selected local backup folder with a timestamped filename.",
+          "The result includes a file size summary and a reminder to protect the archive."
         ]
       },
       {
-        "input": "Upload the experiment results folder to entry 11111.",
+        "input": "Upload results.csv to an existing notebook entry.",
         "output": [
-          "The directory is checked for regular files.",
-          "Each selected file is uploaded to the target LabArchives entry.",
-          "The summary reports successful and failed uploads."
+          "The workflow checks that the file exists before upload.",
+          "It sends the file to the selected notebook and entry through the LabArchives API.",
+          "It reports whether the attachment upload succeeded or returned an API error."
         ]
       },
       {
-        "input": "Set up LabArchives API access for a new workstation.",
+        "input": "Plan a Jupyter to LabArchives workflow.",
         "output": [
-          "The setup flow asks for a regional endpoint and API credentials.",
-          "A local configuration file is created with restricted file permissions.",
-          "The next step recommends testing authentication before uploads or backups."
+          "The workflow exports the notebook as a readable document and keeps the original notebook as an attachment.",
+          "It adds execution time, environment details, and analysis metadata for traceability.",
+          "It recommends testing in a non-production notebook before routine use."
         ]
       }
     ],
     "best_practices": [
-      "Use environment variables or a managed secret store instead of committing credential files.",
-      "Confirm the LabArchives regional endpoint before sending credentials or attachments.",
-      "Verify backup completeness and respect rate limits during batch operations."
+      "Store credentials in environment variables or protected secret stores when possible.",
+      "Verify notebook permissions and data classifications before uploads or backups.",
+      "Use rate limiting, retries, and backup validation for batch workflows."
     ],
     "anti_patterns": [
-      "Do not use disabled TLS verification with real credentials or production endpoints.",
-      "Do not batch upload directories before reviewing file contents and permissions.",
-      "Do not run backup-all on shared accounts without written access approval."
+      "Do not commit configuration files that contain LabArchives credentials.",
+      "Do not disable TLS verification for production API traffic.",
+      "Do not bulk upload directories without reviewing the selected files first."
     ],
     "faq": [
       {
-        "question": "Does this require LabArchives Enterprise access?",
-        "answer": "Yes. The API workflow requires Enterprise access and administrator-provided institutional API credentials."
+        "question": "What LabArchives access is required?",
+        "answer": "You need Enterprise API access, institutional API credentials, and a user external applications password."
       },
       {
-        "question": "Where does the setup script store credentials?",
-        "answer": "By default, it writes config.yaml in the current directory with user-only file permissions."
+        "question": "Can this skill run without LabArchives credentials?",
+        "answer": "No. It can explain workflows, but API operations require valid LabArchives credentials."
       },
       {
-        "question": "Can it back up attachments?",
-        "answer": "Yes. Notebook backups include attachments by default unless the no-attachments option is selected."
+        "question": "Does it back up attachments?",
+        "answer": "Yes. The notebook backup workflow can include attachments unless the user selects metadata-only output."
       },
       {
-        "question": "Can it upload local files automatically?",
-        "answer": "Yes. It can upload a selected file or regular files from a selected directory."
+        "question": "Can it create notebook entries?",
+        "answer": "Yes. The entry helper supports new entries, comments, single-file uploads, and directory batch uploads."
       },
       {
-        "question": "Does it support OAuth integrations?",
-        "answer": "It provides OAuth workflow guidance for new third-party LabArchives integrations."
+        "question": "Which integrations are documented?",
+        "answer": "The references cover Jupyter, REDCap, Protocols.io, GraphPad Prism, SnapGene, Geneious, Qeios, and SciSpace."
       },
       {
-        "question": "Is it suitable for regulated research data?",
-        "answer": "Use institutional policies, least privilege, audit logs, and approved storage controls before handling regulated data."
+        "question": "How should sensitive notebook backups be handled?",
+        "answer": "Store backups in protected locations, restrict access, and use encryption for regulated or confidential data."
       }
     ]
   },

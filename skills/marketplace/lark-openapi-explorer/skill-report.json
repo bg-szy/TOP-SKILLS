@@ -1,20 +1,23 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T04:02:07.330Z",
+    "generated_at": "2026-07-09T09:15:06.462Z",
     "slug": "larksuite-lark-openapi-explorer",
     "source_url": "https://github.com/larksuite/cli/tree/main/skills/lark-openapi-explorer/",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "ae89debc3f807f9947831b4525e1c118bc14544877c14c14aaa47298b1e863b4",
-    "tree_hash": "3b638ed7724e10ba0ff33a928a0e27358bda79bc6b9a10b73b689dbafba52bd6",
+    "content_hash": "a11b3368b4c0b432d78e768d1b80279098633795370abca9dd4e4955fdd12eb2",
+    "tree_hash": "7600a7e1940b5a7d646c43dc5029f245e5963b8bbd7f74d543cea7800b4c554a",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
       "fallback_chain": [
         {
           "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -23,18 +26,18 @@
   },
   "skill": {
     "name": "lark-openapi-explorer",
-    "description": "Explores official Feishu and Lark OpenAPI Markdown documentation when existing lark-cli commands or skills do not cover a request. It identifies native endpoint details and prepares guarded lark-cli api calls.",
-    "summary": "Find official Lark or Feishu OpenAPI endpoints and prepare safe lark-cli api calls.",
+    "description": "Explores Feishu and Lark OpenAPI documentation when existing Lark skills or lark-cli commands do not cover a request.",
+    "summary": "Finds native Lark OpenAPI endpoints and guides safe calls through lark-cli.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "larksuite",
     "license": "MIT",
     "tags": [
       "lark",
       "feishu",
       "openapi",
-      "cli",
-      "automation"
+      "api-discovery",
+      "office-automation"
     ],
     "supported_tools": [
       "claude",
@@ -49,26 +52,31 @@
     "category": "office"
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "high",
     "is_blocked": false,
-    "safe_to_publish": true,
+    "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "The skill is documentation-focused and contains no evidence of prompt injection, obfuscation, credential theft, or arbitrary filesystem traversal. The real security concern is intentional external lark-cli api execution, including examples for state-changing Lark or Feishu API calls. Existing safety language requires confirmation for write and delete actions, but marketplace users should treat this as a command-executing API automation skill.",
+    "summary": "Most static backtick detections are Markdown formatting false positives, but several entries describe real lark-cli command workflows. The skill also relies on official Feishu and Lark documentation fetches and contains out-of-package sibling skill references. No prompt-injection attempt was found in SKILL.md.",
     "remediation": [
       {
-        "issue": "External CLI execution for native OpenAPI calls",
-        "suggestion": "Require explicit user confirmation before every lark-cli api invocation that changes data, and show the method, path, tenant target, and payload summary first.",
-        "severity": "medium"
+        "issue": "Out-of-package sibling skill references",
+        "suggestion": "Inline the required shared safety rules or declare a packaged dependency instead of asking agents to read ../ sibling paths.",
+        "severity": "high"
       },
       {
-        "issue": "Broad OpenAPI exploration can reach sensitive tenant operations",
-        "suggestion": "Document least-privilege scope checks and refuse destructive endpoints unless the user confirms the exact affected resource.",
-        "severity": "medium"
+        "issue": "Raw authenticated API mutation workflow",
+        "suggestion": "Require an explicit preview that restates target IDs, method, path, scopes, and expected impact before any mutating request.",
+        "severity": "high"
       },
       {
-        "issue": "Network access to external documentation",
-        "suggestion": "Keep WebFetch usage limited to official Feishu and Lark documentation domains, and never place secrets or tokens in URLs or prompts.",
+        "issue": "External documentation fetching",
+        "suggestion": "Constrain WebFetch use to official Feishu and Lark domains and avoid following user-supplied documentation URLs.",
         "severity": "low"
+      },
+      {
+        "issue": "Executable command examples in documentation",
+        "suggestion": "Label examples as templates and require users to approve concrete values before execution with lark-cli.",
+        "severity": "medium"
       }
     ],
     "risk_factor_evidence": [
@@ -624,230 +632,338 @@
       {
         "id": "external_commands:SKILL.md:12:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is a Markdown link to sibling documentation, not Ruby backtick execution or a shell command. No executable code or user-controlled command string is present."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline code, a code fence, or prose, not Ruby or shell backtick execution. The file content itself does not execute from this marker."
       },
       {
         "id": "external_commands:SKILL.md:14:ruby-shell-backtick-execution",
         "verdict": "confirmed",
         "confidence": 0.78,
-        "reason": "The line explicitly directs agents to use lark-cli api for uncovered tasks. That is intended external command execution against Lark or Feishu APIs, so user-controlled requests can affect tenant data.",
-        "severity": "medium"
+        "severity": "medium",
+        "reason": "The text directs the agent to use lark-cli commands with local authentication. Those commands can reach Lark APIs and may read or change workspace data."
       },
       {
         "id": "external_commands:SKILL.md:20:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is a Markdown code fence in a documentation diagram. It does not execute commands or evaluate Ruby-style backticks."
+        "confidence": 0.92,
+        "reason": "The match is documentation structure or a formatted URL in Markdown. It is not an executable shell-backtick construct."
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is the closing Markdown code fence for a documentation diagram. It has no executable behavior."
+        "confidence": 0.92,
+        "reason": "The match is documentation structure or a formatted URL in Markdown. It is not an executable shell-backtick construct."
       },
       {
         "id": "external_commands:SKILL.md:30:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The backticks wrap a documentation URL in a table. This is not shell execution or dynamic command construction."
+        "confidence": 0.92,
+        "reason": "The match is documentation structure or a formatted URL in Markdown. It is not an executable shell-backtick construct."
       },
       {
         "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The backticks wrap a documentation URL in a table. This is not shell execution or dynamic command construction."
+        "confidence": 0.92,
+        "reason": "The match is documentation structure or a formatted URL in Markdown. It is not an executable shell-backtick construct."
       },
       {
         "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The fenced example tells the agent to run lark-cli with a service help command. It is read-only, but it is still an external process invocation.",
-        "severity": "medium"
+        "confidence": 0.7,
+        "severity": "medium",
+        "reason": "The block includes a lark-cli command invocation. It is a read-only help check, but it still depends on executing an external binary."
       },
       {
         "id": "external_commands:SKILL.md:44:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is a Markdown code fence boundary after a help-command example. The detected token itself is formatting, not an executable command."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline code, a code fence, or prose, not Ruby or shell backtick execution. The file content itself does not execute from this marker."
       },
       {
         "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code fence around a WebFetch instruction. It is not Ruby backtick execution or a shell command."
+        "confidence": 0.92,
+        "reason": "The match is documentation structure or a formatted URL in Markdown. It is not an executable shell-backtick construct."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is a Markdown code fence boundary. It has no executable behavior and does not create a command injection path."
+        "confidence": 0.92,
+        "reason": "The match is documentation structure or a formatted URL in Markdown. It is not an executable shell-backtick construct."
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The backticks wrap a domain name in prose. This is not shell execution or dynamic command construction."
+        "confidence": 0.92,
+        "reason": "The match is documentation structure or a formatted URL in Markdown. It is not an executable shell-backtick construct."
       },
       {
         "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The backticks wrap a domain name in prose. This is not shell execution or dynamic command construction."
+        "confidence": 0.92,
+        "reason": "The match is documentation structure or a formatted URL in Markdown. It is not an executable shell-backtick construct."
       },
       {
         "id": "external_commands:SKILL.md:65:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code fence around a WebFetch documentation step. It is not a shell command execution primitive."
+        "confidence": 0.92,
+        "reason": "The match is documentation structure or a formatted URL in Markdown. It is not an executable shell-backtick construct."
       },
       {
         "id": "external_commands:SKILL.md:68:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is a Markdown code fence boundary. It has no executable behavior and does not create a command injection path."
+        "confidence": 0.92,
+        "reason": "The match is documentation structure or a formatted URL in Markdown. It is not an executable shell-backtick construct."
       },
       {
         "id": "external_commands:SKILL.md:74:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This is a Markdown code fence around a WebFetch documentation step. It is not Ruby backtick execution or shell execution."
+        "confidence": 0.92,
+        "reason": "The match is documentation structure or a formatted URL in Markdown. It is not an executable shell-backtick construct."
       },
       {
         "id": "external_commands:SKILL.md:77:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is a Markdown code fence boundary. It has no executable behavior and does not create a command injection path."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline code, a code fence, or prose, not Ruby or shell backtick execution. The file content itself does not execute from this marker."
       },
       {
         "id": "external_commands:SKILL.md:81:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The instruction directs use of lark-cli api. Later examples include state-changing methods, so the external CLI operation is a real risk surface.",
-        "severity": "medium"
+        "confidence": 0.78,
+        "severity": "medium",
+        "reason": "The text directs the agent to use lark-cli commands with local authentication. Those commands can reach Lark APIs and may read or change workspace data."
       },
       {
         "id": "external_commands:SKILL.md:83:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "reason": "This code block contains GET, POST, PUT, and DELETE lark-cli api invocations with request data. User-selected paths or payloads could mutate tenant state.",
-        "severity": "medium"
+        "confidence": 0.78,
+        "severity": "medium",
+        "reason": "The text directs the agent to use lark-cli commands with local authentication. Those commands can reach Lark APIs and may read or change workspace data."
       },
       {
         "id": "external_commands:SKILL.md:95:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is a Markdown code fence boundary after command examples. The detected token itself is formatting, not an executable command."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline code, a code fence, or prose, not Ruby or shell backtick execution. The file content itself does not execute from this marker."
       },
       {
         "id": "external_commands:SKILL.md:102:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The backticks wrap an output-format placeholder for an HTTP method and path. This is documentation text, not shell execution."
+        "confidence": 0.92,
+        "reason": "The match is documentation structure or a formatted URL in Markdown. It is not an executable shell-backtick construct."
       },
       {
         "id": "external_commands:SKILL.md:105:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.78,
-        "reason": "The output spec asks for complete lark-cli api command examples. Generated commands could be copied or executed with sensitive API effects.",
-        "severity": "medium"
+        "confidence": 0.63,
+        "severity": "medium",
+        "reason": "The text asks the agent to provide a complete lark-cli api command. This is command generation rather than direct execution, but it supports the authenticated command workflow."
       },
       {
         "id": "external_commands:SKILL.md:113:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "The backticks wrap a dry-run option recommendation. It is a safety instruction, not a standalone executable command or injection sink."
+        "reason": "The match is Markdown inline code, a code fence, or prose, not Ruby or shell backtick execution. The file content itself does not execute from this marker."
       },
       {
         "id": "external_commands:SKILL.md:121:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.88,
-        "reason": "The example includes lark-cli commands and a POST that adds members to a chat. This is real external CLI and API action, although shown as documentation.",
-        "severity": "medium"
+        "confidence": 0.86,
+        "severity": "medium",
+        "reason": "The example contains a concrete lark-cli api mutation against Lark resources. It can affect tenant data if run with authenticated credentials."
       },
       {
         "id": "external_commands:SKILL.md:133:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This is a Markdown code fence boundary between examples. It has no executable behavior."
+        "confidence": 0.9,
+        "reason": "The match is Markdown inline code, a code fence, or prose, not Ruby or shell backtick execution. The file content itself does not execute from this marker."
       },
       {
         "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.88,
-        "reason": "The example includes a PATCH lark-cli api call to update a chat announcement. It is a state-changing external command pattern.",
-        "severity": "medium"
+        "confidence": 0.86,
+        "severity": "medium",
+        "reason": "The example contains a concrete lark-cli api mutation against Lark resources. It can affect tenant data if run with authenticated credentials."
       },
       {
         "id": "network:SKILL.md:30:hardcoded-url",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.88,
-        "reason": "The URL points to the official Feishu OpenAPI documentation index. No secrets or user data are embedded in the hardcoded URL."
+        "severity": "low",
+        "reason": "The skill instructs fetching external official Feishu or Lark documentation. The domains are expected for the skill, but network access is a real dependency."
       },
       {
         "id": "network:SKILL.md:31:hardcoded-url",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.88,
-        "reason": "The URL points to the official Lark OpenAPI documentation index. No secrets or user data are embedded in the hardcoded URL."
+        "severity": "low",
+        "reason": "The skill instructs fetching external official Feishu or Lark documentation. The domains are expected for the skill, but network access is a real dependency."
       },
       {
         "id": "network:SKILL.md:53:hardcoded-url",
-        "verdict": "false_positive",
-        "confidence": 0.87,
-        "reason": "The WebFetch target is the official Feishu OpenAPI documentation index. This supports documented API discovery and does not indicate exfiltration."
+        "verdict": "confirmed",
+        "confidence": 0.88,
+        "severity": "low",
+        "reason": "The skill instructs fetching external official Feishu or Lark documentation. The domains are expected for the skill, but network access is a real dependency."
       },
       {
         "id": "network:SKILL.md:66:hardcoded-url",
-        "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The WebFetch target is a templated official Feishu documentation path. It is used for API reference discovery, not arbitrary network access."
+        "verdict": "confirmed",
+        "confidence": 0.88,
+        "severity": "low",
+        "reason": "The skill instructs fetching external official Feishu or Lark documentation. The domains are expected for the skill, but network access is a real dependency."
       },
       {
         "id": "network:SKILL.md:75:hardcoded-url",
-        "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The WebFetch target is a templated official Feishu API documentation path. It is documentation access, not a suspicious callback or data sink."
+        "verdict": "confirmed",
+        "confidence": 0.88,
+        "severity": "low",
+        "reason": "The skill instructs fetching external official Feishu or Lark documentation. The domains are expected for the skill, but network access is a real dependency."
       },
       {
         "id": "filesystem:SKILL.md:12:path-traversal-sequence",
-        "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "The ../ sequence appears in a fixed Markdown link to sibling skill documentation. It is not user-controlled filesystem traversal or arbitrary file access."
+        "verdict": "confirmed",
+        "confidence": 0.78,
+        "severity": "high",
+        "reason": "The skill asks the agent to read ../lark-shared/SKILL.md outside this skill directory. That crosses the package boundary even if the intended target is a sibling Lark skill."
       },
       {
         "id": "filesystem:SKILL.md:75:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The ... sequence is an ellipsis inside an HTTPS documentation URL. It is not a filesystem traversal sequence."
+        "confidence": 0.96,
+        "reason": "The matched sequence is an ellipsis placeholder inside an HTTPS documentation URL. It is not a filesystem traversal path."
       },
       {
         "id": "filesystem:SKILL.md:152:path-traversal-sequence",
-        "verdict": "false_positive",
-        "confidence": 0.85,
-        "reason": "The ../ sequence appears in a fixed Markdown reference to sibling documentation. It does not construct paths from user input or target arbitrary files."
+        "verdict": "confirmed",
+        "confidence": 0.62,
+        "severity": "high",
+        "reason": "The Markdown link points to a sibling skill using ../ outside this package. It appears to be a repository reference, but it can still drive out-of-package file reads."
       },
       {
         "id": "filesystem:SKILL.md:153:path-traversal-sequence",
-        "verdict": "false_positive",
-        "confidence": 0.85,
-        "reason": "The ../ sequence appears in a fixed Markdown reference to sibling documentation. It does not construct paths from user input or target arbitrary files."
+        "verdict": "confirmed",
+        "confidence": 0.62,
+        "severity": "high",
+        "reason": "The Markdown link points to a sibling skill using ../ outside this package. It appears to be a repository reference, but it can still drive out-of-package file reads."
       },
       {
         "id": "obfuscation:SKILL.md:4:heuristic-very-high-entropy-string-5-73-bits-lik",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "Line 4 is a normal multilingual skill description with Chinese text and product names. No encoded payload, encrypted blob, or decoding instruction is present."
+        "confidence": 0.95,
+        "reason": "The high-entropy signal is caused by Chinese prose and mixed technical terms in the YAML description. There is no encoded payload or hidden executable content."
       },
       {
         "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-6-66-bits-possible-b",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The file is Markdown with Chinese prose, tables, and examples, which can raise entropy heuristics. It is not binary or encrypted content."
+        "confidence": 0.91,
+        "reason": "The file is a plain UTF-8 Markdown skill with Chinese text, headings, and examples. No binary, encrypted, or encoded payload is present."
       }
     ],
-    "semantic_findings": [],
+    "semantic_findings": [
+      {
+        "title": "Authenticated Lark API Mutation Capability",
+        "description": "The skill instructs agents to call raw Lark OpenAPI POST, PUT, PATCH, and DELETE operations through lark-cli. Misuse could alter chats, members, announcements, or other tenant resources under the authenticated account.",
+        "severity": "high",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 81,
+            "line_end": 95
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 112,
+            "line_end": 115
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 121,
+            "line_end": 148
+          }
+        ],
+        "confidence": 0.88,
+        "confidence_reasoning": "The file explicitly lists mutating HTTP methods and examples that modify chat members and announcements. Built-in confirmation guidance reduces abuse risk but does not remove the capability."
+      }
+    ],
     "critical_findings": [],
-    "high_findings": [],
+    "high_findings": [
+      {
+        "title": "Path traversal sequence",
+        "description": "> **前置条件:** 先阅读 [`../lark-shared/SKILL.md`](../lark-shared/SKILL.md) 了解认证、身份切换和安全规则。",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 12,
+            "line_end": 12
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "filesystem",
+        "source_severity": "high",
+        "confidence": 0.78,
+        "confidence_reasoning": "The skill asks the agent to read ../lark-shared/SKILL.md outside this skill directory. That crosses the package boundary even if the intended target is a sibling Lark skill."
+      },
+      {
+        "title": "Path traversal sequence",
+        "description": "- [lark-shared](../lark-shared/SKILL.md) — 认证和全局参数",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 152,
+            "line_end": 152
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "filesystem",
+        "source_severity": "high",
+        "confidence": 0.62,
+        "confidence_reasoning": "The Markdown link points to a sibling skill using ../ outside this package. It appears to be a repository reference, but it can still drive out-of-package file reads."
+      },
+      {
+        "title": "Path traversal sequence",
+        "description": "- [lark-skill-maker](../lark-skill-maker/SKILL.md) — 如需将挖掘到的 API 固化为新 Skill",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 153,
+            "line_end": 153
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "filesystem",
+        "source_severity": "high",
+        "confidence": 0.62,
+        "confidence_reasoning": "The Markdown link points to a sibling skill using ../ outside this package. It appears to be a repository reference, but it can still drive out-of-package file reads."
+      },
+      {
+        "title": "Authenticated Lark API Mutation Capability",
+        "description": "The skill instructs agents to call raw Lark OpenAPI POST, PUT, PATCH, and DELETE operations through lark-cli. Misuse could alter chats, members, announcements, or other tenant resources under the authenticated account.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 81,
+            "line_end": 95
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 112,
+            "line_end": 115
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 121,
+            "line_end": 148
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "high",
+        "confidence": 0.88,
+        "confidence_reasoning": "The file explicitly lists mutating HTTP methods and examples that modify chat members and announcements. Built-in confirmation guidance reduces abuse risk but does not remove the capability."
+      }
+    ],
     "medium_findings": [
       {
         "title": "Ruby/shell backtick execution",
@@ -863,7 +979,7 @@
         "source_category": "external_commands",
         "source_severity": "medium",
         "confidence": 0.78,
-        "confidence_reasoning": "The line explicitly directs agents to use lark-cli api for uncovered tasks. That is intended external command execution against Lark or Feishu APIs, so user-controlled requests can affect tenant data."
+        "confidence_reasoning": "The text directs the agent to use lark-cli commands with local authentication. Those commands can reach Lark APIs and may read or change workspace data."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -878,8 +994,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "The fenced example tells the agent to run lark-cli with a service help command. It is read-only, but it is still an external process invocation."
+        "confidence": 0.7,
+        "confidence_reasoning": "The block includes a lark-cli command invocation. It is a read-only help check, but it still depends on executing an external binary."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -894,8 +1010,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The instruction directs use of lark-cli api. Later examples include state-changing methods, so the external CLI operation is a real risk surface."
+        "confidence": 0.78,
+        "confidence_reasoning": "The text directs the agent to use lark-cli commands with local authentication. Those commands can reach Lark APIs and may read or change workspace data."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -910,8 +1026,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "This code block contains GET, POST, PUT, and DELETE lark-cli api invocations with request data. User-selected paths or payloads could mutate tenant state."
+        "confidence": 0.78,
+        "confidence_reasoning": "The text directs the agent to use lark-cli commands with local authentication. Those commands can reach Lark APIs and may read or change workspace data."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -926,8 +1042,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.78,
-        "confidence_reasoning": "The output spec asks for complete lark-cli api command examples. Generated commands could be copied or executed with sensitive API effects."
+        "confidence": 0.63,
+        "confidence_reasoning": "The text asks the agent to provide a complete lark-cli api command. This is command generation rather than direct execution, but it supports the authenticated command workflow."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -942,8 +1058,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The example includes lark-cli commands and a POST that adds members to a chat. This is real external CLI and API action, although shown as documentation."
+        "confidence": 0.86,
+        "confidence_reasoning": "The example contains a concrete lark-cli api mutation against Lark resources. It can affect tenant data if run with authenticated credentials."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -958,135 +1074,216 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The example includes a PATCH lark-cli api call to update a chat announcement. It is a state-changing external command pattern."
+        "confidence": 0.86,
+        "confidence_reasoning": "The example contains a concrete lark-cli api mutation against Lark resources. It can affect tenant data if run with authenticated credentials."
       }
     ],
-    "low_findings": [],
+    "low_findings": [
+      {
+        "title": "Hardcoded URL",
+        "description": "| 飞书 (Feishu) | `https://open.feishu.cn/llms.txt` |",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 30,
+            "line_end": 30
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.88,
+        "confidence_reasoning": "The skill instructs fetching external official Feishu or Lark documentation. The domains are expected for the skill, but network access is a real dependency."
+      },
+      {
+        "title": "Hardcoded URL",
+        "description": "| Lark | `https://open.larksuite.com/llms.txt` |",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 31,
+            "line_end": 31
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.88,
+        "confidence_reasoning": "The skill instructs fetching external official Feishu or Lark documentation. The domains are expected for the skill, but network access is a real dependency."
+      },
+      {
+        "title": "Hardcoded URL",
+        "description": "WebFetch https://open.feishu.cn/llms.txt",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 53,
+            "line_end": 53
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.88,
+        "confidence_reasoning": "The skill instructs fetching external official Feishu or Lark documentation. The domains are expected for the skill, but network access is a real dependency."
+      },
+      {
+        "title": "Hardcoded URL",
+        "description": "WebFetch https://open.feishu.cn/llms-docs/zh-CN/llms-<module>.txt",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 66,
+            "line_end": 66
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.88,
+        "confidence_reasoning": "The skill instructs fetching external official Feishu or Lark documentation. The domains are expected for the skill, but network access is a real dependency."
+      },
+      {
+        "title": "Hardcoded URL",
+        "description": "WebFetch https://open.feishu.cn/document/server-docs/.../<api>.md",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 75,
+            "line_end": 75
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.88,
+        "confidence_reasoning": "The skill instructs fetching external official Feishu or Lark documentation. The domains are expected for the skill, but network access is a real dependency."
+      }
+    ],
     "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 154,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T04:02:07.330Z",
-    "agent_auto_install_policy": "allowed",
+    "audited_at": "2026-07-09T09:15:06.462Z",
+    "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Explore Lark OpenAPI Gaps",
-    "value_statement": "Lark and Feishu tasks sometimes need APIs that are not wrapped by existing CLI commands. This skill finds official endpoint docs and prepares safer lark-cli api calls.",
+    "user_title": "Explore Lark OpenAPI Endpoints",
+    "value_statement": "Teams often need Lark API actions that are not wrapped by existing skills. This skill finds official endpoint details and helps call them through lark-cli.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "Lark OpenAPI",
-      "Feishu OpenAPI",
+      "Feishu API",
       "lark-cli",
-      "API explorer",
-      "office automation",
-      "Lark integration",
-      "OpenAPI documentation"
+      "OpenAPI explorer",
+      "Lark automation",
+      "API documentation",
+      "enterprise messaging API"
     ],
     "actual_capabilities": [
-      "Checks whether existing Lark skills or lark-cli commands already cover a request.",
-      "Uses official Feishu and Lark documentation indexes to locate relevant API modules.",
-      "Extracts endpoint methods, paths, parameters, permissions, response fields, and error codes.",
-      "Prepares lark-cli api call guidance for native OpenAPI endpoints.",
-      "Translates Chinese API documentation details for English-speaking users.",
-      "Applies confirmation guidance before write or delete operations."
+      "Checks whether an existing Lark skill or lark-cli command already covers the request.",
+      "Fetches Feishu or Lark OpenAPI index pages from official documentation URLs.",
+      "Locates module documents and endpoint documents for a requested Lark task.",
+      "Extracts methods, paths, parameters, scopes, responses, and error notes from API documentation.",
+      "Shows how to call GET, POST, PUT, and DELETE endpoints with lark-cli api.",
+      "Translates Chinese documentation details when the user is working in English."
     ],
     "limitations": [
-      "Requires a working lark-cli installation and valid authentication outside the skill.",
-      "Depends on official documentation accuracy and availability.",
-      "Cannot guarantee the caller has required tenant permissions or API scopes.",
-      "State-changing calls still need careful human confirmation before execution."
+      "Requires lark-cli to be installed and authenticated before API calls can work.",
+      "Depends on current Feishu or Lark documentation being reachable and accurate.",
+      "Does not guess undocumented paths, parameters, or permissions.",
+      "Write and delete operations require explicit user confirmation before execution."
     ],
     "use_cases": [
       {
-        "title": "Handle Unwrapped Team Admin Tasks",
-        "description": "Find the official endpoint for a Lark admin action that is not available through existing CLI commands.",
-        "target_user": "IT administrator"
+        "title": "Find an Unwrapped Chat API",
+        "description": "Locate the official endpoint for a chat action that lark-cli does not expose directly.",
+        "target_user": "Lark workspace administrator"
       },
       {
-        "title": "Build Internal Automation Safely",
-        "description": "Identify endpoint requirements before adding a native Lark or Feishu API call to an internal workflow.",
-        "target_user": "Internal tools developer"
+        "title": "Prepare an API Call Plan",
+        "description": "Collect required parameters, scopes, and request constraints before running a sensitive Lark operation.",
+        "target_user": "Automation engineer"
       },
       {
-        "title": "Translate API Documentation Into Action",
-        "description": "Convert Chinese OpenAPI documentation into a concise English summary with permissions and request requirements.",
-        "target_user": "Operations engineer"
+        "title": "Translate API Documentation",
+        "description": "Turn Chinese Feishu OpenAPI documentation into concise English implementation notes.",
+        "target_user": "Developer working in English"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Find a Missing API",
-        "scenario": "Beginner discovery for an unsupported task.",
-        "prompt": "Find the official Lark or Feishu OpenAPI endpoint for this task: [describe task]. First check whether an existing skill or lark-cli command already covers it."
+        "title": "Find a Lark Endpoint",
+        "scenario": "Beginner discovery request",
+        "prompt": "Find the official Lark OpenAPI endpoint for this task: [describe task]. Check existing lark-cli coverage first."
       },
       {
-        "title": "Summarize an Endpoint",
-        "scenario": "Understand one API before using it.",
-        "prompt": "Open the official documentation for this endpoint and summarize its method, path, required parameters, permissions, response fields, and common errors."
+        "title": "Summarize Required Inputs",
+        "scenario": "Endpoint planning",
+        "prompt": "Use the official Feishu documentation to list the method, path, required parameters, permissions, and key errors for [task]."
       },
       {
         "title": "Prepare a Safe Call",
-        "scenario": "Plan a request that may change data.",
-        "prompt": "Prepare the safest lark-cli api call plan for [endpoint goal]. Show the target resource, side effects, required scopes, and confirmation question before any execution."
+        "scenario": "Controlled execution",
+        "prompt": "Prepare the lark-cli api call for [task]. Ask for confirmation before any write, update, or delete operation."
       },
       {
-        "title": "Design a Reusable Workflow",
-        "scenario": "Advanced workflow planning across related endpoints.",
-        "prompt": "Research the official Lark OpenAPI documentation for [workflow]. Propose a step-by-step automation plan with read checks, write confirmations, rollback notes, and permission requirements."
+        "title": "Compare Candidate APIs",
+        "scenario": "Advanced endpoint selection",
+        "prompt": "Search the Lark OpenAPI docs for APIs related to [workflow]. Compare candidates and recommend the safest endpoint."
       }
     ],
     "output_examples": [
       {
-        "input": "Find how to add members to a Lark group when the normal CLI command is unavailable.",
-        "output": "The response identifies the chat member endpoint, lists required identifiers and permissions, explains the side effect, and asks for confirmation before any write action."
+        "input": "Find how to add users to a Lark chat when no wrapped command exists.",
+        "output": "The skill identifies the chat member endpoint, lists required identifiers and permissions, and asks for confirmation before adding members."
       },
       {
-        "input": "Explain the API needed to update a group announcement in English.",
-        "output": "The response gives the endpoint purpose, required revision value, content field expectations, permission scope, and common failure cases in plain English."
+        "input": "Explain the API for updating a chat announcement in English.",
+        "output": "The skill summarizes the endpoint purpose, required revision value, announcement content format, permissions, and expected response behavior."
       },
       {
-        "input": "Check whether there is a native API for a workflow not covered by lark-cli.",
-        "output": "The response checks existing CLI coverage, searches official documentation modules, and returns candidate endpoints with confidence and next verification steps."
+        "input": "Check whether an existing command can handle a messaging task.",
+        "output": "The skill first reviews available lark-cli messaging commands, then uses OpenAPI documentation only if no direct command exists."
       }
     ],
     "best_practices": [
-      "Start by checking existing lark-cli commands before exploring native OpenAPI endpoints.",
-      "Use official Feishu or Lark documentation as the source for every path and parameter.",
-      "Confirm tenant, resource, permissions, and side effects before any write or delete call."
+      "Start with existing lark-cli help before exploring raw OpenAPI endpoints.",
+      "Use official Feishu or Lark documentation as the source of truth for every parameter.",
+      "Confirm target resources, scopes, and expected impact before running mutating calls."
     ],
     "anti_patterns": [
-      "Do not guess endpoint paths, parameters, or permission scopes without opening official documentation.",
-      "Do not run write or delete requests without explicit user confirmation.",
-      "Do not place secrets, access tokens, or private user data in documentation fetch URLs."
+      "Do not guess API paths or request bodies from memory.",
+      "Do not run POST, PUT, PATCH, or DELETE operations without explicit confirmation.",
+      "Do not follow non-official API documentation links for endpoint discovery."
     ],
     "faq": [
       {
-        "question": "When should I use this skill?",
-        "answer": "Use it when a Lark or Feishu task is not covered by existing skills or lark-cli commands."
+        "question": "What problem does this skill solve?",
+        "answer": "It helps find native Lark OpenAPI endpoints when existing skills or lark-cli commands do not cover a task."
       },
       {
-        "question": "Does it execute API calls automatically?",
-        "answer": "It can prepare lark-cli api calls, but write and delete actions should require explicit user confirmation."
+        "question": "Does it require lark-cli?",
+        "answer": "Yes. The skill is designed to call endpoints through lark-cli api after discovery."
+      },
+      {
+        "question": "Can it make changes in a Lark workspace?",
+        "answer": "Yes, if the user confirms a write operation and the authenticated account has the required permissions."
       },
       {
         "question": "Which documentation sources does it use?",
         "answer": "It uses official Feishu and Lark OpenAPI documentation indexes and endpoint pages."
       },
       {
-        "question": "Can it work with English requests?",
+        "question": "Can English users use it?",
         "answer": "Yes. The skill instructs the assistant to translate Chinese documentation details into English when needed."
       },
       {
-        "question": "What access is required?",
-        "answer": "You need lark-cli installed, authenticated, and granted the API scopes required by the selected endpoint."
-      },
-      {
-        "question": "Is it safe for destructive operations?",
-        "answer": "It includes confirmation guidance, but destructive operations still require careful human review before execution."
+        "question": "Does it replace official API review?",
+        "answer": "No. Users should still verify permissions, target identifiers, and operation impact before execution."
       }
     ]
   },

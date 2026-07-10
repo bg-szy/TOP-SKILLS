@@ -1,20 +1,22 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T18:33:15.915Z",
+    "generated_at": "2026-07-09T05:56:18.769Z",
     "slug": "amemiyalai-grasshopper-workflow",
     "source_url": "https://github.com/AmemiyaLai/grasshopper-mcp-workflow/tree/main/grasshopper-workflow/",
     "source_ref": "main",
-    "model": "codex",
+    "model": "claude",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "621ff368617cd26a8eb8e18c593268e3700444812b0812eaf5c6dd2c125ad5db",
-    "tree_hash": "ba7094a15acef6e31fdfb6aecab4149ff2e2d98eb7aa19a7e4734c925f2d8ad8",
+    "content_hash": "e0c1c84ce6bf110e47b693e38215aa949f50421d5c4d65fad92164e61bc77a0a",
+    "tree_hash": "e4612f317c0efcbc3f7e0f2385c1069e383b6db77c8970a8e4638ed6a473ef3e",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "claude-sonnet-4.6",
+      "model_effective": "claude:claude-sonnet-4.6",
       "fallback_chain": [
         {
-          "agent": "codex",
+          "agent": "claude",
+          "model": "claude-sonnet-4.6",
           "outcome": "success"
         }
       ],
@@ -23,18 +25,18 @@
   },
   "skill": {
     "name": "grasshopper-workflow",
-    "description": "Automates Rhino Grasshopper workflows through MCP. It helps create components, connect them, set parameters, and generate placement workflows from MMD planning files.",
-    "summary": "Build and execute repeatable Rhino Grasshopper workflows through MCP automation.",
+    "description": "Automate Grasshopper parametric modeling workflows through local MCP commands, MMD parsing, component placement, connection setup, parameter updates, and execution plans.",
+    "summary": "Build and execute Grasshopper modeling workflows from structured MMD and JSON plans.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "AmemiyaLai",
     "license": "MIT",
     "tags": [
       "grasshopper",
       "rhino",
-      "mcp",
       "parametric-modeling",
-      "automation"
+      "mcp",
+      "workflow-automation"
     ],
     "supported_tools": [
       "claude",
@@ -53,24 +55,8 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most system-reconnaissance, external-command, and obfuscation alerts are false positives from component IDs, Markdown code fences, and Chinese or GUID-heavy documentation. I confirmed filesystem write risks where CLI and utility functions write or overwrite caller-selected JSON paths without path allowlisting or overwrite confirmation. No evidence of prompt injection, credential exfiltration, or concealed payloads was found.",
-    "remediation": [
-      {
-        "issue": "Caller-selected output paths can overwrite local files.",
-        "suggestion": "Restrict generated outputs to a project workspace and require confirmation before overwriting existing files.",
-        "severity": "medium"
-      },
-      {
-        "issue": "In-place GUID updates modify the selected JSON file directly.",
-        "suggestion": "Write updates to a new file by default or create a backup before saving changes.",
-        "severity": "medium"
-      },
-      {
-        "issue": "Default generated files are written relative to the package directory.",
-        "suggestion": "Resolve paths with pathlib, document the location, and reject paths outside the active workspace.",
-        "severity": "low"
-      }
-    ],
+    "summary": "The audit found no evidence of malicious intent, prompt injection, credential access, or unauthorized network activity. Static findings are explained by Grasshopper workflow documentation, local package imports, user-directed file generation, and expected localhost MCP interaction.",
+    "remediation": [],
     "risk_factor_evidence": [
       {
         "factor": "scripts",
@@ -1584,1057 +1570,933 @@
       {
         "id": "blocker:references/api_reference.md:37:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:references/api_reference.md:90:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:references/api_reference.md:113:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:references/cli_usage.md:112:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:references/cli_usage.md:113:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:references/cli_usage.md:137:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:references/cli_usage.md:142:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:references/cli_usage.md:143:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:references/cli_usage.md:156:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:references/cli_usage.md:172:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:references/cli_usage.md:189:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:references/cli_usage.md:253:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:references/cli_usage.md:254:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:references/cli_usage.md:255:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "scripts:scripts/cli.py:20:dynamic-import-expression",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "This is a hardcoded package import path used for CLI compatibility, not a dynamic import of user-controlled code. The surrounding code loads local Grasshopper modules only."
+        "confidence": 0.88,
+        "reason": "The import logic loads local package modules and has a local fallback for direct script execution. I did not find dynamic loading of remote or user-supplied code."
       },
       {
         "id": "scripts:scripts/cli.py:36:dynamic-import-expression",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "This is a hardcoded package import path used for CLI compatibility, not a dynamic import of user-controlled code. The surrounding code loads local Grasshopper modules only."
+        "confidence": 0.88,
+        "reason": "The import logic loads local package modules and has a local fallback for direct script execution. I did not find dynamic loading of remote or user-supplied code."
       },
       {
         "id": "filesystem:scripts/cli.py:106:python-file-write-append",
-        "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "medium",
-        "reason": "The CLI writes parsed data or error output to args.output without path allowlisting or overwrite confirmation. This is expected workflow behavior but can damage files if an agent or user supplies an unintended path."
+        "verdict": "false_positive",
+        "confidence": 0.82,
+        "reason": "The write goes to an explicit CLI output path for generated parse results. This is expected user-directed file output, not hidden persistence or exfiltration."
       },
       {
         "id": "filesystem:scripts/cli.py:124:python-file-write-append",
-        "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "medium",
-        "reason": "The CLI writes parsed data or error output to args.output without path allowlisting or overwrite confirmation. This is expected workflow behavior but can damage files if an agent or user supplies an unintended path."
+        "verdict": "false_positive",
+        "confidence": 0.82,
+        "reason": "The write goes to an explicit CLI output path for generated parse results. This is expected user-directed file output, not hidden persistence or exfiltration."
       },
       {
         "id": "filesystem:scripts/cli.py:135:python-file-write-append",
-        "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "medium",
-        "reason": "The CLI writes parsed data or error output to args.output without path allowlisting or overwrite confirmation. This is expected workflow behavior but can damage files if an agent or user supplies an unintended path."
+        "verdict": "false_positive",
+        "confidence": 0.82,
+        "reason": "The write goes to an explicit CLI output path for generated parse results. This is expected user-directed file output, not hidden persistence or exfiltration."
       },
       {
         "id": "filesystem:scripts/cli.py:310:python-file-write-append",
-        "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "medium",
-        "reason": "The CLI writes parsed data or error output to args.output without path allowlisting or overwrite confirmation. This is expected workflow behavior but can damage files if an agent or user supplies an unintended path."
+        "verdict": "false_positive",
+        "confidence": 0.82,
+        "reason": "The write goes to an explicit CLI output path for generated parse results. This is expected user-directed file output, not hidden persistence or exfiltration."
       },
       {
         "id": "blocker:scripts/cli.py:170:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/cli.py:174:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/cli.py:222:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/cli.py:332:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/cli.py:335:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/cli.py:338:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/cli.py:385:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/client.py:95:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/client.py:98:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/client.py:102:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/client.py:105:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/component_manager.py:49:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/component_manager.py:50:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/component_manager.py:52:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/component_manager.py:53:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/component_manager.py:78:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/component_manager.py:79:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/component_manager.py:98:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/component_manager.py:101:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/component_manager.py:105:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/component_manager.py:119:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/component_manager.py:141:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/connection_manager.py:53:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/connection_manager.py:55:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/connection_manager.py:61:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/connection_manager.py:63:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/connection_manager.py:70:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/connection_manager.py:115:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/connection_manager.py:116:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "scripts:scripts/example_usage.py:13:dynamic-import-expression",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "This is a hardcoded package import path used for CLI compatibility, not a dynamic import of user-controlled code. The surrounding code loads local Grasshopper modules only."
+        "confidence": 0.88,
+        "reason": "The import logic loads local package modules and has a local fallback for direct script execution. I did not find dynamic loading of remote or user-supplied code."
       },
       {
         "id": "blocker:scripts/example_usage.py:38:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/group_manager.py:56:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/group_manager.py:64:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parameter_setter.py:54:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parameter_setter.py:56:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parameter_setter.py:109:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parameter_setter.py:111:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "filesystem:scripts/parser_utils.py:478:python-file-write-append",
-        "verdict": "confirmed",
-        "confidence": 0.68,
-        "severity": "medium",
-        "reason": "The JSON generator writes placement output to a caller-provided file path without path allowlisting or overwrite confirmation. This is expected workflow behavior but can damage files if an agent or user supplies an unintended path."
+        "verdict": "false_positive",
+        "confidence": 0.8,
+        "reason": "The write saves generated placement or component map data as part of the documented workflow. I did not find hidden writes outside user-selected workflow files."
       },
       {
         "id": "blocker:scripts/parser_utils.py:70:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:94:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:100:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:101:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:102:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:103:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:107:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:108:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:135:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:137:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:172:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:173:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:196:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:198:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:199:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:201:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:203:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:207:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:208:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:210:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:261:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:290:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:315:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:376:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:377:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:387:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:391:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:392:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:402:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:406:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:407:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:417:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:421:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:422:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:432:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:436:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:437:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/parser_utils.py:447:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "filesystem:scripts/utils.py:23:path-traversal-with",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The literal .. builds the default component_id_map.json path relative to the script directory. It is a fixed repo-local path, not traversal from untrusted user input."
+        "confidence": 0.9,
+        "reason": "The \"..\" segment builds a fixed package-relative component_id_map.json path from __file__. It is not derived from user input and does not create a traversal primitive."
       },
       {
         "id": "filesystem:scripts/utils.py:45:path-traversal-with",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The literal .. builds the default component_id_map.json path relative to the script directory. It is a fixed repo-local path, not traversal from untrusted user input."
+        "confidence": 0.9,
+        "reason": "The \"..\" segment builds a fixed package-relative component_id_map.json path from __file__. It is not derived from user input and does not create a traversal primitive."
       },
       {
         "id": "filesystem:scripts/utils.py:48:python-file-write-append",
-        "verdict": "confirmed",
-        "confidence": 0.6,
-        "severity": "medium",
-        "reason": "The component ID map writer can write to a caller-provided path and otherwise writes a generated map file. This is expected workflow behavior but can damage files if an agent or user supplies an unintended path."
+        "verdict": "false_positive",
+        "confidence": 0.8,
+        "reason": "The write saves generated placement or component map data as part of the documented workflow. I did not find hidden writes outside user-selected workflow files."
       },
       {
         "id": "filesystem:scripts/utils.py:160:python-file-write-append",
-        "verdict": "confirmed",
-        "confidence": 0.66,
-        "severity": "medium",
-        "reason": "The GUID update helper overwrites the selected JSON path in place without overwrite confirmation. This is expected workflow behavior but can damage files if an agent or user supplies an unintended path."
+        "verdict": "false_positive",
+        "confidence": 0.82,
+        "reason": "The write updates the JSON file that the user passed to the GUID update workflow. This is expected in-place workflow editing, not unauthorized filesystem access."
       },
       {
         "id": "blocker:scripts/utils.py:150:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/utils.py:151:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/utils.py:152:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/utils.py:153:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "blocker:scripts/utils.py:191:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "external_commands:SKILL.md:47:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:71:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:87:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:109:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:111:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:112:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:113:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:114:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:115:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:116:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:117:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:118:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:125:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:130:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:136:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:145:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:152:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:153:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:161:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "external_commands:SKILL.md:162:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The matched backticks are Markdown code fences or inline documentation markers in SKILL.md. They do not execute commands and are not Ruby or shell backtick execution."
+        "confidence": 0.93,
+        "reason": "The detected content is Markdown documentation and fenced example commands, not executable shell backticks. It documents how a user can run the local CLI."
       },
       {
         "id": "blocker:SKILL.md:61:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The matched text is a Grasshopper component ID, GUID, or CLI parameter reference. I found no host enumeration, credential collection, or system reconnaissance behavior at this location."
+        "confidence": 0.95,
+        "reason": "This is a Grasshopper component identifier, GUID lookup, or CLI example, not host system reconnaissance. The surrounding context is CAD workflow state and component wiring."
       },
       {
         "id": "obfuscation:references/tool_guide.md:1:heuristic-high-file-entropy-6-05-bits-possible-b",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The file is UTF-8 Markdown with Chinese text, GUIDs, and technical terms, which explains the entropy score. I found no encoded payload, binary content, or concealed instructions."
+        "confidence": 0.86,
+        "reason": "The high entropy heuristic is explained by Chinese documentation text, GUIDs, and dense reference material. I did not find encoded payloads or unpacking behavior."
       },
       {
         "id": "obfuscation:references/workflow_steps.md:1:heuristic-high-file-entropy-6-61-bits-possible-b",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The file is UTF-8 Markdown with Chinese text, GUIDs, and technical terms, which explains the entropy score. I found no encoded payload, binary content, or concealed instructions."
+        "confidence": 0.86,
+        "reason": "The high entropy heuristic is explained by Chinese documentation text, GUIDs, and dense reference material. I did not find encoded payloads or unpacking behavior."
       },
       {
         "id": "obfuscation:SKILL.md:3:heuristic-very-high-entropy-string-5-88-bits-lik",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The file is UTF-8 Markdown with Chinese text, GUIDs, and technical terms, which explains the entropy score. I found no encoded payload, binary content, or concealed instructions."
+        "confidence": 0.86,
+        "reason": "The high entropy heuristic is explained by Chinese documentation text, GUIDs, and dense reference material. I did not find encoded payloads or unpacking behavior."
       },
       {
         "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-6-12-bits-possible-b",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The file is UTF-8 Markdown with Chinese text, GUIDs, and technical terms, which explains the entropy score. I found no encoded payload, binary content, or concealed instructions."
+        "confidence": 0.86,
+        "reason": "The high entropy heuristic is explained by Chinese documentation text, GUIDs, and dense reference material. I did not find encoded payloads or unpacking behavior."
       }
     ],
     "semantic_findings": [],
     "critical_findings": [],
     "high_findings": [],
-    "medium_findings": [
-      {
-        "title": "Python file write/append",
-        "description": "with open(args.output, 'w', encoding='utf-8') as f:",
-        "locations": [
-          {
-            "file": "scripts/cli.py",
-            "line_start": 106,
-            "line_end": 106
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The CLI writes parsed data or error output to args.output without path allowlisting or overwrite confirmation. This is expected workflow behavior but can damage files if an agent or user supplies an unintended path."
-      },
-      {
-        "title": "Python file write/append",
-        "description": "with open(args.output, 'w', encoding='utf-8') as f:",
-        "locations": [
-          {
-            "file": "scripts/cli.py",
-            "line_start": 124,
-            "line_end": 124
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The CLI writes parsed data or error output to args.output without path allowlisting or overwrite confirmation. This is expected workflow behavior but can damage files if an agent or user supplies an unintended path."
-      },
-      {
-        "title": "Python file write/append",
-        "description": "with open(args.output, 'w', encoding='utf-8') as f:",
-        "locations": [
-          {
-            "file": "scripts/cli.py",
-            "line_start": 135,
-            "line_end": 135
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The CLI writes parsed data or error output to args.output without path allowlisting or overwrite confirmation. This is expected workflow behavior but can damage files if an agent or user supplies an unintended path."
-      },
-      {
-        "title": "Python file write/append",
-        "description": "with open(args.output, 'w', encoding='utf-8') as f:",
-        "locations": [
-          {
-            "file": "scripts/cli.py",
-            "line_start": 310,
-            "line_end": 310
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The CLI writes parsed data or error output to args.output without path allowlisting or overwrite confirmation. This is expected workflow behavior but can damage files if an agent or user supplies an unintended path."
-      },
-      {
-        "title": "Python file write/append",
-        "description": "with open(file_path, 'w', encoding='utf-8') as f:",
-        "locations": [
-          {
-            "file": "scripts/parser_utils.py",
-            "line_start": 478,
-            "line_end": 478
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.68,
-        "confidence_reasoning": "The JSON generator writes placement output to a caller-provided file path without path allowlisting or overwrite confirmation. This is expected workflow behavior but can damage files if an agent or user supplies an unintended path."
-      },
-      {
-        "title": "Python file write/append",
-        "description": "with open(file_path, 'w', encoding='utf-8') as f:",
-        "locations": [
-          {
-            "file": "scripts/utils.py",
-            "line_start": 48,
-            "line_end": 48
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.6,
-        "confidence_reasoning": "The component ID map writer can write to a caller-provided path and otherwise writes a generated map file. This is expected workflow behavior but can damage files if an agent or user supplies an unintended path."
-      },
-      {
-        "title": "Python file write/append",
-        "description": "with open(json_path, 'w', encoding='utf-8') as f:",
-        "locations": [
-          {
-            "file": "scripts/utils.py",
-            "line_start": 160,
-            "line_end": 160
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.66,
-        "confidence_reasoning": "The GUID update helper overwrites the selected JSON path in place without overwrite confirmation. This is expected workflow behavior but can damage files if an agent or user supplies an unintended path."
-      }
-    ],
+    "medium_findings": [],
     "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 16,
     "total_lines": 4253,
-    "audit_model": "codex",
-    "audited_at": "2026-07-07T18:33:15.915Z",
+    "audit_model": "claude",
+    "audited_at": "2026-07-09T05:56:18.769Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Automate Grasshopper MCP Workflows",
-    "value_statement": "Building Rhino Grasshopper definitions from planning files can be slow and error-prone. This skill guides component planning, placement creation, and MCP execution for repeatable parametric workflows.",
+    "user_title": "Automate Grasshopper Workflows",
+    "value_statement": "Grasshopper modeling can require many repeated component, connection, and parameter steps. This skill turns structured design notes into executable workflow files and local MCP actions.",
     "seo_keywords": [
-      "Claude",
-      "Codex",
-      "Claude Code",
+      "Claude Grasshopper workflow",
+      "Codex Grasshopper automation",
+      "Claude Code Rhino skill",
       "Grasshopper MCP",
-      "Rhino Grasshopper automation",
-      "parametric modeling",
-      "MMD workflow",
-      "placement_info.json",
-      "component management",
-      "design automation"
+      "parametric modeling automation",
+      "Rhino Grasshopper components",
+      "MMD to Grasshopper",
+      "placement_info.json workflow",
+      "Grasshopper component connections",
+      "CAD workflow automation"
     ],
     "actual_capabilities": [
-      "Creates Grasshopper components through a local MCP client.",
-      "Connects components using saved component ID mappings.",
-      "Sets Number Slider and Vector XYZ parameters.",
-      "Parses MMD planning files into component and connection data.",
-      "Generates placement workflow files for repeatable execution.",
-      "Groups related Grasshopper components with names and colors."
+      "Parse component_info.mmd files into Grasshopper components and connections.",
+      "Generate placement_info.json execution plans from parsed workflow data.",
+      "Create, delete, query, and group Grasshopper components through local MCP commands.",
+      "Set Number Slider and Vector XYZ parameters for generated definitions.",
+      "Save and reuse component ID mappings during multi-step workflows.",
+      "Provide CLI examples for parsing, generating, executing, and diagnosing workflows."
     ],
     "limitations": [
-      "Requires a running Grasshopper MCP server on the configured host and port.",
-      "Writes workflow outputs and component ID maps to local files.",
-      "Does not verify final geometry quality inside Rhino.",
-      "Depends on supported component names, GUID mappings, and MMD formats."
+      "Requires a running Grasshopper MCP server on localhost.",
+      "Depends on valid Grasshopper component GUIDs and supported component names.",
+      "Can only operate on local workflow files that the user provides or generates.",
+      "Does not replace manual review of complex parametric design intent."
     ],
     "use_cases": [
       {
-        "title": "Create a Parametric Prototype",
-        "description": "Turn a simple design brief into component planning files and an executable Grasshopper workflow.",
+        "title": "Prototype a parametric model",
+        "description": "Convert a design brief into MMD planning files, placement JSON, and Grasshopper components.",
         "target_user": "Computational designer"
       },
       {
-        "title": "Standardize Grasshopper Automation",
-        "description": "Use consistent MCP commands for component creation, connections, parameter setup, and grouping.",
-        "target_user": "Design technology lead"
+        "title": "Batch build component graphs",
+        "description": "Create many Grasshopper components and connections from a structured workflow plan.",
+        "target_user": "CAD automation engineer"
       },
       {
-        "title": "Teach Workflow Structure",
-        "description": "Show students how design requirements map to MMD diagrams, placement steps, and Grasshopper components.",
-        "target_user": "Architecture instructor"
+        "title": "Document repeatable modeling steps",
+        "description": "Capture component IDs, parameter values, and execution order for repeatable Grasshopper builds.",
+        "target_user": "Design technology team"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Plan a Simple Model",
-        "scenario": "Beginner workflow planning",
-        "prompt": "Help me plan a simple Grasshopper model. Ask for missing dimensions, then outline the needed components and parameters."
+        "title": "Plan a simple object",
+        "scenario": "Beginner planning request",
+        "prompt": "Help me define a simple table in Grasshopper. Ask for missing dimensions, then create a clear part_info.mmd plan."
       },
       {
-        "title": "Create MMD Files",
-        "scenario": "Convert requirements into planning files",
-        "prompt": "Create part and component planning steps for this object. Use clear component names, parameters, and connection intent."
+        "title": "Create a component graph",
+        "scenario": "Intermediate workflow creation",
+        "prompt": "Use my part_info.mmd description to plan component_info.mmd with Grasshopper components, connections, and required GUID lookups."
       },
       {
-        "title": "Generate Placement Steps",
-        "scenario": "Prepare execution from an existing component plan",
-        "prompt": "Review my component plan and prepare a placement workflow. Include component creation order, connections, slider values, and groups."
+        "title": "Generate an execution plan",
+        "scenario": "Advanced workflow automation",
+        "prompt": "Parse component_info.mmd and generate placement_info.json. Include component placement, connection order, sliders, vectors, and groups."
       },
       {
-        "title": "Audit a Full Workflow",
-        "scenario": "Advanced workflow review before execution",
-        "prompt": "Inspect this Grasshopper workflow plan for missing inputs, wrong GUIDs, unsafe paths, and execution risks before running MCP commands."
+        "title": "Diagnose a workflow failure",
+        "scenario": "Advanced debugging",
+        "prompt": "Review my placement_info.json execution result and document errors. Identify missing components, wrong IDs, and parameter fixes."
       }
     ],
     "output_examples": [
       {
-        "input": "A table with a rectangular top and four cylindrical legs.",
+        "input": "Create a parametric table with a rectangular top and four circular legs.",
         "output": [
-          "A part breakdown for the tabletop and repeated leg geometry.",
-          "A component plan with sliders, planes, surfaces, extrusions, moves, and union steps.",
-          "A placement execution outline with creation, connection, parameter, and grouping phases."
+          "A part breakdown for table top and legs.",
+          "A Grasshopper component plan with sliders, planes, rectangles, circles, extrusion, and orientation steps.",
+          "A suggested execution order for placement, connection, parameter setup, and grouping."
         ]
       },
       {
-        "input": "An existing component diagram has unresolved slider values.",
+        "input": "Parse my component_info.mmd and prepare it for execution.",
         "output": [
-          "A list of missing or ambiguous parameter values.",
-          "Suggested ranges for width, length, height, radius, and position sliders.",
-          "A reminder to review generated files before MCP execution."
+          "A summary of detected components and connections.",
+          "A generated placement workflow ready for local execution.",
+          "Warnings about missing GUIDs or unresolved component references."
         ]
       },
       {
-        "input": "A placement workflow fails during connection creation.",
-        "output": [
-          "A focused diagnosis of missing component IDs and mismatched parameter names.",
-          "A corrected connection plan using saved component ID mappings.",
-          "Next checks for Grasshopper document errors."
-        ]
+        "input": "Check the current Grasshopper document for errors after running the workflow.",
+        "output": "A concise error list with affected components and recommended connection or parameter corrections."
       }
     ],
     "best_practices": [
-      "Review generated MMD and placement files before running MCP execution.",
-      "Keep workflow outputs inside a dedicated project workspace.",
-      "Confirm component GUIDs against the active Grasshopper installation."
+      "Confirm design dimensions and units before generating component plans.",
+      "Keep component IDs stable so saved mappings remain useful across workflow steps.",
+      "Review generated placement and connection order before executing large graphs."
     ],
     "anti_patterns": [
-      "Do not run generated placement files without checking paths and commands.",
-      "Do not assume every Grasshopper component name maps to the expected GUID.",
-      "Do not overwrite project files without keeping a reviewed backup."
+      "Do not run workflows before the Grasshopper MCP server is available.",
+      "Do not mix unrelated component ID maps between different design projects.",
+      "Do not skip manual review when a generated model has many dependent components."
     ],
     "faq": [
       {
-        "question": "Does this skill require Rhino and Grasshopper?",
-        "answer": "Yes. It needs a local Grasshopper MCP server to execute component and parameter commands."
+        "question": "What does this skill automate?",
+        "answer": "It automates Grasshopper component planning, placement JSON generation, MCP execution, parameter updates, and grouping."
       },
       {
-        "question": "Can it create a complete Grasshopper definition?",
-        "answer": "It can create components, connect them, set parameters, and group them when the plan is complete."
+        "question": "Does it need Rhino or Grasshopper?",
+        "answer": "Yes. It expects a local Grasshopper MCP server, usually connected to a Rhino and Grasshopper environment."
       },
       {
-        "question": "Does it generate files?",
-        "answer": "Yes. It can generate planning files, placement workflows, and component ID map files."
+        "question": "Can it create workflow files from a design brief?",
+        "answer": "Yes. It can help define part_info.mmd, component_info.mmd, and placement_info.json for structured designs."
       },
       {
-        "question": "Is it limited to table examples?",
-        "answer": "No. The documentation includes table examples, but the workflow can support other planned parametric models."
+        "question": "Can it query component GUIDs?",
+        "answer": "Yes. The CLI and component manager include GUID lookup support for Grasshopper components."
       },
       {
-        "question": "Can it validate geometry quality?",
-        "answer": "No. Users should inspect the final Rhino and Grasshopper result after execution."
+        "question": "Will it edit local files?",
+        "answer": "Yes. It writes workflow outputs and component ID maps when the user requests generation or execution steps."
       },
       {
-        "question": "Which assistants can use this skill?",
-        "answer": "The report lists Claude, Codex, and Claude Code as supported tools."
+        "question": "Is it suitable for non-technical designers?",
+        "answer": "It can help, but users should understand basic Grasshopper concepts such as components, parameters, and connections."
       }
     ]
   },

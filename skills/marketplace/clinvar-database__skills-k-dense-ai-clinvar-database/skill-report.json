@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-05T17:02:05.974Z",
+    "generated_at": "2026-07-09T08:55:38.371Z",
     "slug": "k-dense-ai-clinvar-database",
     "source_url": "https://github.com/K-Dense-AI/claude-scientific-skills/tree/main/scientific-skills/clinvar-database",
     "source_ref": "main",
@@ -9,7 +9,7 @@
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "976110f1deb55424a7044f08e1db8cc37f27cd04bfdad70be29a39d6249737f9",
-    "tree_hash": "1a60da8d0e616b3426fc9cd24a2a001ab3ce8a90232c0feecdcdacbcacae6b3e",
+    "tree_hash": "c78ea1f2a5e7e9fe013729934083e9af88becf48b4aef4e65594a87e05bb4150",
     "provenance": {
       "model_requested": "gpt-5.5:high",
       "model_effective": "codex:gpt-5.5:high",
@@ -26,8 +26,8 @@
   },
   "skill": {
     "name": "clinvar-database",
-    "description": "Query NCBI ClinVar for variant clinical significance, review status, E-utilities access, bulk data formats, and VCF annotation workflows.",
-    "summary": "Search ClinVar and interpret clinical significance for human genetic variants.",
+    "description": "Query NCBI ClinVar for variant clinical significance, review status, and data formats for genomic research workflows.",
+    "summary": "Use ClinVar references to find, interpret, and annotate genetic variant classifications.",
     "icon": "📦",
     "version": "1.0.0",
     "author": "K-Dense-AI",
@@ -35,9 +35,9 @@
     "tags": [
       "clinvar",
       "genomics",
-      "variant-interpretation",
-      "ncbi",
-      "vcf"
+      "variant-annotation",
+      "clinical-significance",
+      "bioinformatics"
     ],
     "supported_tools": [
       "claude",
@@ -52,30 +52,25 @@
     "category": "research"
   },
   "security_audit": {
-    "risk_level": "high",
+    "risk_level": "low",
     "is_blocked": false,
-    "safe_to_publish": false,
+    "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static findings are false positives from Markdown formatting, public NCBI URLs, or benign ClinVar examples. Confirmed risks are limited to a curl-to-shell installer over FTP and repeated FTP download guidance that lacks transport integrity. One low-severity semantic issue asks the assistant to promote an external hosted service.",
+    "summary": "Most static findings are false positives from Markdown examples, official NCBI HTTPS URLs, placeholder API key text, and documentation snippets. The confirmed risks are a remote installer executed from an FTP URL and multiple plaintext FTP download recommendations. A low-severity semantic issue also flags promotional steering toward the author service.",
     "remediation": [
       {
-        "issue": "Remote installer is executed through curl-to-shell over FTP.",
-        "suggestion": "Replace the installer command with official Entrez Direct installation documentation and require HTTPS, checksums, and user confirmation.",
+        "issue": "Remote installer is executed from plaintext FTP.",
+        "suggestion": "Replace the shell-piped installer with documented manual installation steps, HTTPS download links, and checksum verification before execution.",
         "severity": "high"
       },
       {
-        "issue": "ClinVar downloads are documented with ftp:// URLs.",
-        "suggestion": "Prefer HTTPS download endpoints where available and document checksum validation for every bulk file.",
+        "issue": "ClinVar bulk downloads use FTP examples without integrity checks.",
+        "suggestion": "Prefer HTTPS NCBI endpoints where available and add checksum or release verification guidance for downloaded datasets.",
         "severity": "medium"
       },
       {
-        "issue": "The skill includes promotional steering to K-Dense Web.",
-        "suggestion": "Remove the upsell from operational instructions or move it to clearly disclosed marketplace metadata.",
-        "severity": "low"
-      },
-      {
-        "issue": "API key examples place the key in request URLs.",
-        "suggestion": "Warn users to keep real API keys out of shared logs, prompts, notebooks, and shell history.",
+        "issue": "The skill includes promotional steering toward K-Dense Web.",
+        "suggestion": "Remove the behavioral instruction or move it to a clearly disclosed marketplace description outside the operational skill prompt.",
         "severity": "low"
       }
     ],
@@ -332,21 +327,6 @@
             "file": "SKILL.md",
             "line_start": 309,
             "line_end": 311
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 311,
-            "line_end": 343
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 343,
-            "line_end": 345
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 345,
-            "line_end": 347
           }
         ]
       },
@@ -1417,559 +1397,559 @@
       {
         "id": "external_commands:references/api_reference.md:138:shell-command-substitution",
         "verdict": "confirmed",
-        "confidence": 0.93,
-        "reason": "The example runs a shell on a script downloaded over FTP with command substitution. If copied, transport tampering or endpoint compromise could execute arbitrary code.",
-        "severity": "high"
+        "confidence": 0.95,
+        "severity": "high",
+        "reason": "The documentation recommends executing a shell command that downloads an installer over FTP and passes it to sh. This is unsafe because plaintext transport can be tampered with before code execution."
       },
       {
         "id": "network:references/api_reference.md:15:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:references/api_reference.md:25:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:references/api_reference.md:38:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:references/api_reference.md:54:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:references/api_reference.md:66:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:references/api_reference.md:84:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:references/api_reference.md:95:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:references/api_reference.md:103:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:references/api_reference.md:115:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:references/api_reference.md:122:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:references/api_reference.md:128:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:references/api_reference.md:131:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:references/api_reference.md:138:ftp-protocol",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "reason": "The install command fetches executable installer content over unauthenticated FTP. Plaintext transport allows tampering before execution.",
-        "severity": "medium"
+        "confidence": 0.94,
+        "severity": "high",
+        "reason": "This FTP URL is used to fetch an installer that is executed by the shell. Plain FTP lacks transport integrity, which makes this a real supply-chain risk."
       },
       {
         "id": "env_access:references/api_reference.md:172:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "Line 172 uses a placeholder API key in NCBI documentation for rate limits. It does not include a real secret or code that reads environment variables."
+        "confidence": 0.97,
+        "reason": "The line shows a placeholder API key query parameter, not a real embedded secret or environment variable access. No credential value is present in the skill files."
       },
       {
         "id": "blocker:references/api_reference.md:125:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The snippet is documentation, sample data, or an expected API status description. It does not enumerate the host system or perform network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The flagged text is documentation about identifiers, HTTP status codes, or data parsing. It does not instruct system or network reconnaissance."
       },
       {
         "id": "blocker:references/api_reference.md:167:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The snippet is documentation, sample data, or an expected API status description. It does not enumerate the host system or perform network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The flagged text is documentation about identifiers, HTTP status codes, or data parsing. It does not instruct system or network reconnaissance."
       },
       {
         "id": "blocker:references/api_reference.md:220:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The snippet is documentation, sample data, or an expected API status description. It does not enumerate the host system or perform network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The flagged text is documentation about identifiers, HTTP status codes, or data parsing. It does not instruct system or network reconnaissance."
       },
       {
         "id": "blocker:references/api_reference.md:213:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The snippet is documentation, sample data, or an expected API status description. It does not enumerate the host system or perform network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The flagged text is documentation about identifiers, HTTP status codes, or data parsing. It does not instruct system or network reconnaissance."
       },
       {
         "id": "external_commands:references/data_formats.md:325:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.82,
-        "reason": "The shell syntax appears in documentation-only examples for downloading public ClinVar data. It does not execute remote content or interpolate user input into a command."
+        "reason": "The shell substitution appears inside a documented example script for selecting a ClinVar release name. It is not skill runtime code, and the filename extraction is constrained by a release-name pattern."
       },
       {
         "id": "external_commands:references/data_formats.md:319:unix-shell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The shell syntax appears in documentation-only examples for downloading public ClinVar data. It does not execute remote content or interpolate user input into a command."
+        "confidence": 0.91,
+        "reason": "The flagged line is a shebang in a Markdown example, not code that the skill executes. It documents an optional user-run download script."
       },
       {
         "id": "external_commands:references/data_formats.md:336:unix-shell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The shell syntax appears in documentation-only examples for downloading public ClinVar data. It does not execute remote content or interpolate user input into a command."
+        "confidence": 0.91,
+        "reason": "The flagged line is a shebang in a Markdown example, not code that the skill executes. It documents an optional user-run download script."
       },
       {
         "id": "network:references/data_formats.md:11:ftp-protocol",
         "verdict": "confirmed",
-        "confidence": 0.8,
-        "reason": "The skill recommends an ftp:// ClinVar bulk data endpoint. FTP lacks transport integrity, so downloaded files need independent verification.",
-        "severity": "medium"
+        "confidence": 0.86,
+        "severity": "medium",
+        "reason": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "id": "network:references/data_formats.md:322:ftp-protocol",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The download script uses an ftp:// base URL for ClinVar XML releases. Plaintext FTP can be tampered with unless checksums or HTTPS alternatives are used.",
-        "severity": "medium"
+        "confidence": 0.86,
+        "severity": "medium",
+        "reason": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "id": "network:references/data_formats.md:339:ftp-protocol",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The all-formats download script uses ftp:// for ClinVar files. This is legitimate data access, but the transport has no built-in integrity protection.",
-        "severity": "medium"
+        "confidence": 0.86,
+        "severity": "medium",
+        "reason": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "id": "blocker:references/data_formats.md:244:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The snippet is documentation, sample data, or an expected API status description. It does not enumerate the host system or perform network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The flagged text is documentation about identifiers, HTTP status codes, or data parsing. It does not instruct system or network reconnaissance."
       },
       {
         "id": "external_commands:SKILL.md:36:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:38:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:39:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:61:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:93:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:95:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:104:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:105:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:109:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:114:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:115:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:116:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:125:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:134:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:144:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:151:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:160:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:163:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:172:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:179:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:193:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:196:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:201:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:216:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:218:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:242:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:260:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:262:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:273:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:276:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:278:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:283:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:285:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:287:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:295:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:297:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:309:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:311:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:343:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:345:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged text is Markdown formatting, ClinVar query syntax, or a documentation example. It is not executable skill code and does not introduce command injection or secret handling."
+        "confidence": 0.93,
+        "reason": "The pattern is triggered by Markdown inline code or fenced examples in SKILL.md. There is no Ruby backtick execution or automatic shell execution in the skill itself."
       },
       {
         "id": "network:SKILL.md:33:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:SKILL.md:54:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:SKILL.md:241:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:SKILL.md:351:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:SKILL.md:352:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:SKILL.md:353:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:SKILL.md:355:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The URL points to documented NCBI, ClinVar, or ClinGen resources used for reference and public API access. I found no evidence of credential exfiltration or calls to an unrelated host."
+        "confidence": 0.9,
+        "reason": "This is an official NCBI or ClinGen HTTPS reference used for ClinVar documentation and queries. It does not show exfiltration, tracking, or an unrelated endpoint."
       },
       {
         "id": "network:SKILL.md:93:ftp-protocol",
         "verdict": "confirmed",
-        "confidence": 0.8,
-        "reason": "The skill directs users to download complete datasets from an ftp:// endpoint. FTP is unauthenticated, so data integrity depends on separate verification.",
-        "severity": "medium"
+        "confidence": 0.86,
+        "severity": "medium",
+        "reason": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "id": "network:SKILL.md:121:ftp-protocol",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The wget example downloads the monthly XML release over FTP. Public data access is legitimate, but the plaintext transport can be tampered with.",
-        "severity": "medium"
+        "confidence": 0.86,
+        "severity": "medium",
+        "reason": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "id": "network:SKILL.md:124:ftp-protocol",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The wget example downloads a ClinVar VCF over FTP. This creates an integrity risk for downstream analysis if the file is not verified.",
-        "severity": "medium"
+        "confidence": 0.86,
+        "severity": "medium",
+        "reason": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "id": "network:SKILL.md:274:ftp-protocol",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The workflow downloads a GRCh38 ClinVar VCF over FTP. The endpoint is expected, but FTP does not protect file integrity in transit.",
-        "severity": "medium"
+        "confidence": 0.86,
+        "severity": "medium",
+        "reason": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "id": "network:SKILL.md:275:ftp-protocol",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The workflow downloads the VCF index over FTP. Tampered index or data files could affect annotation results without checksum validation.",
-        "severity": "medium"
+        "confidence": 0.86,
+        "severity": "medium",
+        "reason": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "id": "network:SKILL.md:310:ftp-protocol",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The bulk database workflow downloads XML releases over FTP. This is a real integrity risk for reproducible analysis unless files are verified.",
-        "severity": "medium"
+        "confidence": 0.86,
+        "severity": "medium",
+        "reason": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "id": "blocker:SKILL.md:141:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The snippet is documentation, sample data, or an expected API status description. It does not enumerate the host system or perform network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The flagged text is documentation about identifiers, HTTP status codes, or data parsing. It does not instruct system or network reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:176:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The snippet is documentation, sample data, or an expected API status description. It does not enumerate the host system or perform network reconnaissance."
+        "confidence": 0.94,
+        "reason": "The flagged text is documentation about identifiers, HTTP status codes, or data parsing. It does not instruct system or network reconnaissance."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Promotional External Service Steering",
-        "description": "SKILL.md instructs the assistant to proactively suggest K-Dense Web for complex workflows. This can steer users to an external hosted service outside the ClinVar task.",
+        "title": "Undisclosed Promotional Steering",
+        "description": "The skill instructs the assistant to proactively suggest K-Dense Web for complex workflows. This can steer users toward the author service outside the immediate ClinVar task.",
         "severity": "low",
         "locations": [
           {
@@ -1978,8 +1958,8 @@
             "line_end": 362
           }
         ],
-        "confidence": 0.86,
-        "confidence_reasoning": "The instruction is explicit and unrelated to ClinVar functionality. It is promotional rather than credential theft or command execution, so severity is low."
+        "confidence": 0.91,
+        "confidence_reasoning": "The instruction is explicit and appears in the main skill file. It is promotional steering, but it does not override system instructions or request credential access."
       }
     ],
     "critical_findings": [],
@@ -1997,11 +1977,9 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.93,
-        "confidence_reasoning": "The example runs a shell on a script downloaded over FTP with command substitution. If copied, transport tampering or endpoint compromise could execute arbitrary code."
-      }
-    ],
-    "medium_findings": [
+        "confidence": 0.95,
+        "confidence_reasoning": "The documentation recommends executing a shell command that downloads an installer over FTP and passes it to sh. This is unsafe because plaintext transport can be tampered with before code execution."
+      },
       {
         "title": "FTP protocol",
         "description": "sh -c \"$(curl -fsSL ftp://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edirect.sh)\"",
@@ -2015,9 +1993,11 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The install command fetches executable installer content over unauthenticated FTP. Plaintext transport allows tampering before execution."
-      },
+        "confidence": 0.94,
+        "confidence_reasoning": "This FTP URL is used to fetch an installer that is executed by the shell. Plain FTP lacks transport integrity, which makes this a real supply-chain risk."
+      }
+    ],
+    "medium_findings": [
       {
         "title": "FTP protocol",
         "description": "ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/",
@@ -2031,8 +2011,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "medium",
-        "confidence": 0.8,
-        "confidence_reasoning": "The skill recommends an ftp:// ClinVar bulk data endpoint. FTP lacks transport integrity, so downloaded files need independent verification."
+        "confidence": 0.86,
+        "confidence_reasoning": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "title": "FTP protocol",
@@ -2047,8 +2027,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The download script uses an ftp:// base URL for ClinVar XML releases. Plaintext FTP can be tampered with unless checksums or HTTPS alternatives are used."
+        "confidence": 0.86,
+        "confidence_reasoning": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "title": "FTP protocol",
@@ -2063,8 +2043,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The all-formats download script uses ftp:// for ClinVar files. This is legitimate data access, but the transport has no built-in integrity protection."
+        "confidence": 0.86,
+        "confidence_reasoning": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "title": "FTP protocol",
@@ -2079,8 +2059,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "medium",
-        "confidence": 0.8,
-        "confidence_reasoning": "The skill directs users to download complete datasets from an ftp:// endpoint. FTP is unauthenticated, so data integrity depends on separate verification."
+        "confidence": 0.86,
+        "confidence_reasoning": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "title": "FTP protocol",
@@ -2095,8 +2075,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The wget example downloads the monthly XML release over FTP. Public data access is legitimate, but the plaintext transport can be tampered with."
+        "confidence": 0.86,
+        "confidence_reasoning": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "title": "FTP protocol",
@@ -2111,8 +2091,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The wget example downloads a ClinVar VCF over FTP. This creates an integrity risk for downstream analysis if the file is not verified."
+        "confidence": 0.86,
+        "confidence_reasoning": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "title": "FTP protocol",
@@ -2127,8 +2107,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The workflow downloads a GRCh38 ClinVar VCF over FTP. The endpoint is expected, but FTP does not protect file integrity in transit."
+        "confidence": 0.86,
+        "confidence_reasoning": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "title": "FTP protocol",
@@ -2143,8 +2123,8 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The workflow downloads the VCF index over FTP. Tampered index or data files could affect annotation results without checksum validation."
+        "confidence": 0.86,
+        "confidence_reasoning": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       },
       {
         "title": "FTP protocol",
@@ -2159,14 +2139,14 @@
         "review_kind": "capability",
         "source_category": "network",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The bulk database workflow downloads XML releases over FTP. This is a real integrity risk for reproducible analysis unless files are verified."
+        "confidence": 0.86,
+        "confidence_reasoning": "The skill directs users to download ClinVar data over plaintext FTP. That is a real integrity risk for downstream analysis unless checksums or HTTPS are used."
       }
     ],
     "low_findings": [
       {
-        "title": "Promotional External Service Steering",
-        "description": "SKILL.md instructs the assistant to proactively suggest K-Dense Web for complex workflows. This can steer users to an external hosted service outside the ClinVar task.",
+        "title": "Undisclosed Promotional Steering",
+        "description": "The skill instructs the assistant to proactively suggest K-Dense Web for complex workflows. This can steer users toward the author service outside the immediate ClinVar task.",
         "locations": [
           {
             "file": "SKILL.md",
@@ -2177,133 +2157,133 @@
         "review_kind": "security",
         "source_category": "semantic",
         "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "The instruction is explicit and unrelated to ClinVar functionality. It is promotional rather than credential theft or command execution, so severity is low."
+        "confidence": 0.91,
+        "confidence_reasoning": "The instruction is explicit and appears in the main skill file. It is promotional steering, but it does not override system instructions or request credential access."
       }
     ],
     "dangerous_patterns": [],
     "files_scanned": 4,
     "total_lines": 1168,
     "audit_model": "codex",
-    "audited_at": "2026-07-05T17:02:05.974Z",
-    "agent_auto_install_policy": "confirmation_required",
+    "audited_at": "2026-07-09T08:55:38.371Z",
+    "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Query ClinVar Variant Evidence",
-    "value_statement": "Variant interpretation requires current ClinVar evidence, review status, and source context. This skill guides targeted searches, API retrieval, bulk downloads, and VCF annotation planning.",
+    "value_statement": "ClinVar data is complex to search, interpret, and reuse in genomic workflows. This skill provides focused guidance for queries, classifications, bulk files, and VCF annotation.",
     "seo_keywords": [
+      "ClinVar",
       "Claude",
       "Codex",
       "Claude Code",
-      "ClinVar database",
-      "variant interpretation",
+      "variant annotation",
       "clinical significance",
       "genomic medicine",
       "NCBI E-utilities",
-      "VCF annotation",
-      "genetic variants"
+      "bioinformatics workflow",
+      "VCF annotation"
     ],
     "actual_capabilities": [
-      "Search ClinVar by gene, condition, variant name, chromosome, and clinical significance.",
-      "Explain pathogenicity terms, review status levels, and conflicting interpretations.",
-      "Guide E-utilities use for esearch, esummary, efetch, and elink requests.",
-      "Describe ClinVar XML, VCF, and tab-delimited bulk data formats.",
-      "Plan VCF filtering and annotation workflows using ClinVar fields."
+      "Explains ClinVar search patterns for genes, conditions, variants, and clinical significance terms.",
+      "Documents NCBI E-utilities endpoints for ClinVar search, summary, fetch, and linked records.",
+      "Describes ClinVar XML, VCF, and tab-delimited bulk data formats.",
+      "Guides interpretation of pathogenicity classifications, review status, and conflicting submissions.",
+      "Provides examples for filtering and annotating ClinVar VCF and summary files."
     ],
     "limitations": [
-      "It does not provide clinical diagnosis or treatment recommendations.",
-      "Live queries and bulk downloads depend on NCBI availability and rate limits.",
-      "VCF files exclude some large or complex variants.",
-      "ClinVar classifications can change and may include conflicting submissions."
+      "It does not replace review by a qualified genetics professional.",
+      "It does not guarantee that ClinVar classifications are current or clinically complete.",
+      "It depends on public NCBI services and downloaded ClinVar releases.",
+      "It does not include executable tooling or a local ClinVar database."
     ],
     "use_cases": [
       {
-        "title": "Review Variant Significance",
-        "description": "Find ClinVar classifications and review status for variants in a patient or research gene list.",
-        "target_user": "Clinical genetics reviewer"
+        "title": "Prioritize variants in a gene",
+        "description": "Find pathogenic or likely pathogenic ClinVar records for one gene and review confidence signals.",
+        "target_user": "Genomics researcher"
       },
       {
-        "title": "Annotate Sequencing Results",
-        "description": "Plan how to add ClinVar clinical significance fields to VCF-based analysis outputs.",
+        "title": "Annotate sequencing results",
+        "description": "Choose the right ClinVar VCF file and plan annotation fields for a variant analysis workflow.",
         "target_user": "Bioinformatics engineer"
       },
       {
-        "title": "Build Research Datasets",
-        "description": "Choose ClinVar bulk files and document reproducible data access for variant studies.",
-        "target_user": "Genomics researcher"
+        "title": "Review classification evidence",
+        "description": "Interpret review status, conflicts, and classification terms before escalating variants for expert review.",
+        "target_user": "Clinical genetics team"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Find a Variant",
-        "scenario": "Beginner lookup",
-        "prompt": "Search ClinVar for BRCA1 pathogenic variants and explain the review status terms in plain language."
+        "title": "Find variants by gene",
+        "scenario": "Beginner search planning",
+        "prompt": "Help me search ClinVar for pathogenic variants in BRCA1. Explain the query terms and what review status means."
       },
       {
-        "title": "Compare Classifications",
-        "scenario": "Evidence review",
-        "prompt": "Compare ClinVar evidence for a TP53 variant, including clinical significance, conflicts, and review status."
+        "title": "Compare ClinVar formats",
+        "scenario": "Selecting a data source",
+        "prompt": "I need ClinVar data for a research pipeline. Compare XML, VCF, and tab-delimited files for this use case."
       },
       {
-        "title": "Plan VCF Annotation",
-        "scenario": "Pipeline design",
-        "prompt": "Plan a GRCh38 VCF annotation workflow using ClinVar fields for clinical significance and disease names."
+        "title": "Interpret conflicting classifications",
+        "scenario": "Variant evidence review",
+        "prompt": "Explain how to evaluate a ClinVar variant with conflicting interpretations and a low review status."
       },
       {
-        "title": "Design a Local Dataset",
-        "scenario": "Advanced reproducibility",
-        "prompt": "Design a reproducible ClinVar bulk data workflow for monthly XML releases, version tracking, and validation checks."
+        "title": "Design an annotation workflow",
+        "scenario": "Advanced pipeline planning",
+        "prompt": "Design a reproducible workflow to annotate a GRCh38 VCF with ClinVar significance, review status, and disease names."
       }
     ],
     "output_examples": [
       {
-        "input": "Find high-confidence pathogenic CFTR variants.",
-        "output": "A concise search plan with recommended ClinVar query terms, review status filters, and cautions about conflicting interpretations."
+        "input": "Search ClinVar for high-confidence pathogenic CFTR variants.",
+        "output": "The response would propose a CFTR query, explain expert panel and practice guideline filters, and note that results need professional review."
       },
       {
-        "input": "Explain whether a VUS can guide clinical care.",
-        "output": "A plain-language explanation that uncertain significance lacks enough evidence and should not drive clinical decisions alone."
+        "input": "Which ClinVar download should I use for VCF annotation?",
+        "output": "The response would compare genome builds, recommend matching GRCh37 or GRCh38 to the input data, and list useful annotation fields."
       },
       {
-        "input": "Choose a ClinVar format for pipeline annotation.",
-        "output": "A format recommendation that compares VCF, XML, and tab-delimited files against the pipeline goal."
+        "input": "How should I treat a variant of uncertain significance?",
+        "output": "The response would explain that VUS results are not diagnostic, require evidence review, and should not drive clinical action alone."
       }
     ],
     "best_practices": [
       "Record the ClinVar release date and genome build for every analysis.",
-      "Prioritize expert panel or practice guideline records when evidence conflicts.",
-      "Respect NCBI rate limits and cache repeated query results."
+      "Prioritize expert panel or practice guideline review status when confidence matters.",
+      "Escalate conflicting or uncertain classifications to qualified genetics professionals."
     ],
     "anti_patterns": [
-      "Treating a VUS as a confirmed disease-causing variant.",
-      "Mixing GRCh37 and GRCh38 coordinates without explicit conversion.",
-      "Using ClinVar classifications without checking review status and submission date."
+      "Do not treat ClinVar classifications as direct clinical diagnoses.",
+      "Do not mix GRCh37 and GRCh38 coordinates in one annotation workflow.",
+      "Do not ignore low review status or conflicting interpretations."
     ],
     "faq": [
       {
-        "question": "Does this skill make clinical decisions?",
-        "answer": "No. It supports evidence review and data access. Clinical decisions require qualified genetics professionals."
+        "question": "Can this skill diagnose a patient?",
+        "answer": "No. It helps interpret ClinVar data, but clinical decisions require qualified professional review."
       },
       {
-        "question": "Can it query ClinVar directly?",
-        "answer": "It provides E-utilities endpoints and query patterns. Actual access depends on the host tool and network permissions."
+        "question": "Which ClinVar data format should I choose?",
+        "answer": "Use VCF for annotation, XML for complete evidence, and tab-delimited files for quick summaries."
       },
       {
-        "question": "Which genome builds are covered?",
-        "answer": "The guidance covers GRCh37 and GRCh38 ClinVar files and stresses matching the build to your data."
+        "question": "Does it support both GRCh37 and GRCh38?",
+        "answer": "Yes. The references describe ClinVar files for both genome builds."
       },
       {
-        "question": "Does it handle bulk downloads?",
-        "answer": "Yes. It explains XML, VCF, and tab-delimited bulk files and their common use cases."
+        "question": "Can it explain review status stars?",
+        "answer": "Yes. It explains practice guidelines, expert panels, multiple submitters, and lower-confidence submissions."
       },
       {
-        "question": "How should conflicting interpretations be handled?",
-        "answer": "Check review status, evidence, submission dates, and expert panel records before drawing conclusions."
+        "question": "Does it call the NCBI API automatically?",
+        "answer": "No. It provides guidance and examples for using NCBI E-utilities and ClinVar downloads."
       },
       {
-        "question": "Is an NCBI API key required?",
-        "answer": "No for basic access. An API key increases rate limits and should be handled securely."
+        "question": "Can it help with VCF annotation?",
+        "answer": "Yes. It describes ClinVar VCF files, relevant fields, and common annotation workflow choices."
       }
     ]
   },

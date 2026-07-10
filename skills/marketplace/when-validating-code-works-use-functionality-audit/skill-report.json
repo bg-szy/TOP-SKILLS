@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-05T14:24:08.962Z",
+    "generated_at": "2026-07-09T08:36:06.289Z",
     "slug": "dnyoussef-when-validating-code-works-use-functionality-audit",
     "source_url": "https://github.com/DNYoussef/ai-chrome-extension/tree/main/.claude/skills/testing-quality/when-validating-code-works-use-functionality-audit",
     "source_ref": "main",
@@ -9,7 +9,7 @@
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "111d6b92bfe35f5c87160d0335e221dafb8edd64c574b792534ce8522b95fe64",
-    "tree_hash": "7bfee9ee5dc46bcd667d5697ee21269107aa5a56119b741721e8390852d044c0",
+    "tree_hash": "b4c889cf0db3d1cb68eee3bd93552eb12d8e8191102b57676cf7c3db7a1629e4",
     "provenance": {
       "model_requested": "gpt-5.5:high",
       "model_effective": "codex:gpt-5.5:high",
@@ -26,18 +26,18 @@
   },
   "skill": {
     "name": "when-validating-code-works-use-functionality-audit",
-    "description": "Validates generated or changed code by creating a sandbox, running realistic tests, debugging failures, and reporting production readiness.",
-    "summary": "Run execution-based functionality audits for generated or modified code.",
+    "description": "Guides runtime functionality audits for generated or modified code. It covers sandbox setup, test execution, debugging, regression checks, and audit reporting.",
+    "summary": "Validate code behavior through sandboxed test execution and structured debugging.",
     "icon": "📦",
     "version": "1.0.0",
     "author": "DNYoussef",
     "license": "MIT",
     "tags": [
-      "testing",
-      "quality-assurance",
-      "debugging",
       "code-validation",
-      "sandbox-testing"
+      "testing",
+      "debugging",
+      "regression-testing",
+      "quality-assurance"
     ],
     "supported_tools": [
       "claude",
@@ -53,30 +53,30 @@
     "category": "coding"
   },
   "security_audit": {
-    "risk_level": "critical",
-    "is_blocked": true,
+    "risk_level": "high",
+    "is_blocked": false,
     "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "Most static findings are false positives from Markdown code fences, Graphviz labels, inline filenames, local test examples, and placeholder credentials. Confirmed risks involve temporary sandbox paths, persistence of full logs and reports, package installation, and Docker workspace mounts that require user review before execution.",
+    "summary": "Most static findings are false positives from Markdown formatting, Graphviz labels, local test imports, and dummy environment examples. The confirmed risks are operational: the skill runs external commands, installs dependencies, mounts workspaces into Docker, deletes a fixed temporary directory, and stores audit artifacts in shared memory. No prompt injection attempt was found in the reviewed files.",
     "remediation": [
       {
-        "issue": "Unpinned package installation is recommended in setup and troubleshooting steps.",
-        "suggestion": "Pin package versions, avoid global installs by default, and require explicit confirmation before any package install runs.",
+        "issue": "Untrusted code execution during audits",
+        "suggestion": "Require confirmation before installing dependencies or running tests. Prefer containers or virtual machines with read-only source mounts, network limits, and disabled package lifecycle scripts.",
         "severity": "high"
       },
       {
-        "issue": "Docker troubleshooting mounts the current workspace into a container.",
-        "suggestion": "Use read-only mounts where possible, document the write risk, and prefer disposable copied workspaces for untrusted code.",
-        "severity": "high"
-      },
-      {
-        "issue": "Full logs and reports are stored in Claude Flow memory.",
-        "suggestion": "Store summaries by default and require redaction before persisting detailed logs or reports.",
+        "issue": "Persistent storage of logs and reports",
+        "suggestion": "Redact secrets, tokens, customer data, and stack traces before storing logs, reports, or metrics in Claude Flow memory.",
         "severity": "medium"
       },
       {
-        "issue": "Temporary sandbox paths use shared /tmp locations.",
-        "suggestion": "Use unique, permission-restricted temporary directories and clean them only after confirming the exact target path.",
+        "issue": "Dynamic paths and cleanup commands",
+        "suggestion": "Use mktemp -d, quote command substitutions, validate sandbox paths, and avoid fixed rm -rf cleanup paths.",
+        "severity": "medium"
+      },
+      {
+        "issue": "Dependency installation examples",
+        "suggestion": "Pin package versions and document npm and pip lifecycle script risks before users run install commands.",
         "severity": "medium"
       }
     ],
@@ -333,446 +333,6 @@
             "file": "PROCESS.md",
             "line_start": 542,
             "line_end": 542
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 543,
-            "line_end": 543
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 548,
-            "line_end": 548
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 558,
-            "line_end": 558
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 559,
-            "line_end": 559
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 561,
-            "line_end": 561
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 580,
-            "line_end": 580
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 588,
-            "line_end": 588
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 589,
-            "line_end": 589
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 590,
-            "line_end": 590
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 591,
-            "line_end": 591
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 592,
-            "line_end": 592
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 593,
-            "line_end": 593
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 594,
-            "line_end": 594
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 595,
-            "line_end": 595
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 605,
-            "line_end": 605
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 609,
-            "line_end": 609
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 746,
-            "line_end": 746
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 793,
-            "line_end": 793
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 808,
-            "line_end": 808
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 576,
-            "line_end": 582
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 846,
-            "line_end": 846
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 58,
-            "line_end": 96
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 96,
-            "line_end": 99
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 99,
-            "line_end": 100
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 100,
-            "line_end": 101
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 101,
-            "line_end": 122
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 122,
-            "line_end": 165
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 165,
-            "line_end": 168
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 168,
-            "line_end": 169
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 169,
-            "line_end": 170
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 170,
-            "line_end": 192
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 192,
-            "line_end": 236
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 236,
-            "line_end": 239
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 239,
-            "line_end": 240
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 240,
-            "line_end": 241
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 241,
-            "line_end": 263
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 263,
-            "line_end": 309
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 309,
-            "line_end": 312
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 312,
-            "line_end": 313
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 313,
-            "line_end": 314
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 314,
-            "line_end": 336
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 336,
-            "line_end": 411
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 411,
-            "line_end": 414
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 414,
-            "line_end": 415
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 415,
-            "line_end": 416
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 416,
-            "line_end": 435
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 435,
-            "line_end": 438
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 438,
-            "line_end": 439
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 439,
-            "line_end": 440
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 440,
-            "line_end": 441
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 441,
-            "line_end": 442
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 442,
-            "line_end": 446
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 446,
-            "line_end": 472
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 472,
-            "line_end": 474
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 474,
-            "line_end": 480
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 480,
-            "line_end": 500
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 500,
-            "line_end": 599
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 599,
-            "line_end": 600
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 600,
-            "line_end": 601
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 601,
-            "line_end": 602
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 602,
-            "line_end": 611
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 611,
-            "line_end": 620
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 620,
-            "line_end": 628
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 628,
-            "line_end": 639
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 639,
-            "line_end": 645
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 645,
-            "line_end": 655
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 655,
-            "line_end": 679
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 679,
-            "line_end": 688
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 688,
-            "line_end": 694
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 694,
-            "line_end": 736
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 736,
-            "line_end": 740
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 740,
-            "line_end": 780
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 780,
-            "line_end": 784
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 784,
-            "line_end": 824
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 161,
-            "line_end": 161
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 232,
-            "line_end": 232
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 305,
-            "line_end": 305
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 406,
-            "line_end": 406
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 484,
-            "line_end": 484
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 615,
-            "line_end": 615
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 638,
-            "line_end": 638
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 122,
-            "line_end": 165
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 192,
-            "line_end": 236
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 263,
-            "line_end": 309
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 336,
-            "line_end": 411
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 480,
-            "line_end": 500
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 611,
-            "line_end": 620
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 628,
-            "line_end": 639
           }
         ]
       },
@@ -1899,16 +1459,6 @@
         "snippet": "mkdir -p /tmp/audit-sandbox"
       },
       {
-        "id": "blocker:README.md:110:recursive-delete-on-root-home",
-        "category": "blocker",
-        "severity": "critical",
-        "pattern": "Recursive delete on root/home",
-        "file": "README.md",
-        "line_start": 110,
-        "line_end": 110,
-        "snippet": "rm -rf /tmp/audit-sandbox"
-      },
-      {
         "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
@@ -2883,1262 +2433,1230 @@
       {
         "id": "blocker:process-diagram.gv:26:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:process-diagram.gv:27:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "external_commands:PROCESS.md:153:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:PROCESS.md:165:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:PROCESS.md:572:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:PROCESS.md:573:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:PROCESS.md:574:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:PROCESS.md:575:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:PROCESS.md:576:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:PROCESS.md:32:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:34:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:129:shell-command-substitution",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "reason": "This retrieves sandbox configuration by executing npx claude-flow from a shell command. It is expected for the workflow, but it is still external command execution from a community skill.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:PROCESS.md:130:shell-command-substitution",
         "verdict": "confirmed",
-        "confidence": 0.64,
-        "reason": "Uses a memory-derived sandbox path in command substitution before changing directories. A malformed path could redirect later file and test operations.",
+        "confidence": 0.76,
+        "reason": "The workflow changes directory using a path read from shared memory without validation or quoting. A bad or stale path could redirect later file operations outside the intended sandbox.",
         "severity": "medium"
       },
       {
         "id": "external_commands:PROCESS.md:197:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:200:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:201:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:202:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:212:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:221:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "verdict": "confirmed",
+        "confidence": 0.68,
+        "reason": "The command persists generated execution metrics into Claude Flow memory. This is part of the workflow, but it can move audit data outside the temporary workspace.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:PROCESS.md:226:shell-command-substitution",
         "verdict": "confirmed",
         "confidence": 0.82,
-        "reason": "Stores the full base64-encoded test log in Claude Flow memory. Test logs can contain secrets, tokens, or proprietary snippets from the code under test.",
+        "reason": "The command base64-encodes full test logs and stores them in Claude Flow memory. Test logs can include secrets, paths, stack traces, or customer data.",
         "severity": "medium"
       },
       {
         "id": "external_commands:PROCESS.md:251:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "verdict": "confirmed",
+        "confidence": 0.7,
+        "reason": "This retrieves execution results through npx claude-flow during the audit. The external command is intentional, but it increases the trust required for the skill runtime.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:PROCESS.md:252:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:379:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "verdict": "confirmed",
+        "confidence": 0.7,
+        "reason": "The workflow stores issue analysis from a generated file into Claude Flow memory. The file may include sensitive code paths or failure details from the audited project.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:PROCESS.md:383:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "verdict": "confirmed",
+        "confidence": 0.68,
+        "reason": "The workflow stores a generated fix strategy into Claude Flow memory. This can persist project-specific implementation details beyond the sandbox.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:PROCESS.md:408:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "verdict": "confirmed",
+        "confidence": 0.7,
+        "reason": "This retrieves fix strategy data through npx claude-flow. The external command is expected, but it depends on trusted shared memory state.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:PROCESS.md:424:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:425:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:428:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:431:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:442:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:456:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:457:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:463:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:468:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:469:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:470:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:484:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "verdict": "confirmed",
+        "confidence": 0.68,
+        "reason": "The workflow stores production readiness output in Claude Flow memory. Readiness files can contain project names, paths, and deployment context.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:PROCESS.md:509:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "verdict": "confirmed",
+        "confidence": 0.7,
+        "reason": "This retrieves sandbox configuration through npx claude-flow for final reporting. The report generation step depends on trusted shared memory state.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:PROCESS.md:510:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "verdict": "confirmed",
+        "confidence": 0.7,
+        "reason": "This retrieves execution results through npx claude-flow for final reporting. The external command can expose audit state if the memory backend is not trusted.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:PROCESS.md:511:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "verdict": "confirmed",
+        "confidence": 0.7,
+        "reason": "This retrieves root-cause data through npx claude-flow for final reporting. The retrieved data may include sensitive failure context from the project.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:PROCESS.md:512:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "verdict": "confirmed",
+        "confidence": 0.7,
+        "reason": "This retrieves readiness data through npx claude-flow for final reporting. The external command and shared memory use require trust in the local toolchain.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:PROCESS.md:520:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:521:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:525:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:526:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:527:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:528:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:534:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:535:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:540:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:541:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:542:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:543:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:548:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:558:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:559:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:561:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:580:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:588:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:589:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:590:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:591:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:592:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:593:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:594:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:595:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:605:shell-command-substitution",
         "verdict": "confirmed",
-        "confidence": 0.8,
-        "reason": "Persists the full generated audit report to Claude Flow memory. Reports may include file paths, failure output, or sensitive test details.",
+        "confidence": 0.78,
+        "reason": "The workflow stores the full audit report in Claude Flow memory. Audit reports can contain logs, paths, test names, and implementation details.",
         "severity": "medium"
       },
       {
         "id": "external_commands:PROCESS.md:609:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "verdict": "confirmed",
+        "confidence": 0.7,
+        "reason": "The workflow stores audit metrics in Claude Flow memory. Metrics can expose project structure and test readiness information.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:PROCESS.md:746:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:793:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:808:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:PROCESS.md:576:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:PROCESS.md:846:unix-shell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The shebang appears in an example helper script section. By itself, it does not create hidden execution or privilege escalation."
       },
       {
         "id": "filesystem:PROCESS.md:150:node-js-fs-operations",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.84,
+        "reason": "The filesystem access is limited to generated test files, source listing, or audit artifacts in the documented workflow. It is expected local test automation, not secret collection."
       },
       {
         "id": "filesystem:PROCESS.md:166:node-js-fs-operations",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.84,
+        "reason": "The filesystem access is limited to generated test files, source listing, or audit artifacts in the documented workflow. It is expected local test automation, not secret collection."
       },
       {
         "id": "filesystem:PROCESS.md:267:node-js-fs-operations",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.84,
+        "reason": "The filesystem access is limited to generated test files, source listing, or audit artifacts in the documented workflow. It is expected local test automation, not secret collection."
       },
       {
         "id": "filesystem:PROCESS.md:291:node-js-fs-operations",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.84,
+        "reason": "The filesystem access is limited to generated test files, source listing, or audit artifacts in the documented workflow. It is expected local test automation, not secret collection."
       },
       {
         "id": "filesystem:PROCESS.md:154:node-js-fs-stat-operations",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.84,
+        "reason": "The filesystem access is limited to generated test files, source listing, or audit artifacts in the documented workflow. It is expected local test automation, not secret collection."
       },
       {
         "id": "filesystem:PROCESS.md:166:synchronous-file-operations",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.84,
+        "reason": "The filesystem access is limited to generated test files, source listing, or audit artifacts in the documented workflow. It is expected local test automation, not secret collection."
       },
       {
         "id": "filesystem:PROCESS.md:267:synchronous-file-operations",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.84,
+        "reason": "The filesystem access is limited to generated test files, source listing, or audit artifacts in the documented workflow. It is expected local test automation, not secret collection."
       },
       {
         "id": "filesystem:PROCESS.md:291:synchronous-file-operations",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.84,
+        "reason": "The filesystem access is limited to generated test files, source listing, or audit artifacts in the documented workflow. It is expected local test automation, not secret collection."
       },
       {
         "id": "filesystem:PROCESS.md:157:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.86,
+        "reason": "The relative import is part of generated local tests that load project source files. It does not traverse to an arbitrary user-controlled filesystem target."
       },
       {
         "id": "filesystem:PROCESS.md:137:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.9,
+        "reason": "The snippet redirects command output to /dev/null. This suppresses noise and does not read from a sensitive device file."
       },
       {
         "id": "filesystem:PROCESS.md:704:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.9,
+        "reason": "The snippet redirects command output to /dev/null. This suppresses noise and does not read from a sensitive device file."
       },
       {
         "id": "filesystem:PROCESS.md:32:temp-directory-access",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "The path is a fixed temporary sandbox or artifact location for test execution. No sensitive host path or arbitrary target is shown."
       },
       {
         "id": "filesystem:PROCESS.md:33:temp-directory-access",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "The path is a fixed temporary sandbox or artifact location for test execution. No sensitive host path or arbitrary target is shown."
       },
       {
         "id": "sensitive:PROCESS.md:548:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.95,
+        "reason": "The scanner matched the jq field name .key inside report generation. This is not certificate or private key access."
       },
       {
         "id": "blocker:PROCESS.md:110:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:PROCESS.md:304:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:PROCESS.md:309:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:PROCESS.md:615:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "filesystem:README.md:79:temp-directory-access",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "The path is a fixed temporary sandbox or artifact location for test execution. No sensitive host path or arbitrary target is shown."
       },
       {
         "id": "filesystem:README.md:80:temp-directory-access",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "The path is a fixed temporary sandbox or artifact location for test execution. No sensitive host path or arbitrary target is shown."
       },
       {
         "id": "filesystem:README.md:110:temp-directory-access",
         "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation.",
+        "confidence": 0.74,
+        "reason": "The troubleshooting step uses rm -rf on a fixed temporary directory. It is scoped to /tmp, but destructive cleanup commands should still be treated carefully.",
         "severity": "medium"
       },
       {
         "id": "filesystem:README.md:111:temp-directory-access",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation.",
-        "severity": "medium"
-      },
-      {
-        "id": "blocker:README.md:110:recursive-delete-on-root-home",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.88,
+        "reason": "The path is a fixed temporary sandbox or artifact location for test execution. No sensitive host path or arbitrary target is shown."
       },
       {
         "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:96:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:99:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:100:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:101:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:122:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:165:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:168:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:169:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:170:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:192:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:236:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:239:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:240:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:241:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:263:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:309:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:312:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:313:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:314:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:336:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:411:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:414:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:415:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:416:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:435:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:438:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:439:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:440:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:441:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:442:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:446:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:472:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.92,
+        "reason": "The backticks are JavaScript template literals or Markdown formatting in examples. They are not Ruby or shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:474:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:480:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:500:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:599:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:600:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:601:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:602:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:611:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:620:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:628:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:639:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:645:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:655:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:679:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:688:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:694:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:736:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:740:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:780:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:784:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:161:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "verdict": "confirmed",
+        "confidence": 0.68,
+        "reason": "This stores execution results through npx claude-flow after running tests. It is expected, but it persists audit state outside the test command itself.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:232:shell-command-substitution",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "reason": "This stores generated root-cause analysis through npx claude-flow. The stored content can include project-specific failure details.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:305:shell-command-substitution",
-        "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "verdict": "confirmed",
+        "confidence": 0.7,
+        "reason": "This stores production readiness data through npx claude-flow. The data can contain deployment and test context that should be controlled.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:406:shell-command-substitution",
         "verdict": "confirmed",
-        "confidence": 0.8,
-        "reason": "Persists the generated functionality audit report through command substitution into Claude Flow memory. That report can include sensitive execution details.",
+        "confidence": 0.78,
+        "reason": "This stores a complete functionality audit report through npx claude-flow. Reports can contain logs, paths, test output, and implementation details.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:484:shell-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.82,
+        "reason": "The command substitution is used for local timestamps, counters, or report formatting. It does not execute user-supplied shell content or contact an external service."
       },
       {
         "id": "external_commands:SKILL.md:615:shell-command-substitution",
         "verdict": "confirmed",
         "confidence": 0.78,
-        "reason": "Reads a full audit report into a Claude Flow memory store command. This can retain sensitive report contents beyond the local test run.",
+        "reason": "This shares the audit report with another workflow through Claude Flow memory. Cross-skill sharing can propagate sensitive audit artifacts if logs are not redacted.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:638:shell-command-substitution",
         "verdict": "confirmed",
         "confidence": 0.86,
-        "reason": "Runs Docker with the current working directory mounted into the container. Commands in the container can modify workspace files through that mount.",
+        "reason": "The Docker fallback mounts the current working directory into a container. This reduces host dependency conflicts, but the container can read and modify mounted project files.",
         "severity": "high"
       },
       {
         "id": "external_commands:SKILL.md:122:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:192:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:263:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:336:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:480:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:611:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:628:template-literal-with-command-substitution",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.96,
+        "reason": "The scanner matched Markdown code fences or inline code formatting. This text is documentation markup, not a shell execution primitive."
       },
       {
         "id": "network:SKILL.md:711:http-client-library",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.9,
+        "reason": "The request call is a Supertest example against a local app object. It does not contact an external network service."
       },
       {
         "id": "network:SKILL.md:717:http-client-library",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.9,
+        "reason": "The request call is a Supertest example against a local app object. It does not contact an external network service."
       },
       {
         "id": "filesystem:SKILL.md:707:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.86,
+        "reason": "The relative import is part of generated local tests that load project source files. It does not traverse to an arbitrary user-controlled filesystem target."
       },
       {
         "id": "filesystem:SKILL.md:78:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.9,
+        "reason": "The snippet redirects command output to /dev/null. This suppresses noise and does not read from a sensitive device file."
       },
       {
         "id": "filesystem:SKILL.md:79:standard-device-file-access",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "reason": "The line installs npm development dependencies in the audit environment. npm installs can execute package lifecycle scripts, so this is real operational risk even though output is redirected.",
+        "severity": "medium"
       },
       {
         "id": "filesystem:SKILL.md:74:temp-directory-access",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "The path is a fixed temporary sandbox or artifact location for test execution. No sensitive host path or arbitrary target is shown."
       },
       {
         "id": "filesystem:SKILL.md:75:temp-directory-access",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "The path is a fixed temporary sandbox or artifact location for test execution. No sensitive host path or arbitrary target is shown."
       },
       {
         "id": "filesystem:SKILL.md:461:temp-directory-access",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "The path is a fixed temporary sandbox or artifact location for test execution. No sensitive host path or arbitrary target is shown."
       },
       {
         "id": "filesystem:SKILL.md:462:temp-directory-access",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "The path is a fixed temporary sandbox or artifact location for test execution. No sensitive host path or arbitrary target is shown."
       },
       {
         "id": "filesystem:SKILL.md:699:temp-directory-access",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "The path is a fixed temporary sandbox or artifact location for test execution. No sensitive host path or arbitrary target is shown."
       },
       {
         "id": "filesystem:SKILL.md:700:temp-directory-access",
-        "verdict": "confirmed",
-        "confidence": 0.76,
-        "reason": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.88,
+        "reason": "The path is a fixed temporary sandbox or artifact location for test execution. No sensitive host path or arbitrary target is shown."
       },
       {
         "id": "env_access:SKILL.md:654:dotenv-library",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.88,
+        "reason": "The environment values are dummy test variables in a troubleshooting example. No real host secret is read or exfiltrated."
       },
       {
         "id": "env_access:SKILL.md:650:database-connection-strings",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.88,
+        "reason": "The environment values are dummy test variables in a troubleshooting example. No real host secret is read or exfiltrated."
       },
       {
         "id": "env_access:SKILL.md:649:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.88,
+        "reason": "The environment values are dummy test variables in a troubleshooting example. No real host secret is read or exfiltrated."
       },
       {
         "id": "sensitive:SKILL.md:646:environment-file-access",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.88,
+        "reason": "The snippet creates a local test .env example with placeholder values. It does not read or transmit real environment secrets."
       },
       {
         "id": "sensitive:SKILL.md:647:environment-file-access",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.88,
+        "reason": "The snippet creates a local test .env example with placeholder values. It does not read or transmit real environment secrets."
       },
       {
         "id": "blocker:SKILL.md:24:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:94:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:142:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:150:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:164:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:235:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:308:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:409:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:484:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:493:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:745:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:772:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:790:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:531:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.72,
-        "reason": "The snippet is part of documented local testing workflow and lacks evidence of malicious or unsafe behavior at this location."
+        "confidence": 0.94,
+        "reason": "The snippet is a workflow label, checklist item, test name, or hook identifier. It does not perform host or network reconnaissance."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Unpinned Package Installation During Audit",
-        "description": "The skill recommends global, project, and forced package installs during validation. Package installation can run lifecycle scripts and modify user environments.",
-        "severity": "high",
-        "locations": [
-          {
-            "file": "README.md",
-            "line_start": 7,
-            "line_end": 15
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 47,
-            "line_end": 53
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 362,
-            "line_end": 370
-          }
-        ],
-        "confidence": 0.86,
-        "confidence_reasoning": "The cited lines explicitly install packages, including a global alpha package and a placeholder missing package. This is a clear supply-chain and environment-modification risk, though it is related to the skill purpose."
-      },
-      {
-        "title": "Writable Docker Bind Mount of Workspace",
-        "description": "The Docker troubleshooting command mounts the current project directory into the container. A container process can write back into the workspace through this mount.",
+        "title": "Untrusted Code Execution Workflow",
+        "description": "The skill instructs users to create a sandbox, install packages, and run project tests. Package lifecycle scripts and tests can execute arbitrary code, and the Docker fallback mounts the current workspace.",
         "severity": "high",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 637,
+            "line_start": 74,
+            "line_end": 79
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 156,
+            "line_end": 161
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 638,
             "line_end": 638
           }
         ],
-        "confidence": 0.84,
-        "confidence_reasoning": "The command uses a bind mount from the current directory to /workspace. The risk is contextual and not fully captured by the static command-substitution alert."
+        "confidence": 0.86,
+        "confidence_reasoning": "The cited workflow directly installs dependencies, runs tests, and mounts the workspace into Docker. These are legitimate audit actions, but they execute untrusted project and package code."
       },
       {
-        "title": "Persistent Storage of Test Logs and Reports",
-        "description": "The workflow stores full logs, reports, and metrics in Claude Flow memory. Test output can include credentials, stack traces, or proprietary code details.",
+        "title": "Persistent Storage of Audit Artifacts",
+        "description": "The workflow stores logs, reports, and metrics in Claude Flow memory. These artifacts can contain secrets, stack traces, file paths, or implementation details from the audited project.",
         "severity": "medium",
         "locations": [
           {
             "file": "PROCESS.md",
-            "line_start": 223,
+            "line_start": 221,
             "line_end": 226
           },
           {
-            "file": "PROCESS.md",
-            "line_start": 601,
-            "line_end": 609
+            "file": "SKILL.md",
+            "line_start": 406,
+            "line_end": 406
           },
           {
             "file": "SKILL.md",
-            "line_start": 405,
-            "line_end": 406
+            "line_start": 615,
+            "line_end": 615
           }
         ],
-        "confidence": 0.82,
-        "confidence_reasoning": "The cited commands persist complete logs and reports, not just summaries. Sensitive content depends on the project under test, so severity is medium rather than critical."
+        "confidence": 0.8,
+        "confidence_reasoning": "The cited lines store execution metrics, full test logs, and final reports in shared memory. The risk depends on log contents, so confidence is high but not absolute."
       }
     ],
-    "critical_findings": [
-      {
-        "title": "Recursive delete on root/home",
-        "description": "rm -rf /tmp/audit-sandbox",
-        "locations": [
-          {
-            "file": "README.md",
-            "line_start": 110,
-            "line_end": 110
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "blocker",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed blocker/critical static finding; AI dismissal overridden."
-      }
-    ],
+    "critical_findings": [],
     "high_findings": [
       {
         "title": "Shell command substitution",
@@ -4154,52 +3672,52 @@
         "source_category": "external_commands",
         "source_severity": "medium",
         "confidence": 0.86,
-        "confidence_reasoning": "Runs Docker with the current working directory mounted into the container. Commands in the container can modify workspace files through that mount."
+        "confidence_reasoning": "The Docker fallback mounts the current working directory into a container. This reduces host dependency conflicts, but the container can read and modify mounted project files."
       },
       {
-        "title": "Unpinned Package Installation During Audit",
-        "description": "The skill recommends global, project, and forced package installs during validation. Package installation can run lifecycle scripts and modify user environments.",
-        "locations": [
-          {
-            "file": "README.md",
-            "line_start": 7,
-            "line_end": 15
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 47,
-            "line_end": 53
-          },
-          {
-            "file": "PROCESS.md",
-            "line_start": 362,
-            "line_end": 370
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "semantic",
-        "source_severity": "high",
-        "confidence": 0.86,
-        "confidence_reasoning": "The cited lines explicitly install packages, including a global alpha package and a placeholder missing package. This is a clear supply-chain and environment-modification risk, though it is related to the skill purpose."
-      },
-      {
-        "title": "Writable Docker Bind Mount of Workspace",
-        "description": "The Docker troubleshooting command mounts the current project directory into the container. A container process can write back into the workspace through this mount.",
+        "title": "Untrusted Code Execution Workflow",
+        "description": "The skill instructs users to create a sandbox, install packages, and run project tests. Package lifecycle scripts and tests can execute arbitrary code, and the Docker fallback mounts the current workspace.",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 637,
+            "line_start": 74,
+            "line_end": 79
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 156,
+            "line_end": 161
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 638,
             "line_end": 638
           }
         ],
         "review_kind": "security",
         "source_category": "semantic",
         "source_severity": "high",
-        "confidence": 0.84,
-        "confidence_reasoning": "The command uses a bind mount from the current directory to /workspace. The risk is contextual and not fully captured by the static command-substitution alert."
+        "confidence": 0.86,
+        "confidence_reasoning": "The cited workflow directly installs dependencies, runs tests, and mounts the workspace into Docker. These are legitimate audit actions, but they execute untrusted project and package code."
       }
     ],
     "medium_findings": [
+      {
+        "title": "Shell command substitution",
+        "description": "SANDBOX_CONFIG=$(npx claude-flow memory retrieve --key \"testing/functionality-audit/phase-1/tester/s",
+        "locations": [
+          {
+            "file": "PROCESS.md",
+            "line_start": 129,
+            "line_end": 129
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.72,
+        "confidence_reasoning": "This retrieves sandbox configuration by executing npx claude-flow from a shell command. It is expected for the workflow, but it is still external command execution from a community skill."
+      },
       {
         "title": "Shell command substitution",
         "description": "cd $(echo $SANDBOX_CONFIG | jq -r '.path')",
@@ -4213,8 +3731,24 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.64,
-        "confidence_reasoning": "Uses a memory-derived sandbox path in command substitution before changing directories. A malformed path could redirect later file and test operations."
+        "confidence": 0.76,
+        "confidence_reasoning": "The workflow changes directory using a path read from shared memory without validation or quoting. A bad or stale path could redirect later file operations outside the intended sandbox."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "--value \"$(cat execution-metrics.json)\"",
+        "locations": [
+          {
+            "file": "PROCESS.md",
+            "line_start": 221,
+            "line_end": 221
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.68,
+        "confidence_reasoning": "The command persists generated execution metrics into Claude Flow memory. This is part of the workflow, but it can move audit data outside the temporary workspace."
       },
       {
         "title": "Shell command substitution",
@@ -4230,7 +3764,151 @@
         "source_category": "external_commands",
         "source_severity": "medium",
         "confidence": 0.82,
-        "confidence_reasoning": "Stores the full base64-encoded test log in Claude Flow memory. Test logs can contain secrets, tokens, or proprietary snippets from the code under test."
+        "confidence_reasoning": "The command base64-encodes full test logs and stores them in Claude Flow memory. Test logs can include secrets, paths, stack traces, or customer data."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "EXEC_RESULTS=$(npx claude-flow memory retrieve --key \"testing/functionality-audit/phase-2/tester/exe",
+        "locations": [
+          {
+            "file": "PROCESS.md",
+            "line_start": 251,
+            "line_end": 251
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.7,
+        "confidence_reasoning": "This retrieves execution results through npx claude-flow during the audit. The external command is intentional, but it increases the trust required for the skill runtime."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "--value \"$(cat issue-categories.json)\"",
+        "locations": [
+          {
+            "file": "PROCESS.md",
+            "line_start": 379,
+            "line_end": 379
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.7,
+        "confidence_reasoning": "The workflow stores issue analysis from a generated file into Claude Flow memory. The file may include sensitive code paths or failure details from the audited project."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "--value \"$(cat fix-strategy.json)\"",
+        "locations": [
+          {
+            "file": "PROCESS.md",
+            "line_start": 383,
+            "line_end": 383
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.68,
+        "confidence_reasoning": "The workflow stores a generated fix strategy into Claude Flow memory. This can persist project-specific implementation details beyond the sandbox."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "FIX_STRATEGY=$(npx claude-flow memory retrieve --key \"testing/functionality-audit/phase-3/coder/fix-",
+        "locations": [
+          {
+            "file": "PROCESS.md",
+            "line_start": 408,
+            "line_end": 408
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.7,
+        "confidence_reasoning": "This retrieves fix strategy data through npx claude-flow. The external command is expected, but it depends on trusted shared memory state."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "--value \"$(cat production-readiness.json)\"",
+        "locations": [
+          {
+            "file": "PROCESS.md",
+            "line_start": 484,
+            "line_end": 484
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.68,
+        "confidence_reasoning": "The workflow stores production readiness output in Claude Flow memory. Readiness files can contain project names, paths, and deployment context."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "SANDBOX_CONFIG=$(npx claude-flow memory retrieve --key \"testing/functionality-audit/phase-1/tester/s",
+        "locations": [
+          {
+            "file": "PROCESS.md",
+            "line_start": 509,
+            "line_end": 509
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.7,
+        "confidence_reasoning": "This retrieves sandbox configuration through npx claude-flow for final reporting. The report generation step depends on trusted shared memory state."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "EXEC_RESULTS=$(npx claude-flow memory retrieve --key \"testing/functionality-audit/phase-2/tester/exe",
+        "locations": [
+          {
+            "file": "PROCESS.md",
+            "line_start": 510,
+            "line_end": 510
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.7,
+        "confidence_reasoning": "This retrieves execution results through npx claude-flow for final reporting. The external command can expose audit state if the memory backend is not trusted."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "ROOT_CAUSES=$(npx claude-flow memory retrieve --key \"testing/functionality-audit/phase-3/coder/root-",
+        "locations": [
+          {
+            "file": "PROCESS.md",
+            "line_start": 511,
+            "line_end": 511
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.7,
+        "confidence_reasoning": "This retrieves root-cause data through npx claude-flow for final reporting. The retrieved data may include sensitive failure context from the project."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "READINESS=$(npx claude-flow memory retrieve --key \"testing/functionality-audit/phase-4/validator/rea",
+        "locations": [
+          {
+            "file": "PROCESS.md",
+            "line_start": 512,
+            "line_end": 512
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.7,
+        "confidence_reasoning": "This retrieves readiness data through npx claude-flow for final reporting. The external command and shared memory use require trust in the local toolchain."
       },
       {
         "title": "Shell command substitution",
@@ -4245,72 +3923,24 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.8,
-        "confidence_reasoning": "Persists the full generated audit report to Claude Flow memory. Reports may include file paths, failure output, or sensitive test details."
+        "confidence": 0.78,
+        "confidence_reasoning": "The workflow stores the full audit report in Claude Flow memory. Audit reports can contain logs, paths, test names, and implementation details."
       },
       {
-        "title": "Temp directory access",
-        "description": "mkdir -p /tmp/functionality-audit-sandbox-$(date +%s)",
+        "title": "Shell command substitution",
+        "description": "--value \"$(cat audit-metrics.json)\"",
         "locations": [
           {
             "file": "PROCESS.md",
-            "line_start": 32,
-            "line_end": 32
+            "line_start": 609,
+            "line_end": 609
           }
         ],
         "review_kind": "capability",
-        "source_category": "filesystem",
+        "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation."
-      },
-      {
-        "title": "Temp directory access",
-        "description": "cd /tmp/functionality-audit-sandbox-*",
-        "locations": [
-          {
-            "file": "PROCESS.md",
-            "line_start": 33,
-            "line_end": 33
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation."
-      },
-      {
-        "title": "Temp directory access",
-        "description": "mkdir -p /tmp/audit-sandbox",
-        "locations": [
-          {
-            "file": "README.md",
-            "line_start": 79,
-            "line_end": 79
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation."
-      },
-      {
-        "title": "Temp directory access",
-        "description": "cd /tmp/audit-sandbox",
-        "locations": [
-          {
-            "file": "README.md",
-            "line_start": 80,
-            "line_end": 80
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation."
+        "confidence": 0.7,
+        "confidence_reasoning": "The workflow stores audit metrics in Claude Flow memory. Metrics can expose project structure and test readiness information."
       },
       {
         "title": "Temp directory access",
@@ -4325,24 +3955,56 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation."
+        "confidence": 0.74,
+        "confidence_reasoning": "The troubleshooting step uses rm -rf on a fixed temporary directory. It is scoped to /tmp, but destructive cleanup commands should still be treated carefully."
       },
       {
-        "title": "Temp directory access",
-        "description": "mkdir -p /tmp/audit-sandbox",
+        "title": "Shell command substitution",
+        "description": "npx claude-flow memory store --key \"testing/functionality-audit/phase-2/tester/execution-results\" --",
         "locations": [
           {
-            "file": "README.md",
-            "line_start": 111,
-            "line_end": 111
+            "file": "SKILL.md",
+            "line_start": 161,
+            "line_end": 161
           }
         ],
         "review_kind": "capability",
-        "source_category": "filesystem",
+        "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation."
+        "confidence": 0.68,
+        "confidence_reasoning": "This stores execution results through npx claude-flow after running tests. It is expected, but it persists audit state outside the test command itself."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "npx claude-flow memory store --key \"testing/functionality-audit/phase-3/coder/root-causes\" --value \"",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 232,
+            "line_end": 232
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.72,
+        "confidence_reasoning": "This stores generated root-cause analysis through npx claude-flow. The stored content can include project-specific failure details."
+      },
+      {
+        "title": "Shell command substitution",
+        "description": "npx claude-flow memory store --key \"testing/functionality-audit/phase-4/validator/readiness\" --value",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 305,
+            "line_end": 305
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.7,
+        "confidence_reasoning": "This stores production readiness data through npx claude-flow. The data can contain deployment and test context that should be controlled."
       },
       {
         "title": "Shell command substitution",
@@ -4357,8 +4019,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.8,
-        "confidence_reasoning": "Persists the generated functionality audit report through command substitution into Claude Flow memory. That report can include sensitive execution details."
+        "confidence": 0.78,
+        "confidence_reasoning": "This stores a complete functionality audit report through npx claude-flow. Reports can contain logs, paths, test output, and implementation details."
       },
       {
         "title": "Shell command substitution",
@@ -4374,292 +4036,188 @@
         "source_category": "external_commands",
         "source_severity": "medium",
         "confidence": 0.78,
-        "confidence_reasoning": "Reads a full audit report into a Claude Flow memory store command. This can retain sensitive report contents beyond the local test run."
+        "confidence_reasoning": "This shares the audit report with another workflow through Claude Flow memory. Cross-skill sharing can propagate sensitive audit artifacts if logs are not redacted."
       },
       {
-        "title": "Temp directory access",
-        "description": "mkdir -p /tmp/functionality-audit-sandbox",
+        "title": "Standard device file access",
+        "description": "npm install --save-dev jest @types/jest ts-node typescript 2>/dev/null || true",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 74,
-            "line_end": 74
+            "line_start": 79,
+            "line_end": 79
           }
         ],
         "review_kind": "capability",
         "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation."
+        "source_severity": "low",
+        "confidence": 0.72,
+        "confidence_reasoning": "The line installs npm development dependencies in the audit environment. npm installs can execute package lifecycle scripts, so this is real operational risk even though output is redirected."
       },
       {
-        "title": "Temp directory access",
-        "description": "cd /tmp/functionality-audit-sandbox",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 75,
-            "line_end": 75
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation."
-      },
-      {
-        "title": "Temp directory access",
-        "description": "logs: \"/tmp/functionality-audit-sandbox/test-output.log\",",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 461,
-            "line_end": 461
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation."
-      },
-      {
-        "title": "Temp directory access",
-        "description": "coverage: \"/tmp/functionality-audit-sandbox/coverage/\"",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 462,
-            "line_end": 462
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation."
-      },
-      {
-        "title": "Temp directory access",
-        "description": "mkdir -p /tmp/api-audit",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 699,
-            "line_end": 699
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation."
-      },
-      {
-        "title": "Temp directory access",
-        "description": "cd /tmp/api-audit",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 700,
-            "line_end": 700
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.76,
-        "confidence_reasoning": "The workflow creates or uses shared /tmp audit directories for executing and storing test artifacts. Predictable temporary paths can collide or expose files without strict isolation."
-      },
-      {
-        "title": "Persistent Storage of Test Logs and Reports",
-        "description": "The workflow stores full logs, reports, and metrics in Claude Flow memory. Test output can include credentials, stack traces, or proprietary code details.",
+        "title": "Persistent Storage of Audit Artifacts",
+        "description": "The workflow stores logs, reports, and metrics in Claude Flow memory. These artifacts can contain secrets, stack traces, file paths, or implementation details from the audited project.",
         "locations": [
           {
             "file": "PROCESS.md",
-            "line_start": 223,
+            "line_start": 221,
             "line_end": 226
           },
           {
-            "file": "PROCESS.md",
-            "line_start": 601,
-            "line_end": 609
+            "file": "SKILL.md",
+            "line_start": 406,
+            "line_end": 406
           },
           {
             "file": "SKILL.md",
-            "line_start": 405,
-            "line_end": 406
+            "line_start": 615,
+            "line_end": 615
           }
         ],
         "review_kind": "security",
         "source_category": "semantic",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The cited commands persist complete logs and reports, not just summaries. Sensitive content depends on the project under test, so severity is medium rather than critical."
+        "confidence": 0.8,
+        "confidence_reasoning": "The cited lines store execution metrics, full test logs, and final reports in shared memory. The risk depends on log contents, so confidence is high but not absolute."
       }
     ],
     "low_findings": [],
-    "dangerous_patterns": [
-      {
-        "title": "Recursive delete on root/home",
-        "description": "rm -rf /tmp/audit-sandbox",
-        "locations": [
-          {
-            "file": "README.md",
-            "line_start": 110,
-            "line_end": 110
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "blocker",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed blocker/critical static finding; AI dismissal overridden."
-      }
-    ],
+    "dangerous_patterns": [],
     "files_scanned": 4,
     "total_lines": 1927,
     "audit_model": "codex",
-    "audited_at": "2026-07-05T14:24:08.962Z",
-    "risk_factors": [
-      "external_commands",
-      "filesystem",
-      "network",
-      "env_access"
-    ],
-    "agent_auto_install_policy": "blocked",
-    "manual_install_policy": "allowed_with_warning"
+    "audited_at": "2026-07-09T08:36:06.289Z",
+    "agent_auto_install_policy": "confirmation_required",
+    "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Validate Code Functionality",
-    "value_statement": "Code can look complete while failing at runtime. This skill guides Claude, Codex, or Claude Code through sandboxed execution, debugging, and readiness reporting.",
+    "user_title": "Validate Code Functionality With Runtime Audits",
+    "value_statement": "Code can look complete while failing at runtime. This skill guides sandbox setup, test execution, debugging, regression checks, and reporting.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "functionality audit",
+      "runtime testing",
       "code validation",
       "sandbox testing",
-      "runtime verification",
-      "debugging workflow",
-      "test coverage",
-      "production readiness"
+      "regression testing",
+      "test automation",
+      "debugging workflow"
     ],
     "actual_capabilities": [
-      "Creates an isolated audit workspace for running validation steps.",
-      "Runs tests with coverage and captures stdout, stderr, and exit codes.",
-      "Categorizes failures into syntax, runtime, logic, integration, and dependency issues.",
-      "Guides systematic fixes and reruns tests to detect regressions.",
-      "Produces audit reports, metrics, and production readiness checks."
+      "Guides creation of isolated temporary test workspaces.",
+      "Runs unit, integration, and edge-case test scenarios.",
+      "Captures test logs, coverage metrics, and exit codes.",
+      "Categorizes failures into syntax, runtime, logic, dependency, and integration issues.",
+      "Reruns tests after fixes to check regressions and readiness.",
+      "Produces Markdown reports and metrics artifacts."
     ],
     "limitations": [
-      "Requires local tooling such as Node.js, Python, test frameworks, or Docker.",
-      "May install packages or run shell commands if the user follows examples directly.",
-      "Generated tests still need project-specific assertions and review.",
-      "Does not replace security review or manual product acceptance testing."
+      "Requires local test tooling and dependencies to be available or installable.",
+      "Can execute project code and package scripts, so untrusted projects need stronger isolation.",
+      "Examples focus mainly on Node.js, Jest, and pytest workflows.",
+      "Does not replace human review for security or product correctness."
     ],
     "use_cases": [
       {
-        "title": "Verify AI Generated Code",
-        "target_user": "AI-assisted developer",
-        "description": "Run generated code in a controlled environment before accepting it into a project."
+        "title": "Validate AI-Generated Features",
+        "description": "Run generated code with realistic inputs before review or merge.",
+        "target_user": "Software engineers"
       },
       {
-        "title": "Check Pull Request Behavior",
-        "target_user": "Code reviewer",
-        "description": "Validate that changed modules still pass realistic tests and do not introduce regressions."
+        "title": "Check Release Readiness",
+        "description": "Confirm tests, coverage, and regressions before a production deployment.",
+        "target_user": "Release managers"
       },
       {
-        "title": "Prepare Release Readiness",
-        "target_user": "Engineering lead",
-        "description": "Collect execution evidence, coverage status, and readiness signals before deployment."
+        "title": "Debug Reported Failures",
+        "description": "Categorize failing tests and guide fixes with a repeatable audit process.",
+        "target_user": "QA engineers"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Run Basic Audit",
-        "scenario": "Beginner validation after a small change",
-        "prompt": "Use the functionality audit skill to validate the changed code. Create a sandbox, run existing tests, and summarize failures with next steps."
+        "title": "Run a Basic Audit",
+        "scenario": "Beginner validation after a small code change.",
+        "prompt": "Use this skill to validate the changed module. Create a temporary test workspace, run the existing tests, and report failures with next steps."
       },
       {
-        "title": "Validate One Module",
-        "scenario": "Focused module-level review",
-        "prompt": "Audit the authentication module for runtime correctness. Use realistic inputs, capture outputs, and report coverage and failing behavior."
+        "title": "Audit a New Feature",
+        "scenario": "Intermediate validation for generated feature code.",
+        "prompt": "Use this skill to test the new feature with realistic happy-path, edge-case, and error inputs. Capture logs, coverage, and regression results."
       },
       {
-        "title": "Debug Failing Execution",
-        "scenario": "Intermediate failure analysis",
-        "prompt": "Run the functionality audit workflow on the failing test suite. Categorize root causes, propose minimal fixes, and rerun validation after changes."
+        "title": "Debug Failing Tests",
+        "scenario": "Advanced troubleshooting after a failed test run.",
+        "prompt": "Use this skill to categorize the failures by root cause, propose minimal fixes, apply them incrementally, and rerun the affected tests."
       },
       {
-        "title": "Build Release Gate",
-        "scenario": "Advanced CI or release readiness",
-        "prompt": "Use this skill as a release gate. Validate tests, coverage, regression status, and production readiness, then produce a concise go or no-go report."
+        "title": "Prepare Release Evidence",
+        "scenario": "Advanced release validation with stakeholder reporting.",
+        "prompt": "Use this skill to run a full functionality audit, verify readiness criteria, identify remaining risks, and produce a concise release report."
       }
     ],
     "output_examples": [
       {
-        "input": "Validate the login flow after a refactor.",
+        "input": "Validate an authentication module after generated changes.",
         "output": [
-          "Sandbox created and dependencies verified.",
-          "Login tests ran with coverage and two failures found.",
-          "Failures point to missing null checks and changed validation behavior.",
-          "Recommended next step is to fix validation and rerun regression tests."
+          "Audit status: partial pass.",
+          "Unit tests passed, but two integration checks failed on token refresh behavior.",
+          "Recommended fix: update refresh handling and rerun the authentication regression suite."
         ]
       },
       {
-        "input": "Check whether the data processor is ready for release.",
+        "input": "Check a data processing function before merge.",
         "output": [
-          "All critical tests pass after one fix.",
-          "Coverage meets the configured threshold.",
-          "No regressions were detected in previously passing cases.",
-          "Release readiness is conditional on reviewing generated test assertions."
+          "Audit status: pass.",
+          "Happy-path, missing-field, and invalid-format cases passed.",
+          "Coverage improved, and no regressions were detected in related tests."
         ]
       },
       {
-        "input": "Audit a new API endpoint before merging.",
+        "input": "Review deployment readiness for a service change.",
         "output": [
-          "Endpoint tests cover success, authentication failure, and malformed input.",
-          "One integration mismatch was found in the response shape.",
-          "The report lists the failing behavior and the validation evidence needed after the fix."
+          "Audit status: not ready.",
+          "The service passed local unit tests but failed one production readiness gate.",
+          "Recommended action: resolve the failing health-check scenario before deployment."
         ]
       }
     ],
     "best_practices": [
-      "Run the workflow in a disposable sandbox with explicit user approval for installs.",
-      "Review generated tests before treating coverage or readiness metrics as final.",
-      "Redact secrets from logs and reports before storing or sharing audit artifacts."
+      "Run audits in disposable workspaces with only the files needed for validation.",
+      "Record commands, exit codes, logs, and coverage so results can be reproduced.",
+      "Rerun previously passing tests after each fix to catch regressions early."
     ],
     "anti_patterns": [
-      "Do not run package installs or Docker commands blindly in a production workspace.",
-      "Do not accept passing tests when assertions only check trivial behavior.",
-      "Do not persist full logs when they may contain credentials or private data."
+      "Running untrusted projects on the host without isolation or confirmation.",
+      "Accepting generated tests that only assert placeholder success.",
+      "Reporting readiness without rerunning tests after fixes."
     ],
     "faq": [
       {
-        "question": "Does this skill execute code?",
-        "answer": "Yes. The workflow is designed around running tests and commands, so use a sandbox and review each command first."
+        "question": "What problem does this skill solve?",
+        "answer": "It helps verify that code works at runtime instead of relying only on static review or visual inspection."
       },
       {
-        "question": "Can it prove that code is production ready?",
-        "answer": "It provides execution evidence and readiness checks, but final approval still needs human review and project-specific criteria."
+        "question": "Does it write or run files?",
+        "answer": "Yes. The workflow includes creating test artifacts, installing dependencies, and running tests in a temporary workspace."
       },
       {
-        "question": "Does it create tests automatically?",
-        "answer": "It can generate starter tests, but those tests need meaningful assertions before they are trusted."
+        "question": "Can it validate third-party code?",
+        "answer": "Yes, but third-party code should run in stronger isolation because tests and package scripts can execute arbitrary commands."
       },
       {
-        "question": "Which tools does it support?",
-        "answer": "The report lists support for Claude, Codex, and Claude Code."
+        "question": "Which stacks are covered best?",
+        "answer": "The examples focus on Node.js, Jest, TypeScript, and pytest, with room to adapt to other test frameworks."
       },
       {
-        "question": "Is it safe for private repositories?",
-        "answer": "Use caution. The workflow can store logs and reports, so redact secrets and limit persistence."
+        "question": "Does it replace CI pipelines?",
+        "answer": "No. It complements CI by guiding local or agent-assisted audits and producing evidence for later automation."
       },
       {
-        "question": "Can it run in CI?",
-        "answer": "Yes. The process includes CI examples, but package installs and artifact uploads should be reviewed first."
+        "question": "What should users review before running it?",
+        "answer": "Users should review dependency installs, test commands, Docker mounts, and any logs stored outside the sandbox."
       }
     ]
   },

@@ -1,20 +1,23 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T03:03:14.049Z",
+    "generated_at": "2026-07-09T09:11:51.100Z",
     "slug": "larksuite-lark-attendance",
     "source_url": "https://github.com/larksuite/cli/tree/main/skills/lark-attendance/",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "a0ea5f3fa176496dda31d912f7e55ad7cfed5243b30567d16e7f9dc96eebbe8b",
-    "tree_hash": "b08609521eada50a9961cb99f6c5e86ef6af1e54a1db84e85891536a947459ac",
+    "content_hash": "e409e28d48ce16a33e8dd82c4aee8ce8099dbdfb1e1c17831d13ab2edb140a66",
+    "tree_hash": "543864192a2e6adbae552ef0d63d58667ee9e9606ecf1a8d6f8431d5c06054de",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
       "fallback_chain": [
         {
           "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -23,18 +26,18 @@
   },
   "skill": {
     "name": "lark-attendance",
-    "description": "Query personal Lark or Feishu attendance clock records through lark-cli.",
-    "summary": "Readonly helper for checking personal Lark attendance records.",
+    "description": "Query personal Lark attendance punch records with lark-cli.",
+    "summary": "Query personal Lark attendance records through the Lark attendance API.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "larksuite",
     "license": "MIT",
     "tags": [
       "lark",
-      "feishu",
       "attendance",
-      "lark-cli",
-      "office"
+      "feishu",
+      "employee-records",
+      "office-automation"
     ],
     "supported_tools": [
       "claude",
@@ -52,17 +55,12 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The Ruby backtick findings are false positives caused by Markdown inline code and fenced examples in SKILL.md. The parent-directory reference on line 13 is a confirmed high-severity filesystem concern because it depends on unscanned instructions outside the packaged skill. No prompt injection or malicious intent was found in the reviewed file.",
+    "summary": "Most external-command alerts are false positives caused by Markdown inline code and fenced examples. One high filesystem concern is confirmed because SKILL.md requires reading ../lark-shared/SKILL.md outside the audited skill directory. No evidence found for prompt injection or data exfiltration intent in SKILL.md.",
     "remediation": [
       {
-        "issue": "Parent-directory shared skill dependency",
-        "suggestion": "Package the shared authentication instructions inside this skill, or reference a verified marketplace dependency instead of ../lark-shared/SKILL.md.",
+        "issue": "Parent-directory read requirement in SKILL.md",
+        "suggestion": "Bundle the shared authentication and permission guidance inside the skill package, or declare it through a marketplace-managed dependency instead of ../lark-shared/SKILL.md.",
         "severity": "high"
-      },
-      {
-        "issue": "Ambiguous external command documentation",
-        "suggestion": "Keep lark-cli examples, but state that arguments must come from validated schema fields and avoid shell interpolation.",
-        "severity": "low"
       }
     ],
     "risk_factor_evidence": [
@@ -309,92 +307,92 @@
         "id": "external_commands:SKILL.md:13:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "Line 13 uses Markdown inline code around a relative documentation link. It is not Ruby backtick execution and does not run a shell command."
+        "reason": "This line contains a Markdown link and emphasis around a file reference, not Ruby or shell backtick execution. It does not execute a command by itself."
       },
       {
         "id": "external_commands:SKILL.md:21:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "Line 21 uses Markdown inline code for parameter names and fixed values in a table. No executable shell or Ruby backtick syntax is present."
+        "reason": "The backticks mark parameter names and a fixed string value in a Markdown table. No shell command or executable code is present."
       },
       {
         "id": "external_commands:SKILL.md:22:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "Line 22 documents the user_ids field with inline code formatting. It is static Markdown text, not command execution."
+        "reason": "The backticks mark a parameter name and an empty array value in documentation. This is not command execution or dynamic shell input."
       },
       {
         "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "Line 26 formats the --params flag as inline Markdown code. This is documentation text and does not execute a shell command."
+        "reason": "The line uses Markdown inline code for a command-line flag name. It documents parameter construction and does not invoke a shell."
       },
       {
         "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "Line 27 formats employee_type and its fixed value as inline Markdown code. There is no dynamic command invocation or shell expansion."
+        "reason": "The backticks identify a parameter and fixed value in prose. There is no Ruby backtick operator or executable command here."
       },
       {
         "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "Line 29 formats the --data flag as inline Markdown code. It is explanatory text, not executable Ruby or shell syntax."
+        "reason": "The line documents the --data flag with Markdown inline code. It is not a shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:30:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "Lines 30 to 35 are a fenced JSON example. The triple backticks are Markdown delimiters and do not invoke shell execution."
+        "reason": "This is the opening of a fenced JSON example. It contains documentation, not code that executes commands."
       },
       {
         "id": "external_commands:SKILL.md:35:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "Lines 35 to 37 close a Markdown code fence and continue explanatory text. No executable command is present at this location."
+        "reason": "This is the closing fence for a Markdown JSON block. It is formatting, not a command execution operation."
       },
       {
         "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "Line 37 uses inline code to show fixed parameter values. It is documentation and has no shell execution behavior."
+        "reason": "The backticks mark documented values for user_ids and employee_type. The line contains no executable shell syntax."
       },
       {
         "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "Lines 41 to 44 are a fenced bash example showing intended lark-cli usage. The backticks are Markdown fence markers, not Ruby shell backticks."
+        "confidence": 0.88,
+        "reason": "This is the opening of a fenced bash example for expected lark-cli usage. It is documentation and does not create dynamic shell execution."
       },
       {
         "id": "external_commands:SKILL.md:44:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "Lines 44 to 46 close the Markdown command example and describe schema checking. The static match is formatting, not executable code."
+        "reason": "This is the closing fence for the bash documentation block. It is Markdown formatting, not a Ruby or shell execution call."
       },
       {
         "id": "external_commands:SKILL.md:46:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "Line 46 formats schema, --data, and --params as inline Markdown code. It does not execute or interpolate a shell command."
+        "reason": "The backticks mark command and flag names in prose. The instruction is to inspect schema, not to execute untrusted shell input."
       },
       {
         "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "Line 50 formats the query method name in inline Markdown code. This is a documented API method, not command execution."
+        "reason": "The backticks mark the API method name query in a resource list. No command execution behavior is present."
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.93,
-        "reason": "Line 56 formats an API method and readonly scope in a permissions table. It is not executable Ruby or shell syntax."
+        "reason": "The backticks mark an API method and permission scope in a Markdown table. This is not executable code."
       },
       {
         "id": "filesystem:SKILL.md:13:path-traversal-sequence",
         "verdict": "confirmed",
-        "confidence": 0.78,
-        "severity": "high",
-        "reason": "Line 13 instructs the agent to read ../lark-shared/SKILL.md, which leaves the packaged skill boundary. The path is fixed, but relying on a parent-directory file creates unverified external instruction risk."
+        "confidence": 0.82,
+        "reason": "SKILL.md instructs the assistant to read ../lark-shared/SKILL.md before use, which crosses the audited skill directory boundary. This parent-directory dependency is a real filesystem access concern even if it is intended as shared documentation.",
+        "severity": "high"
       }
     ],
     "semantic_findings": [],
@@ -413,8 +411,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "high",
-        "confidence": 0.78,
-        "confidence_reasoning": "Line 13 instructs the agent to read ../lark-shared/SKILL.md, which leaves the packaged skill boundary. The path is fixed, but relying on a parent-directory file creates unverified external instruction risk."
+        "confidence": 0.82,
+        "confidence_reasoning": "SKILL.md instructs the assistant to read ../lark-shared/SKILL.md before use, which crosses the audited skill directory boundary. This parent-directory dependency is a real filesystem access concern even if it is intended as shared documentation."
       }
     ],
     "medium_findings": [],
@@ -423,125 +421,130 @@
     "files_scanned": 1,
     "total_lines": 58,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T03:03:14.049Z",
+    "audited_at": "2026-07-09T09:11:51.100Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Query Lark Attendance Records",
-    "value_statement": "Attendance data is hard to inspect when teams use Lark APIs directly. This skill guides Claude, Codex, and Claude Code through readonly attendance queries.",
+    "value_statement": "Lark attendance data can be hard to check from a chat workflow. This skill helps Claude, Codex, and Claude Code query personal punch records through lark-cli.",
     "seo_keywords": [
+      "Lark attendance",
+      "Feishu attendance",
+      "attendance records",
+      "attendance punch query",
+      "lark-cli attendance",
       "Claude",
       "Codex",
       "Claude Code",
-      "Lark attendance",
-      "Feishu attendance",
-      "Lark Suite",
-      "lark-cli",
-      "attendance records",
       "office automation",
-      "readonly attendance"
+      "employee attendance audit"
     ],
     "actual_capabilities": [
-      "Guides lark-cli queries for personal attendance task records.",
-      "Requires schema lookup before native attendance API calls.",
-      "Applies employee_no as the fixed employee_type value.",
-      "Keeps user_ids empty when building attendance query data.",
-      "Identifies the readonly attendance scope for user_tasks.query."
+      "Queries personal attendance punch records with the attendance user_tasks query API.",
+      "Uses lark-cli as the required command-line interface.",
+      "Keeps employee_type fixed as employee_no for attendance requests.",
+      "Keeps user_ids empty so the query targets the current authorized user.",
+      "Requires schema inspection before native attendance API calls.",
+      "Identifies the readonly attendance permission scope needed for the query."
     ],
     "limitations": [
-      "Requires lark-cli to be installed and authenticated.",
-      "Covers attendance user_tasks.query only.",
-      "Does not modify attendance, approvals, shifts, or corrections.",
-      "Access depends on Lark tenant permissions and readonly scope grants."
+      "Requires lark-cli, authentication, and attendance API access to be configured first.",
+      "Covers attendance record queries only, not record creation or correction.",
+      "Only documents the user_tasks query resource in this skill.",
+      "Returned fields depend on the current lark-cli schema and tenant permissions."
     ],
     "use_cases": [
       {
-        "title": "Check Personal Attendance",
-        "description": "Review recent clock records without browsing the Lark admin interface.",
-        "target_user": "Employees"
+        "title": "Check Daily Punches",
+        "description": "Review today's check-in and check-out records from Lark without opening the attendance console.",
+        "target_user": "Employee"
       },
       {
-        "title": "Prepare Attendance Summaries",
-        "description": "Collect readonly attendance records before a weekly or monthly review.",
-        "target_user": "Team coordinators"
+        "title": "Prepare Timesheet Review",
+        "description": "Collect recent personal attendance entries before completing a weekly or monthly timesheet review.",
+        "target_user": "Team member"
       },
       {
-        "title": "Validate API Usage",
-        "description": "Confirm required parameters and scopes before building an attendance workflow.",
-        "target_user": "Developers"
+        "title": "Support Attendance Questions",
+        "description": "Help an operations user verify which readonly scope and query path are needed for attendance lookup.",
+        "target_user": "Operations administrator"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Check This Week",
-        "scenario": "Beginner request for a short personal lookup.",
-        "prompt": "Use the Lark attendance skill to check my attendance records for this week. Follow the schema before calling the API."
+        "title": "Check Today",
+        "scenario": "Beginner request for a single day.",
+        "prompt": "Show my Lark attendance punch records for today. Use the attendance skill and summarize the check-in and check-out times."
       },
       {
-        "title": "Review a Date Range",
-        "scenario": "Intermediate request with a defined reporting period.",
-        "prompt": "Query my Lark attendance records for the selected date range. Summarize missing punches, late arrivals, and normal days."
+        "title": "Review Date Range",
+        "scenario": "Query a specific period.",
+        "prompt": "Query my Lark attendance records from Monday through Friday this week. Group the results by date and highlight missing punches."
       },
       {
-        "title": "Explain Required Access",
-        "scenario": "Intermediate setup check before using the skill.",
-        "prompt": "Explain what Lark permission scope is required for attendance lookup and confirm whether the current access is readonly."
+        "title": "Validate Query Setup",
+        "scenario": "Confirm required schema and permissions.",
+        "prompt": "Before querying attendance, check the current lark-cli schema and confirm the readonly scope needed for user task records."
       },
       {
-        "title": "Build a Monthly Summary",
-        "scenario": "Advanced request for a structured attendance review.",
-        "prompt": "Query my attendance records for the month and prepare a concise summary grouped by normal days, exceptions, and unresolved items."
+        "title": "Analyze Monthly Attendance",
+        "scenario": "Advanced summary across many records.",
+        "prompt": "Review my Lark attendance records for last month. Summarize late arrivals, early departures, missing punches, and dates that need follow-up."
       }
     ],
     "output_examples": [
       {
-        "input": "Check my attendance for this week.",
-        "output": "The response summarizes each workday, clock-in status, clock-out status, and any visible attendance exceptions."
+        "input": "Show my attendance records for today.",
+        "output": "Today's attendance shows one morning check-in and one evening check-out. No missing punch was found in the returned records."
       },
       {
-        "input": "Show attendance issues for June.",
-        "output": "The response lists dates with missing punches, late arrivals, or early departures, followed by a short review summary."
+        "input": "Review my attendance for this week.",
+        "output": [
+          "Monday through Thursday include complete check-in and check-out records.",
+          "Friday has no check-out record in the returned data.",
+          "The query used the current user context with readonly attendance access."
+        ]
       },
       {
-        "input": "What scope do I need for this lookup?",
-        "output": "The response explains that user_tasks.query requires the attendance task readonly scope in the Lark tenant."
+        "input": "What permission do I need for this query?",
+        "output": "The attendance user task query requires readonly access for attendance task records. Tenant policy may require an administrator to grant it."
       }
     ],
     "best_practices": [
-      "Run the schema lookup before every native attendance API call.",
-      "Use readonly access and request only the required date range.",
-      "Verify tenant permissions before interpreting missing or partial results."
+      "Confirm lark-cli authentication before requesting attendance data.",
+      "Run schema inspection when the attendance API shape may have changed.",
+      "Ask for a clear date range to avoid broad or slow attendance queries."
     ],
     "anti_patterns": [
-      "Do not guess attendance request fields without checking the schema.",
-      "Do not ask users for fixed employee_type or user_ids values.",
-      "Do not use this skill for attendance edits or approval actions."
+      "Do not request attendance records for other users with this skill.",
+      "Do not guess API fields without checking the current schema.",
+      "Do not use the skill to modify, create, or delete attendance records."
     ],
     "faq": [
       {
-        "question": "What does this skill do?",
-        "answer": "It helps query personal Lark or Feishu attendance clock records through lark-cli."
+        "question": "What does this skill query?",
+        "answer": "It queries personal Lark attendance punch records through the user task attendance API."
       },
       {
-        "question": "Does it change attendance records?",
-        "answer": "No. The documented method uses readonly attendance access."
+        "question": "Does it require lark-cli?",
+        "answer": "Yes. The skill metadata requires the lark-cli binary and configured Lark authentication."
       },
       {
-        "question": "What tool must be installed?",
-        "answer": "The environment must provide lark-cli with valid Lark authentication."
+        "question": "Can it update attendance records?",
+        "answer": "No. The documented capability is readonly querying of attendance punch records."
       },
       {
-        "question": "Which attendance API method is covered?",
-        "answer": "The skill documents user_tasks.query for attendance task lookup."
+        "question": "Can it query other employees?",
+        "answer": "No. The skill keeps user_ids empty and uses the authorized user context."
       },
       {
-        "question": "Can it query another employee?",
-        "answer": "The skill describes personal attendance lookup. Access to other users depends on tenant permissions and policy."
+        "question": "Which permission is listed?",
+        "answer": "The skill lists attendance task readonly access for the user_tasks query method."
       },
       {
-        "question": "Why does it check the schema first?",
-        "answer": "Schema lookup reduces field mistakes and helps keep requests aligned with the current lark-cli interface."
+        "question": "Why inspect the schema first?",
+        "answer": "Schema inspection helps confirm current parameters before sending an attendance API request."
       }
     ]
   },

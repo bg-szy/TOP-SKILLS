@@ -1,23 +1,20 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-05T09:36:25.989Z",
+    "generated_at": "2026-07-09T14:32:29.095Z",
     "slug": "daviddworetzky-code-review",
     "source_url": "https://github.com/DavidDworetzky/Geist/tree/main/.claude/skills/code-review",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "1eee25c4dea5975bb1d016b63c9cf5ef09a3d918d22a2f98f2512eecd628c8eb",
-    "tree_hash": "5c96b32d9d698bd3a25edb4d7aec56ccbb6f32176f6b5f6229ec25f8f3ad2e35",
+    "content_hash": "91dced1846af819968d9f9594c44572c6ab39cadd138c9ea770f12705e63c95f",
+    "tree_hash": "c214b5cfa33e14a4c8901af8b829f9ddccb712e5d17cd23306ab37b0f10d782c",
     "provenance": {
-      "model_requested": "gpt-5.5:high",
-      "model_effective": "codex:gpt-5.5:high",
+      "model_effective": "codex",
       "fallback_chain": [
         {
           "agent": "codex",
-          "model": "gpt-5.5",
-          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -26,18 +23,18 @@
   },
   "skill": {
     "name": "code-review",
-    "description": "Structured code review skill for changed files, with checks for OWASP Top 10 risks, ORM performance issues, logic bugs, and project coding standards.",
-    "summary": "Review changed files for security, performance, bugs, and project standards.",
+    "description": "Review changed files for security, performance, bugs, and project standards using Git diff context and reference checklists.",
+    "summary": "Reviews Git diffs for security, performance, correctness, and project standard issues.",
     "icon": "📦",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "author": "DavidDworetzky",
     "license": "MIT",
     "tags": [
       "code-review",
-      "security",
-      "performance",
+      "security-review",
       "owasp",
-      "sqlalchemy"
+      "performance",
+      "git-diff"
     ],
     "supported_tools": [
       "claude",
@@ -54,25 +51,25 @@
     "category": "coding"
   },
   "security_audit": {
-    "risk_level": "critical",
-    "is_blocked": true,
-    "safe_to_publish": false,
+    "risk_level": "low",
+    "is_blocked": false,
+    "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static hits are false positives from Markdown reference examples that document unsafe and safe code patterns for reviewers. The executable helper script only lists git changes and does not show command injection, network use, or secret access. Two semantic issues remain: hardcoded absolute local file reads and review guidance that may modify code without explicit approval.",
+    "summary": "The static high and critical matches are instructional examples inside OWASP and ORM reference documents, not executable behavior. The Git helper only enumerates local changed files. One low semantic concern remains because the skill points to author-specific absolute paths outside the active repository.",
     "remediation": [
       {
-        "issue": "Hardcoded absolute local standards paths",
-        "suggestion": "Replace author-specific absolute paths with repository-relative paths and ask before reading files outside the active project.",
-        "severity": "medium"
+        "issue": "Author-specific absolute paths in review setup",
+        "suggestion": "Replace author-specific absolute paths with repository-relative paths such as docs/agents.md and CLAUDE.md. Ask before reading files outside the current repository.",
+        "severity": "low"
       },
       {
-        "issue": "Immediate edits during a review workflow",
-        "suggestion": "Change the action step to report findings first and request confirmation before applying fixes, unless the user explicitly asked for edits.",
-        "severity": "medium"
+        "issue": "Git helper accepts --commits without numeric validation",
+        "suggestion": "Validate --commits as a positive integer before numeric comparison to avoid script errors and ambiguous review scope.",
+        "severity": "low"
       },
       {
-        "issue": "Scanner noise from vulnerable reference examples",
-        "suggestion": "Keep examples clearly labeled as non-executable documentation and avoid presenting them as implementation snippets.",
+        "issue": "Review instructions can imply automatic fixes",
+        "suggestion": "Clarify that the assistant should ask before modifying code unless the user explicitly requests fixes.",
         "severity": "low"
       }
     ],
@@ -1169,489 +1166,489 @@
       {
         "id": "blocker:references/orm-optimization.md:89:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "blocker:references/orm-optimization.md:104:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "blocker:references/orm-optimization.md:105:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "blocker:references/orm-optimization.md:112:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "blocker:references/orm-optimization.md:184:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "blocker:references/orm-optimization.md:185:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "blocker:references/orm-optimization.md:191:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "blocker:references/orm-optimization.md:192:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "blocker:references/orm-optimization.md:201:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "blocker:references/orm-optimization.md:202:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "blocker:references/orm-optimization.md:213:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "blocker:references/orm-optimization.md:214:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "blocker:references/orm-optimization.md:243:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "blocker:references/orm-optimization.md:251:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "blocker:references/orm-optimization.md:254:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "blocker:references/orm-optimization.md:409:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "blocker:references/orm-optimization.md:421:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in an ORM optimization reference as a SQLAlchemy performance example, not executable reconnaissance or system access. The context is reviewer education about query efficiency, so the static hit is safe documentation."
+        "confidence": 0.96,
+        "reason": "The cited line is ORM optimization reference documentation used to guide reviews. It is not executable skill code and shows no reconnaissance behavior."
       },
       {
         "id": "scripts:references/owasp-top-10.md:296:dynamic-code-evaluation-with-eval",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The dangerous call appears in an OWASP reference code fence that teaches reviewers what to flag. The skill does not execute this example."
       },
       {
         "id": "scripts:references/owasp-top-10.md:297:dynamic-code-evaluation-with-eval",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The dangerous call appears in an OWASP reference code fence that teaches reviewers what to flag. The skill does not execute this example."
       },
       {
         "id": "scripts:references/owasp-top-10.md:437:dynamic-code-evaluation-with-eval",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The dangerous call appears in an OWASP reference code fence that teaches reviewers what to flag. The skill does not execute this example."
       },
       {
         "id": "scripts:references/owasp-top-10.md:267:innerhtml-assignment-xss-risk",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The dangerous call appears in an OWASP reference code fence that teaches reviewers what to flag. The skill does not execute this example."
       },
       {
         "id": "scripts:references/owasp-top-10.md:285:innerhtml-assignment-xss-risk",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The dangerous call appears in an OWASP reference code fence that teaches reviewers what to flag. The skill does not execute this example."
       },
       {
         "id": "scripts:references/owasp-top-10.md:299:python-exec-function",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The dangerous call appears in an OWASP reference code fence that teaches reviewers what to flag. The skill does not execute this example."
       },
       {
         "id": "scripts:references/owasp-top-10.md:300:python-exec-function",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The dangerous call appears in an OWASP reference code fence that teaches reviewers what to flag. The skill does not execute this example."
       },
       {
         "id": "external_commands:references/owasp-top-10.md:299:process-exec",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The dangerous call appears in an OWASP reference code fence that teaches reviewers what to flag. The skill does not execute this example."
       },
       {
         "id": "external_commands:references/owasp-top-10.md:300:process-exec",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The dangerous call appears in an OWASP reference code fence that teaches reviewers what to flag. The skill does not execute this example."
       },
       {
         "id": "external_commands:references/owasp-top-10.md:37:python-subprocess-run",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The dangerous call appears in an OWASP reference code fence that teaches reviewers what to flag. The skill does not execute this example."
       },
       {
         "id": "external_commands:references/owasp-top-10.md:43:python-subprocess-run",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The dangerous call appears in an OWASP reference code fence that teaches reviewers what to flag. The skill does not execute this example."
       },
       {
         "id": "external_commands:references/owasp-top-10.md:44:python-subprocess-run",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The dangerous call appears in an OWASP reference code fence that teaches reviewers what to flag. The skill does not execute this example."
       },
       {
         "id": "external_commands:references/owasp-top-10.md:45:python-subprocess-run",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The dangerous call appears in an OWASP reference code fence that teaches reviewers what to flag. The skill does not execute this example."
       },
       {
         "id": "external_commands:references/owasp-top-10.md:36:python-subprocess-call",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The dangerous call appears in an OWASP reference code fence that teaches reviewers what to flag. The skill does not execute this example."
       },
       {
         "id": "external_commands:references/owasp-top-10.md:35:python-os-system",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The dangerous call appears in an OWASP reference code fence that teaches reviewers what to flag. The skill does not execute this example."
       },
       {
         "id": "network:references/owasp-top-10.md:222:http-client-library",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The HTTP call or URL is part of an OWASP documentation example about secure transport or CORS. It is not a network request made by the skill."
       },
       {
         "id": "network:references/owasp-top-10.md:242:http-client-library",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The HTTP call or URL is part of an OWASP documentation example about secure transport or CORS. It is not a network request made by the skill."
       },
       {
         "id": "network:references/owasp-top-10.md:119:python-http-libraries",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The HTTP call or URL is part of an OWASP documentation example about secure transport or CORS. It is not a network request made by the skill."
       },
       {
         "id": "network:references/owasp-top-10.md:136:python-http-libraries",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The HTTP call or URL is part of an OWASP documentation example about secure transport or CORS. It is not a network request made by the skill."
       },
       {
         "id": "network:references/owasp-top-10.md:119:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The HTTP call or URL is part of an OWASP documentation example about secure transport or CORS. It is not a network request made by the skill."
       },
       {
         "id": "network:references/owasp-top-10.md:136:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The HTTP call or URL is part of an OWASP documentation example about secure transport or CORS. It is not a network request made by the skill."
       },
       {
         "id": "network:references/owasp-top-10.md:243:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The HTTP call or URL is part of an OWASP documentation example about secure transport or CORS. It is not a network request made by the skill."
       },
       {
         "id": "env_access:references/owasp-top-10.md:133:python-environment-access",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The environment variable reference is instructional OWASP guidance for safe secret handling. It is not runtime environment access by the skill."
       },
       {
         "id": "env_access:references/owasp-top-10.md:253:python-environment-access",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The environment variable reference is instructional OWASP guidance for safe secret handling. It is not runtime environment access by the skill."
       },
       {
         "id": "env_access:references/owasp-top-10.md:253:database-connection-strings",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The environment variable reference is instructional OWASP guidance for safe secret handling. It is not runtime environment access by the skill."
       },
       {
         "id": "env_access:references/owasp-top-10.md:116:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The apparent API key is a fake example inside OWASP guidance about sensitive data exposure. It is documentation, not a live credential or runtime secret access."
       },
       {
         "id": "env_access:references/owasp-top-10.md:133:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The environment variable reference is instructional OWASP guidance for safe secret handling. It is not runtime environment access by the skill."
       },
       {
         "id": "env_access:references/owasp-top-10.md:325:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The environment variable reference is instructional OWASP guidance for safe secret handling. It is not runtime environment access by the skill."
       },
       {
         "id": "env_access:references/owasp-top-10.md:328:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The environment variable reference is instructional OWASP guidance for safe secret handling. It is not runtime environment access by the skill."
       },
       {
         "id": "obfuscation:references/owasp-top-10.md:294:python-pickle-deserialization-rce-risk",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The pickle usage appears in an OWASP reference section about insecure deserialization. It is an instructional example, not code executed by the skill."
       },
       {
         "id": "obfuscation:references/owasp-top-10.md:331:python-pickle-deserialization-rce-risk",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The pickle usage appears in an OWASP reference section about insecure deserialization. It is an instructional example, not code executed by the skill."
       },
       {
         "id": "sensitive:references/owasp-top-10.md:338:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The cited line is a safe tensor loading example in reference documentation. It does not access certificate or key files."
       },
       {
         "id": "blocker:references/owasp-top-10.md:13:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The cited line is part of OWASP reference material for code reviewers. It is not executable skill behavior and does not perform system reconnaissance."
       },
       {
         "id": "blocker:references/owasp-top-10.md:17:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The cited line is part of OWASP reference material for code reviewers. It is not executable skill behavior and does not perform system reconnaissance."
       },
       {
         "id": "blocker:references/owasp-top-10.md:27:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The cited line is part of OWASP reference material for code reviewers. It is not executable skill behavior and does not perform system reconnaissance."
       },
       {
         "id": "blocker:references/owasp-top-10.md:202:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The cited line is part of OWASP reference material for code reviewers. It is not executable skill behavior and does not perform system reconnaissance."
       },
       {
         "id": "blocker:references/owasp-top-10.md:208:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The cited line is part of OWASP reference material for code reviewers. It is not executable skill behavior and does not perform system reconnaissance."
       },
       {
         "id": "blocker:references/owasp-top-10.md:330:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This appears in a Markdown reference file as an educational code example or checklist item, not executable skill code. The surrounding document teaches reviewers to identify or avoid this pattern, so the static hit is not an active security risk."
+        "confidence": 0.95,
+        "reason": "The cited line is part of OWASP reference material for code reviewers. It is not executable skill behavior and does not perform system reconnaissance."
       },
       {
         "id": "external_commands:scripts/get_diff_files.sh:1:unix-shell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The shebang starts a helper script that runs git diff and git rev-parse to list changed files. Arguments are quoted and no untrusted string is evaluated by a shell, so this is legitimate repository tooling."
+        "confidence": 0.86,
+        "reason": "The shell file is a local Git diff helper with fixed Git commands. The cited shebang is not arbitrary command execution or command injection."
       },
       {
         "id": "filesystem:scripts/get_diff_files.sh:59:standard-device-file-access",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The /dev/null redirect suppresses git rev-parse output while checking whether the current directory is a git repository. It does not read sensitive files or write user data."
+        "confidence": 0.97,
+        "reason": "The /dev/null redirection only suppresses output from a Git repository check. It is standard local shell behavior, not sensitive filesystem access."
       },
       {
         "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "Backticks mark local documentation paths, not shell execution. The separate semantic finding covers the portability and file-access concern."
       },
       {
         "id": "external_commands:SKILL.md:49:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "Backticks mark local documentation paths, not shell execution. The separate semantic finding covers the portability and file-access concern."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:125:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:172:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:173:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:220:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:232:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:234:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:236:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:238:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:244:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:247:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:249:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:253:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:259:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:264:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is Markdown instructional text or a fenced example in SKILL.md, not Ruby backtick execution or an executable command. The actual concern about hardcoded local paths or automatic edits is handled separately as a semantic finding where applicable."
+        "confidence": 0.91,
+        "reason": "The detector matched Markdown code fences or inline code in skill instructions. These are review examples and labels, not Ruby shell backtick execution."
       },
       {
         "id": "blocker:SKILL.md:173:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line is normal review guidance in SKILL.md and does not perform network discovery or contact external hosts. The static pattern matched wording inside documentation rather than an executable reconnaissance step."
+        "confidence": 0.91,
+        "reason": "The cited text names classes and directories in review guidance. It does not instruct network probing or reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:264:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line is normal review guidance in SKILL.md and does not perform network discovery or contact external hosts. The static pattern matched wording inside documentation rather than an executable reconnaissance step."
+        "confidence": 0.91,
+        "reason": "The cited text names classes and directories in review guidance. It does not instruct network probing or reconnaissance."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Hardcoded Absolute Local File Reads",
-        "description": "SKILL.md instructs the agent to read author-specific absolute home-directory paths. A marketplace skill should not direct agents to read local files outside the active project without explicit user confirmation.",
-        "severity": "medium",
+        "title": "Author-Specific Absolute Paths in Review Instructions",
+        "description": "SKILL.md instructs the assistant to read author-specific absolute paths outside the active repository. This can cause unnecessary local file reads if those paths exist.",
+        "severity": "low",
         "locations": [
           {
             "file": "SKILL.md",
@@ -1659,63 +1656,17 @@
             "line_end": 49
           }
         ],
-        "confidence": 0.94,
-        "confidence_reasoning": "Lines 48 and 49 explicitly name absolute local paths to read. The intent is project standards lookup, but the behavior can cause unintended local file access."
-      },
-      {
-        "title": "Unapproved Code Modification During Review",
-        "description": "SKILL.md tells the agent to fix critical and important issues immediately during a review. This can change user code when the user requested review-only feedback.",
-        "severity": "medium",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 202,
-            "line_end": 214
-          }
-        ],
-        "confidence": 0.88,
-        "confidence_reasoning": "The action section directly instructs immediate fixes for serious findings and only asks approval for recommended issues. This is a clear integrity risk in review workflows."
+        "confidence": 0.87,
+        "confidence_reasoning": "The paths are explicit in the review setup instructions. The issue is low severity because no exfiltration or malicious use is present."
       }
     ],
-    "critical_findings": [
-      {
-        "title": "Python pickle deserialization (RCE risk)",
-        "description": "data = pickle.loads(request.data)",
-        "locations": [
-          {
-            "file": "references/owasp-top-10.md",
-            "line_start": 294,
-            "line_end": 294
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "obfuscation",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed obfuscation/critical static finding; AI dismissal overridden."
-      },
-      {
-        "title": "Python pickle deserialization (RCE risk)",
-        "description": "return pickle.loads(pickled_data)",
-        "locations": [
-          {
-            "file": "references/owasp-top-10.md",
-            "line_start": 331,
-            "line_end": 331
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "obfuscation",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed obfuscation/critical static finding; AI dismissal overridden."
-      }
-    ],
+    "critical_findings": [],
     "high_findings": [],
-    "medium_findings": [
+    "medium_findings": [],
+    "low_findings": [
       {
-        "title": "Hardcoded Absolute Local File Reads",
-        "description": "SKILL.md instructs the agent to read author-specific absolute home-directory paths. A marketplace skill should not direct agents to read local files outside the active project without explicit user confirmation.",
+        "title": "Author-Specific Absolute Paths in Review Instructions",
+        "description": "SKILL.md instructs the assistant to read author-specific absolute paths outside the active repository. This can cause unnecessary local file reads if those paths exist.",
         "locations": [
           {
             "file": "SKILL.md",
@@ -1725,185 +1676,135 @@
         ],
         "review_kind": "security",
         "source_category": "semantic",
-        "source_severity": "medium",
-        "confidence": 0.94,
-        "confidence_reasoning": "Lines 48 and 49 explicitly name absolute local paths to read. The intent is project standards lookup, but the behavior can cause unintended local file access."
-      },
-      {
-        "title": "Unapproved Code Modification During Review",
-        "description": "SKILL.md tells the agent to fix critical and important issues immediately during a review. This can change user code when the user requested review-only feedback.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 202,
-            "line_end": 214
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "semantic",
-        "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The action section directly instructs immediate fixes for serious findings and only asks approval for recommended issues. This is a clear integrity risk in review workflows."
+        "source_severity": "low",
+        "confidence": 0.87,
+        "confidence_reasoning": "The paths are explicit in the review setup instructions. The issue is low severity because no exfiltration or malicious use is present."
       }
     ],
-    "low_findings": [],
-    "dangerous_patterns": [
-      {
-        "title": "Python pickle deserialization (RCE risk)",
-        "description": "data = pickle.loads(request.data)",
-        "locations": [
-          {
-            "file": "references/owasp-top-10.md",
-            "line_start": 294,
-            "line_end": 294
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "obfuscation",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed obfuscation/critical static finding; AI dismissal overridden."
-      },
-      {
-        "title": "Python pickle deserialization (RCE risk)",
-        "description": "return pickle.loads(pickled_data)",
-        "locations": [
-          {
-            "file": "references/owasp-top-10.md",
-            "line_start": 331,
-            "line_end": 331
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "obfuscation",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed obfuscation/critical static finding; AI dismissal overridden."
-      }
-    ],
+    "dangerous_patterns": [],
     "files_scanned": 4,
     "total_lines": 1224,
     "audit_model": "codex",
-    "audited_at": "2026-07-05T09:36:25.989Z",
-    "agent_auto_install_policy": "blocked",
-    "manual_install_policy": "allowed_with_warning"
+    "audited_at": "2026-07-09T14:32:29.095Z",
+    "agent_auto_install_policy": "allowed",
+    "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Review Code Changes for Security and Performance",
-    "value_statement": "Code reviews can miss security flaws, performance regressions, and project standards. This skill guides Claude, Codex, and Claude Code through a structured review of changed files.",
+    "user_title": "Review Changed Code for Security and Quality",
+    "value_statement": "Code changes can hide security, performance, and correctness risks. This skill reviews Git diffs with OWASP and ORM guidance.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "code review skill",
       "OWASP review",
-      "security review",
+      "Git diff review",
+      "security code review",
       "performance review",
       "SQLAlchemy optimization",
-      "git diff review",
-      "bug detection"
+      "bug review"
     ],
     "actual_capabilities": [
-      "Identifies changed files with git diff commands.",
-      "Reviews code against OWASP Top 10 vulnerability patterns.",
-      "Checks SQLAlchemy usage for N+1 queries and missing indexes.",
-      "Looks for logic bugs, edge cases, and error handling gaps.",
-      "Compares Python and backend changes against documented project standards.",
-      "Formats review findings by severity with explanations and suggested fixes."
+      "Identifies changed files with Git diff guidance.",
+      "Checks OWASP Top 10 security patterns.",
+      "Reviews ORM performance issues such as N+1 queries and missing indexes.",
+      "Assesses logic, error handling, and type-safety risks.",
+      "Formats findings by severity with explanations and suggested fixes.",
+      "References project standards from agents.md and claude.md when available."
     ],
     "limitations": [
-      "Works best inside a git repository with committed or uncommitted changes.",
-      "Project standards references are specific to the original Geist repository.",
-      "It is guidance for AI review, not a replacement for tests or security scanners.",
-      "Some reference files include vulnerable examples for education only."
+      "Depends on local Git history and available changed files.",
+      "Does not run tests or security scanners automatically.",
+      "Original project standard paths may need adjustment.",
+      "Findings depend on the assistant reading relevant context."
     ],
     "use_cases": [
       {
-        "title": "Review Backend Changes",
-        "description": "Check modified Python files for security issues, ORM problems, and logic defects before merge.",
-        "target_user": "Backend developer"
+        "title": "Pre-Commit Review",
+        "description": "Review unstaged and staged changes before commit for bugs and security issues.",
+        "target_user": "Individual developer"
       },
       {
-        "title": "Screen Security Risk",
-        "description": "Use OWASP-focused prompts to find injection, access control, XSS, and unsafe deserialization patterns.",
-        "target_user": "Security reviewer"
+        "title": "Backend Security Pass",
+        "description": "Check Python and SQLAlchemy changes against OWASP and ORM performance guidance.",
+        "target_user": "Backend engineer"
       },
       {
-        "title": "Enforce Project Standards",
-        "description": "Compare changed files with team conventions for models, agents, imports, and dependency choices.",
-        "target_user": "Engineering lead"
+        "title": "Team Standards Check",
+        "description": "Compare changed files with project conventions before a pull request.",
+        "target_user": "Tech lead"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Basic Change Review",
-        "scenario": "Use when you want a quick review of current changes.",
-        "prompt": "Review my current git changes. List security, bug, and performance findings first, with file and line references."
+        "title": "Review My Changes",
+        "prompt": "Review my current Git changes for security, bugs, and performance issues. Focus on findings that need action.",
+        "scenario": "Beginner pre-commit review"
       },
       {
-        "title": "Security-Focused Review",
-        "scenario": "Use before merging code that handles user input or sensitive data.",
-        "prompt": "Review the changed files for OWASP Top 10 issues. Focus on injection, access control, secrets, XSS, and unsafe deserialization."
+        "title": "Review Staged Files",
+        "prompt": "Review only staged files. Categorize issues as critical or recommended, and include fix suggestions for each.",
+        "scenario": "Focused staged review"
       },
       {
-        "title": "Performance and ORM Review",
-        "scenario": "Use for backend or database changes.",
-        "prompt": "Review the changed backend files for performance risks. Check SQLAlchemy queries, eager loading, indexes, loops, and large result handling."
+        "title": "Focus on Backend Risk",
+        "prompt": "Review my Python and database changes. Prioritize OWASP risks, SQLAlchemy query safety, N+1 issues, and missing indexes.",
+        "scenario": "Backend security and performance review"
       },
       {
-        "title": "Full Standards Review",
-        "scenario": "Use for a final review before a pull request.",
-        "prompt": "Run a full review of changed files. Apply project standards when available, prioritize critical issues, and separate required fixes from optional improvements."
+        "title": "Review Against Standards",
+        "prompt": "Review the latest commit against our project standards, OWASP guidance, and ORM optimization patterns. Explain each blocking issue with evidence.",
+        "scenario": "Advanced release readiness review"
       }
     ],
     "output_examples": [
       {
-        "input": "Review changed backend files before a pull request.",
-        "output": "Findings grouped by severity, including a SQL injection risk, an N+1 query warning, and recommended fixes."
+        "input": "Review my uncommitted changes before I commit.",
+        "output": "Critical: potential SQL injection in user lookup. Recommended: add eager loading to avoid repeated post queries."
       },
       {
-        "input": "Check this diff for OWASP Top 10 issues.",
-        "output": "A security review that calls out vulnerable input handling, missing authorization checks, and safer implementation guidance."
+        "input": "Check staged backend changes for security and performance issues.",
+        "output": "No critical issues found. Recommended: add an index for the new foreign key and document the new model."
       },
       {
-        "input": "Review these SQLAlchemy model changes for performance.",
-        "output": "A performance report with notes on missing indexes, eager loading needs, and unnecessary full-object loading."
+        "input": "Review the latest commit before release.",
+        "output": "Critical: unsafe deserialization in request handling. Suggested fix: use JSON parsing or verify signatures before loading trusted payloads."
       }
     ],
     "best_practices": [
-      "Ask for review after changes are small enough to inspect carefully.",
-      "Run tests and linters after applying any suggested fix.",
-      "Confirm repository-specific standards before treating style feedback as required."
+      "Run the review after tests pass so findings focus on code quality.",
+      "Provide the target branch or commit range when review scope matters.",
+      "Ask for separate security, performance, and standards passes on large changes."
     ],
     "anti_patterns": [
-      "Do not use the skill as the only security gate for production code.",
-      "Do not apply broad refactors during a focused review without user approval.",
-      "Do not trust vulnerable examples in reference files as production-ready code."
+      "Do not use it as the only release gate for high-risk changes.",
+      "Do not ignore project-specific context files when standards matter.",
+      "Do not accept automated fixes without reviewing the changed code."
     ],
     "faq": [
       {
-        "question": "Does this skill edit code automatically?",
-        "answer": "The skill contains guidance about fixing serious issues, but users should request or approve edits before changes are applied."
+        "question": "What does this skill review?",
+        "answer": "It reviews changed files for security risks, performance issues, bugs, and project standard violations."
       },
       {
-        "question": "Which tools does it support?",
-        "answer": "The report lists support for Claude, Codex, and Claude Code."
+        "question": "Does it run my tests?",
+        "answer": "No. It focuses on review guidance and code inspection unless you ask the assistant to run tests."
       },
       {
-        "question": "Does it run security scanners?",
-        "answer": "No. It provides review guidance and references. Separate scanners and tests should still be used."
+        "question": "Does it support Claude, Codex, and Claude Code?",
+        "answer": "Yes. The skill metadata lists Claude, Codex, and Claude Code as supported tools."
       },
       {
-        "question": "Can it review frontend code?",
-        "answer": "Yes. It includes checks for XSS, dangerous HTML rendering, and general logic issues."
+        "question": "Can it find OWASP issues?",
+        "answer": "It includes OWASP Top 10 review guidance and examples to help identify common vulnerabilities."
       },
       {
-        "question": "Why are there vulnerable code examples?",
-        "answer": "They are reference examples that show what reviewers should identify and avoid."
+        "question": "Can it review database performance?",
+        "answer": "Yes. It includes guidance for SQLAlchemy loading, query loops, counts, and missing indexes."
       },
       {
-        "question": "Is it tied to one repository?",
-        "answer": "Some standards mention the Geist repository. Adapt those references for other projects."
+        "question": "What should I check before using it?",
+        "answer": "Confirm the changed file scope and adjust project standard paths for your repository."
       }
     ]
   },

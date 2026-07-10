@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T22:13:11.681Z",
+    "generated_at": "2026-07-09T09:10:05.393Z",
     "slug": "asmayaseen-operating-k8s-local",
     "source_url": "https://github.com/Asmayaseen/hackathon-2/tree/main/.claude/skills/operating-k8s-local",
     "source_ref": "main",
@@ -9,12 +9,15 @@
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "97b059b8fc86f3b00fc8989fbaa363ddae49e96e28942f8317adfec5f0d5f036",
-    "tree_hash": "adab2dc4a5da7c319fa988dd79c8ca77002e6176cd61f617c8a46621081447bf",
+    "tree_hash": "784e3cca910ef9de71636ab037a8c0664f5a3114e66f978617c5a9f27077852a",
     "provenance": {
-      "model_effective": "codex",
+      "model_requested": "gpt-5.5:high",
+      "model_effective": "codex:gpt-5.5:high",
       "fallback_chain": [
         {
           "agent": "codex",
+          "model": "gpt-5.5",
+          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -23,10 +26,10 @@
   },
   "skill": {
     "name": "operating-k8s-local",
-    "description": "Operate local Kubernetes clusters with Minikube, kubectl, and Docker for development, deployment checks, and troubleshooting.",
-    "summary": "Guide local Kubernetes setup, image loading, service access, and pod debugging with Minikube.",
+    "description": "Guide local Kubernetes development with Minikube, kubectl, local Docker image builds, service access, and basic troubleshooting.",
+    "summary": "Use Minikube and kubectl to run, deploy, and debug local Kubernetes workloads.",
     "icon": "📦",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "author": "Asmayaseen",
     "license": "MIT",
     "tags": [
@@ -34,7 +37,7 @@
       "minikube",
       "kubectl",
       "local-development",
-      "devops"
+      "containers"
     ],
     "supported_tools": [
       "claude",
@@ -48,25 +51,25 @@
     "category": "devops"
   },
   "security_audit": {
-    "risk_level": "low",
+    "risk_level": "medium",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static alerts are false positives from Markdown code fences and expected Minikube, kubectl, Docker, and YAML examples. I confirmed the privileged /etc/hosts update as a real high-risk local system change, and I found a low-risk issue with copyable placeholder secrets.",
+    "summary": "The skill is an instructional local Kubernetes guide and does not contain executable installation hooks or prompt injection. Most static findings are Markdown command examples or local Kubernetes workflows, but one sudo hosts-file edit is a real elevated-permission risk. The guide also includes literal Kubernetes Secret examples that should be made safer for users.",
     "remediation": [
       {
-        "issue": "Privileged host file update",
-        "suggestion": "Replace the sudo /etc/hosts example with port forwarding, minikube service, or minikube tunnel. If retained, require explicit confirmation and cleanup steps.",
+        "issue": "Privileged hosts-file modification",
+        "suggestion": "Replace the sudo hosts-file command with port forwarding or Minikube service access when possible. If hosts-file editing remains, add a warning, user confirmation, and cleanup steps.",
         "severity": "high"
       },
       {
-        "issue": "Literal secret values in examples",
-        "suggestion": "Use placeholders and tell users to replace values with generated secrets. Avoid reusable passwords in Secret manifests or command examples.",
-        "severity": "low"
+        "issue": "Literal Secret values in examples",
+        "suggestion": "Mark Secret values as placeholders and recommend secure local secret handling. Avoid commands that place real credentials in shell history.",
+        "severity": "medium"
       },
       {
-        "issue": "Shell eval examples need guardrails",
-        "suggestion": "Explain that docker-env changes the current shell. Recommend trusted Minikube binaries and include minikube image load as an alternative.",
+        "issue": "Local command examples can affect the wrong cluster",
+        "suggestion": "Add a reminder to verify the active kubectl context before applying manifests, editing resources, or running debug commands.",
         "severity": "medium"
       }
     ],
@@ -833,311 +836,310 @@
       {
         "id": "blocker:scripts/verify.py:28:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "Line 28 only prints a validation error when the skill name is missing from SKILL.md. It does not read host system data or perform reconnaissance."
+        "confidence": 0.94,
+        "reason": "The line prints an error during a local verifier check. It does not collect host, user, or system details and does not transmit data."
       },
       {
         "id": "external_commands:SKILL.md:13:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:33:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:44:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:62:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:71:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:75:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:85:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:91:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:96:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:100:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:107:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:111:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:117:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:121:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:129:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:133:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:138:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:142:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:148:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:154:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This finding points to a Markdown YAML manifest fence, not Ruby backtick execution. The block is documentation for Kubernetes resources, not executable skill code."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:185:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:189:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This finding points to a Markdown YAML manifest fence, not Ruby backtick execution. The block is documentation for Kubernetes resources, not executable skill code."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:201:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:205:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This finding points to a Markdown YAML manifest fence, not Ruby backtick execution. The block is documentation for Kubernetes resources, not executable skill code."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:221:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:225:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This finding points to a Markdown YAML manifest fence, not Ruby backtick execution. The block is documentation for Kubernetes resources, not executable skill code."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:243:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:247:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:269:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:273:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:287:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This finding points to a Markdown code fence delimiter or command example, not Ruby backtick execution. The block is documentation for local Kubernetes operations."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:291:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "Backticks are Markdown inline-code formatting for a local verification command. The verifier only reads SKILL.md and checks required sections."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:295:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "Backticks are Markdown inline-code formatting around a related skill name. There is no Ruby or shell execution at this location."
+        "confidence": 0.91,
+        "reason": "The finding matches Markdown code fences or inline backticks in documentation. The skill does not execute Ruby backticks or evaluate shell output at this location."
       },
       {
         "id": "external_commands:SKILL.md:22:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.82,
-        "reason": "This is the documented Minikube docker-env workflow for a local development shell. The command has no untrusted input and no evidence of exfiltration intent."
+        "reason": "This is the standard minikube docker-env setup pattern for a local cluster. It uses output from a trusted local Minikube CLI and does not take untrusted input or contact an external host."
       },
       {
         "id": "external_commands:SKILL.md:77:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.82,
-        "reason": "This is the documented Minikube docker-env workflow for a local development shell. The command has no untrusted input and no evidence of exfiltration intent."
+        "reason": "This is the standard minikube docker-env setup pattern for a local cluster. It uses output from a trusted local Minikube CLI and does not take untrusted input or contact an external host."
       },
       {
         "id": "external_commands:SKILL.md:84:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.82,
-        "reason": "This is the documented Minikube docker-env workflow for a local development shell. The command has no untrusted input and no evidence of exfiltration intent."
+        "reason": "This is the standard minikube docker-env setup pattern for a local cluster. It uses output from a trusted local Minikube CLI and does not take untrusted input or contact an external host."
       },
       {
         "id": "external_commands:SKILL.md:256:shell-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.82,
-        "reason": "This is the documented Minikube docker-env workflow for a local development shell. The command has no untrusted input and no evidence of exfiltration intent."
+        "reason": "This is the standard minikube docker-env setup pattern for a local cluster. It uses output from a trusted local Minikube CLI and does not take untrusted input or contact an external host."
       },
       {
         "id": "external_commands:SKILL.md:268:shell-command-substitution",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "severity": "high",
-        "reason": "The command substitutes minikube ip output into a sudo write to /etc/hosts. Unexpected output would affect a privileged host file, so this is a real local risk."
+        "verdict": "false_positive",
+        "confidence": 0.78,
+        "reason": "The substitution only expands the local Minikube IP for a hosts-file example. The privilege risk is covered by the separate sudo finding, and this substitution has no untrusted input source."
       },
       {
         "id": "external_commands:SKILL.md:13:template-literal-with-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.88,
-        "reason": "The finding points to a Markdown fenced command example, not a JavaScript template literal. Concrete command risks in that block are adjudicated by their own findings."
+        "reason": "The finding points to a Markdown fenced example that contains shell syntax. There is no template literal evaluation or runtime code execution by the skill."
       },
       {
         "id": "external_commands:SKILL.md:75:template-literal-with-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.88,
-        "reason": "The finding points to a Markdown fenced command example, not a JavaScript template literal. Concrete command risks in that block are adjudicated by their own findings."
+        "reason": "The finding points to a Markdown fenced example that contains shell syntax. There is no template literal evaluation or runtime code execution by the skill."
       },
       {
         "id": "external_commands:SKILL.md:247:template-literal-with-command-substitution",
         "verdict": "false_positive",
         "confidence": 0.88,
-        "reason": "The finding points to a Markdown fenced command example, not a JavaScript template literal. Concrete command risks in that block are adjudicated by their own findings."
+        "reason": "The finding points to a Markdown fenced example that contains shell syntax. There is no template literal evaluation or runtime code execution by the skill."
       },
       {
         "id": "external_commands:SKILL.md:143:unix-shell-invocation",
         "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "The command is a placeholder kubectl exec example for debugging a local pod. It is expected Kubernetes troubleshooting guidance, not host shell execution or malware behavior."
+        "confidence": 0.83,
+        "reason": "This is a kubectl debugging example using a placeholder pod name in a local cluster. It does not launch a host shell or hide command execution."
       },
       {
         "id": "external_commands:SKILL.md:268:sudo-privilege-escalation",
         "verdict": "confirmed",
-        "confidence": 0.92,
+        "confidence": 0.86,
         "severity": "high",
-        "reason": "The command appends a Minikube host mapping to /etc/hosts with sudo. This is a privileged local system change and should require explicit user approval."
+        "reason": "The example pipes a generated hosts entry into sudo tee -a /etc/hosts, which modifies a privileged host file. In an AI-assisted workflow, this can normalize elevated host changes without a clear warning or cleanup path."
       },
       {
         "id": "network:SKILL.md:282:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The URL points to an internal Kubernetes service name used for local connectivity testing. It is not an external hardcoded endpoint or data exfiltration destination."
+        "confidence": 0.87,
+        "reason": "The URL is an internal Kubernetes service name used from inside a pod for connectivity debugging. It is not an external endpoint and does not transmit secrets."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Example Secret Values Can Be Copied",
-        "description": "The skill includes placeholder secret creation and a Secret manifest with literal password values. Users may copy these examples without replacing the values.",
-        "severity": "low",
+        "title": "Insecure Secret Handling Example",
+        "description": "SKILL.md demonstrates creating Kubernetes Secrets with literal passwords in a command and manifest. Users who adapt these examples could expose credentials in shell history, logs, or source control.",
+        "severity": "medium",
         "locations": [
           {
             "file": "SKILL.md",
@@ -1146,32 +1148,16 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 205,
+            "line_start": 215,
             "line_end": 220
           }
         ],
-        "confidence": 0.86,
-        "confidence_reasoning": "The cited lines define Kubernetes Secret examples with literal password values. The context is instructional, so this is a hygiene issue rather than malicious intent."
+        "confidence": 0.88,
+        "confidence_reasoning": "The cited lines contain explicit password literals in both kubectl command arguments and Secret YAML. This is a common documentation pattern, but the exposure paths are direct if copied to real credentials."
       }
     ],
     "critical_findings": [],
     "high_findings": [
-      {
-        "title": "Shell command substitution",
-        "description": "echo \"$(minikube ip) myapp.local\" | sudo tee -a /etc/hosts",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 268,
-            "line_end": 268
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The command substitutes minikube ip output into a sudo write to /etc/hosts. Unexpected output would affect a privileged host file, so this is a real local risk."
-      },
       {
         "title": "sudo privilege escalation",
         "description": "echo \"$(minikube ip) myapp.local\" | sudo tee -a /etc/hosts",
@@ -1185,15 +1171,14 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "high",
-        "confidence": 0.92,
-        "confidence_reasoning": "The command appends a Minikube host mapping to /etc/hosts with sudo. This is a privileged local system change and should require explicit user approval."
+        "confidence": 0.86,
+        "confidence_reasoning": "The example pipes a generated hosts entry into sudo tee -a /etc/hosts, which modifies a privileged host file. In an AI-assisted workflow, this can normalize elevated host changes without a clear warning or cleanup path."
       }
     ],
-    "medium_findings": [],
-    "low_findings": [
+    "medium_findings": [
       {
-        "title": "Example Secret Values Can Be Copied",
-        "description": "The skill includes placeholder secret creation and a Secret manifest with literal password values. Users may copy these examples without replacing the values.",
+        "title": "Insecure Secret Handling Example",
+        "description": "SKILL.md demonstrates creating Kubernetes Secrets with literal passwords in a command and manifest. Users who adapt these examples could expose credentials in shell history, logs, or source control.",
         "locations": [
           {
             "file": "SKILL.md",
@@ -1202,147 +1187,157 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 205,
+            "line_start": 215,
             "line_end": 220
           }
         ],
         "review_kind": "security",
         "source_category": "semantic",
-        "source_severity": "low",
-        "confidence": 0.86,
-        "confidence_reasoning": "The cited lines define Kubernetes Secret examples with literal password values. The context is instructional, so this is a hygiene issue rather than malicious intent."
+        "source_severity": "medium",
+        "confidence": 0.88,
+        "confidence_reasoning": "The cited lines contain explicit password literals in both kubectl command arguments and Secret YAML. This is a common documentation pattern, but the exposure paths are direct if copied to real credentials."
       }
     ],
+    "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 2,
     "total_lines": 336,
     "audit_model": "codex",
-    "audited_at": "2026-07-07T22:13:11.681Z",
+    "audited_at": "2026-07-09T09:10:05.393Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Run Local Kubernetes with Minikube",
-    "value_statement": "Local Kubernetes setup can be slow when cluster commands, images, and networking steps are scattered. This skill gives Claude, Codex, and Claude Code a focused Minikube workflow for setup, deployment, and debugging.",
+    "user_title": "Operate Local Kubernetes with Minikube",
+    "value_statement": "Local Kubernetes setup can be slow when cluster, image, and service steps are scattered. This skill gives Claude, Codex, and Claude Code concise Minikube and kubectl workflows.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
-      "Minikube skill",
+      "Kubernetes local development",
+      "Minikube",
+      "kubectl",
       "local Kubernetes",
-      "kubectl troubleshooting",
-      "Kubernetes development",
-      "local cluster setup",
-      "Docker image loading",
-      "K8s debugging"
+      "K8s debugging",
+      "Docker images",
+      "Kubernetes manifests"
     ],
     "actual_capabilities": [
-      "Starts and manages Minikube clusters with resource and driver options.",
-      "Enables common Minikube addons such as ingress, metrics-server, dashboard, and storage-provisioner.",
-      "Guides local image builds for Minikube and imagePullPolicy settings.",
-      "Provides kubectl commands for contexts, logs, events, rollout changes, and resource checks.",
-      "Supplies basic Deployment, Service, ConfigMap, Secret, and Ingress manifest examples.",
-      "Compares local service access through NodePort, tunnel, port forwarding, and ingress."
+      "Start, stop, delete, and switch Minikube clusters with common resource settings.",
+      "Enable Minikube addons such as ingress, metrics-server, dashboard, and storage-provisioner.",
+      "Build local Docker images and configure Minikube image usage.",
+      "Apply kubectl commands for contexts, pods, logs, rollouts, scaling, and port forwarding.",
+      "Provide example Deployment, Service, ConfigMap, Secret, and Ingress manifests.",
+      "Debug local pods, service DNS, resource usage, and crash logs."
     ],
     "limitations": [
-      "It assumes Minikube, Docker, and kubectl are already installed.",
-      "It focuses on local clusters, not production cloud Kubernetes operations.",
-      "It does not replace security review for secrets, RBAC, or network policy.",
-      "Some commands modify local cluster state and may require user confirmation."
+      "It is focused on local Minikube clusters, not managed cloud Kubernetes services.",
+      "Commands are examples and may need changes for your operating system or driver.",
+      "It does not replace Kubernetes security review for production workloads.",
+      "It does not automate cluster setup without user approval."
     ],
     "use_cases": [
       {
-        "title": "Prepare a Local Cluster",
-        "description": "Set up Minikube with useful addons, resource limits, and basic status checks before local development begins.",
-        "target_user": "Application developer"
+        "title": "Set up a local cluster",
+        "description": "A backend developer starts Minikube, enables addons, and deploys a service for local testing.",
+        "target_user": "Backend developer"
       },
       {
-        "title": "Test Local Images",
-        "description": "Build Docker images for Minikube, deploy manifests, and verify that pods use local images correctly.",
+        "title": "Debug a failing pod",
+        "description": "A platform engineer checks pod events, previous logs, service DNS, and resource usage in a local namespace.",
         "target_user": "Platform engineer"
       },
       {
-        "title": "Debug Local Workloads",
-        "description": "Inspect pods, events, logs, resource usage, and service connectivity when a local Kubernetes app fails.",
-        "target_user": "DevOps practitioner"
+        "title": "Prepare Kubernetes manifests",
+        "description": "A DevOps learner builds basic Deployment, Service, ConfigMap, Secret, and Ingress files for practice.",
+        "target_user": "DevOps learner"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Start a Minikube Cluster",
-        "scenario": "Beginner setup",
-        "prompt": "Help me start a local Minikube cluster for a small web app. Include resource settings, required addons, and basic health checks."
+        "title": "Start a Minikube cluster",
+        "prompt": "Help me start a local Minikube cluster for a small web app. Include resource settings, useful addons, and status checks.",
+        "scenario": "Beginner local setup"
       },
       {
-        "title": "Deploy a Local Image",
-        "scenario": "Intermediate deployment",
-        "prompt": "Guide me through building a local Docker image, loading it into Minikube, and deploying it with local image pull settings."
+        "title": "Deploy a local image",
+        "prompt": "Guide me through building a Docker image into Minikube and deploying it with imagePullPolicy set for local use.",
+        "scenario": "Intermediate application deployment"
       },
       {
-        "title": "Diagnose a Restarting Pod",
-        "scenario": "Troubleshooting workflow",
-        "prompt": "Use this skill to diagnose a pod that is restarting in Minikube. Ask for logs, events, probes, and resource checks."
+        "title": "Troubleshoot a local service",
+        "prompt": "Help me diagnose why my local Kubernetes service is not reachable. Ask for context, then suggest kubectl and Minikube checks.",
+        "scenario": "Intermediate debugging"
       },
       {
-        "title": "Plan Local Ingress Testing",
-        "scenario": "Advanced networking",
-        "prompt": "Design a local Kubernetes workflow for two services using Minikube ingress. Include verification steps, safer access options, and cleanup."
+        "title": "Review a local workflow",
+        "prompt": "Review my local Kubernetes workflow for Minikube. Identify risky steps, missing cleanup, and safer alternatives for secrets and host changes.",
+        "scenario": "Advanced workflow review"
       }
     ],
     "output_examples": [
       {
+        "input": "I need to run my API locally on Kubernetes.",
+        "output": [
+          "Start Minikube with clear resource settings.",
+          "Enable ingress and metrics-server when needed.",
+          "Build the local image inside Minikube.",
+          "Deploy manifests and verify pods, services, and logs."
+        ]
+      },
+      {
         "input": "My pod keeps restarting in Minikube.",
         "output": [
-          "A triage plan checks pod status, recent events, previous logs, probes, and resource usage.",
-          "The response separates cluster issues from application container failures."
+          "Check the pod events first.",
+          "Read previous container logs.",
+          "Confirm image availability and pull policy.",
+          "Inspect resource usage and readiness probe settings."
         ]
       },
       {
-        "input": "I need to test a local image without pushing to a registry.",
+        "input": "I need local ingress for my app.",
         "output": [
-          "The skill recommends a local image workflow for Minikube.",
-          "It reminds you to adjust image pull behavior before applying manifests."
+          "Enable the ingress addon.",
+          "Confirm the service selector and target port.",
+          "Choose a local access method.",
+          "Avoid privileged host-file edits unless clearly required."
         ]
-      },
-      {
-        "input": "I need browser access to a local Kubernetes service.",
-        "output": "The response compares service URLs, port forwarding, tunnels, and ingress. It flags privileged host file changes as requiring explicit approval."
       }
     ],
     "best_practices": [
-      "Confirm the active kubectl context before applying manifests or changing namespaces.",
-      "Prefer port forwarding or service URLs for quick local tests before editing host files.",
-      "Replace all example secrets and passwords before using manifests in any shared cluster."
+      "Confirm the active kubectl context before applying or editing resources.",
+      "Use placeholder secrets only in examples, and keep real credentials out of shell history and source control.",
+      "Prefer port forwarding or Minikube service URLs before changing privileged host files."
     ],
     "anti_patterns": [
-      "Do not run local Kubernetes examples against a production cluster by accident.",
-      "Do not copy placeholder Secret values into reusable manifests.",
-      "Do not use sudo host file changes without explicit approval and rollback instructions."
+      "Running privileged host-file changes without explaining why they are needed.",
+      "Copying sample Secret values into real manifests or repositories.",
+      "Applying manifests to the current context without checking that it is Minikube."
     ],
     "faq": [
       {
-        "question": "What tools does this skill assume?",
-        "answer": "It assumes Minikube, kubectl, and Docker are available on the local machine."
+        "question": "What is this skill for?",
+        "answer": "It helps Claude, Codex, and Claude Code guide local Kubernetes work with Minikube and kubectl."
       },
       {
-        "question": "Can it help with cloud Kubernetes clusters?",
-        "answer": "It is focused on local Minikube workflows. Cloud cluster setup is outside its main scope."
+        "question": "Does it manage cloud clusters?",
+        "answer": "No. It focuses on local Minikube workflows. Use a cloud Kubernetes skill for managed clusters."
       },
       {
-        "question": "Does it generate Kubernetes manifests?",
-        "answer": "It includes basic examples for Deployments, Services, ConfigMaps, Secrets, and Ingress resources."
+        "question": "Can it help with local Docker images?",
+        "answer": "Yes. It explains how to build images for Minikube and set image pull behavior for local testing."
       },
       {
-        "question": "Can it debug failed pods?",
-        "answer": "Yes. It guides checks for pod details, events, logs, previous logs, probes, and resource usage."
+        "question": "Does it execute commands automatically?",
+        "answer": "No. It provides command guidance. Users should review commands before running them."
       },
       {
-        "question": "Does it need network access?",
-        "answer": "The documented examples test local cluster services. They do not require external endpoints."
+        "question": "Are the Secret examples production ready?",
+        "answer": "No. They are placeholders. Use a secure secret workflow for real credentials."
       },
       {
-        "question": "Are any commands sensitive?",
-        "answer": "Yes. Commands that edit /etc/hosts or change shell environment should be approved before use."
+        "question": "What tools does it cover?",
+        "answer": "It covers Minikube, kubectl, Docker image workflows, Kubernetes manifests, service access, and basic debugging."
       }
     ]
   },

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T06:36:48.125Z",
+    "generated_at": "2026-07-09T17:17:34.243Z",
     "slug": "davila7-scholar-evaluation",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/scientific/scholar-evaluation",
     "source_ref": "main",
@@ -23,18 +23,18 @@
   },
   "skill": {
     "name": "Scholar Evaluation",
-    "description": "Apply the ScholarEval framework to evaluate scholarly work across research questions, literature, methodology, data, analysis, writing, and citations.",
-    "summary": "Evaluate scholarly work with structured ScholarEval rubrics and scoring guidance.",
+    "description": "Evaluate academic papers, research proposals, literature reviews, and scholarly writing with a structured ScholarEval rubric.",
+    "summary": "Structured ScholarEval rubrics for assessing research quality, rigor, writing, and publication readiness.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
     "license": "MIT",
     "tags": [
-      "research-evaluation",
       "academic-review",
-      "scholarship",
+      "research-evaluation",
       "rubrics",
-      "peer-review"
+      "peer-review",
+      "scholarly-writing"
     ],
     "supported_tools": [
       "claude",
@@ -51,16 +51,16 @@
     "is_blocked": false,
     "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "Manual review found the reconnaissance and sensitive-file detections are false positives caused by academic rubric wording or variable names. The only confirmed issue is an unrestricted report file write in the score calculator. SKILL.md was manually reviewed despite invalid frontmatter, and no prompt injection or data-exfiltration intent was found.",
+    "summary": "Most static alerts are false positives caused by rubric language, benign print statements, and a line-number mismatch. One medium filesystem concern remains because the score helper writes a report to a caller-supplied path without guardrails. Manual review found no prompt injection, network code, credential handling, or data exfiltration intent.",
     "remediation": [
       {
-        "issue": "Unrestricted report output path",
-        "suggestion": "Restrict --output to the current workspace or require confirmation before overwriting existing files.",
+        "issue": "Unrestricted report output path in the score helper.",
+        "suggestion": "Resolve output paths under the working directory, ask before overwriting files, or require an explicit force option.",
         "severity": "medium"
       },
       {
-        "issue": "Invalid SKILL.md frontmatter",
-        "suggestion": "Add valid YAML frontmatter with name and description so static tooling can scan metadata reliably.",
+        "issue": "SKILL.md lacks valid frontmatter for automated metadata parsing.",
+        "suggestion": "Add valid YAML frontmatter with the skill name and description so scanners can parse the file reliably.",
         "severity": "low"
       }
     ],
@@ -207,75 +207,75 @@
       {
         "id": "blocker:references/evaluation_framework.md:663:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line is general evaluation guidance about applying professional judgment. It contains no system discovery, host enumeration, or operational reconnaissance instructions."
+        "confidence": 0.97,
+        "reason": "The cited line says professional judgment should be applied when using the evaluation framework. It does not inspect the host system or request system information."
       },
       {
         "id": "blocker:references/evaluation_framework.md:215:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The referenced text discusses sampling strategy and representativeness in research methodology. It is academic rubric content, not network probing or host discovery."
+        "confidence": 0.98,
+        "reason": "This is a rubric statement about sampling strategy and representativeness. It contains no network discovery, probing, or connectivity behavior."
       },
       {
         "id": "blocker:references/evaluation_framework.md:432:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The text evaluates grammar and mechanics in scholarly writing. There is no network access, scanning, or reconnaissance behavior in this passage."
+        "confidence": 0.98,
+        "reason": "The line evaluates grammar and mechanics in scholarly writing. It is academic review guidance, not a network reconnaissance instruction."
       },
       {
         "id": "blocker:references/evaluation_framework.md:438:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The passage rates writing clarity and minor awkwardness. It is unrelated to network enumeration or discovery commands."
+        "confidence": 0.98,
+        "reason": "The cited text describes clear writing with minor awkwardness. There is no network access, scanning, or remote host enumeration."
       },
       {
         "id": "blocker:references/evaluation_framework.md:488:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The phrase concerns passive voice as a writing issue. It does not instruct network reconnaissance or data collection from systems."
+        "confidence": 0.98,
+        "reason": "The phrase is a writing-quality warning about passive voice. It does not describe passive network reconnaissance or traffic monitoring."
       },
       {
         "id": "filesystem:scripts/calculate_scores.py:291:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged line only prints a status message before calculating an assessment. No path traversal sequence or filesystem path manipulation occurs there."
+        "confidence": 0.99,
+        "reason": "Line 291 only prints a status message before calculating the assessment. No path construction, traversal sequence, or filesystem access appears at that location."
       },
       {
         "id": "filesystem:scripts/calculate_scores.py:236:python-file-write-append",
         "verdict": "confirmed",
         "confidence": 0.72,
         "severity": "medium",
-        "reason": "The score calculator writes a report to a user-supplied output path without path restriction. This is intended behavior, but it can overwrite arbitrary local files if invoked with a dangerous path."
+        "reason": "The script writes a generated report to output_file, which can come from a command-line argument or interactive filename. This is expected functionality, but an unrestricted path can overwrite files accessible to the process."
       },
       {
         "id": "sensitive:scripts/calculate_scores.py:126:certificate-key-files",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The flagged line computes the maximum length of dictionary key names for chart formatting. It does not read certificate files, private keys, or secrets."
+        "confidence": 0.99,
+        "reason": "The line computes the maximum length of score dimension names for chart formatting. It does not reference certificate files, private keys, or secrets."
       },
       {
         "id": "blocker:scripts/calculate_scores.py:63:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line prints an invalid JSON error for a supplied file path. It does not gather system information or enumerate the host environment."
+        "confidence": 0.97,
+        "reason": "The line prints an invalid JSON error for a user-supplied score file. It does not collect system details or perform reconnaissance."
       },
       {
         "id": "blocker:scripts/calculate_scores.py:89:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The line prints an invalid JSON error while loading weights. It is normal input validation, not reconnaissance behavior."
+        "confidence": 0.97,
+        "reason": "The line prints an invalid JSON error for a user-supplied weights file. It is normal CLI error handling, not host reconnaissance."
       },
       {
         "id": "blocker:scripts/calculate_scores.py:280:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line prompts the user to enter a valid score from 1 to 5. It does not inspect system state or run discovery commands."
+        "confidence": 0.97,
+        "reason": "The line prompts the user to enter a score between 1 and 5. It does not query system state or enumerate the environment."
       },
       {
         "id": "metadata:SKILL.md:1:unscanned-file-invalid-frontmatter-manual-review",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "Manual review of SKILL.md found a normal skill instruction document with missing YAML frontmatter, not malicious or hidden content. The malformed metadata should be fixed for packaging, but it is not a security threat."
+        "confidence": 0.9,
+        "reason": "Manual review of SKILL.md found ordinary skill guidance and no prompt injection, security override, or hidden command pattern. The missing frontmatter affects metadata parsing, not runtime security."
       }
     ],
     "semantic_findings": [],
@@ -296,7 +296,7 @@
         "source_category": "filesystem",
         "source_severity": "medium",
         "confidence": 0.72,
-        "confidence_reasoning": "The score calculator writes a report to a user-supplied output path without path restriction. This is intended behavior, but it can overwrite arbitrary local files if invoked with a dangerous path."
+        "confidence_reasoning": "The script writes a generated report to output_file, which can come from a command-line argument or interactive filename. This is expected functionality, but an unrestricted path can overwrite files accessible to the process."
       }
     ],
     "low_findings": [
@@ -321,137 +321,125 @@
     "files_scanned": 2,
     "total_lines": 1043,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T06:36:48.125Z",
+    "audited_at": "2026-07-09T17:17:34.243Z",
     "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Evaluate Research With ScholarEval",
-    "value_statement": "Research work is hard to assess consistently across rigor, evidence, and presentation. This skill applies ScholarEval rubrics to produce structured scores, strengths, weaknesses, and revision priorities.",
+    "user_title": "Evaluate Scholarly Work with Structured Rubrics",
+    "value_statement": "Scholarly review can be inconsistent when criteria are unclear. This skill applies structured ScholarEval dimensions to produce balanced scores, evidence, and revision priorities.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "ScholarEval",
       "research evaluation",
-      "academic paper review",
-      "scholarly writing assessment",
-      "literature review rubric",
-      "research methodology review",
-      "publication readiness"
+      "academic peer review",
+      "literature review assessment",
+      "research proposal feedback",
+      "publication readiness",
+      "scholarly writing rubric"
     ],
     "actual_capabilities": [
-      "Evaluates research papers, proposals, literature reviews, theses, and conference abstracts.",
-      "Applies rubrics for research questions, literature, methods, data, analysis, writing, and citations.",
-      "Produces strengths, weaknesses, critical issues, and prioritized recommendations.",
-      "Supports optional 1 to 5 scoring for each evaluation dimension.",
-      "Uses a Python calculator to aggregate dimension scores with default or custom weights.",
-      "Assesses publication readiness for a target venue when context is provided."
+      "Evaluates research work across problem formulation, literature review, methods, data, analysis, results, writing, and citations.",
+      "Provides qualitative strengths, weaknesses, critical issues, and prioritized recommendations for revision.",
+      "Supports optional 1 to 5 scoring for each applicable evaluation dimension.",
+      "Calculates weighted aggregate scores from dimension ratings with the included Python helper.",
+      "Adapts evaluation expectations for drafts, proposals, journal articles, conference papers, and student work."
     ],
     "limitations": [
-      "It does not replace expert peer review or discipline-specific judgment.",
-      "Scores depend on the completeness and quality of the submitted work.",
-      "Some dimensions may not apply to theoretical or early-stage work.",
-      "The score calculator writes reports to the output path supplied by the user."
+      "It does not replace domain expert peer review for specialized technical claims.",
+      "Scores depend on the evaluator supplying accurate evidence from the scholarly work.",
+      "Some dimensions may not apply to theoretical papers or early research ideas.",
+      "The referenced schematic generation workflow depends on a separate skill or script not included here."
     ],
     "use_cases": [
       {
-        "title": "Prepare a Journal Submission",
-        "description": "Assess a draft article against rigor, contribution, presentation, and readiness expectations before submission.",
-        "target_user": "Academic researcher"
+        "title": "Review a Manuscript Before Submission",
+        "description": "Assess a paper against research quality dimensions and identify high-impact revisions before journal or conference submission.",
+        "target_user": "Researchers and graduate students"
       },
       {
-        "title": "Improve a Thesis Chapter",
-        "description": "Identify strengths, weak sections, and revision priorities for a thesis or dissertation chapter.",
-        "target_user": "Graduate student"
+        "title": "Evaluate a Research Proposal",
+        "description": "Check question clarity, feasibility, methodology, contribution, and risks before funding review or thesis committee feedback.",
+        "target_user": "Principal investigators and proposal writers"
       },
       {
-        "title": "Screen Research Quality",
-        "description": "Compare proposals or manuscripts using consistent evaluation dimensions and transparent scoring rationale.",
-        "target_user": "Research manager or editor"
+        "title": "Grade Scholarly Writing Consistently",
+        "description": "Use a repeatable rubric to give structured feedback on literature reviews, thesis chapters, or seminar papers.",
+        "target_user": "Instructors and academic mentors"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Quick Scholarly Review",
-        "scenario": "Beginner review of a single paper.",
-        "prompt": "Evaluate this research paper with ScholarEval. Give an overall assessment, three strengths, three weaknesses, and the top revision priorities."
+        "title": "Quick Paper Review",
+        "scenario": "Beginner review of a single manuscript.",
+        "prompt": "Evaluate this scholarly paper using the ScholarEval dimensions. Focus on strengths, weaknesses, and three priority revisions."
       },
       {
-        "title": "Methodology Review",
-        "scenario": "Focused review of research design.",
-        "prompt": "Assess only the methodology, data collection, and analysis sections. Explain whether the design fits the research questions and where rigor is weak."
+        "title": "Dimension Scorecard",
+        "scenario": "Intermediate review with numeric ratings.",
+        "prompt": "Score each applicable ScholarEval dimension from 1 to 5. Explain each score with evidence from the paper and list missing information."
       },
       {
-        "title": "Score a Draft",
-        "scenario": "Structured scoring across dimensions.",
-        "prompt": "Score each applicable ScholarEval dimension from 1 to 5. Provide evidence for each score and calculate an overall recommendation."
+        "title": "Publication Readiness Check",
+        "scenario": "Advanced review for a target venue.",
+        "prompt": "Assess this manuscript for publication readiness for the target venue. Compare rigor, contribution, writing, and citations against expected standards."
       },
       {
-        "title": "Publication Readiness Audit",
-        "scenario": "Advanced pre-submission review.",
-        "prompt": "Evaluate this manuscript for the target venue. Compare its contribution, rigor, writing, and citations against publication expectations, then prioritize fixes."
+        "title": "Revision Strategy Review",
+        "scenario": "Advanced planning after feedback.",
+        "prompt": "Re-evaluate the revised draft against prior feedback. Identify remaining weaknesses, score changes, and the next highest-impact revisions."
       }
     ],
     "output_examples": [
       {
-        "input": "A draft empirical paper with methods, results, and discussion sections.",
-        "output": [
-          "Overall quality is good, with strong research questions and clear results.",
-          "The main weakness is limited justification for sample size and missing robustness checks.",
-          "Priority revisions are methodology justification, clearer limitations, and stronger citation balance."
-        ]
+        "input": "A draft empirical research paper with methods, results, and references.",
+        "output": "A structured evaluation report with dimension scores, evidence-based strengths, critical weaknesses, and prioritized revision recommendations."
       },
       {
-        "input": "A literature review chapter for a dissertation.",
-        "output": [
-          "Coverage is broad, but synthesis is uneven across themes.",
-          "The review should state the research gap earlier and compare competing findings directly.",
-          "A revised structure should group sources by argument, not only by topic."
-        ]
+        "input": "A grant proposal with research aims and a planned methodology.",
+        "output": "A feasibility and contribution assessment covering research questions, design quality, risks, and reviewer-facing improvement priorities."
       },
       {
-        "input": "A conference abstract for a new research idea.",
-        "output": [
-          "The idea is promising, but the contribution is not yet distinct from recent work.",
-          "Clarify the baseline, expected evidence, and practical impact before submission."
-        ]
+        "input": "A literature review chapter for a thesis.",
+        "output": "Feedback on coverage, synthesis quality, gap identification, citation balance, organization, and writing clarity."
       }
     ],
     "best_practices": [
-      "Provide the full work, target venue, discipline, and development stage before evaluation.",
-      "Ask for evidence tied to sections, pages, claims, or tables.",
-      "Use scores together with written rationale, not as standalone judgments."
+      "Define the work type, stage, and target venue before scoring.",
+      "Support every score with specific evidence from the manuscript.",
+      "Prioritize recommendations by scholarly impact and revision effort."
     ],
     "anti_patterns": [
-      "Asking for an acceptance decision from only an abstract.",
-      "Treating the rubric score as a replacement for expert review.",
-      "Ignoring the discipline, venue, and stage of the work."
+      "Do not score dimensions that are not applicable without explaining why.",
+      "Do not treat the aggregate score as a substitute for expert judgment.",
+      "Do not give vague feedback that lacks examples or revision actions."
     ],
     "faq": [
       {
         "question": "What types of scholarly work can it evaluate?",
-        "answer": "It can evaluate papers, proposals, literature reviews, thesis chapters, abstracts, and related scholarly drafts."
+        "answer": "It can evaluate research papers, proposals, literature reviews, thesis chapters, conference abstracts, and similar academic drafts."
       },
       {
         "question": "Does it provide numeric scores?",
-        "answer": "Yes. It can score each applicable dimension from 1 to 5 and explain the rationale."
+        "answer": "Yes. It supports optional 1 to 5 scores for each applicable ScholarEval dimension."
       },
       {
-        "question": "Can it review only one section?",
-        "answer": "Yes. You can request a targeted review of methodology, writing, citations, or another dimension."
+        "question": "Can it calculate an overall score?",
+        "answer": "Yes. The included Python helper can calculate weighted aggregate scores from a dimension score file."
       },
       {
         "question": "Does it replace peer review?",
-        "answer": "No. It supports structured feedback, but expert review remains necessary for final scholarly judgment."
+        "answer": "No. It provides structured feedback, but specialized claims still need expert review."
       },
       {
-        "question": "Can it compare drafts over time?",
-        "answer": "Yes. Reuse the same dimensions and scoring scale to track revision progress."
+        "question": "Can it adapt to different disciplines?",
+        "answer": "Yes. It asks evaluators to account for discipline norms, work stage, and venue expectations."
       },
       {
-        "question": "Does the score calculator need a specific input format?",
-        "answer": "Yes. It expects dimension names with scores from 1 to 5 in a JSON file."
+        "question": "Which AI tools are supported?",
+        "answer": "The report lists support for Claude, Codex, and Claude Code."
       }
     ]
   },

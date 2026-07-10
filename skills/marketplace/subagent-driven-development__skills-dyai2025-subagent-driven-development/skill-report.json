@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-06T12:40:33.817Z",
+    "generated_at": "2026-07-09T08:48:10.963Z",
     "slug": "dyai2025-subagent-driven-development",
     "source_url": "https://github.com/DYAI2025/Stoppclock-page/tree/main/stoppclock_speckit/.claude/commands/skills/subagent-driven-development",
     "source_ref": "main",
@@ -9,7 +9,7 @@
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "ceb49771637624dc97d78263cdd64c3b1a1839f540f561dc4d3aa388fb33f22f",
-    "tree_hash": "14122894a75cad7c613ca09158a1a5310184f7f710a1f46da089786874288af9",
+    "tree_hash": "294d1baf1ced424107705cff28f4ba0e2e2b83c386ed62473a623f97a13f1d9d",
     "provenance": {
       "model_requested": "gpt-5.5:high",
       "model_effective": "codex:gpt-5.5:high",
@@ -26,18 +26,17 @@
   },
   "skill": {
     "name": "subagent-driven-development",
-    "description": "Guides AI coding agents through implementation plans by assigning one fresh subagent per task and requiring review checkpoints.",
-    "summary": "Execute independent implementation tasks with reviewed subagent handoffs.",
+    "description": "Guides agents through plan execution by assigning one independent task at a time to fresh subagents, then requiring review before moving to the next task.",
+    "summary": "Execute development plans with fresh task subagents and review checkpoints.",
     "icon": "📦",
     "version": "1.0.0",
     "author": "DYAI2025",
     "license": "MIT",
-    "category": "coding",
     "tags": [
       "subagents",
       "code-review",
       "implementation-plans",
-      "tdd",
+      "test-driven-development",
       "workflow"
     ],
     "supported_tools": [
@@ -47,15 +46,22 @@
     ],
     "risk_factors": [
       "external_commands"
-    ]
+    ],
+    "category": "coding"
   },
   "security_audit": {
     "risk_level": "low",
     "is_blocked": false,
     "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "The Markdown backtick findings are false positives: the marked ranges are fenced workflow examples for dispatching subagents and review prompts, not Ruby or shell execution. Manual review of SKILL.zip showed it contains only SKILL.md matching the scanned source, so the binary metadata alert does not add risk. No prompt injection, exfiltration, network behavior, or malicious intent was found.",
-    "remediation": [],
+    "summary": "All seven external-command findings are false positives caused by Markdown code fences in workflow documentation. The ZIP file was manually reviewed and contains only the same SKILL.md content, so no hidden payload, prompt injection, or semantic abuse was found.",
+    "remediation": [
+      {
+        "issue": "Packaged archive triggers manual binary review.",
+        "suggestion": "Remove SKILL.zip from the published skill package unless the marketplace requires it, or publish only the source Markdown file.",
+        "severity": "low"
+      }
+    ],
     "risk_factor_evidence": [
       {
         "factor": "external_commands",
@@ -185,49 +191,49 @@
         "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "Lines 41-57 are a Markdown fenced example of a Task tool prompt. The content is prose instructions for a subagent and contains no shell command, Ruby execution, or user-controlled interpolation."
+        "reason": "Line 41 starts a Markdown code fence that documents a Task tool prompt. It does not invoke Ruby, a shell, or any executable command."
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The flagged fence ends the prior Markdown example and is followed by normal workflow prose. It does not define executable Ruby or shell code."
+        "reason": "Line 57 closes the Markdown code fence for the task prompt example. The text is documentation only and contains no command execution path."
       },
       {
         "id": "external_commands:SKILL.md:64:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "Lines 64-73 are a fenced template for invoking a code-reviewer subagent. The placeholders are documentation for review context, not commands executed by the skill."
+        "reason": "Line 64 opens a fenced example for dispatching a code-reviewer subagent. The fence is not shell syntax and does not execute code."
       },
       {
         "id": "external_commands:SKILL.md:73:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The finding is triggered by Markdown code-fence syntax around review workflow text. The surrounding lines describe issue handling and contain no shell or Ruby execution path."
+        "confidence": 0.96,
+        "reason": "Line 73 closes the review-template Markdown example. The surrounding content describes workflow inputs, not an executable command."
       },
       {
         "id": "external_commands:SKILL.md:85:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "Lines 85-87 contain only a quoted follow-up prompt inside a Markdown fence. This is not executable code and does not create a command injection vector."
+        "confidence": 0.95,
+        "reason": "Line 85 opens a short Markdown fence containing plain English follow-up text. It does not run a shell command or interpolate user input into execution."
       },
       {
         "id": "external_commands:SKILL.md:87:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.95,
-        "reason": "The flagged area is Markdown workflow text between the follow-up prompt example and final review instructions. No external command invocation is present."
+        "reason": "Line 87 closes the plain text follow-up prompt example. The fenced block is instructional prose rather than executable Ruby or shell code."
       },
       {
         "id": "external_commands:SKILL.md:111:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "Lines 111-146 are a fenced narrative example of a task sequence. The text lists subagent and reviewer outcomes, not shell commands or Ruby backtick execution."
+        "reason": "Line 111 starts a Markdown example workflow transcript. The block contains narrative status messages and no command invocation surface."
       },
       {
         "id": "metadata:SKILL.zip:1:unscanned-file-binary-manual-review-required",
         "verdict": "false_positive",
         "confidence": 0.9,
-        "reason": "Manual review of SKILL.zip showed a single archived SKILL.md file matching the scanned source. No additional binary payload, script, or hidden executable content was present."
+        "reason": "Manual archive review showed SKILL.zip contains only SKILL.md, and the archived file hash matches the top-level SKILL.md. No extra binary payload or hidden file was found."
       }
     ],
     "semantic_findings": [],
@@ -245,141 +251,140 @@
             "line_end": 1
           }
         ],
-        "review_kind": "false_positive",
+        "review_kind": "security",
         "source_category": "metadata",
         "source_severity": "low",
         "confidence": 1,
-        "confidence_reasoning": "Force-confirmed metadata/low static finding; AI dismissal overridden."
+        "confidence_reasoning": "Force-confirmed metadata/low static finding; AI false-positive verdict rejected."
       }
     ],
     "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 190,
     "audit_model": "codex",
-    "audited_at": "2026-07-06T12:40:33.817Z",
+    "audited_at": "2026-07-09T08:48:10.963Z",
     "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Execute Plans with Reviewed Subagents",
-    "value_statement": "Long implementation plans can lose quality when one context handles every task. This skill coordinates fresh subagents, task checkpoints, and code review after each implementation step.",
+    "user_title": "Execute Plans with Review Subagents",
+    "value_statement": "Complex implementation plans can lose quality when one agent keeps too much context. This skill assigns each task to a fresh subagent and adds review checkpoints before progress continues.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "subagent development",
       "AI coding workflow",
-      "implementation planning",
       "code review automation",
-      "test driven development",
-      "agentic coding",
-      "software delivery"
+      "implementation plan execution",
+      "test-driven development",
+      "developer productivity",
+      "agentic software engineering"
     ],
     "actual_capabilities": [
-      "Breaks an implementation plan into sequential task execution steps.",
-      "Directs a fresh general-purpose subagent to implement each task.",
-      "Requires tests and verification before each task is reported complete.",
-      "Adds code-review checkpoints between implementation tasks.",
-      "Defines handling for critical, important, and minor review issues.",
-      "Connects final completion to a separate development branch finishing workflow."
+      "Defines when to use subagent-driven execution for mostly independent plan tasks.",
+      "Provides a repeatable task loop for dispatching fresh implementation subagents.",
+      "Requires code review after each completed task before moving forward.",
+      "Describes how to handle critical, important, and minor review findings.",
+      "Connects the workflow to planning, code review, TDD, and branch completion skills."
     ],
     "limitations": [
-      "Works best when the plan already exists and tasks are mostly independent.",
-      "Does not provide the referenced code-review or branch-finishing templates.",
-      "Can increase tool usage because each task uses a fresh subagent.",
-      "Requires human judgment when tasks are tightly coupled or the plan changes."
+      "It assumes the plan already exists and has clear independent tasks.",
+      "It does not provide executable automation or scripts by itself.",
+      "It can increase token and subagent usage compared with direct manual execution.",
+      "It is less suitable for tightly coupled tasks that require one continuous context."
     ],
     "use_cases": [
       {
-        "title": "Coordinate Feature Delivery",
-        "description": "Run a prepared feature plan through separate implementation and review cycles.",
-        "target_user": "Engineering lead"
+        "title": "Ship a Multi-Step Feature",
+        "description": "Break a prepared implementation plan into reviewed task increments with fresh agent context for each step.",
+        "target_user": "Software engineer"
       },
       {
-        "title": "Keep Long Tasks Organized",
-        "description": "Use fresh task contexts to reduce confusion during multi-step coding work.",
-        "target_user": "Solo developer"
+        "title": "Maintain Review Discipline",
+        "description": "Add a mandatory review gate after each subagent task so defects are caught before later work depends on them.",
+        "target_user": "Technical lead"
       },
       {
-        "title": "Add Review Gates",
-        "description": "Require code review after each task before moving to the next implementation step.",
-        "target_user": "Quality-focused maintainer"
+        "title": "Coordinate AI Coding Workflows",
+        "description": "Use a structured same-session process for implementation, review, fixes, final review, and branch completion.",
+        "target_user": "AI workflow designer"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Run a Simple Plan",
-        "scenario": "Beginner use with a prepared plan.",
-        "prompt": "Use subagent-driven-development to execute the plan in plans/feature-plan.md. Keep each task separate and review after every task."
+        "title": "Start Plan Execution",
+        "scenario": "Begin a basic subagent-driven implementation run.",
+        "prompt": "Use subagent-driven-development to execute the plan in [plan file]. Work from [repository path] and start with the first independent task."
       },
       {
-        "title": "Execute with Test Checks",
-        "scenario": "Intermediate use when test results matter.",
-        "prompt": "Use subagent-driven-development for this implementation plan. Require each subagent to write or update tests and report the exact verification result."
+        "title": "Run One Task with Review",
+        "scenario": "Execute one task and stop after its review result.",
+        "prompt": "Use this workflow for Task [number] in [plan file]. Dispatch a fresh implementation subagent, request review, and report the review outcome before continuing."
       },
       {
-        "title": "Handle Review Feedback",
-        "scenario": "Intermediate use with strict quality gates.",
-        "prompt": "Execute this plan with subagent-driven-development. Stop after each review, fix critical and important issues, then continue to the next task."
+        "title": "Apply Review Feedback",
+        "scenario": "Handle findings from a completed task review.",
+        "prompt": "Use subagent-driven-development to fix the review findings for Task [number]. Treat critical and important issues as blockers before the next task."
       },
       {
-        "title": "Manage a Complex Branch",
-        "scenario": "Advanced use across many independent tasks.",
-        "prompt": "Use subagent-driven-development for this branch plan. Track base and head commits for each task, request review after each task, and run the final branch completion workflow when all reviews pass."
+        "title": "Complete a Full Reviewed Run",
+        "scenario": "Execute all tasks, final review, and branch completion.",
+        "prompt": "Execute every independent task in [plan file] with fresh subagents, review after each task, run final review, then use the finishing branch workflow."
       }
     ],
     "output_examples": [
       {
-        "input": "Execute a three-task plan for a new settings page.",
+        "input": "Execute a three-task feature plan with review after each task.",
         "output": [
-          "Task 1 implemented and tested by a fresh subagent.",
-          "Code review completed with no critical issues.",
-          "Task 2 paused until an important review issue is fixed."
+          "Task 1 completed with tests passing and no review blockers.",
+          "Task 2 required one important fix, which was applied and rechecked.",
+          "Task 3 passed review, and final review confirmed the plan requirements."
         ]
       },
       {
-        "input": "Finish all tasks in a refactor plan.",
-        "output": [
-          "All planned tasks were completed in sequence.",
-          "Each task received a review checkpoint.",
-          "The final review passed and the branch finishing workflow is ready."
-        ]
+        "input": "Review feedback reports a critical issue after Task 2.",
+        "output": "The workflow stops normal progression, sends the issue to a fix subagent, and resumes only after the critical issue is resolved."
+      },
+      {
+        "input": "All implementation tasks are done.",
+        "output": "The workflow dispatches a final code review, verifies the whole implementation, and then moves to branch completion steps."
       }
     ],
     "best_practices": [
-      "Start with a clear written plan before invoking the workflow.",
-      "Keep tasks independent enough for separate subagent contexts.",
-      "Fix critical and important review findings before continuing."
+      "Use this skill only after a clear implementation plan is available.",
+      "Keep task boundaries independent so each subagent can work with fresh context.",
+      "Resolve critical and important review issues before starting the next task."
     ],
     "anti_patterns": [
-      "Do not use it to create the plan from scratch.",
-      "Do not run multiple implementation subagents in parallel on the same branch.",
-      "Do not skip review checkpoints to save time."
+      "Do not use this workflow to invent or rewrite the plan during execution.",
+      "Do not dispatch multiple implementation subagents when they may edit the same files.",
+      "Do not skip intermediate reviews to save time on risky changes."
     ],
     "faq": [
       {
         "question": "What does this skill do?",
-        "answer": "It guides an AI coding agent through plan execution with fresh subagents and review after each task."
+        "answer": "It defines a same-session workflow for executing planned development tasks with fresh subagents and review gates."
+      },
+      {
+        "question": "Does it run commands automatically?",
+        "answer": "No. It is a process guide for agent coordination, review, and task sequencing."
       },
       {
         "question": "When should I use it?",
-        "answer": "Use it when you have a written implementation plan with mostly independent tasks."
+        "answer": "Use it when a plan has mostly independent implementation tasks and quality checks are important."
       },
       {
-        "question": "Does it write code itself?",
-        "answer": "It is a workflow guide. The active agent and dispatched subagents perform the implementation work."
+        "question": "When should I avoid it?",
+        "answer": "Avoid it when tasks are tightly coupled, the plan is not ready, or one continuous context is required."
       },
       {
-        "question": "Why use a fresh subagent for each task?",
-        "answer": "A fresh context helps each task follow the plan without carrying unrelated details from earlier work."
+        "question": "How does review fit into the workflow?",
+        "answer": "A code-reviewer subagent reviews each task before the next task starts, and a final review checks the complete result."
       },
       {
-        "question": "Does it require code review?",
-        "answer": "Yes. The workflow requires review after each task and a final review after all tasks."
-      },
-      {
-        "question": "Is it suitable for tightly coupled tasks?",
-        "answer": "No. Tightly coupled work is better handled manually or with a revised plan."
+        "question": "Which tools can use this skill?",
+        "answer": "The report lists compatibility with Claude, Codex, and Claude Code."
       }
     ]
   },

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T06:20:27.930Z",
+    "generated_at": "2026-07-09T15:59:55.560Z",
     "slug": "davila7-geniml",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/scientific/geniml",
     "source_ref": "main",
@@ -23,18 +23,18 @@
   },
   "skill": {
     "name": "geniml",
-    "description": "Guides Geniml workflows for genomic interval machine learning, including Region2Vec, BEDspace, scEmbed, consensus peaks, and supporting utilities.",
-    "summary": "Analyze BED files with Geniml embedding, tokenization, and consensus peak workflows.",
+    "description": "Plan and run Geniml workflows for BED-based genomic machine learning. Covers Region2Vec, BEDspace, scEmbed, consensus peak universes, and utility tools.",
+    "summary": "Guides genomic interval machine learning workflows with Geniml.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
     "license": "MIT",
     "tags": [
       "genomics",
+      "bioinformatics",
       "bed-files",
       "machine-learning",
-      "single-cell",
-      "embeddings"
+      "single-cell"
     ],
     "supported_tools": [
       "claude",
@@ -47,19 +47,29 @@
       "external_commands",
       "network"
     ],
-    "category": "research"
+    "category": "data"
   },
   "security_audit": {
     "risk_level": "safe",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The audit found no prompt injection, credential access, hidden persistence, or data exfiltration in the skill content. Most static findings are false positives caused by Markdown code fences, local reference links, cache examples, and genomic parameter text. One supply-chain concern remains because the development install uses an unpinned GitHub URL.",
+    "summary": "Most static alerts are false positives caused by Markdown fences, example code, legitimate cache paths, or scientific terminology. One low-risk supply-chain issue remains: the skill documents an unpinned GitHub development install that can fetch remote code if used. No prompt injection or malicious intent was found in the reviewed files.",
     "remediation": [
       {
-        "issue": "Unpinned development install from GitHub",
-        "suggestion": "Prefer the published Geniml package, or pin the GitHub install to a reviewed commit or release tag.",
-        "severity": "medium"
+        "issue": "Unpinned GitHub development install",
+        "suggestion": "Prefer PyPI releases, or pin the GitHub install to a commit or signed release. Label development installs as optional.",
+        "severity": "low"
+      },
+      {
+        "issue": "Hidden cache directory in examples",
+        "suggestion": "Explain what is stored in ~/.bedcache and show how to choose an explicit project cache directory.",
+        "severity": "low"
+      },
+      {
+        "issue": "Executable examples are mixed with narrative",
+        "suggestion": "Mark shell commands as manual examples and avoid implying that the skill should install software automatically.",
+        "severity": "low"
       }
     ],
     "risk_factor_evidence": [
@@ -575,213 +585,214 @@
       {
         "id": "blocker:references/consensus_peaks.md:168:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line gives a minimum genomic interval size for consensus peaks. It is not probing the host system or collecting system details."
+        "confidence": 0.95,
+        "reason": "The text only recommends a minimum genomic peak size. It performs no system discovery and contains no host, process, or environment inspection."
       },
       {
         "id": "scripts:references/utilities.md:36:dynamic-import-expression",
         "verdict": "false_positive",
         "confidence": 0.88,
-        "reason": "The R reticulate import loads the documented geniml.bbclient module by constant name. It does not import user-supplied code or a remote module."
+        "reason": "The R example imports a named Geniml module through reticulate. The module name is static and not controlled by user input."
       },
       {
         "id": "filesystem:references/utilities.md:23:hidden-file-in-home-directory",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The hidden path is a named cache directory for BED data in a BBClient example. It is not used for stealth persistence or secret access."
+        "confidence": 0.8,
+        "reason": "The path is a BBClient cache location for BED files, not a read of secrets or shell configuration. Hidden cache directories are common, though the behavior should be documented."
       },
       {
         "id": "filesystem:references/utilities.md:39:hidden-file-in-home-directory",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The hidden path is a named cache directory for BED data in an R integration example. It is not used for stealth persistence or secret access."
+        "confidence": 0.8,
+        "reason": "The path is a BBClient cache location for BED files, not a read of secrets or shell configuration. Hidden cache directories are common, though the behavior should be documented."
       },
       {
         "id": "filesystem:references/utilities.md:23:hidden-file-access",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "The code configures BBClient cache storage at a fixed local path. It does not read arbitrary hidden files or search the home directory."
+        "confidence": 0.8,
+        "reason": "The path is a BBClient cache location for BED files, not a read of secrets or shell configuration. Hidden cache directories are common, though the behavior should be documented."
       },
       {
         "id": "filesystem:references/utilities.md:39:hidden-file-access",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "The R example configures BBClient cache storage at a fixed local path. It does not read arbitrary hidden files or search the home directory."
+        "confidence": 0.8,
+        "reason": "The path is a BBClient cache location for BED files, not a read of secrets or shell configuration. Hidden cache directories are common, though the behavior should be documented."
       },
       {
         "id": "external_commands:SKILL.md:16:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is a Markdown bash fence around a package install example. The file documents commands, not Ruby backtick execution."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:18:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This line closes a Markdown code block for an install example. There is no shell backtick evaluation or command construction."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:22:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is a Markdown bash fence for optional ML dependency installation. It is not Ruby shell backtick execution."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This line closes a Markdown code block for dependency installation. No code uses backticks to execute a shell."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This is a Markdown bash fence for a fixed development install command. It is not Ruby backtick execution or user-built shell code."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:30:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This line closes the documented GitHub install command block. The backticks are Markdown formatting, not shell execution."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:47:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line points to a local Region2Vec reference file. It contains no executable shell pattern."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:61:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line points to a local BEDspace reference file. It contains no executable shell pattern."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:76:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line points to a local scEmbed reference file. It contains no executable shell pattern."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:95:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line points to a local consensus peaks reference file. It contains no executable shell pattern."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:108:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line points to a local utilities reference file. It contains no executable shell pattern."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:114:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is a Markdown Python fence for a Geniml workflow example. It does not invoke a shell through Ruby backticks."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:140:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This line closes a Python example code block. The backticks are Markdown formatting, not executable code."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:144:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This is a Markdown Python fence for a scATAC workflow example. It does not use shell backtick execution."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:171:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This line closes a Python example code block. There is no Ruby shell execution behavior."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:175:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "This is a Markdown bash workflow example for local genomic tools. It documents fixed commands and does not construct shell input."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:193:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This line closes a bash workflow example. The backticks are Markdown formatting, not Ruby shell execution."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:199:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.87,
-        "reason": "This is a Markdown bash fence for Geniml CLI examples. The commands are fixed workflow examples, not backtick execution."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:217:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This line closes a CLI example block. No Ruby backtick execution or hidden command runner is present."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "external_commands:SKILL.md:270:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line describes scanpy integration for embeddings. It is plain documentation and contains no shell execution."
+        "confidence": 0.93,
+        "reason": "This finding points to Markdown fences or visible examples, not Ruby backtick execution or automatic command execution. The unpinned network install is assessed separately."
       },
       {
         "id": "network:SKILL.md:29:hardcoded-url",
         "verdict": "confirmed",
         "confidence": 0.72,
-        "severity": "medium",
-        "reason": "The development install uses an unpinned GitHub URL. Installing from a mutable external source can fetch and execute changed package code."
+        "severity": "low",
+        "reason": "The skill includes an optional GitHub VCS install command that fetches remote code without a pinned commit. It is a legitimate development install, but it creates supply-chain risk if followed."
       },
       {
         "id": "network:SKILL.md:286:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.89,
-        "reason": "This is a public documentation link for Geniml. It is not a hidden request, credential sink, or exfiltration destination."
+        "confidence": 0.86,
+        "reason": "The URL is a documentation or project reference. It does not create an automatic network request or transmit local data."
       },
       {
         "id": "network:SKILL.md:287:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.89,
-        "reason": "This is the public upstream GitHub link for Geniml. It is reference material, not a covert network operation."
+        "confidence": 0.86,
+        "reason": "The URL is a documentation or project reference. It does not create an automatic network request or transmit local data."
       },
       {
         "id": "network:SKILL.md:309:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.8,
-        "reason": "This link directs users to the StarSpace dependency project for manual installation. It is not used for hidden network access."
+        "confidence": 0.86,
+        "reason": "The URL is a documentation or project reference. It does not create an automatic network request or transmit local data."
       },
       {
         "id": "blocker:SKILL.md:266:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The line recommends model caching to avoid repeated downloads. It does not enumerate host resources or collect system details."
+        "confidence": 0.94,
+        "reason": "The line discusses model caching for performance. It does not inspect the host system, enumerate files, or collect environment details."
       },
       {
         "id": "blocker:SKILL.md:102:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The line describes BBClient caching for repeated BED access. It does not scan networks or discover network services."
+        "confidence": 0.87,
+        "reason": "BBClient is described as a cache for repeated access to BED files. The text does not instruct network scanning, probing, or service enumeration."
       },
       {
         "id": "blocker:SKILL.md:204:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The line is a BEDspace preprocessing command using local input paths and metadata. It does not perform network reconnaissance."
+        "confidence": 0.95,
+        "reason": "The command preprocesses local region, metadata, and universe files for BEDspace. It does not perform network discovery or external probing."
       },
       {
         "id": "blocker:SKILL.md:294:network-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The line tells users to check consensus universe quality. It does not probe networks or collect connection data."
+        "confidence": 0.95,
+        "reason": "The troubleshooting note tells users to check genomic universe quality. It contains no network activity, scanning, or reconnaissance behavior."
       }
     ],
     "semantic_findings": [],
     "critical_findings": [],
     "high_findings": [],
-    "medium_findings": [
+    "medium_findings": [],
+    "low_findings": [
       {
         "title": "Hardcoded URL",
         "description": "uv uv pip install git+https://github.com/databio/geniml.git",
@@ -796,21 +807,20 @@
         "source_category": "network",
         "source_severity": "low",
         "confidence": 0.72,
-        "confidence_reasoning": "The development install uses an unpinned GitHub URL. Installing from a mutable external source can fetch and execute changed package code."
+        "confidence_reasoning": "The skill includes an optional GitHub VCS install command that fetches remote code without a pinned commit. It is a legitimate development install, but it creates supply-chain risk if followed."
       }
     ],
-    "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 6,
     "total_lines": 1355,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T06:20:27.930Z",
+    "audited_at": "2026-07-09T15:59:55.560Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Analyze Genomic Intervals with Geniml",
-    "value_statement": "Genomic interval workflows can be hard to choose and tune. This skill guides Geniml pipelines for embeddings, consensus peaks, and scATAC analysis.",
+    "user_title": "Analyze Genomic Intervals With Geniml",
+    "value_statement": "Genomic interval projects need consistent preprocessing, embedding training, and universe construction. This skill guides Geniml workflows for BED files, scATAC-seq data, and model evaluation.",
     "seo_keywords": [
       "Claude",
       "Codex",
@@ -820,110 +830,122 @@
       "BED files",
       "Region2Vec",
       "BEDspace",
-      "scEmbed",
-      "consensus peaks"
+      "scATAC-seq",
+      "bioinformatics AI"
     ],
     "actual_capabilities": [
-      "Choose between Region2Vec, BEDspace, scEmbed, consensus peak methods, and utilities.",
-      "Plan BED tokenization with universe files, overlap thresholds, and coverage checks.",
-      "Outline Region2Vec training parameters, outputs, and evaluation metrics.",
-      "Guide scATAC-seq embedding workflows with AnnData, tokenized cells, clustering, and scanpy integration.",
-      "Compare consensus peak methods, including CC, CCF, ML, and HMM approaches.",
-      "Explain BBClient caching, BEDshift randomization, embedding evaluation, and search utilities."
+      "Install Geniml from PyPI and choose optional machine learning dependencies.",
+      "Train Region2Vec embeddings from tokenized BED file collections.",
+      "Build BEDspace models for joint region and metadata search.",
+      "Run scEmbed workflows for single-cell ATAC-seq embeddings and scanpy integration.",
+      "Create and evaluate consensus peak universes with CC, CCF, ML, or HMM methods.",
+      "Use BBClient, BEDshift, tokenization, evaluation, and search utilities."
     ],
     "limitations": [
-      "It does not validate biological conclusions without domain review.",
-      "It depends on local Geniml, scanpy, StarSpace, and related tools being installed.",
-      "It cannot replace quality control for genome assembly, metadata, and BED formatting.",
-      "Large datasets may require memory planning, batching, or compute resources outside the skill."
+      "It does not validate biological assumptions or genome assembly choices.",
+      "Large datasets may require substantial memory, storage, and compute resources.",
+      "Some workflows depend on external tools, including StarSpace and uniwig.",
+      "Reference commands are examples and may need version-specific adjustment."
     ],
     "use_cases": [
       {
         "title": "Train Region Embeddings",
-        "description": "A genomics researcher can turn BED collections into Region2Vec features for clustering, similarity search, or model inputs.",
-        "target_user": "Genomics researcher"
+        "description": "Prepare BED files, tokenize against a universe, and train Region2Vec features for downstream analysis.",
+        "target_user": "Bioinformatics researcher"
       },
       {
-        "title": "Prepare Single-Cell ATAC Analysis",
-        "description": "A single-cell analyst can build scEmbed workflows for tokenizing AnnData, training embeddings, and visualizing clusters.",
+        "title": "Analyze Single-Cell Accessibility",
+        "description": "Use scEmbed guidance to create cell embeddings, cluster cells, and integrate results with scanpy.",
         "target_user": "Single-cell analyst"
       },
       {
-        "title": "Build Shared Reference Peaks",
-        "description": "A bioinformatics platform team can compare consensus peak methods and create reusable universes for many datasets.",
-        "target_user": "Bioinformatics platform team"
+        "title": "Build Searchable Genomic Collections",
+        "description": "Combine BEDspace embeddings with metadata to support similarity search across regions and labels.",
+        "target_user": "Machine learning engineer"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Start a Geniml Workflow",
+        "title": "Plan a Geniml Workflow",
         "scenario": "Beginner workflow selection",
-        "prompt": "I have BED files and a universe file. Help me choose a Geniml workflow and list the required inputs."
+        "prompt": "I have BED files and metadata. Help me choose a Geniml workflow and list the required inputs."
       },
       {
-        "title": "Tune Region2Vec Training",
-        "scenario": "Intermediate embedding setup",
-        "prompt": "Review my Region2Vec plan for tokenization, embedding dimension, shuffling count, and evaluation metrics."
+        "title": "Build a Consensus Universe",
+        "scenario": "Intermediate universe construction",
+        "prompt": "Guide me through building a consensus peak universe from multiple BED files using Geniml. Include parameter choices and quality checks."
       },
       {
-        "title": "Design scEmbed Analysis",
-        "scenario": "Advanced single-cell workflow",
-        "prompt": "Create a scEmbed plan for an AnnData file with peak coordinates, batch limits, clustering, and validation steps."
+        "title": "Train Region2Vec Embeddings",
+        "scenario": "Intermediate embedding training",
+        "prompt": "Create a Region2Vec workflow for these BED files and this universe. Include tokenization, training parameters, and evaluation metrics."
       },
       {
-        "title": "Compare Universe Methods",
-        "scenario": "Advanced consensus peak planning",
-        "prompt": "Compare CC, CCF, ML, and HMM universe methods for my assay type, data volume, and publication requirements."
+        "title": "Design a BEDspace Search Pipeline",
+        "scenario": "Advanced metadata-aware search",
+        "prompt": "Design an advanced BEDspace pipeline for metadata-aware genomic search. Include preprocessing, training, distance calculation, and validation."
       }
     ],
     "output_examples": [
       {
-        "input": "I need to analyze 200 ATAC-seq BED files.",
-        "output": "A workflow recommendation that favors Region2Vec, lists tokenization inputs, suggests starting parameter ranges, and defines evaluation checks."
+        "input": "A user asks how to compare hundreds of ATAC-seq BED files.",
+        "output": [
+          "Recommended building a consensus universe before embedding training.",
+          "Outlined tokenization, Region2Vec training, and quality metrics.",
+          "Suggested coverage checks, clustering review, and reproducibility notes."
+        ]
       },
       {
-        "input": "My single-cell ATAC data is in AnnData format.",
-        "output": "A scEmbed plan covering peak coordinate validation, tokenized cell generation, model training, scanpy clustering, and embedding quality review."
+        "input": "A user has single-cell ATAC-seq data in AnnData format.",
+        "output": [
+          "Mapped the task to scEmbed and scanpy integration.",
+          "Listed required peak coordinates, token files, and model settings.",
+          "Suggested clustering and UMAP review after embedding generation."
+        ]
       },
       {
-        "input": "I need one consensus peak set for multiple experiments.",
-        "output": "A method comparison for CC, CCF, ML, and HMM, plus guidance for merge distance, filter size, and quality checks."
+        "input": "A user wants metadata-aware search over BED file collections.",
+        "output": [
+          "Recommended BEDspace for joint region and label embeddings.",
+          "Outlined preprocessing, model training, distance calculation, and search validation.",
+          "Flagged StarSpace as an external dependency to install deliberately."
+        ]
       }
     ],
     "best_practices": [
-      "Confirm BED files, genome assembly, and universe files match before training.",
-      "Record parameters, random seeds, package versions, and input metadata for reproducibility.",
-      "Evaluate embeddings with multiple metrics and visual checks before using results downstream."
+      "Confirm genome assembly, chromosome sizes, and universe choice before tokenization.",
+      "Record parameters, random seeds, software versions, and input file provenance.",
+      "Evaluate embeddings with multiple metrics and visual review before interpretation."
     ],
     "anti_patterns": [
-      "Do not mix genome assemblies in one tokenization or universe workflow.",
-      "Do not treat low tokenization coverage as a model tuning problem only.",
-      "Do not publish embedding results without checking metadata quality and batch effects."
+      "Do not mix BED files from different genome assemblies without liftover.",
+      "Do not train embeddings before checking tokenization coverage.",
+      "Do not use development installs in production without pinning a revision."
     ],
     "faq": [
       {
         "question": "What data does this skill work with?",
-        "answer": "It focuses on genomic interval data, mainly BED files, BED collections, and scATAC-seq datasets with peak coordinates."
+        "answer": "It works with genomic interval data, especially BED files and scATAC-seq datasets."
       },
       {
-        "question": "When should I use Region2Vec?",
-        "answer": "Use Region2Vec when you need unsupervised embeddings for regions or region sets without rich metadata labels."
+        "question": "Can it build consensus peak universes?",
+        "answer": "Yes. It explains CC, CCF, ML, and HMM methods for building universe files."
       },
       {
-        "question": "When should I use BEDspace?",
-        "answer": "Use BEDspace when region sets have metadata and you need joint search across regions and labels."
+        "question": "Does it support single-cell ATAC-seq workflows?",
+        "answer": "Yes. It covers scEmbed workflows and integration with scanpy objects."
       },
       {
-        "question": "What does scEmbed add?",
-        "answer": "scEmbed applies Region2Vec-style training to single-cell ATAC-seq data for cell embeddings and clustering workflows."
+        "question": "Does it run Geniml automatically?",
+        "answer": "No. It provides workflow guidance and example commands that users should review before running."
       },
       {
-        "question": "Does it run Geniml for me?",
-        "answer": "It provides workflow guidance and commands, but execution depends on your local environment and installed dependencies."
+        "question": "What external dependencies may be needed?",
+        "answer": "Some workflows may need PyTorch, uniwig, StarSpace, scanpy, or reticulate."
       },
       {
-        "question": "What should I check before training?",
-        "answer": "Check genome assembly consistency, BED formatting, universe coverage, metadata quality, and available compute resources."
+        "question": "Is this suitable for production genomics pipelines?",
+        "answer": "Use it as workflow guidance. Pin package versions, validate inputs, and review commands before production use."
       }
     ]
   },

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-05T14:58:52.728Z",
+    "generated_at": "2026-07-09T09:08:21.099Z",
     "slug": "get-convex-convex-performance-audit",
     "source_url": "https://github.com/get-convex/agent-skills/tree/main/skills/convex-performance-audit/",
     "source_ref": "main",
@@ -9,7 +9,7 @@
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "e0cd37f6bc35249dc99b611dc3e9e5b50d7ea10f1cf2b7e1979dd4cdda2a2e10",
-    "tree_hash": "3a3cb10595fbfbbdd89ef4bc8360a3d4f7f771e6c6940ba50753f1641a3d1c86",
+    "tree_hash": "a5987a4465eb13f0370c6da11e75a8cb6912f6cfbdfa554059461b8ee6b580e1",
     "provenance": {
       "model_requested": "gpt-5.5:high",
       "model_effective": "codex:gpt-5.5:high",
@@ -26,8 +26,8 @@
   },
   "skill": {
     "name": "convex-performance-audit",
-    "description": "Audits Convex applications for slow queries, write contention, subscription cost, and function limit problems. It guides focused fixes using code evidence and runtime signals.",
-    "summary": "Finds Convex performance bottlenecks and recommends targeted fixes.",
+    "description": "Audits Convex application performance by tracing hot-path reads, write contention, subscription cost, and function budget pressure. It guides targeted fixes for slow or expensive Convex features.",
+    "summary": "Audit Convex performance signals and apply focused fixes for reads, writes, subscriptions, and function limits.",
     "icon": "📦",
     "version": "1.0.0",
     "author": "get-convex",
@@ -35,9 +35,9 @@
     "tags": [
       "convex",
       "performance",
-      "database",
-      "reactivity",
-      "optimization"
+      "database-optimization",
+      "subscriptions",
+      "debugging"
     ],
     "supported_tools": [
       "claude",
@@ -51,21 +51,26 @@
     "category": "coding"
   },
   "security_audit": {
-    "risk_level": "high",
+    "risk_level": "safe",
     "is_blocked": false,
-    "safe_to_publish": false,
+    "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static findings are false positives caused by Markdown examples that use Convex ctx.db APIs or mention reference paths. Two findings are confirmed: the skill asks agents to run npx Convex CLI commands, including an unpinned latest package fallback. No prompt injection or data-exfiltration intent was found in the reviewed files.",
+    "summary": "Most static findings are false positives from Markdown code spans and Convex ctx.db examples. Two findings are confirmed because the skill instructs agents to run npx Convex CLI diagnostics, including an @latest fallback. No prompt injection, credential exfiltration intent, or malicious network behavior was found.",
     "remediation": [
       {
-        "issue": "The skill instructs agents to run Convex CLI commands with npx.",
-        "suggestion": "Require user confirmation, show the exact command, and prefer the project-pinned Convex CLI when available.",
+        "issue": "External Convex CLI diagnostics",
+        "suggestion": "Require explicit user approval before running npx convex insights or any command that contacts a Convex deployment.",
         "severity": "medium"
       },
       {
-        "issue": "The fallback command uses npx -y convex@latest, which auto-installs the latest package.",
-        "suggestion": "Pin the CLI version or ask users to install or approve the package before execution.",
-        "severity": "high"
+        "issue": "Unpinned npx latest fallback",
+        "suggestion": "Prefer the project-local Convex CLI or a pinned package version instead of npx -y convex@latest.",
+        "severity": "medium"
+      },
+      {
+        "issue": "Deployment scope for diagnostics",
+        "suggestion": "Document which deployment flag is being used before collecting insights, especially for production, preview, or named deployments.",
+        "severity": "low"
       }
     ],
     "risk_factor_evidence": [
@@ -846,428 +851,411 @@
       {
         "id": "sensitive:references/function-budget.md:59:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/function-budget.md:64:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/function-budget.md:85:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/function-budget.md:87:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/function-budget.md:99:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/function-budget.md:105:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/function-budget.md:130:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/function-budget.md:153:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/function-budget.md:162:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/function-budget.md:182:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/function-budget.md:192:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "blocker:references/function-budget.md:182:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is performance guidance or a UI example, not host reconnaissance. It does not enumerate system state, credentials, or network configuration."
+        "confidence": 0.92,
+        "reason": "The line describes Convex performance behavior or sample application code, not host or network reconnaissance. It does not enumerate system state, credentials, or deployment secrets."
       },
       {
         "id": "blocker:references/function-budget.md:192:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is performance guidance or a UI example, not host reconnaissance. It does not enumerate system state, credentials, or network configuration."
+        "confidence": 0.92,
+        "reason": "The line describes Convex performance behavior or sample application code, not host or network reconnaissance. It does not enumerate system state, credentials, or deployment secrets."
       },
       {
         "id": "blocker:references/function-budget.md:199:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is performance guidance or a UI example, not host reconnaissance. It does not enumerate system state, credentials, or network configuration."
+        "confidence": 0.92,
+        "reason": "The line describes Convex performance behavior or sample application code, not host or network reconnaissance. It does not enumerate system state, credentials, or deployment secrets."
       },
       {
         "id": "sensitive:references/hot-path-rules.md:56:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/hot-path-rules.md:67:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/hot-path-rules.md:80:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/hot-path-rules.md:104:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/hot-path-rules.md:174:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/hot-path-rules.md:229:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/hot-path-rules.md:237:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/hot-path-rules.md:259:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/hot-path-rules.md:268:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/hot-path-rules.md:311:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "blocker:references/hot-path-rules.md:40:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is performance guidance or a UI example, not host reconnaissance. It does not enumerate system state, credentials, or network configuration."
+        "confidence": 0.92,
+        "reason": "The line describes Convex performance behavior or sample application code, not host or network reconnaissance. It does not enumerate system state, credentials, or deployment secrets."
       },
       {
         "id": "blocker:references/hot-path-rules.md:322:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is performance guidance or a UI example, not host reconnaissance. It does not enumerate system state, credentials, or network configuration."
+        "confidence": 0.92,
+        "reason": "The line describes Convex performance behavior or sample application code, not host or network reconnaissance. It does not enumerate system state, credentials, or deployment secrets."
       },
       {
         "id": "blocker:references/hot-path-rules.md:333:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is performance guidance or a UI example, not host reconnaissance. It does not enumerate system state, credentials, or network configuration."
+        "confidence": 0.92,
+        "reason": "The line describes Convex performance behavior or sample application code, not host or network reconnaissance. It does not enumerate system state, credentials, or deployment secrets."
       },
       {
         "id": "sensitive:references/occ-conflicts.md:44:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/occ-conflicts.md:50:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/occ-conflicts.md:62:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/occ-conflicts.md:63:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/occ-conflicts.md:70:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/occ-conflicts.md:71:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/occ-conflicts.md:82:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/occ-conflicts.md:88:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/occ-conflicts.md:98:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/occ-conflicts.md:99:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/occ-conflicts.md:104:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/subscription-cost.md:73:environment-file-access",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The cited code uses a Vite public Convex URL variable in a client example. It does not read an environment file or expose a secret value."
+        "confidence": 0.9,
+        "reason": "The snippet uses import.meta.env.VITE_CONVEX_URL, a public Vite client configuration value in a documentation example. It does not read secrets or access an environment file directly."
       },
       {
         "id": "sensitive:references/subscription-cost.md:190:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/subscription-cost.md:199:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/subscription-cost.md:212:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:references/subscription-cost.md:220:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "blocker:references/subscription-cost.md:82:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is performance guidance or a UI example, not host reconnaissance. It does not enumerate system state, credentials, or network configuration."
+        "confidence": 0.92,
+        "reason": "The line describes Convex performance behavior or sample application code, not host or network reconnaissance. It does not enumerate system state, credentials, or deployment secrets."
       },
       {
         "id": "blocker:references/subscription-cost.md:126:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is performance guidance or a UI example, not host reconnaissance. It does not enumerate system state, credentials, or network configuration."
+        "confidence": 0.92,
+        "reason": "The line describes Convex performance behavior or sample application code, not host or network reconnaissance. It does not enumerate system state, credentials, or deployment secrets."
       },
       {
         "id": "blocker:references/subscription-cost.md:208:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is performance guidance or a UI example, not host reconnaissance. It does not enumerate system state, credentials, or network configuration."
+        "confidence": 0.92,
+        "reason": "The line describes Convex performance behavior or sample application code, not host or network reconnaissance. It does not enumerate system state, credentials, or deployment secrets."
       },
       {
         "id": "external_commands:SKILL.md:13:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This is Markdown inline code, a reference path, or an API name, not Ruby backtick execution. The cited location does not run a shell command."
+        "confidence": 0.9,
+        "reason": "This is a when-to-use mention of CLI output inside a markdown code span, not Ruby backtick execution. The line itself does not instruct execution or interpolate user input."
       },
       {
         "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
         "verdict": "confirmed",
         "confidence": 0.82,
-        "severity": "medium",
-        "reason": "The skill instructs the agent to run an npx Convex CLI command in the user repo. This is legitimate performance tooling, but it executes external code and can contact Convex services."
+        "reason": "The skill tells the agent to run npx convex insights --details, which executes an external CLI and may contact Convex services. This is legitimate diagnostic guidance but still needs user awareness.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:38:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.9,
-        "severity": "high",
-        "reason": "The fallback command uses npx -y convex@latest, which can download and execute an unpinned package without an interactive install prompt. That creates supply-chain and network execution risk."
+        "confidence": 0.86,
+        "reason": "The fallback command npx -y convex@latest downloads and runs an npm package without an interactive npx prompt. It appears legitimate, but it is real external code execution.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:39:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This is Markdown inline code, a reference path, or an API name, not Ruby backtick execution. The cited location does not run a shell command."
+        "confidence": 0.91,
+        "reason": "This is a markdown reference to convex-doctor and explicitly says not to require it. No command is executed by the skill text at this location."
       },
       {
         "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This is Markdown inline code, a reference path, or an API name, not Ruby backtick execution. The cited location does not run a shell command."
+        "confidence": 0.95,
+        "reason": "This is a markdown code span for a file path, skill path, or Convex API name. It is not shell execution, Ruby interpolation, or a command injection vector."
       },
       {
         "id": "external_commands:SKILL.md:49:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This is Markdown inline code, a reference path, or an API name, not Ruby backtick execution. The cited location does not run a shell command."
+        "confidence": 0.95,
+        "reason": "This is a markdown code span for a file path, skill path, or Convex API name. It is not shell execution, Ruby interpolation, or a command injection vector."
       },
       {
         "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This is Markdown inline code, a reference path, or an API name, not Ruby backtick execution. The cited location does not run a shell command."
+        "confidence": 0.95,
+        "reason": "This is a markdown code span for a file path, skill path, or Convex API name. It is not shell execution, Ruby interpolation, or a command injection vector."
       },
       {
         "id": "external_commands:SKILL.md:51:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This is Markdown inline code, a reference path, or an API name, not Ruby backtick execution. The cited location does not run a shell command."
+        "confidence": 0.95,
+        "reason": "This is a markdown code span for a file path, skill path, or Convex API name. It is not shell execution, Ruby interpolation, or a command injection vector."
       },
       {
         "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This is Markdown inline code, a reference path, or an API name, not Ruby backtick execution. The cited location does not run a shell command."
+        "confidence": 0.95,
+        "reason": "This is a markdown code span for a file path, skill path, or Convex API name. It is not shell execution, Ruby interpolation, or a command injection vector."
       },
       {
         "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This is Markdown inline code, a reference path, or an API name, not Ruby backtick execution. The cited location does not run a shell command."
+        "confidence": 0.95,
+        "reason": "This is a markdown code span for a file path, skill path, or Convex API name. It is not shell execution, Ruby interpolation, or a command injection vector."
       },
       {
         "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This is Markdown inline code, a reference path, or an API name, not Ruby backtick execution. The cited location does not run a shell command."
+        "confidence": 0.95,
+        "reason": "This is a markdown code span for a file path, skill path, or Convex API name. It is not shell execution, Ruby interpolation, or a command injection vector."
       },
       {
         "id": "external_commands:SKILL.md:87:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This is Markdown inline code, a reference path, or an API name, not Ruby backtick execution. The cited location does not run a shell command."
+        "confidence": 0.95,
+        "reason": "This is a markdown code span for a file path, skill path, or Convex API name. It is not shell execution, Ruby interpolation, or a command injection vector."
       },
       {
         "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This is Markdown inline code, a reference path, or an API name, not Ruby backtick execution. The cited location does not run a shell command."
+        "confidence": 0.95,
+        "reason": "This is a markdown code span for a file path, skill path, or Convex API name. It is not shell execution, Ruby interpolation, or a command injection vector."
       },
       {
         "id": "external_commands:SKILL.md:127:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This is Markdown inline code, a reference path, or an API name, not Ruby backtick execution. The cited location does not run a shell command."
+        "confidence": 0.95,
+        "reason": "This is a markdown code span for a file path, skill path, or Convex API name. It is not shell execution, Ruby interpolation, or a command injection vector."
       },
       {
         "id": "external_commands:SKILL.md:128:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This is Markdown inline code, a reference path, or an API name, not Ruby backtick execution. The cited location does not run a shell command."
+        "confidence": 0.95,
+        "reason": "This is a markdown code span for a file path, skill path, or Convex API name. It is not shell execution, Ruby interpolation, or a command injection vector."
       },
       {
         "id": "external_commands:SKILL.md:129:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This is Markdown inline code, a reference path, or an API name, not Ruby backtick execution. The cited location does not run a shell command."
+        "confidence": 0.95,
+        "reason": "This is a markdown code span for a file path, skill path, or Convex API name. It is not shell execution, Ruby interpolation, or a command injection vector."
       },
       {
         "id": "external_commands:SKILL.md:130:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This is Markdown inline code, a reference path, or an API name, not Ruby backtick execution. The cited location does not run a shell command."
+        "confidence": 0.95,
+        "reason": "This is a markdown code span for a file path, skill path, or Convex API name. It is not shell execution, Ruby interpolation, or a command injection vector."
       },
       {
         "id": "network:SKILL.md:132:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "The URL is an official Convex documentation link included as a reference. It is not an exfiltration endpoint or an automatic network request."
+        "reason": "The URL points to official Convex documentation as a reference link. There is no data transfer, callback, or exfiltration behavior at this location."
       },
       {
         "id": "sensitive:SKILL.md:87:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "sensitive:SKILL.md:88:sqlite-database-file",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is a Convex ctx.db API example or audit instruction, not local SQLite file access. It neither opens database files nor reads secrets from disk."
+        "confidence": 0.94,
+        "reason": "The snippet is a Convex ctx.db API example inside markdown performance guidance, not a SQLite file path or local database access. It demonstrates application query or mutation patterns and does not read sensitive files."
       },
       {
         "id": "blocker:SKILL.md:122:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The cited text is performance guidance or a UI example, not host reconnaissance. It does not enumerate system state, credentials, or network configuration."
+        "confidence": 0.92,
+        "reason": "The line describes Convex performance behavior or sample application code, not host or network reconnaissance. It does not enumerate system state, credentials, or deployment secrets."
       }
     ],
     "semantic_findings": [],
     "critical_findings": [],
-    "high_findings": [
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "- If the local repo's Convex CLI is too old to support `insights`, try `npx -y convex@latest insight",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 38,
-            "line_end": 38
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The fallback command uses npx -y convex@latest, which can download and execute an unpinned package without an interactive install prompt. That creates supply-chain and network execution risk."
-      }
-    ],
+    "high_findings": [],
     "medium_findings": [
       {
         "title": "Ruby/shell backtick execution",
@@ -1283,7 +1271,23 @@
         "source_category": "external_commands",
         "source_severity": "medium",
         "confidence": 0.82,
-        "confidence_reasoning": "The skill instructs the agent to run an npx Convex CLI command in the user repo. This is legitimate performance tooling, but it executes external code and can contact Convex services."
+        "confidence_reasoning": "The skill tells the agent to run npx convex insights --details, which executes an external CLI and may contact Convex services. This is legitimate diagnostic guidance but still needs user awareness."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- If the local repo's Convex CLI is too old to support `insights`, try `npx -y convex@latest insight",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 38,
+            "line_end": 38
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "The fallback command npx -y convex@latest downloads and runs an npm package without an interactive npx prompt. It appears legitimate, but it is real external code execution."
       }
     ],
     "low_findings": [],
@@ -1291,138 +1295,138 @@
     "files_scanned": 7,
     "total_lines": 1144,
     "audit_model": "codex",
-    "audited_at": "2026-07-05T14:58:52.728Z",
-    "agent_auto_install_policy": "confirmation_required",
+    "audited_at": "2026-07-09T09:08:21.099Z",
+    "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Audit Convex Performance Bottlenecks",
-    "value_statement": "Convex apps can become slow when queries, subscriptions, or writes grow without clear signals. This skill guides Claude, Codex, or Claude Code through a focused performance audit.",
+    "value_statement": "Slow Convex features waste reads, trigger broad invalidations, and hide contention. This skill guides Claude, Codex, and Claude Code through targeted performance audits.",
     "seo_keywords": [
+      "Convex performance audit",
+      "Convex optimization",
       "Claude",
       "Codex",
       "Claude Code",
-      "Convex performance",
-      "Convex audit",
-      "database optimization",
-      "subscription cost",
+      "Convex subscriptions",
       "OCC conflicts",
+      "read amplification",
       "function limits",
-      "query optimization"
+      "database performance"
     ],
     "actual_capabilities": [
-      "Routes symptoms to hot-path, OCC, subscription, or function-budget guidance.",
-      "Uses Convex insights, dashboard signals, and code paths to scope an audit.",
-      "Identifies unbounded reads, broad filters, large payloads, and costly subscriptions.",
-      "Suggests indexes, digest tables, batched mutations, and point-in-time reads when justified.",
-      "Checks sibling readers and writers for repeated performance patterns.",
-      "Defines verification steps for behavior, read volume, and invalidation changes."
+      "Routes performance symptoms to hot-path, contention, subscription, or function-budget checks.",
+      "Uses Convex insights output when available to prioritize expensive functions.",
+      "Traces read sets, write sets, indexes, subscriptions, and invalidation sources.",
+      "Recommends focused fixes such as indexes, digest tables, batching, and point-in-time reads.",
+      "Checks sibling functions that touch the same tables or derived data.",
+      "Adds verification steps for behavior, fallback safety, and reduced work."
     ],
     "limitations": [
-      "It does not replace production monitoring or load testing.",
-      "It depends on access to application code and available Convex signals.",
-      "It recommends larger migrations only after measured evidence.",
-      "It does not provide general Convex setup or authentication guidance."
+      "Requires project code, runtime metrics, or user-provided symptoms for best results.",
+      "Does not replace load testing or production observability.",
+      "Large structural fixes may require separate migration planning.",
+      "Convex limits can change, so official documentation should be checked."
     ],
     "use_cases": [
       {
-        "title": "Plan a Performance Triage",
-        "description": "Classify slow flows and choose the smallest safe fix.",
-        "target_user": "Engineering lead"
+        "title": "Reduce Slow Query Cost",
+        "description": "Find unbounded reads, missing indexes, large row shapes, and unnecessary joins on a hot Convex path.",
+        "target_user": "Backend engineer"
       },
       {
-        "title": "Reduce Query and Write Cost",
-        "description": "Find unbounded reads, broad filters, no-op writes, and contention in Convex functions.",
-        "target_user": "Backend developer"
+        "title": "Improve Reactive UI Performance",
+        "description": "Review subscriptions, query granularity, and invalidation patterns that cause sluggish Convex screens.",
+        "target_user": "Full-stack developer"
       },
       {
-        "title": "Improve Reactive UI Responsiveness",
-        "description": "Review subscriptions and point-in-time reads for pages that do not need live updates.",
-        "target_user": "Product engineer"
+        "title": "Investigate Contention and Limits",
+        "description": "Analyze OCC conflicts, large mutations, function timeouts, and transaction budget pressure.",
+        "target_user": "Technical lead"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Find the Slow Path",
-        "scenario": "Beginner triage",
-        "prompt": "Audit this Convex feature for performance. Start by identifying the user flow, involved functions, tables read, and tables written."
-      },
-      {
-        "title": "Review Read Amplification",
-        "scenario": "Intermediate query audit",
-        "prompt": "Use the hot-path rules to inspect this query path. Flag unbounded reads, JS filtering, large documents, and missing index opportunities."
+        "title": "Audit a Slow Convex Feature",
+        "scenario": "Beginner audit with a clear symptom.",
+        "prompt": "Audit this Convex feature for performance. Start from the slow user flow. Identify expensive reads, writes, and verification steps."
       },
       {
         "title": "Reduce Subscription Cost",
-        "scenario": "Intermediate UI audit",
-        "prompt": "Analyze this page for subscription cost. Compare live reactivity with point-in-time reads, and preserve freshness where users need it."
+        "scenario": "Intermediate review for sluggish reactive pages.",
+        "prompt": "Review this page for unnecessary Convex subscriptions. Compare live freshness needs with point-in-time reads. Suggest focused changes and tests."
       },
       {
-        "title": "Plan a Cross-Path Fix",
-        "scenario": "Advanced rollout planning",
-        "prompt": "Create a migration-safe performance plan for this Convex area. Include sibling functions, rollout order, verification, and risks before editing."
+        "title": "Resolve OCC Conflicts",
+        "scenario": "Advanced review for write contention.",
+        "prompt": "Analyze these Convex mutations for OCC conflicts. Find hot documents, broad read sets, no-op writes, and safe scheduling opportunities."
+      },
+      {
+        "title": "Plan a Performance Refactor",
+        "scenario": "Advanced cross-flow audit before broad edits.",
+        "prompt": "Create a Convex performance refactor plan across these related functions. Include migration risks, sibling paths, rollout order, and verification criteria."
       }
     ],
     "output_examples": [
       {
-        "input": "A dashboard loads slowly and Convex insights shows high documents read.",
+        "input": "A project list loads slowly and reads many documents.",
         "output": [
-          "Classifies the issue as hot-path read amplification.",
-          "Recommends bounded indexed reads before digest tables.",
-          "Adds verification for same results and lower read volume."
+          "The audit identifies an unbounded list read and missing storage-side filtering.",
+          "It recommends an index-backed query, smaller return shape, and sibling list review.",
+          "Verification includes equal results and lower documents read in Convex insights."
         ]
       },
       {
-        "input": "A collaborative page has frequent OCC conflicts during voting.",
+        "input": "A dashboard feels sluggish after users scroll through several pages.",
         "output": [
-          "Identifies the shared counter as a contention point.",
-          "Suggests splitting the hot document or scheduling secondary work.",
-          "Checks sibling writers before closing the audit."
+          "The review separates backend subscription cost from UI churn.",
+          "It suggests limiting live pages or using point-in-time fetching where freshness is low.",
+          "Verification checks subscription count, render frequency, and user-visible behavior."
         ]
       },
       {
-        "input": "A report page uses live subscriptions, but data changes hourly.",
+        "input": "Mutations show OCC conflicts during busy voting periods.",
         "output": [
-          "Compares live subscriptions with point-in-time reads.",
-          "Keeps reactivity only where users need fresh updates.",
-          "Defines UI and dashboard checks for lower subscription cost."
+          "The audit finds a hot counter document and competing writes.",
+          "It recommends sharding the counter or scheduling non-critical bookkeeping.",
+          "Verification checks conflict rate, latency, and data correctness."
         ]
       }
     ],
     "best_practices": [
-      "Start from measured signals, then inspect code when signals are missing.",
-      "Keep simple scans when data is small and no hot path is proven.",
-      "Verify behavior and performance changes before closing the audit."
+      "Start with measured signals before proposing structural changes.",
+      "Trace sibling readers and writers that touch the same tables.",
+      "Verify behavior and performance after every optimization."
     ],
     "anti_patterns": [
-      "Applying digest tables without evidence of repeated read cost.",
-      "Switching live subscriptions to point-in-time reads when users need fresh updates.",
-      "Fixing one function while sibling readers or writers keep the same bottleneck."
+      "Do not replace simple scans when the table is small and the signal is weak.",
+      "Do not add digest tables without a hot path or large row shape.",
+      "Do not switch reactive views to point-in-time reads when live freshness matters."
     ],
     "faq": [
       {
         "question": "Does this skill run Convex commands automatically?",
-        "answer": "It may suggest Convex CLI insights. Users should approve commands before execution."
+        "answer": "It can recommend Convex CLI diagnostics. Agents should ask before running external commands."
       },
       {
-        "question": "Can it fix code directly?",
-        "answer": "Yes, when the requested scope is clear and the changes are local."
+        "question": "Can it fix every performance problem?",
+        "answer": "No. It focuses on common Convex read, write, subscription, and function-budget patterns."
       },
       {
         "question": "Does it require production access?",
-        "answer": "No. It can audit code only, but runtime signals improve accuracy."
+        "answer": "No. It can audit code alone, but runtime insights make prioritization more reliable."
       },
       {
-        "question": "Will it always recommend indexes?",
-        "answer": "No. It recommends indexes only when they reduce a real hot-path scan."
+        "question": "Will it recommend migrations?",
+        "answer": "Only when the performance signal justifies a structural change or rollout risk exists."
       },
       {
-        "question": "Can it help with OCC conflicts?",
-        "answer": "Yes. It covers broad read sets, hot documents, no-op writes, and scheduled follow-up work."
+        "question": "Is it useful for new Convex projects?",
+        "answer": "It is best after a feature has measurable slowness, cost, contention, or scale concerns."
       },
       {
-        "question": "Is it only for React apps?",
-        "answer": "No. It includes React subscription patterns, but backend Convex functions are also covered."
+        "question": "Which tools can use this skill?",
+        "answer": "The report lists support for Claude, Codex, and Claude Code."
       }
     ]
   },

@@ -1,23 +1,22 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-05T08:24:53.977Z",
+    "generated_at": "2026-07-09T04:05:29.003Z",
     "slug": "curiouslearner-docker-helper",
     "source_url": "https://github.com/CuriousLearner/devkit/tree/main/skills/docker-helper",
     "source_ref": "main",
-    "model": "codex",
+    "model": "claude",
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "e5232a708cf130629730af6e892525461afc708fdd77bb50a0af985fe7ddfb7a",
-    "tree_hash": "b8c935399c20b93bc5e0d2bdd3047ea59bb24e5e8a79011eace1f43420308c95",
+    "tree_hash": "ba6face432273a4347d58db5e5528b30f414481310440791a6c1225b23c7a3a9",
     "provenance": {
-      "model_requested": "gpt-5.5:high",
-      "model_effective": "codex:gpt-5.5:high",
+      "model_requested": "claude-sonnet-4.6",
+      "model_effective": "claude:claude-sonnet-4.6",
       "fallback_chain": [
         {
-          "agent": "codex",
-          "model": "gpt-5.5",
-          "effort": "high",
+          "agent": "claude",
+          "model": "claude-sonnet-4.6",
           "outcome": "success"
         }
       ],
@@ -26,8 +25,8 @@
   },
   "skill": {
     "name": "docker-helper",
-    "description": "Docker Compose generation, Dockerfile optimization, and container troubleshooting guidance.",
-    "summary": "Generate, review, and troubleshoot Dockerfiles and Docker Compose setups.",
+    "description": "Generate, review, optimize, and troubleshoot Dockerfiles and Docker Compose configurations for application projects.",
+    "summary": "Helps create secure, efficient Dockerfiles and Docker Compose setups with troubleshooting guidance.",
     "icon": "📦",
     "version": "1.0.0",
     "author": "CuriousLearner",
@@ -52,26 +51,31 @@
     "category": "devops"
   },
   "security_audit": {
-    "risk_level": "critical",
-    "is_blocked": true,
+    "risk_level": "high",
+    "is_blocked": false,
     "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "Most static findings are false positives from Markdown fences, Docker examples, localhost healthchecks, and safe documentation patterns. One high-risk credential example is confirmed because it embeds a literal PostgreSQL password in a Compose connection string. I also found a medium-risk documentation issue where destructive Docker prune commands are shown without safeguards.",
+    "summary": "The skill is primarily Docker instructional content and most static command findings are false positives from Markdown code fences. Real issues remain around examples that normalize hardcoded database credentials, sensitive .env usage, interactive shell access, and destructive Docker cleanup commands without strong safety warnings.",
     "remediation": [
       {
-        "issue": "The Compose example includes a literal database password in DATABASE_URL.",
-        "suggestion": "Use placeholders such as ${DATABASE_URL} or Docker secrets, and state that sample credentials must be replaced.",
+        "issue": "Hardcoded database credentials appear in Compose examples.",
+        "suggestion": "Replace sample passwords and full database URLs with placeholders or Docker secrets, and add guidance not to commit real credentials.",
         "severity": "high"
       },
       {
-        "issue": "Docker cleanup commands can remove images, build cache, and unused volumes.",
-        "suggestion": "Add warnings before docker system prune -a and docker volume prune, or replace them with safer inspection commands.",
+        "issue": "Docker cleanup commands are listed without safety context.",
+        "suggestion": "Add warnings before docker system prune -a and docker volume prune, and suggest reviewing affected resources before running them.",
         "severity": "medium"
       },
       {
-        "issue": "Some examples may be copied into production without adaptation.",
-        "suggestion": "Label examples as templates and require users to review ports, volumes, credentials, and image tags before use.",
+        "issue": "Interactive container shell commands are presented as general troubleshooting steps.",
+        "suggestion": "Label docker run -it and docker exec -it shell access as debug-only and advise users to avoid exposing secrets during sessions.",
         "severity": "medium"
+      },
+      {
+        "issue": ".env handling appears near credential examples.",
+        "suggestion": "Clarify that .env files must stay out of images and version control, and prefer secret managers for production deployments.",
+        "severity": "high"
       }
     ],
     "risk_factor_evidence": [
@@ -758,16 +762,6 @@
         "snippet": "# .env*"
       },
       {
-        "id": "blocker:SKILL.md:332:recursive-delete-on-root-home",
-        "category": "blocker",
-        "severity": "critical",
-        "pattern": "Recursive delete on root/home",
-        "file": "SKILL.md",
-        "line_start": 332,
-        "line_end": 332,
-        "snippet": "rm -rf /var/lib/apt/lists/*"
-      },
-      {
         "id": "blocker:SKILL.md:385:system-reconnaissance",
         "category": "blocker",
         "severity": "low",
@@ -782,291 +776,291 @@
       {
         "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is a Markdown Dockerfile example showing a standard Node.js multi-stage build. It is documentation content, not hidden Ruby backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:79:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is only the closing Markdown fence for a Dockerfile example. It does not execute a shell command."
       },
       {
         "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is a Markdown Dockerfile example for a Python application. The flagged token is a code fence, not executable Ruby backtick syntax."
       },
       {
         "id": "external_commands:SKILL.md:103:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is only the closing Markdown fence for the Python Dockerfile example. It does not create a command execution path."
       },
       {
         "id": "external_commands:SKILL.md:106:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is a Markdown Dockerfile example for a Go application. It describes normal container build steps rather than hidden shell execution."
       },
       {
         "id": "external_commands:SKILL.md:130:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is only the closing Markdown fence for the Go Dockerfile example. No command is executed by the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:135:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This opens a Docker Compose YAML example. The static detector matched Markdown fencing rather than a Ruby shell execution primitive."
       },
       {
         "id": "external_commands:SKILL.md:240:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is only the closing Markdown fence for a Compose example. It is not executable code in the skill runtime."
       },
       {
         "id": "external_commands:SKILL.md:243:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This opens a development Docker Compose YAML example. The content is instructional configuration, not Ruby backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:280:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is only the closing Markdown fence for a Compose example. It is a formatting marker, not a shell execution sink."
       },
       {
         "id": "external_commands:SKILL.md:284:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This opens a plain usage example block for invoking the skill. It is not Ruby backtick execution or host command execution."
       },
       {
         "id": "external_commands:SKILL.md:290:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is only the closing Markdown fence for usage examples. It does not introduce executable behavior."
       },
       {
         "id": "external_commands:SKILL.md:295:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This opens a Dockerfile optimization example. The command-like lines are expected container build instructions in documentation."
       },
       {
         "id": "external_commands:SKILL.md:309:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is only the closing Markdown fence for the multi-stage build example. It is not executable shell syntax."
       },
       {
         "id": "external_commands:SKILL.md:312:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This opens a Dockerfile layer-caching example. It is explanatory documentation rather than a command execution mechanism."
       },
       {
         "id": "external_commands:SKILL.md:321:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is only the closing Markdown fence for the layer-caching example. No code path executes from this marker."
       },
       {
         "id": "external_commands:SKILL.md:324:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This opens a Dockerfile image-size example. The static pattern is a Markdown fence, not Ruby shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:340:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is only the closing Markdown fence for the image-size example. It does not execute a command."
       },
       {
         "id": "external_commands:SKILL.md:344:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This opens a Dockerfile security best-practices example. It is benign instructional content about non-root users and minimal images."
       },
       {
         "id": "external_commands:SKILL.md:363:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is only the closing Markdown fence for security best practices. It is not a runtime command."
       },
       {
         "id": "external_commands:SKILL.md:368:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This opens a bash troubleshooting example containing ordinary Docker diagnostic commands. The fence itself is not Ruby backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:377:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is only the closing Markdown fence for troubleshooting commands. It is a formatting marker only."
       },
       {
         "id": "external_commands:SKILL.md:380:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This opens a YAML troubleshooting example. It documents Compose networking behavior and does not execute shell code."
       },
       {
         "id": "external_commands:SKILL.md:392:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is only the closing Markdown fence for a YAML troubleshooting example. It is not executable syntax."
       },
       {
         "id": "external_commands:SKILL.md:395:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This opens a Dockerfile volume-permission example. The detector matched Markdown fencing, not hidden Ruby execution."
       },
       {
         "id": "external_commands:SKILL.md:402:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is only the closing Markdown fence for the volume-permission example. No command is executed by the marker."
       },
       {
         "id": "external_commands:SKILL.md:405:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This opens a Dockerfile slow-build example. It contains standard build-cache guidance rather than a malicious execution path."
       },
       {
         "id": "external_commands:SKILL.md:416:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is only the closing Markdown fence for the slow-build example. It is not executable code."
       },
       {
         "id": "external_commands:SKILL.md:420:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "verdict": "confirmed",
+        "confidence": 0.78,
+        "reason": "This Docker command reference includes cleanup commands such as docker system prune -a and docker volume prune. Those commands can delete local images, containers, and volumes if copied without confirmation.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:445:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is only the closing Markdown fence for Docker command reference examples. The fence itself is not shell execution."
       },
       {
         "id": "external_commands:SKILL.md:449:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This opens a Dockerfile health-check example. It is documentation for local health checks, not hidden network execution."
       },
       {
         "id": "external_commands:SKILL.md:461:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The detected token is a Markdown code fence around Dockerfile, YAML, or Bash documentation. It is not Ruby backtick execution or automatic command execution."
+        "confidence": 0.88,
+        "reason": "This is only the closing Markdown fence for health-check examples. It does not execute code."
       },
       {
         "id": "external_commands:SKILL.md:465:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The detected text is inline Markdown backticks around the word latest in a note. It is not Ruby or shell backtick execution."
+        "confidence": 0.88,
+        "reason": "This line is prose advising users to avoid latest tags. Inline code formatting around latest is not shell execution."
       },
       {
         "id": "external_commands:SKILL.md:373:unix-shell-invocation",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The line is a Docker troubleshooting command shown for manual user execution inside a container. The skill does not execute it or combine it with untrusted input."
+        "verdict": "confirmed",
+        "confidence": 0.62,
+        "reason": "The example tells users to start an interactive shell inside a container. This is legitimate troubleshooting, but it can expose container internals and should be framed as an explicit debug-only action.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:431:unix-shell-invocation",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The line is a Docker troubleshooting command shown for manual user execution inside a container. The skill does not execute it or combine it with untrusted input."
+        "verdict": "confirmed",
+        "confidence": 0.62,
+        "reason": "The example tells users to execute an interactive shell inside a running container. This is useful for debugging but expands access to the container environment and should require user intent.",
+        "severity": "medium"
       },
       {
         "id": "network:SKILL.md:456:python-http-libraries",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The requests import appears in a Docker healthcheck example targeting localhost. It is not an outbound network request or data transfer by the skill."
+        "confidence": 0.88,
+        "reason": "The Python requests import is inside a Docker HEALTHCHECK example targeting localhost. It does not exfiltrate data or contact an external host."
       },
       {
         "id": "network:SKILL.md:148:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The URL is an internal Docker Compose service address for an API container. It does not contact an external host or exfiltrate data."
+        "confidence": 0.88,
+        "reason": "The URL points to a Compose service name on an internal Docker network. It is an example configuration value, not an external network destination."
       },
       {
         "id": "network:SKILL.md:180:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The hardcoded URL points to localhost in a container healthcheck example. This is a normal local readiness probe, not external network access."
+        "confidence": 0.88,
+        "reason": "The curl target is localhost in a container health check. This is a normal self-check pattern, not an external call."
       },
       {
         "id": "network:SKILL.md:456:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The hardcoded URL points to localhost in a container healthcheck example. This is a normal local readiness probe, not external network access."
+        "confidence": 0.88,
+        "reason": "The URL is localhost inside a health-check command. It is not a hardcoded third-party endpoint or data exfiltration channel."
       },
       {
         "id": "network:SKILL.md:460:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The hardcoded URL points to localhost in a container healthcheck example. This is a normal local readiness probe, not external network access."
+        "confidence": 0.88,
+        "reason": "The wget target is localhost inside a health-check command. This is expected container liveness documentation, not unsafe networking."
       },
       {
         "id": "env_access:SKILL.md:164:database-connection-strings",
         "verdict": "confirmed",
-        "confidence": 0.78,
-        "reason": "The Compose example includes a literal PostgreSQL connection string with user:password. Although illustrative, it can encourage hardcoded credentials in generated configs.",
+        "confidence": 0.86,
+        "reason": "The Compose example includes a database URL with a literal username and password. Even as sample content, it teaches hardcoded credentials instead of secret management.",
         "severity": "high"
       },
       {
         "id": "env_access:SKILL.md:165:database-connection-strings",
         "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "The Redis URL is an internal service endpoint without embedded credentials. It documents Docker Compose networking rather than secret access."
+        "confidence": 0.88,
+        "reason": "The Redis URL is a sample Compose service connection string without credentials or external host exposure. It is documentation for internal service discovery."
       },
       {
         "id": "env_access:SKILL.md:386:database-connection-strings",
-        "verdict": "false_positive",
-        "confidence": 0.89,
-        "reason": "The PostgreSQL URL is a service-name networking example and contains no username, password, or external destination. It is not credential exposure."
+        "verdict": "confirmed",
+        "confidence": 0.72,
+        "reason": "The troubleshooting example includes a database URL inline in configuration. It lacks a password, but it still normalizes embedding connection strings directly in files.",
+        "severity": "high"
       },
       {
         "id": "sensitive:SKILL.md:167:environment-file-access",
-        "verdict": "false_positive",
-        "confidence": 0.83,
-        "reason": "The .env reference is a Docker Compose env_file example, not code that reads or exfiltrates local files. It requires user-provided configuration."
+        "verdict": "confirmed",
+        "confidence": 0.76,
+        "reason": "The Compose example loads a .env file and nearby lines include database credentials. This is legitimate Compose usage, but it handles sensitive configuration and needs stronger secret-handling guidance.",
+        "severity": "high"
       },
       {
         "id": "sensitive:SKILL.md:339:environment-file-access",
-        "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The .env* reference is shown as a .dockerignore exclusion. This protects secrets from image build context rather than accessing them."
-      },
-      {
-        "id": "blocker:SKILL.md:332:recursive-delete-on-root-home",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The rm command deletes apt package-list cache under /var/lib/apt/lists inside a Dockerfile layer. It is scoped cleanup, not recursive deletion of root or home."
+        "verdict": "confirmed",
+        "confidence": 0.82,
+        "reason": "The .dockerignore example correctly excludes .env files from images. The finding is real sensitive-file handling context, but the usage is defensive rather than malicious.",
+        "severity": "high"
       },
       {
         "id": "blocker:SKILL.md:385:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The line is a comment explaining Docker Compose service-name DNS. It performs no system discovery or reconnaissance."
+        "confidence": 0.88,
+        "reason": "The line is a comment explaining that Docker Compose service names are hostnames. It is not system reconnaissance or host enumeration."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Destructive Docker Cleanup Commands Lack Safeguards",
-        "description": "The command reference lists docker system prune -a and docker volume prune without warning about image, cache, and volume removal. This can cause local data loss if copied into shared or production hosts.",
+        "title": "Destructive Docker Cleanup Commands Lack Safety Warning",
+        "description": "The Docker command reference includes docker system prune -a and docker volume prune without a warning that these commands can remove local images, containers, and volumes.",
         "severity": "medium",
         "locations": [
           {
@@ -1075,28 +1069,25 @@
             "line_end": 444
           }
         ],
-        "confidence": 0.88,
-        "confidence_reasoning": "The commands are real Docker cleanup commands with destructive effects, and the surrounding text provides no confirmation or scope warning."
-      }
-    ],
-    "critical_findings": [
+        "confidence": 0.86,
+        "confidence_reasoning": "The commands are explicit and destructive in normal Docker usage. The surrounding text does not add a confirmation or dry-run warning."
+      },
       {
-        "title": "Recursive delete on root/home",
-        "description": "rm -rf /var/lib/apt/lists/*",
+        "title": "Sample Compose File Normalizes Hardcoded Credentials",
+        "description": "The Compose example places POSTGRES_PASSWORD=password and a database URL with user:password directly in the YAML. This can lead users to copy insecure secret handling into real projects.",
+        "severity": "high",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 332,
-            "line_end": 332
+            "line_start": 163,
+            "line_end": 192
           }
         ],
-        "review_kind": "false_positive",
-        "source_category": "blocker",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed blocker/critical static finding; AI dismissal overridden."
+        "confidence": 0.9,
+        "confidence_reasoning": "The sample credentials are visible in the Compose example and are not replaced with placeholders or secret references in that block."
       }
     ],
+    "critical_findings": [],
     "high_findings": [
       {
         "title": "Database connection strings",
@@ -1111,14 +1102,126 @@
         "review_kind": "capability",
         "source_category": "env_access",
         "source_severity": "high",
-        "confidence": 0.78,
-        "confidence_reasoning": "The Compose example includes a literal PostgreSQL connection string with user:password. Although illustrative, it can encourage hardcoded credentials in generated configs."
+        "confidence": 0.86,
+        "confidence_reasoning": "The Compose example includes a database URL with a literal username and password. Even as sample content, it teaches hardcoded credentials instead of secret management."
+      },
+      {
+        "title": "Database connection strings",
+        "description": "DATABASE_URL=postgresql://db:5432/myapp  # 'db' is service name",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 386,
+            "line_end": 386
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "env_access",
+        "source_severity": "high",
+        "confidence": 0.72,
+        "confidence_reasoning": "The troubleshooting example includes a database URL inline in configuration. It lacks a password, but it still normalizes embedding connection strings directly in files."
+      },
+      {
+        "title": "Environment file access",
+        "description": "- .env",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 167,
+            "line_end": 167
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.76,
+        "confidence_reasoning": "The Compose example loads a .env file and nearby lines include database credentials. This is legitimate Compose usage, but it handles sensitive configuration and needs stronger secret-handling guidance."
+      },
+      {
+        "title": "Environment file access",
+        "description": "# .env*",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 339,
+            "line_end": 339
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.82,
+        "confidence_reasoning": "The .dockerignore example correctly excludes .env files from images. The finding is real sensitive-file handling context, but the usage is defensive rather than malicious."
+      },
+      {
+        "title": "Sample Compose File Normalizes Hardcoded Credentials",
+        "description": "The Compose example places POSTGRES_PASSWORD=password and a database URL with user:password directly in the YAML. This can lead users to copy insecure secret handling into real projects.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 163,
+            "line_end": 192
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "high",
+        "confidence": 0.9,
+        "confidence_reasoning": "The sample credentials are visible in the Compose example and are not replaced with placeholders or secret references in that block."
       }
     ],
     "medium_findings": [
       {
-        "title": "Destructive Docker Cleanup Commands Lack Safeguards",
-        "description": "The command reference lists docker system prune -a and docker volume prune without warning about image, cache, and volume removal. This can cause local data loss if copied into shared or production hosts.",
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 420,
+            "line_end": 445
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.78,
+        "confidence_reasoning": "This Docker command reference includes cleanup commands such as docker system prune -a and docker volume prune. Those commands can delete local images, containers, and volumes if copied without confirmation."
+      },
+      {
+        "title": "Unix shell invocation",
+        "description": "docker run -it <image> /bin/sh",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 373,
+            "line_end": 373
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.62,
+        "confidence_reasoning": "The example tells users to start an interactive shell inside a container. This is legitimate troubleshooting, but it can expose container internals and should be framed as an explicit debug-only action."
+      },
+      {
+        "title": "Unix shell invocation",
+        "description": "docker exec -it myapp /bin/sh",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 431,
+            "line_end": 431
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.62,
+        "confidence_reasoning": "The example tells users to execute an interactive shell inside a running container. This is useful for debugging but expands access to the container environment and should require user intent."
+      },
+      {
+        "title": "Destructive Docker Cleanup Commands Lack Safety Warning",
+        "description": "The Docker command reference includes docker system prune -a and docker volume prune without a warning that these commands can remove local images, containers, and volumes.",
         "locations": [
           {
             "file": "SKILL.md",
@@ -1129,160 +1232,138 @@
         "review_kind": "security",
         "source_category": "semantic",
         "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The commands are real Docker cleanup commands with destructive effects, and the surrounding text provides no confirmation or scope warning."
+        "confidence": 0.86,
+        "confidence_reasoning": "The commands are explicit and destructive in normal Docker usage. The surrounding text does not add a confirmation or dry-run warning."
       }
     ],
     "low_findings": [],
-    "dangerous_patterns": [
-      {
-        "title": "Recursive delete on root/home",
-        "description": "rm -rf /var/lib/apt/lists/*",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 332,
-            "line_end": 332
-          }
-        ],
-        "review_kind": "false_positive",
-        "source_category": "blocker",
-        "source_severity": "critical",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed blocker/critical static finding; AI dismissal overridden."
-      }
-    ],
+    "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 475,
-    "audit_model": "codex",
-    "audited_at": "2026-07-05T08:24:53.977Z",
-    "agent_auto_install_policy": "blocked",
-    "manual_install_policy": "allowed_with_warning"
+    "audit_model": "claude",
+    "audited_at": "2026-07-09T04:05:29.003Z",
+    "agent_auto_install_policy": "confirmation_required",
+    "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Build Better Docker Compose Workflows",
-    "value_statement": "Teams often need Dockerfiles and Compose files that match their application structure. This skill helps Claude, Codex, and Claude Code draft, review, and troubleshoot container setups.",
+    "user_title": "Build Better Docker Setups",
+    "value_statement": "Container setup can be slow, insecure, and hard to debug. This skill helps Claude, Codex, and Claude Code generate Dockerfiles, Compose files, and troubleshooting steps using container best practices.",
     "seo_keywords": [
-      "Docker helper",
-      "Docker Compose",
-      "Dockerfile generation",
-      "container troubleshooting",
-      "container security",
-      "DevOps automation",
       "Claude",
       "Codex",
       "Claude Code",
+      "Docker",
+      "Docker Compose",
+      "Dockerfile generation",
+      "container optimization",
+      "DevOps automation",
+      "container troubleshooting",
       "multi-stage builds"
     ],
     "actual_capabilities": [
-      "Generate Dockerfile examples for Node.js, Python, and Go applications.",
-      "Draft Docker Compose examples for web, API, database, cache, and proxy services.",
-      "Recommend multi-stage builds, layer caching, and .dockerignore usage.",
-      "Suggest health checks, restart policies, networks, and named volumes.",
-      "Provide troubleshooting commands for logs, shell access, service networking, and volume permissions.",
-      "Summarize container security practices such as non-root users, pinned tags, and secrets handling."
+      "Generates Dockerfile examples for Node.js, Python, and Go applications.",
+      "Creates Docker Compose patterns for multi-service web, API, database, cache, and proxy stacks.",
+      "Suggests multi-stage builds, layer caching, non-root users, and smaller base images.",
+      "Provides troubleshooting steps for startup failures, networking, volumes, and slow builds.",
+      "Recommends health checks, restart policies, logging, and production hardening practices."
     ],
     "limitations": [
-      "It provides guidance and examples; it does not inspect containers by itself.",
-      "Generated examples require project-specific review before use.",
-      "Sample credentials, ports, and image tags must be replaced for production.",
-      "Docker behavior can vary by host operating system and Docker version."
+      "Does not inspect a running Docker daemon unless the user asks the host tool to run commands.",
+      "Example credentials and service names must be replaced before production use.",
+      "Generated files still need validation against the project dependency graph and deployment target.",
+      "Some cleanup commands can remove local Docker resources if copied without review."
     ],
     "use_cases": [
       {
-        "title": "Containerize a Web Application",
-        "description": "Create a first Dockerfile and Compose file for a service with dependencies.",
+        "title": "Create a first container setup",
+        "description": "Generate a Dockerfile and Compose file for a new application with common services and health checks.",
         "target_user": "Application developers"
       },
       {
-        "title": "Review a Compose Stack",
-        "description": "Check service networking, volumes, health checks, restart policy, and security basics.",
+        "title": "Improve existing container builds",
+        "description": "Review Docker files for image size, caching, non-root execution, and security hardening opportunities.",
         "target_user": "DevOps engineers"
       },
       {
-        "title": "Troubleshoot Local Containers",
-        "description": "Diagnose startup failures, connection errors, volume permissions, and slow builds.",
-        "target_user": "Support engineers"
+        "title": "Debug local Compose failures",
+        "description": "Use structured checks for logs, networking, service readiness, volumes, and shell access during development.",
+        "target_user": "Platform support teams"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Create a Basic Dockerfile",
-        "scenario": "Beginner containerization for one service.",
-        "prompt": "Create a Dockerfile for this project. Explain the base image, build steps, exposed port, user, and health check."
+        "title": "Generate a Dockerfile",
+        "scenario": "Beginner setup for one service",
+        "prompt": "Use docker-helper to create a Dockerfile for my project. Ask for the language, start command, port, and package manager before writing the file."
       },
       {
-        "title": "Build a Compose Setup",
-        "scenario": "Multi-service local development.",
-        "prompt": "Generate a Docker Compose setup for my web app, API, database, and cache. Include networks, volumes, health checks, and restart policies."
+        "title": "Create a Compose stack",
+        "scenario": "Multi-service development environment",
+        "prompt": "Use docker-helper to draft a docker-compose.yml for a web app, API, database, and cache. Include networks, volumes, health checks, and clear placeholders for secrets."
       },
       {
-        "title": "Optimize Existing Docker Files",
-        "scenario": "Improve build speed and image size.",
-        "prompt": "Review my Dockerfile and Compose file. Suggest changes for multi-stage builds, cache efficiency, image size, permissions, and secrets handling."
+        "title": "Optimize container builds",
+        "scenario": "Improve speed and image size",
+        "prompt": "Use docker-helper to review my Dockerfile for build cache, multi-stage build opportunities, image size, and non-root execution. Explain each recommended change."
       },
       {
-        "title": "Diagnose a Compose Failure",
-        "scenario": "Advanced troubleshooting across services.",
-        "prompt": "Diagnose why my Compose stack fails to start. Use the logs, service definitions, environment variables, network settings, and volume mappings I provide."
+        "title": "Troubleshoot production-like failures",
+        "scenario": "Advanced debugging workflow",
+        "prompt": "Use docker-helper to diagnose why my Compose services fail to start. Build a safe step-by-step investigation plan for logs, health checks, networking, volumes, and resource limits."
       }
     ],
     "output_examples": [
       {
-        "input": "Create a Dockerfile for a Node.js API.",
-        "output": [
-          "Recommends a multi-stage Node.js build for smaller production images.",
-          "Adds a non-root runtime user and a focused health check.",
-          "Explains which files should be copied before dependency installation."
-        ]
+        "input": "Generate a Dockerfile for a Node.js API.",
+        "output": "A concise Dockerfile plan using dependency caching, a production stage, non-root user execution, exposed port, and a health check."
       },
       {
         "input": "My API cannot connect to Postgres in Docker Compose.",
-        "output": "Explains service-name DNS, shared networks, database readiness, health checks, and connection string review steps."
+        "output": [
+          "Check that both services share a network.",
+          "Use the Compose service name as the database hostname.",
+          "Confirm database readiness with a health check before the API starts."
+        ]
       },
       {
-        "input": "Review my Compose file for production readiness.",
-        "output": [
-          "Flags hardcoded credentials and broad host volume mounts.",
-          "Suggests pinned image tags, restart policies, and resource limits.",
-          "Separates development conveniences from production settings."
-        ]
+        "input": "Optimize this Dockerfile for smaller images.",
+        "output": "A review that recommends multi-stage builds, narrower copy steps, cache-friendly dependency installation, and a minimal runtime image."
       }
     ],
     "best_practices": [
-      "Replace sample credentials with environment variables, Docker secrets, or a secret manager.",
-      "Pin production image versions and rebuild regularly for security updates.",
-      "Confirm destructive cleanup commands before running them on shared hosts."
+      "Review generated commands before running them against local or shared Docker resources.",
+      "Replace sample credentials with secret management or environment-specific configuration.",
+      "Validate generated Docker and Compose files with local builds and health checks."
     ],
     "anti_patterns": [
-      "Copying sample credentials into production Compose files.",
-      "Publishing ports or mounting host paths without a security review.",
-      "Running Docker cleanup commands on shared hosts without checking impact."
+      "Do not copy sample passwords or database URLs into production Compose files.",
+      "Do not run Docker cleanup commands without checking which images, containers, and volumes will be removed.",
+      "Do not rely on generated container files without testing service startup and networking."
     ],
     "faq": [
       {
-        "question": "Does this skill run Docker commands automatically?",
-        "answer": "No. It provides guidance and examples. Commands run only when the active AI tool and user workflow allow execution."
+        "question": "Can this skill create Dockerfiles from scratch?",
+        "answer": "Yes. It provides patterns for common Node.js, Python, and Go applications, then adapts them to project details."
       },
       {
-        "question": "Can it create production Docker Compose files?",
-        "answer": "It can draft production-oriented templates. You must review secrets, ports, volumes, resources, and compliance requirements."
+        "question": "Does it support Docker Compose?",
+        "answer": "Yes. It includes examples for multi-service stacks with networks, volumes, health checks, and service dependencies."
       },
       {
-        "question": "Which project types does it cover?",
-        "answer": "The examples cover Node.js, Python, Go, web services, APIs, databases, caches, and reverse proxies."
+        "question": "Will it run Docker commands automatically?",
+        "answer": "No. It provides command guidance. Any host command execution depends on the AI tool and user approval."
       },
       {
-        "question": "Can it reduce Docker image size?",
-        "answer": "Yes. It suggests multi-stage builds, smaller base images, cache-friendly layers, and .dockerignore exclusions."
+        "question": "Is it safe for production secrets?",
+        "answer": "Use caution. The skill includes sample credentials, so users must replace them with proper secret management."
       },
       {
-        "question": "Does it handle Docker security?",
-        "answer": "It gives baseline security guidance, including non-root users, pinned images, vulnerability scanning, and secret handling."
+        "question": "Can it reduce image size?",
+        "answer": "Yes. It recommends multi-stage builds, cache-friendly layers, minimal base images, and cleanup in the same layer."
       },
       {
-        "question": "What should I check before using generated files?",
-        "answer": "Review credentials, exposed ports, volume mounts, image versions, resource limits, and environment-specific settings."
+        "question": "Which tools can use this skill?",
+        "answer": "The report lists support for Claude, Codex, and Claude Code."
       }
     ]
   },

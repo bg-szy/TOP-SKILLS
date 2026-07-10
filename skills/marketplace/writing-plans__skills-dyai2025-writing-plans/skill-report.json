@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-06T11:34:22.444Z",
+    "generated_at": "2026-07-09T08:54:27.889Z",
     "slug": "dyai2025-writing-plans",
     "source_url": "https://github.com/DYAI2025/Stoppclock-page/tree/main/stoppclock_speckit/.claude/commands/skills/writing-plans",
     "source_ref": "main",
@@ -9,7 +9,7 @@
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "c5cbb69cfffcf41757ab6e5c4517abcc42e83e4481424fd2eae7fb70feb45e8b",
-    "tree_hash": "fb5a56d226d55dfe8d4b3d22919c3f125afa82d21448e351a78d4a28ed81247e",
+    "tree_hash": "3ec06d5b948dc84fa9e3b076f602cf7ce9750382648694a06af903dc7b755323",
     "provenance": {
       "model_requested": "gpt-5.5:high",
       "model_effective": "codex:gpt-5.5:high",
@@ -26,14 +26,14 @@
   },
   "skill": {
     "name": "writing-plans",
-    "description": "Creates detailed, test-first implementation plans for engineers who need exact files, steps, commands, and verification guidance.",
-    "summary": "Creates bite-sized engineering implementation plans with exact paths, tests, commands, and handoff options.",
+    "description": "Creates implementation plans from completed designs, with exact files, test steps, code examples, verification commands, and execution handoff options.",
+    "summary": "Create detailed engineering implementation plans from completed designs.",
     "icon": "📦",
     "version": "1.0.0",
     "author": "DYAI2025",
     "license": "MIT",
     "tags": [
-      "implementation-planning",
+      "implementation-plans",
       "technical-writing",
       "tdd",
       "engineering-handoff",
@@ -54,19 +54,8 @@
     "is_blocked": false,
     "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "The external command detections are false positives from Markdown backticks, code fences, path placeholders, and visible pytest or git examples in SKILL.md. I found no prompt-injection attempt, data exfiltration intent, network access, or hidden execution behavior. SKILL.zip was reviewed as an archive containing only SKILL.md, but source-only packaging would be easier to audit.",
-    "remediation": [
-      {
-        "issue": "Binary archive included in the skill package",
-        "suggestion": "Remove SKILL.zip from the published package or provide source-only distribution so marketplace scanners can inspect all content directly.",
-        "severity": "low"
-      },
-      {
-        "issue": "Command examples are embedded in Markdown fences",
-        "suggestion": "Keep command examples clearly labeled as developer instructions and avoid unnecessary shell fences when plain text would be sufficient.",
-        "severity": "low"
-      }
-    ],
+    "summary": "The static external command findings are false positives caused by Markdown inline code and fenced examples in SKILL.md. Manual review of SKILL.zip found only the same SKILL.md content, so no additional binary payload was identified.",
+    "remediation": [],
     "risk_factor_evidence": [
       {
         "factor": "external_commands",
@@ -331,103 +320,103 @@
         "id": "external_commands:SKILL.md:18:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "Line 18 is an inline Markdown path template for where to save generated plans. It is not Ruby backtick execution and does not run a shell command."
+        "reason": "Line 18 is an inline Markdown path template for where to save plans. It is not shell execution and contains no command invocation."
       },
       {
         "id": "external_commands:SKILL.md:33:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "Line 33 opens a Markdown example block for the plan header. The surrounding content is documentation text, not executable Ruby or shell syntax."
+        "confidence": 0.95,
+        "reason": "Lines 33-45 are a fenced Markdown example for the generated plan header. The backticks delimit documentation content and do not execute commands."
       },
       {
         "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 45 closes the Markdown example block. A closing code fence has no command execution behavior."
+        "confidence": 0.96,
+        "reason": "Line 45 closes a Markdown code fence. It is formatting syntax, not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:49:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "Line 49 opens another Markdown example block for task structure. This is formatting guidance for generated plans, not executable code."
+        "confidence": 0.95,
+        "reason": "Line 49 opens a fenced Markdown example for task structure. This is documentation syntax and does not run external commands."
       },
       {
         "id": "external_commands:SKILL.md:53:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "Line 53 contains an inline example file path inside backticks. It names a path placeholder and does not execute a command."
+        "reason": "Line 53 shows an inline placeholder file path inside Markdown. It is not executable code and has no shell interpolation."
       },
       {
         "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "Line 54 contains an inline file path and line range placeholder. It is documentation for a plan format, not shell execution."
+        "reason": "Line 54 shows an inline placeholder path and line range for a plan. It is documentation, not command execution."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.96,
-        "reason": "Line 55 contains an inline test file path placeholder. It does not invoke an interpreter or shell."
+        "reason": "Line 55 shows an inline placeholder test path in Markdown. The text is a planning example and does not invoke a shell."
       },
       {
         "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.95,
-        "reason": "Line 59 starts a Python example block inside the plan template. The code is illustrative test content and is not executed by the skill."
+        "reason": "Lines 59-63 are a fenced Python test example for a plan document. The skill describes content to write and does not execute that code."
       },
       {
         "id": "external_commands:SKILL.md:63:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 63 closes the Python example block. A Markdown fence delimiter is not a command execution primitive."
+        "confidence": 0.96,
+        "reason": "Line 63 closes a Markdown code fence. It is formatting syntax, not an external command."
       },
       {
         "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "Line 67 shows a pytest command that a generated plan may ask a developer to run. It is a legitimate verification example and the skill itself does not execute it."
+        "confidence": 0.91,
+        "reason": "Line 67 is an illustrative pytest command to include in a written plan. The skill does not execute the command and the example is not dynamically assembled."
       },
       {
         "id": "external_commands:SKILL.md:72:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.95,
-        "reason": "Line 72 starts a second Python example block. It is instructional content for a generated plan and not live code execution."
+        "reason": "Lines 72-75 are a fenced Python implementation example. It is static documentation content and not a shell execution path."
       },
       {
         "id": "external_commands:SKILL.md:75:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 75 closes the Python example block. The static pattern matched Markdown syntax, not executable behavior."
+        "confidence": 0.96,
+        "reason": "Line 75 closes a Markdown code fence. It is not Ruby backtick execution or a command invocation."
       },
       {
         "id": "external_commands:SKILL.md:79:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "Line 79 repeats the pytest verification command as plan text. The command is a normal test instruction and is not automatically run."
+        "confidence": 0.91,
+        "reason": "Line 79 is an illustrative pytest command for verification instructions inside a plan. It is not executed by the skill itself."
       },
       {
         "id": "external_commands:SKILL.md:84:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.85,
-        "reason": "Line 84 opens a bash example block containing git add and git commit examples. These are visible developer workflow instructions, not hidden or automatic command execution."
+        "confidence": 0.93,
+        "reason": "Lines 84-87 are a fenced bash example showing commit commands for a plan. The commands are static examples and are not invoked automatically."
       },
       {
         "id": "external_commands:SKILL.md:87:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 87 closes the bash example block. The delimiter itself cannot execute a command."
+        "confidence": 0.96,
+        "reason": "Line 87 closes a Markdown code fence. It is formatting syntax and cannot execute an external command."
       },
       {
         "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 88 closes the surrounding Markdown task example block. It is formatting syntax only."
+        "confidence": 0.96,
+        "reason": "Line 88 closes the outer Markdown task example. The detected backticks are delimiters, not executable shell syntax."
       },
       {
         "id": "metadata:SKILL.zip:1:unscanned-file-binary-manual-review-required",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "Manual review showed SKILL.zip is a simple archive containing SKILL.md and no executable payload. The binary packaging complicates scanning, but no malicious archive content was found."
+        "confidence": 0.93,
+        "reason": "Manual review found the archive contains only SKILL.md, and its extracted content matches the reviewed SKILL.md file. No hidden binary payload or extra file was present."
       }
     ],
     "semantic_findings": [],
@@ -445,141 +434,136 @@
             "line_end": 1
           }
         ],
-        "review_kind": "false_positive",
+        "review_kind": "security",
         "source_category": "metadata",
         "source_severity": "low",
         "confidence": 1,
-        "confidence_reasoning": "Force-confirmed metadata/low static finding; AI dismissal overridden."
+        "confidence_reasoning": "Force-confirmed metadata/low static finding; AI false-positive verdict rejected."
       }
     ],
     "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 117,
     "audit_model": "codex",
-    "audited_at": "2026-07-06T11:34:22.444Z",
+    "audited_at": "2026-07-09T08:54:27.889Z",
     "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Create Detailed Engineering Plans",
-    "value_statement": "Complex designs fail when implementation steps are vague. This skill turns approved designs into precise engineering plans with files, tests, commands, and handoff options.",
+    "user_title": "Create Detailed Engineering Implementation Plans",
+    "value_statement": "Detailed engineering handoffs are hard when implementers lack context. This skill turns completed designs into step-by-step plans with files, tests, commands, and checkpoints.",
     "seo_keywords": [
-      "Claude",
-      "Codex",
-      "Claude Code",
-      "implementation plans",
-      "engineering task planning",
-      "TDD workflow",
-      "software project planning",
-      "developer handoff",
-      "test driven development",
-      "plan documentation"
+      "Claude implementation plans",
+      "Codex implementation planning",
+      "Claude Code planning skill",
+      "engineering handoff plans",
+      "technical writing for developers",
+      "TDD task planning",
+      "software implementation checklist",
+      "developer task breakdown",
+      "AI coding plans",
+      "project execution planning"
     ],
     "actual_capabilities": [
-      "Creates implementation plan headers with goal, architecture, and tech stack sections.",
-      "Breaks work into 2 to 5 minute tasks for incremental execution.",
-      "Lists exact files to create, modify, and test for each task.",
-      "Includes failing test examples, minimal implementation examples, and expected test results.",
-      "Adds command examples for running tests and creating commits.",
-      "Provides handoff options for subagent-driven or separate-session execution."
+      "Creates implementation plan documents from completed feature designs.",
+      "Breaks work into small tasks with specific files and tests.",
+      "Includes expected verification commands and expected results for each task.",
+      "Adds example test and implementation snippets inside the plan.",
+      "Defines execution handoff options for subagent-driven or parallel-session work."
     ],
     "limitations": [
-      "Requires a completed design before use; it does not perform discovery or product scoping.",
-      "Example commands and paths must be adapted to the real repository.",
-      "It produces plans, not executed changes or verified test results.",
-      "It assumes a TDD workflow and may not fit non-testable operational tasks."
+      "Requires a completed design or clear feature brief before planning.",
+      "Does not inspect or validate the repository unless the agent does that separately.",
+      "Example commands in plans still need human review before execution.",
+      "Best suited for software implementation work, not general project planning."
     ],
     "use_cases": [
       {
-        "title": "Convert Approved Designs Into Build Plans",
-        "description": "Turn a completed technical design into a file-by-file plan with test steps and verification commands.",
-        "target_user": "Software architect"
-      },
-      {
-        "title": "Prepare Work For New Contributors",
-        "description": "Give engineers with little repository context a clear sequence of tasks, expected results, and commit points.",
+        "title": "Prepare Feature Build Tasks",
+        "description": "Convert an approved product or technical design into small engineering tasks with files, tests, and verification steps.",
         "target_user": "Engineering lead"
       },
       {
-        "title": "Structure Complex Feature Work",
-        "description": "Break a large feature into small test-first tasks that can be implemented and reviewed independently.",
-        "target_user": "Solo developer"
+        "title": "Hand Off Work to a New Contributor",
+        "description": "Create a plan that gives a developer enough context to implement a change without prior repository knowledge.",
+        "target_user": "Maintainer"
+      },
+      {
+        "title": "Structure Test-Driven Implementation",
+        "description": "Plan a TDD workflow where each task starts with a failing test, minimal code, verification, and a commit.",
+        "target_user": "Developer"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Draft a Feature Plan",
-        "scenario": "Beginner request for a complete plan from a known feature.",
-        "prompt": "Use the writing-plans skill to create an implementation plan for [feature]. The design is complete. Include files, tests, commands, and handoff choices."
+        "title": "Plan a Simple Feature",
+        "scenario": "Beginner planning request with a completed design.",
+        "prompt": "Create an implementation plan for this completed design. Include files, tests, verification commands, and small tasks."
       },
       {
-        "title": "Plan From Existing Design",
-        "scenario": "Create a plan from an approved design document.",
-        "prompt": "Create a plan from this approved design: [paste design]. Assume the engineer has no repository context and needs bite-sized tasks."
+        "title": "Plan for a New Contributor",
+        "scenario": "Intermediate request for a developer with little repository context.",
+        "prompt": "Write a plan for an engineer who has no codebase context. Explain the files, task order, tests, and expected outcomes."
       },
       {
-        "title": "Add Test-First Tasks",
-        "scenario": "Improve an existing plan so it follows TDD structure.",
-        "prompt": "Rewrite this implementation plan so every task starts with a failing test, includes expected results, and ends with a commit step."
+        "title": "Plan a TDD Workflow",
+        "scenario": "Advanced request that emphasizes test-first development.",
+        "prompt": "Turn this design into a TDD implementation plan. Each task should include a failing test, minimal implementation, verification, and commit step."
       },
       {
-        "title": "Create a Cross-Team Handoff",
-        "scenario": "Advanced planning for work that spans multiple areas.",
-        "prompt": "Build a detailed plan for [feature] across [frontend/backend/data]. Include dependencies, exact files, verification commands, and execution handoff options."
+        "title": "Plan Multi-Session Execution",
+        "scenario": "Advanced request for coordinated implementation handoff.",
+        "prompt": "Create a detailed implementation plan with execution handoff options. Include checkpoints for subagent-driven work and a separate parallel session."
       }
     ],
     "output_examples": [
       {
-        "input": "A completed design for adding account settings export.",
-        "output": [
-          "A saved plan with a goal, architecture summary, and task list.",
-          "Tasks cover export tests, service changes, route updates, and user-facing verification.",
-          "The plan ends with subagent-driven and separate-session execution choices."
-        ]
+        "input": "A design for adding saved filters to a dashboard.",
+        "output": "A dated plan file with a goal, architecture summary, task list, exact affected files, test steps, and verification commands."
       },
       {
-        "input": "A refactor design that splits billing logic into services.",
-        "output": [
-          "A sequence of small tasks that starts with characterization tests.",
-          "Each task lists affected files, expected test results, and a commit checkpoint.",
-          "The final section explains how to verify behavior after the refactor."
-        ]
+        "input": "A refactor proposal for moving validation into a shared service.",
+        "output": "A task-by-task migration plan that starts with tests, changes one component at a time, and ends with documented checks."
+      },
+      {
+        "input": "A request to prepare work for another AI coding session.",
+        "output": "A handoff-ready plan that lists implementation tasks and offers subagent-driven or parallel-session execution choices."
       }
     ],
     "best_practices": [
-      "Provide the approved design and relevant repository conventions before asking for a plan.",
-      "Review generated paths and commands against the real project before execution.",
-      "Keep each task small enough to implement, test, and commit independently."
+      "Provide the completed design, target files, and any repository conventions before using the skill.",
+      "Review suggested commands and file paths before running any generated plan.",
+      "Keep each task small enough to test, verify, and commit independently."
     ],
     "anti_patterns": [
-      "Using the skill before design decisions are complete.",
-      "Accepting placeholder paths, broad instructions, or missing test expectations.",
-      "Treating generated commands as verified without running them in the repository."
+      "Using the skill before the product or technical design is clear.",
+      "Treating generated commands as approved for execution without review.",
+      "Combining many unrelated features into one implementation plan."
     ],
     "faq": [
       {
         "question": "What does this skill produce?",
-        "answer": "It produces detailed Markdown implementation plans with tasks, file paths, code examples, test commands, and execution handoff options."
+        "answer": "It produces detailed implementation plans with goals, architecture notes, tasks, files, tests, commands, and handoff choices."
       },
       {
-        "question": "Does it modify code?",
-        "answer": "No. It writes a plan for engineers or agents to follow."
+        "question": "Does it write production code directly?",
+        "answer": "No. It creates a plan that can guide a later implementation session."
       },
       {
-        "question": "Which tools can use it?",
-        "answer": "It is listed for Claude, Codex, and Claude Code compatible workflows."
+        "question": "Can Codex use this skill?",
+        "answer": "Yes. The report marks support for Claude, Codex, and Claude Code."
       },
       {
-        "question": "When should I use it?",
-        "answer": "Use it after design is approved and before implementation starts."
+        "question": "What input should I provide?",
+        "answer": "Provide a completed design, feature goal, repository context, constraints, and known testing expectations."
       },
       {
-        "question": "Does it require TDD?",
-        "answer": "The instructions strongly favor test-first tasks and frequent commits."
+        "question": "Does it run shell commands?",
+        "answer": "No. It may include example commands in a plan, but execution requires separate user or agent action."
       },
       {
-        "question": "Can it plan for unfamiliar codebases?",
-        "answer": "Yes. It assumes implementers have little context and need explicit repository guidance."
+        "question": "Is it useful for non-code projects?",
+        "answer": "It is designed for software implementation plans and may be less useful for non-code planning."
       }
     ]
   },

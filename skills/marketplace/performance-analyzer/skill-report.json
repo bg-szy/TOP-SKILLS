@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-07T06:33:12.512Z",
+    "generated_at": "2026-07-09T12:20:07.944Z",
     "slug": "aaron-he-zhu-performance-analyzer",
     "source_url": "https://github.com/aaron-he-zhu/aaron-marketing-skills/tree/main/influencer/measure/performance-analyzer",
     "source_ref": "main",
@@ -23,18 +23,18 @@
   },
   "skill": {
     "name": "performance-analyzer",
-    "description": "Analyzes influencer campaign performance across targets, benchmarks, platforms, creators, content, engagement quality, sentiment, and attribution. It does not perform dollar-level ROI calculations.",
-    "summary": "Analyzes influencer campaign results across targets, creators, platforms, content, and attribution.",
+    "description": "Analyze influencer campaign performance against targets, benchmarks, platforms, creators, content, engagement quality, and attribution. It prepares ranked learnings and recommendations, but it does not calculate dollar-level ROI.",
+    "summary": "Analyze influencer campaign results and turn metrics into ranked learnings.",
     "icon": "📦",
-    "version": "13.0.2",
+    "version": "16.0.2",
     "author": "aaron-he-zhu",
     "license": "Apache-2.0",
     "tags": [
       "influencer-marketing",
       "campaign-analysis",
-      "performance-metrics",
+      "performance-reporting",
       "attribution",
-      "reporting"
+      "social-analytics"
     ],
     "supported_tools": [
       "claude",
@@ -54,21 +54,21 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static alerts are false positives from Markdown links, fenced examples, placeholders, and sample creator handles. The confirmed issue is SKILL.md line 58, which instructs agents to run a local YouTube connector and use YOUTUBE_API_KEY. No prompt injection or covert exfiltration intent was found in the reviewed files.",
+    "summary": "Most static findings are false positives caused by Markdown links, code fences, placeholder notation, and fixed memory paths. The confirmed risks are the optional YouTube connector command and its use of YOUTUBE_API_KEY. No prompt injection or malicious data-exfiltration intent was found.",
     "remediation": [
       {
-        "issue": "Connector command execution",
-        "suggestion": "Require explicit user confirmation before running the YouTube connector, and document that the target script must be trusted local code.",
+        "issue": "Optional YouTube connector command",
+        "suggestion": "State that the connector is optional and should run only after user confirmation. Keep the script path fixed and pass handles as arguments.",
         "severity": "medium"
       },
       {
-        "issue": "API key handling",
-        "suggestion": "State that YOUTUBE_API_KEY must only be used for YouTube API reads, must not be printed, and should be omitted when unavailable.",
+        "issue": "Environment API key use",
+        "suggestion": "Document that YOUTUBE_API_KEY is read only for YouTube API calls and must never be printed, stored, or included in reports.",
         "severity": "high"
       },
       {
-        "issue": "Deep relative documentation links",
-        "suggestion": "Prefer package-local references, or clarify that parent-directory links are documentation links and not commands to scan parent folders.",
+        "issue": "Relative repository links trigger traversal warnings",
+        "suggestion": "Prefer package-local links where possible, and explain that shared references stay inside the repository documentation tree.",
         "severity": "low"
       }
     ],
@@ -705,250 +705,250 @@
       {
         "id": "filesystem:references/analysis-templates.md:3:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.96,
+        "reason": "The line is prose linking to ../SKILL.md inside the skill documentation. It does not direct arbitrary path reads or use user-controlled file paths."
       },
       {
         "id": "filesystem:references/analysis-templates.md:5:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.97,
+        "reason": "The line documents a relative link convention for repository documentation. It is not runtime filesystem traversal or access to sensitive paths."
       },
       {
         "id": "filesystem:references/analysis-templates.md:7:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.95,
+        "reason": "This is a Markdown link to a shared repository reference file. No command, file read API, or user-controlled path expansion is present."
       },
       {
         "id": "filesystem:references/analysis-templates.md:8:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.95,
+        "reason": "This is a Markdown link to a shared state-model reference. It is documentation navigation, not path traversal behavior."
       },
       {
         "id": "filesystem:references/analysis-templates.md:9:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.95,
+        "reason": "This is a Markdown link to CONNECTORS.md in the repository. The path is static documentation, not a dynamic filesystem operation."
       },
       {
         "id": "blocker:references/analysis-templates.md:364:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line is a sample influencer roster recommendation row using @[handle2]. It is not system reconnaissance or host discovery."
+        "confidence": 0.99,
+        "reason": "The line contains a placeholder influencer handle in a roster recommendation table. It is not host, network, or system reconnaissance."
       },
       {
         "id": "external_commands:SKILL.md:20:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backticks or fenced blocks here are Markdown formatting, examples, placeholders, or documented memory paths. They do not execute shell commands."
+        "confidence": 0.94,
+        "reason": "The line uses backticks around a memory path in prose and links to related skills. There is no shell command or Ruby backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backticks or fenced blocks here are Markdown formatting, examples, placeholders, or documented memory paths. They do not execute shell commands."
+        "confidence": 0.99,
+        "reason": "The line is a Markdown code fence opening for a prompt example. A fence delimiter is not executable code."
       },
       {
         "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backticks or fenced blocks here are Markdown formatting, examples, placeholders, or documented memory paths. They do not execute shell commands."
+        "confidence": 0.99,
+        "reason": "The line is a Markdown code fence closing for a prompt example. It does not invoke a shell or external process."
       },
       {
         "id": "external_commands:SKILL.md:30:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backticks or fenced blocks here are Markdown formatting, examples, placeholders, or documented memory paths. They do not execute shell commands."
+        "confidence": 0.99,
+        "reason": "The line is a Markdown code fence opening for a second prompt example. It is formatting, not command execution."
       },
       {
         "id": "external_commands:SKILL.md:32:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backticks or fenced blocks here are Markdown formatting, examples, placeholders, or documented memory paths. They do not execute shell commands."
+        "confidence": 0.99,
+        "reason": "The line is a Markdown code fence closing for a prompt example. It contains no shell command or dynamic execution."
       },
       {
         "id": "external_commands:SKILL.md:36:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backticks or fenced blocks here are Markdown formatting, examples, placeholders, or documented memory paths. They do not execute shell commands."
+        "confidence": 0.95,
+        "reason": "The line describes scoped campaign data and a local memory file path. The backticks mark a documentation path, not a command."
       },
       {
         "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backticks or fenced blocks here are Markdown formatting, examples, placeholders, or documented memory paths. They do not execute shell commands."
+        "confidence": 0.95,
+        "reason": "The line describes the report output path under memory/influencer. It is a static save-path convention, not external command execution."
       },
       {
         "id": "external_commands:SKILL.md:38:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backticks or fenced blocks here are Markdown formatting, examples, placeholders, or documented memory paths. They do not execute shell commands."
+        "confidence": 0.95,
+        "reason": "The line describes promoting durable facts to memory/hot-cache.md. It uses backticks for a file path and does not run a process."
       },
       {
         "id": "external_commands:SKILL.md:53:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backticks or fenced blocks here are Markdown formatting, examples, placeholders, or documented memory paths. They do not execute shell commands."
+        "confidence": 0.97,
+        "reason": "The line explains the `~~` placeholder notation for connectors. This is Markdown formatting and not shell execution."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backticks or fenced blocks here are Markdown formatting, examples, placeholders, or documented memory paths. They do not execute shell commands."
+        "confidence": 0.97,
+        "reason": "The line names a social analytics connector placeholder in backticks. It does not contain an executable command."
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backticks or fenced blocks here are Markdown formatting, examples, placeholders, or documented memory paths. They do not execute shell commands."
+        "confidence": 0.97,
+        "reason": "The line names a web analytics connector placeholder in backticks. It is not Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.82,
-        "severity": "medium",
-        "reason": "This line tells agents to run python3 on a connector script resolved from CLAUDE_PLUGIN_ROOT with a creator handle. That is real external command execution and requires explicit consent and trusted local code."
+        "confidence": 0.83,
+        "reason": "The line instructs the agent to run python3 with a YouTube connector under CLAUDE_PLUGIN_ROOT. The command appears legitimate, but external process execution from a community skill is a real operational risk.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backticks or fenced blocks here are Markdown formatting, examples, placeholders, or documented memory paths. They do not execute shell commands."
+        "confidence": 0.97,
+        "reason": "The line names an ecommerce connector placeholder in backticks. It is documentation, not an executable shell command."
       },
       {
         "id": "external_commands:SKILL.md:60:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backticks or fenced blocks here are Markdown formatting, examples, placeholders, or documented memory paths. They do not execute shell commands."
+        "confidence": 0.97,
+        "reason": "The line names an influencer database connector placeholder in backticks. No command invocation or shell interpolation is present."
       },
       {
         "id": "external_commands:SKILL.md:85:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backticks or fenced blocks here are Markdown formatting, examples, placeholders, or documented memory paths. They do not execute shell commands."
+        "confidence": 0.99,
+        "reason": "The line opens a Markdown fenced example output block. A language-tagged fence is not executable code."
       },
       {
         "id": "network:SKILL.md:10:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The URL appears only in skill metadata as a GitHub homepage reference. There is no fetch, webhook, or instruction to transmit data."
+        "confidence": 0.99,
+        "reason": "The URL is homepage metadata in the skill front matter. It does not perform a network request or send data."
       },
       {
         "id": "network:SKILL.md:13:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The URL appears only in skill metadata as a GitHub homepage reference. There is no fetch, webhook, or instruction to transmit data."
+        "confidence": 0.99,
+        "reason": "The URL appears inside metadata for the public project homepage. It is not a runtime network call or webhook."
       },
       {
         "id": "filesystem:SKILL.md:20:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.93,
+        "reason": "The relative paths are Markdown links to sibling skills, and the memory path is a fixed save location. There is no arbitrary path traversal."
       },
       {
         "id": "filesystem:SKILL.md:36:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.92,
+        "reason": "The line describes expected reads from campaign inputs and scoped memory records. It does not instruct traversal outside an allowed workspace path."
       },
       {
         "id": "filesystem:SKILL.md:43:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.96,
+        "reason": "The line is a Markdown link to a sibling ROI skill. It is documentation navigation, not filesystem traversal."
       },
       {
         "id": "filesystem:SKILL.md:47:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.96,
+        "reason": "The line links to a shared skill-contract reference using a static relative path. It does not include dynamic or user-controlled path access."
       },
       {
         "id": "filesystem:SKILL.md:58:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "The traversal-like text on this line is a Markdown reference to connector documentation. The actual concern on this line is command execution and API-key use, covered by separate confirmed verdicts."
+        "confidence": 0.88,
+        "reason": "The connector path is fixed under CLAUDE_PLUGIN_ROOT, and the traversal-like sequence is in a documentation link. External command risk is covered separately for the same line."
       },
       {
         "id": "filesystem:SKILL.md:62:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.96,
+        "reason": "The line links to CONNECTORS.md with a static relative path. This is repository documentation, not a traversal operation."
       },
       {
         "id": "filesystem:SKILL.md:77:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.96,
+        "reason": "The line contains static Markdown links to measurement and scoring reference files. It does not construct or access paths from user input."
       },
       {
         "id": "filesystem:SKILL.md:104:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.96,
+        "reason": "The line is a static Markdown link to skill-contract.md. No filesystem API or traversal behavior is present."
       },
       {
         "id": "filesystem:SKILL.md:105:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.96,
+        "reason": "The line is a static Markdown link to state-model.md. It is not runtime path traversal."
       },
       {
         "id": "filesystem:SKILL.md:106:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.96,
+        "reason": "The line is a static Markdown link to CONNECTORS.md. It does not read arbitrary files."
       },
       {
         "id": "filesystem:SKILL.md:107:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.96,
+        "reason": "The line is a static Markdown link to measurement-protocol.md and describes statistical criteria. It is not a traversal instruction."
       },
       {
         "id": "filesystem:SKILL.md:108:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.96,
+        "reason": "The line is a static Markdown link to the C3 scoring reference. It does not access sensitive files or build a path dynamically."
       },
       {
         "id": "filesystem:SKILL.md:109:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.95,
+        "reason": "The line lists static sibling skill links. Documentation links to nearby skills are not path traversal behavior."
       },
       {
         "id": "filesystem:SKILL.md:113:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.96,
+        "reason": "The line links to a sibling roi-calculator skill. It is a fixed documentation link, not arbitrary filesystem access."
       },
       {
         "id": "filesystem:SKILL.md:117:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.96,
+        "reason": "The line links to a sibling report-generator skill. It does not execute or dereference a user-controlled path."
       },
       {
         "id": "filesystem:SKILL.md:118:path-traversal-sequence",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The path sequence is in Markdown documentation or a fixed repository reference. I found no arbitrary path construction, secret file access, or user-controlled traversal behavior."
+        "confidence": 0.95,
+        "reason": "The line links to a sibling fit-scorer skill through a static relative path. It is documentation navigation, not traversal."
       },
       {
         "id": "env_access:SKILL.md:58:generic-api-secret-keys",
         "verdict": "confirmed",
-        "confidence": 0.78,
-        "severity": "high",
-        "reason": "This line names YOUTUBE_API_KEY in the context of the YouTube connector. The skill can cause secret use for a network API, so key handling must be gated and documented."
+        "confidence": 0.8,
+        "reason": "The line references YOUTUBE_API_KEY for the optional YouTube connector. There is no evidence of exfiltration, but environment secret access in a community skill is a real risk that requires disclosure and safeguards.",
+        "severity": "high"
       },
       {
         "id": "blocker:SKILL.md:20:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "The phrase describes paid-ads scorecard and anomaly analysis in a marketing context. It does not ask for host, network, or system enumeration."
+        "confidence": 0.98,
+        "reason": "The line discusses paid-ad scorecards and related marketing skills. It does not probe the host system, enumerate networks, or collect system information."
       }
     ],
     "semantic_findings": [],
@@ -967,8 +967,8 @@
         "review_kind": "capability",
         "source_category": "env_access",
         "source_severity": "high",
-        "confidence": 0.78,
-        "confidence_reasoning": "This line names YOUTUBE_API_KEY in the context of the YouTube connector. The skill can cause secret use for a network API, so key handling must be gated and documented."
+        "confidence": 0.8,
+        "confidence_reasoning": "The line references YOUTUBE_API_KEY for the optional YouTube connector. There is no evidence of exfiltration, but environment secret access in a community skill is a real risk that requires disclosure and safeguards."
       }
     ],
     "medium_findings": [
@@ -985,8 +985,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "This line tells agents to run python3 on a connector script resolved from CLAUDE_PLUGIN_ROOT with a creator handle. That is real external command execution and requires explicit consent and trusted local code."
+        "confidence": 0.83,
+        "confidence_reasoning": "The line instructs the agent to run python3 with a YouTube connector under CLAUDE_PLUGIN_ROOT. The command appears legitimate, but external process execution from a community skill is a real operational risk."
       }
     ],
     "low_findings": [],
@@ -994,130 +994,126 @@
     "files_scanned": 2,
     "total_lines": 535,
     "audit_model": "codex",
-    "audited_at": "2026-07-07T06:33:12.512Z",
+    "audited_at": "2026-07-09T12:20:07.944Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Analyze Influencer Campaign Performance",
-    "value_statement": "Influencer campaign results often sit across platform, creator, and sales data. This skill turns those inputs into ranked scorecards, attribution notes, and recommendations.",
+    "value_statement": "Influencer campaign results are hard to compare across platforms, creators, and content formats. This skill turns campaign metrics into scorecards, rankings, attribution notes, and recommendations.",
     "seo_keywords": [
-      "Claude",
-      "Codex",
-      "Claude Code",
-      "influencer campaign analysis",
-      "performance analyzer",
-      "creator scorecard",
-      "campaign attribution",
-      "engagement quality",
-      "marketing analytics",
-      "performance report"
+      "Claude influencer analytics",
+      "Codex marketing analysis",
+      "Claude Code campaign performance",
+      "influencer campaign analyzer",
+      "creator performance scorecard",
+      "social media attribution",
+      "campaign benchmark reporting",
+      "engagement quality analysis",
+      "performance marketing insights",
+      "influencer ROI inputs"
     ],
     "actual_capabilities": [
-      "Scores campaign metrics against targets and benchmarks.",
-      "Compares platforms, creators, and content formats.",
-      "Reviews engagement quality, comment sentiment, and purchase intent signals.",
-      "Breaks down conversions by promo code, UTM, direct, and estimated methods.",
-      "Produces ranked learnings and next-step recommendations.",
-      "Provides fill-in analysis templates and worked examples."
+      "Builds scorecards for reach, impressions, engagement, clicks, conversions, revenue, and targets.",
+      "Ranks platforms, creators, and content formats using campaign metrics and benchmarks.",
+      "Analyzes engagement quality, comment sentiment, and purchase-intent signals.",
+      "Breaks down conversion attribution by promo code, UTM, direct, and estimated influence.",
+      "Generates top learnings, roster recommendations, and next campaign guidance.",
+      "Can use a documented YouTube connector for measured video views, likes, and comments."
     ],
     "limitations": [
-      "Requires user-supplied exports, screenshots, or connected analytics data.",
-      "Does not perform dollar-level ROI calculations; it delegates that work to roi-calculator.",
-      "Significance claims depend on adequate sample size and benchmark quality.",
-      "The YouTube connector command needs local script availability and a YOUTUBE_API_KEY."
+      "Quality depends on the campaign exports, screenshots, analytics, and sales data provided.",
+      "It does not calculate dollar-level ROI or payback math; use the ROI calculator for that.",
+      "Connector use may require local scripts, user confirmation, and a YouTube API key.",
+      "Statistical winner claims require enough sample size and the documented significance check."
     ],
     "use_cases": [
       {
-        "title": "Compare creator performance",
-        "description": "Rank creators by reach, engagement, conversions, and content quality after a campaign ends.",
+        "title": "Post-campaign readout",
+        "description": "Compare actual results against targets and benchmarks after an influencer campaign ends.",
         "target_user": "Influencer marketing manager"
       },
       {
-        "title": "Identify platform mix changes",
-        "description": "Compare Instagram, TikTok, YouTube, and other channels to decide where future spend should move.",
-        "target_user": "Growth marketer"
+        "title": "Creator renewal decisions",
+        "description": "Rank creators by performance, diagnose weak results, and decide who should renew or change scope.",
+        "target_user": "Agency strategist"
       },
       {
-        "title": "Prepare a post-campaign readout",
-        "description": "Turn raw campaign results into clear learnings, roster decisions, and recommendations for stakeholders.",
-        "target_user": "Agency analyst"
+        "title": "Channel and content optimization",
+        "description": "Find the platforms, formats, hooks, and messages that produced the strongest measurable outcomes.",
+        "target_user": "Performance marketing analyst"
       }
     ],
     "prompt_templates": [
       {
         "title": "Analyze one campaign",
         "scenario": "Beginner campaign review",
-        "prompt": "Analyze performance for this influencer campaign. Use the attached platform exports and summarize results against our targets."
+        "prompt": "Analyze performance for our [campaign name] influencer campaign. I have reach, engagement, clicks, conversions, revenue, and creator reports."
       },
       {
         "title": "Compare creators",
-        "scenario": "Creator ranking",
-        "prompt": "Compare these creators in one campaign. Rank them by reach, engagement quality, conversions, and renewal recommendation."
+        "scenario": "Intermediate roster review",
+        "prompt": "Compare these creators for [campaign name]: [handles]. Rank them by reach, engagement quality, conversions, and renewal recommendation."
       },
       {
-        "title": "Find winning content patterns",
-        "scenario": "Content optimization",
-        "prompt": "Review campaign posts across platforms. Identify the formats, hooks, messages, and calls to action that performed best."
+        "title": "Find winning content",
+        "scenario": "Advanced content analysis",
+        "prompt": "Analyze content performance for [campaign name]. Compare platforms, formats, hooks, themes, and calls to action against campaign benchmarks."
       },
       {
-        "title": "Build an attribution readout",
-        "scenario": "Advanced conversion analysis",
-        "prompt": "Analyze the campaign funnel using platform metrics, web analytics, promo codes, and sales data. Separate measured, user-provided, and estimated results."
+        "title": "Build attribution readout",
+        "scenario": "Advanced performance reporting",
+        "prompt": "Create a conversion and attribution analysis for [campaign name]. Use promo codes, UTM data, direct attribution, estimated influence, and campaign targets."
       }
     ],
     "output_examples": [
       {
-        "input": "Analyze our spring skincare campaign with Instagram and TikTok exports.",
-        "output": [
-          "Campaign score: 7.4 out of 10, with reach above target and conversions below target.",
-          "TikTok led engagement quality and assisted conversions, while Instagram produced broader reach.",
-          "Recommended action: renew the top creators and test more short-form tutorial content."
-        ]
+        "input": "Analyze our summer skincare campaign with ten creators across Instagram and TikTok.",
+        "output": "A campaign scorecard with target comparisons, platform ranking, top three creators, conversion attribution, key learning, and renewal recommendations."
       },
       {
-        "input": "Compare five creators from our launch campaign and recommend who to renew.",
-        "output": [
-          "Top creator: strongest conversion rate, strongest comment intent, and clear product demo fit.",
-          "Middle performers: maintain at current spend while testing new hooks and posting windows.",
-          "Lowest performer: do not renew without a revised brief and clearer audience match."
-        ]
+        "input": "Compare @creatorA, @creatorB, and @creatorC for our product launch.",
+        "output": "A creator ranking that explains reach, engagement quality, conversion impact, content patterns, underperformance causes, and next partnership actions."
+      },
+      {
+        "input": "Find what content worked best in our YouTube influencer campaign.",
+        "output": "A content performance readout covering views, likes, comments, engagement quality, winning hooks, strong formats, and future campaign recommendations."
       }
     ],
     "best_practices": [
-      "Provide campaign dates, platform exports, sales data, and targets before asking for final rankings.",
-      "Label each metric source as measured, user-provided, or estimated.",
-      "Use the results with an ROI calculator when budget return decisions require dollar-level math."
+      "Provide campaign dates, targets, benchmarks, creator handles, platform metrics, and conversion sources before analysis.",
+      "Label each metric source as measured, creator-provided, or estimated so confidence is clear.",
+      "Use significance checks before declaring a platform, creator, or format as a proven winner."
     ],
     "anti_patterns": [
-      "Do not treat screenshots and API exports as identical without checking timing and rounding differences.",
-      "Do not name a winner when sample size or lift is too small.",
-      "Do not use this skill as a replacement for full financial ROI modeling."
+      "Do not treat screenshots, rounded platform numbers, and API exports as identical sources.",
+      "Do not ask this skill to calculate final ROI or payback math.",
+      "Do not renew or drop creators based only on reach without conversion and engagement quality context."
     ],
     "faq": [
       {
         "question": "What data should I provide?",
-        "answer": "Provide campaign dates, creator handles, platform metrics, web analytics, sales data, promo codes, targets, and benchmarks when available."
+        "answer": "Provide campaign dates, creators, platforms, reach, impressions, engagement, clicks, conversions, revenue, promo codes, and any target benchmarks."
       },
       {
-        "question": "Can it compare influencers?",
-        "answer": "Yes. It ranks creators by reach, engagement, conversions, content quality, and renewal recommendation."
+        "question": "Can it compare creators in one campaign?",
+        "answer": "Yes. It ranks creators and explains performance using reach, engagement, conversions, content quality, and renewal fit."
       },
       {
         "question": "Does it calculate ROI?",
-        "answer": "It can organize ROI inputs, but it does not perform full dollar-level ROI math. Use the paired ROI calculator for that work."
+        "answer": "No. It prepares performance and attribution inputs. Use the ROI calculator for dollar-level return and payback analysis."
       },
       {
-        "question": "Can it use YouTube data?",
-        "answer": "Yes, if the local connector is available and the user approves using a YouTube API key."
+        "question": "Can it use live platform data?",
+        "answer": "It usually works from pasted exports and reports. A documented YouTube connector can pull measured video metrics when configured."
       },
       {
-        "question": "Does it support sentiment analysis?",
-        "answer": "Yes. It reviews comment sentiment, purchase intent signals, and engagement quality when comment data is provided."
+        "question": "How does it handle weak data?",
+        "answer": "It asks for missing inputs, labels estimates clearly, and avoids strong winner claims without enough evidence."
       },
       {
-        "question": "What is the final output?",
-        "answer": "The output is a performance analysis with metric scorecards, rankings, attribution notes, learnings, and recommendations."
+        "question": "Who is this skill for?",
+        "answer": "It is for marketers, agencies, and analysts who review influencer campaign results and plan future investments."
       }
     ]
   },

@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-08T08:05:11.842Z",
+    "generated_at": "2026-07-09T17:33:53.767Z",
     "slug": "davila7-senior-devops",
     "source_url": "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/development/senior-devops",
     "source_ref": "main",
@@ -23,18 +23,18 @@
   },
   "skill": {
     "name": "senior-devops",
-    "description": "Guides CI/CD pipeline setup, Terraform workflow planning, deployment checks, and cloud operations for DevOps projects.",
-    "summary": "DevOps guidance for pipelines, infrastructure automation, deployments, and operational reviews.",
+    "description": "DevOps workflow skill for CI/CD, infrastructure automation, deployment planning, and cloud operations. It includes reference guides and simple Python helper scripts.",
+    "summary": "Plan DevOps workflows with reference guides and simple helper scripts.",
     "icon": "📦",
     "version": "1.0.1",
     "author": "davila7",
     "license": "MIT",
     "tags": [
+      "devops",
       "ci-cd",
       "terraform",
       "deployment",
-      "cloud",
-      "automation"
+      "cloud-operations"
     ],
     "supported_tools": [
       "claude",
@@ -52,16 +52,21 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static findings are false positives caused by Markdown code fences, inline documentation references, and generic anti-pattern headings. The confirmed issues are three user-directed output file writes that can overwrite local files when scripts are run with --output. No prompt injection, exfiltration intent, or hidden command execution was found in the reviewed files.",
+    "summary": "Reviewed 32 static findings across documentation and helper scripts. Markdown code fence and anti-pattern heading matches are false positives, and no prompt injection or data exfiltration intent was found. The confirmed risk is that three Python helper scripts can write reports to user-supplied output paths without overwrite safeguards.",
     "remediation": [
       {
-        "issue": "Scripts write to arbitrary output paths supplied by users.",
-        "suggestion": "Restrict output files to the target project, refuse existing files by default, or require an explicit overwrite flag.",
+        "issue": "Unrestricted report output paths",
+        "suggestion": "Constrain --output to the project workspace, refuse existing files by default, and add a clear --force option for overwrites.",
         "severity": "medium"
       },
       {
-        "issue": "Command examples include deployment actions that can change infrastructure if copied directly.",
-        "suggestion": "Label destructive or state-changing examples clearly and require users to review targets before running them.",
+        "issue": "Environment setup command can overwrite .env",
+        "suggestion": "Use a no-clobber copy command or tell users to check for an existing .env file before copying the example.",
+        "severity": "low"
+      },
+      {
+        "issue": "Operational commands need clearer safety checks",
+        "suggestion": "Add notes before deployment examples to verify the target cluster, compose project, and cloud account before applying changes.",
         "severity": "low"
       }
     ],
@@ -538,197 +543,197 @@
       {
         "id": "blocker:references/cicd_pipeline_guide.md:81:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "references/cicd_pipeline_guide.md:81 uses the phrase 'Anti-Patterns to Avoid' in normal documentation. There is no system reconnaissance instruction, host probing command, or data collection behavior."
+        "confidence": 0.95,
+        "reason": "The cited text is an anti-pattern heading or list item in documentation, not system reconnaissance guidance. It contains no commands for host discovery, enumeration, or bypass behavior."
       },
       {
         "id": "blocker:references/deployment_strategies.md:81:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "references/deployment_strategies.md:81 uses the phrase 'Anti-Patterns to Avoid' in normal documentation. There is no system reconnaissance instruction, host probing command, or data collection behavior."
+        "confidence": 0.95,
+        "reason": "The cited text is an anti-pattern heading or list item in documentation, not system reconnaissance guidance. It contains no commands for host discovery, enumeration, or bypass behavior."
       },
       {
         "id": "blocker:references/infrastructure_as_code.md:81:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "references/infrastructure_as_code.md:81 uses the phrase 'Anti-Patterns to Avoid' in normal documentation. There is no system reconnaissance instruction, host probing command, or data collection behavior."
+        "confidence": 0.95,
+        "reason": "The cited text is an anti-pattern heading or list item in documentation, not system reconnaissance guidance. It contains no commands for host discovery, enumeration, or bypass behavior."
       },
       {
         "id": "filesystem:scripts/deployment_manager.py:107:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "scripts/deployment_manager.py writes JSON results to the user-supplied --output path at line 107. This is useful behavior, but it can overwrite arbitrary local files without a path guard or confirmation.",
+        "confidence": 0.74,
+        "reason": "The script writes JSON output to args.output with no path restriction or overwrite guard. This is intended report generation, but it can overwrite arbitrary files if a sensitive path is supplied.",
         "severity": "medium"
       },
       {
         "id": "filesystem:scripts/pipeline_generator.py:107:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "scripts/pipeline_generator.py writes JSON results to the user-supplied --output path at line 107. This is useful behavior, but it can overwrite arbitrary local files without a path guard or confirmation.",
+        "confidence": 0.74,
+        "reason": "The script writes JSON output to args.output with no path restriction or overwrite guard. This is intended report generation, but it can overwrite arbitrary files if a sensitive path is supplied.",
         "severity": "medium"
       },
       {
         "id": "filesystem:scripts/terraform_scaffolder.py:107:python-file-write-append",
         "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "scripts/terraform_scaffolder.py writes JSON results to the user-supplied --output path at line 107. This is useful behavior, but it can overwrite arbitrary local files without a path guard or confirmation.",
+        "confidence": 0.74,
+        "reason": "The script writes JSON output to args.output with no path restriction or overwrite guard. This is intended report generation, but it can overwrite arbitrary files if a sensitive path is supplied.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:16:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The detected text at SKILL.md:16 is a Markdown shell example for a user to run. It is not executable source code and there is no hidden runtime command invocation at this location."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The detected text at SKILL.md:25 is part of a Markdown code fence boundary or documentation block. It does not execute commands by itself."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The detected text at SKILL.md:40 is a Markdown shell example for a user to run. It is not executable source code and there is no hidden runtime command invocation at this location."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The detected text at SKILL.md:42 is part of a Markdown code fence boundary or documentation block. It does not execute commands by itself."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The detected text at SKILL.md:55 is a Markdown shell example for a user to run. It is not executable source code and there is no hidden runtime command invocation at this location."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The detected text at SKILL.md:57 is part of a Markdown code fence boundary or documentation block. It does not execute commands by itself."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:70:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The detected text at SKILL.md:70 is a Markdown shell example for a user to run. It is not executable source code and there is no hidden runtime command invocation at this location."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:72:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The detected text at SKILL.md:72 is part of a Markdown code fence boundary or documentation block. It does not execute commands by itself."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected text at SKILL.md:78 is an inline documentation reference, not shell execution. Backticks are used for Markdown formatting only."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected text at SKILL.md:88 is an inline documentation reference, not shell execution. Backticks are used for Markdown formatting only."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected text at SKILL.md:98 is an inline documentation reference, not shell execution. Backticks are used for Markdown formatting only."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The detected text at SKILL.md:119 is a Markdown shell example for a user to run. It is not executable source code and there is no hidden runtime command invocation at this location."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:127:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The detected text at SKILL.md:127 is part of a Markdown code fence boundary or documentation block. It does not execute commands by itself."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The detected text at SKILL.md:131 is a Markdown shell example for a user to run. It is not executable source code and there is no hidden runtime command invocation at this location."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The detected text at SKILL.md:137 is part of a Markdown code fence boundary or documentation block. It does not execute commands by itself."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:142:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected text at SKILL.md:142 is an inline documentation reference, not shell execution. Backticks are used for Markdown formatting only."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:143:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected text at SKILL.md:143 is an inline documentation reference, not shell execution. Backticks are used for Markdown formatting only."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:144:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected text at SKILL.md:144 is an inline documentation reference, not shell execution. Backticks are used for Markdown formatting only."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:174:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The detected text at SKILL.md:174 is a Markdown shell example for a user to run. It is not executable source code and there is no hidden runtime command invocation at this location."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:189:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The detected text at SKILL.md:189 is part of a Markdown code fence boundary or documentation block. It does not execute commands by itself."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:195:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected text at SKILL.md:195 is an inline documentation reference, not shell execution. Backticks are used for Markdown formatting only."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:206:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected text at SKILL.md:206 is an inline documentation reference, not shell execution. Backticks are used for Markdown formatting only."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:207:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected text at SKILL.md:207 is an inline documentation reference, not shell execution. Backticks are used for Markdown formatting only."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "external_commands:SKILL.md:208:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "The detected text at SKILL.md:208 is an inline documentation reference, not shell execution. Backticks are used for Markdown formatting only."
+        "confidence": 0.92,
+        "reason": "The match is Markdown code fencing or an inline reference, not executable Ruby backtick code. The file documents DevOps commands for users, and no dynamic shell execution occurs at this location."
       },
       {
         "id": "sensitive:SKILL.md:126:environment-file-access",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "SKILL.md:126 copies .env.example to .env as a setup example. It does not read, print, transmit, or request existing environment secrets."
+        "confidence": 0.86,
+        "reason": "The command copies a sample environment file as setup documentation and does not read or transmit secrets. It may overwrite a local .env file, but the cited line is not credential access or exfiltration."
       },
       {
         "id": "blocker:SKILL.md:83:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "SKILL.md:83 uses the phrase 'Anti-Patterns to Avoid' in normal documentation. There is no system reconnaissance instruction, host probing command, or data collection behavior."
+        "confidence": 0.95,
+        "reason": "The cited text is an anti-pattern heading or list item in documentation, not system reconnaissance guidance. It contains no commands for host discovery, enumeration, or bypass behavior."
       }
     ],
     "semantic_findings": [],
@@ -748,8 +753,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "scripts/deployment_manager.py writes JSON results to the user-supplied --output path at line 107. This is useful behavior, but it can overwrite arbitrary local files without a path guard or confirmation."
+        "confidence": 0.74,
+        "confidence_reasoning": "The script writes JSON output to args.output with no path restriction or overwrite guard. This is intended report generation, but it can overwrite arbitrary files if a sensitive path is supplied."
       },
       {
         "title": "Python file write/append",
@@ -764,8 +769,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "scripts/pipeline_generator.py writes JSON results to the user-supplied --output path at line 107. This is useful behavior, but it can overwrite arbitrary local files without a path guard or confirmation."
+        "confidence": 0.74,
+        "confidence_reasoning": "The script writes JSON output to args.output with no path restriction or overwrite guard. This is intended report generation, but it can overwrite arbitrary files if a sensitive path is supplied."
       },
       {
         "title": "Python file write/append",
@@ -780,8 +785,8 @@
         "review_kind": "capability",
         "source_category": "filesystem",
         "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "scripts/terraform_scaffolder.py writes JSON results to the user-supplied --output path at line 107. This is useful behavior, but it can overwrite arbitrary local files without a path guard or confirmation."
+        "confidence": 0.74,
+        "confidence_reasoning": "The script writes JSON output to args.output with no path restriction or overwrite guard. This is intended report generation, but it can overwrite arbitrary files if a sensitive path is supplied."
       }
     ],
     "low_findings": [],
@@ -789,137 +794,134 @@
     "files_scanned": 7,
     "total_lines": 867,
     "audit_model": "codex",
-    "audited_at": "2026-07-08T08:05:11.842Z",
+    "audited_at": "2026-07-09T17:33:53.767Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Build Reliable DevOps Automation",
-    "value_statement": "Teams need repeatable pipelines, infrastructure workflows, and deployment checks. This skill guides CI/CD setup, Terraform planning, deployment automation, and operational reviews.",
+    "user_title": "Plan DevOps Automation Workflows",
+    "value_statement": "DevOps work often spans pipelines, infrastructure, deployment, and monitoring decisions. This skill organizes reference guidance and helper scripts for planning those workflows with Claude, Codex, or Claude Code.",
     "seo_keywords": [
-      "Claude DevOps skill",
-      "Codex DevOps automation",
-      "Claude Code CI/CD",
-      "CI/CD pipeline guide",
+      "Claude",
+      "Codex",
+      "Claude Code",
+      "DevOps automation",
+      "CI/CD pipelines",
       "Terraform scaffolding",
-      "deployment automation",
-      "cloud operations",
+      "deployment workflows",
       "infrastructure as code",
-      "DevOps best practices",
-      "Kubernetes deployment"
+      "Kubernetes deployment",
+      "cloud operations"
     ],
     "actual_capabilities": [
-      "Documents CI/CD pipeline, infrastructure as code, and deployment strategy workflows.",
-      "Provides Python helper scripts for target path validation and JSON report output.",
-      "Lists common build, test, container, and Kubernetes deployment commands.",
-      "Summarizes security, maintainability, performance, and code quality practices.",
-      "Links separate reference guides for pipeline, Terraform, and deployment topics."
+      "Explains CI/CD, infrastructure as code, and deployment strategy topics through reference guides.",
+      "Provides command examples for Python helper scripts, npm checks, Docker, Docker Compose, and Kubernetes.",
+      "Runs helper scripts that validate a target path and print a simple status report.",
+      "Can emit helper script results as JSON when the --json option is used.",
+      "Documents common DevOps practices for input validation, authentication, dependency updates, and monitoring."
     ],
     "limitations": [
-      "Reference guides contain generic examples and need project-specific details.",
-      "Helper scripts currently produce placeholder findings instead of deep analysis.",
-      "The skill does not deploy infrastructure unless users run commands themselves.",
-      "External cloud credentials, Terraform state, and CI provider setup remain user responsibilities."
+      "The included Python scripts are templates and do not generate complete production pipelines.",
+      "Cloud setup still requires account-specific credentials, policies, and review.",
+      "Deployment commands can change live systems and need human confirmation.",
+      "The reference guides are broad and use placeholder examples in several sections."
     ],
     "use_cases": [
       {
-        "title": "Plan CI/CD Improvements",
-        "description": "Review an application workflow and identify pipeline steps for build, test, lint, and deployment gates.",
-        "target_user": "DevOps engineer"
+        "title": "Plan a Delivery Workflow",
+        "target_user": "Platform engineer",
+        "description": "Map CI/CD, infrastructure, deployment, and monitoring steps before implementing a service release process."
       },
       {
-        "title": "Prepare Infrastructure Reviews",
-        "description": "Use the Terraform guidance to organize review questions before changing infrastructure modules or environments.",
-        "target_user": "Platform engineer"
+        "title": "Review Deployment Readiness",
+        "target_user": "DevOps lead",
+        "description": "Check whether build, test, container, rollback, and environment steps are represented in a release plan."
       },
       {
-        "title": "Create Deployment Checklists",
-        "description": "Turn deployment strategy notes into clear readiness checks for releases, rollbacks, and monitoring handoffs.",
-        "target_user": "Engineering manager"
+        "title": "Understand Release Operations",
+        "target_user": "Application developer",
+        "description": "Learn the operational checks and commands that support safer application deployments."
       }
     ],
     "prompt_templates": [
       {
-        "title": "Review My Pipeline",
-        "scenario": "Beginner pipeline assessment",
-        "prompt": "Review my current CI/CD workflow and list practical improvements for build, test, lint, security, and deployment steps."
+        "title": "Summarize the DevOps Scope",
+        "scenario": "Beginner orientation",
+        "prompt": "Use this skill to explain the CI/CD, infrastructure, and deployment topics it covers. Keep the summary short and practical."
       },
       {
-        "title": "Plan Terraform Structure",
-        "scenario": "Intermediate infrastructure planning",
-        "prompt": "Help me design a Terraform module structure for this project. Include environments, state handling, variables, and review checkpoints."
+        "title": "Create a Release Checklist",
+        "scenario": "Team planning",
+        "prompt": "Use this skill to draft a release checklist for my service. Include build, test, deployment, rollback, and monitoring steps."
       },
       {
-        "title": "Create Release Checklist",
-        "scenario": "Release readiness planning",
-        "prompt": "Create a deployment readiness checklist for this service. Cover validation, rollout, rollback, monitoring, and owner responsibilities."
+        "title": "Review an Existing Workflow",
+        "scenario": "Process improvement",
+        "prompt": "Use this skill to review my current deployment workflow. Identify missing CI/CD, infrastructure, security, and observability steps."
       },
       {
-        "title": "Audit DevOps Workflow",
-        "scenario": "Advanced operational review",
-        "prompt": "Assess this repository as a DevOps workflow. Identify pipeline gaps, infrastructure risks, deployment risks, and prioritized remediation steps."
+        "title": "Design a Multi-Cloud Automation Plan",
+        "scenario": "Advanced architecture",
+        "prompt": "Use this skill to design a phased DevOps automation plan across cloud, Terraform, containers, and deployment controls."
       }
     ],
     "output_examples": [
       {
-        "input": "Review a service that builds manually and deploys from a developer laptop.",
+        "input": "Review a small web application release process.",
         "output": [
-          "A prioritized CI/CD improvement plan with build, test, and approval stages.",
-          "A deployment risk summary covering credentials, rollback, and auditability.",
-          "A short list of first changes that reduce manual release risk."
+          "A release checklist covering build, test, artifact publishing, deployment approval, rollback, and monitoring.",
+          "A short list of missing safeguards, such as environment validation and post-deploy health checks."
         ]
       },
       {
-        "input": "Prepare an infrastructure review for a new Terraform environment.",
+        "input": "Plan infrastructure automation for a new service.",
         "output": [
-          "A review checklist for module boundaries, variables, state, and secrets.",
-          "Questions for environment promotion, ownership, and drift management.",
-          "Recommended validation steps before applying infrastructure changes."
+          "A phased plan for Terraform structure, environment separation, review gates, and deployment ownership.",
+          "A reminder to verify credentials, state storage, and cloud permissions before applying infrastructure changes."
         ]
       },
       {
-        "input": "Create a release readiness checklist for a Kubernetes service.",
+        "input": "Prepare a deployment troubleshooting guide.",
         "output": [
-          "A readiness checklist for images, manifests, health checks, and monitoring.",
-          "Rollback criteria and communication points for release owners.",
-          "Post-deployment checks for service health and incident response."
+          "A practical troubleshooting outline for failed builds, container startup problems, and rollout verification.",
+          "Suggested logs, metrics, and rollback checks for the operations team."
         ]
       }
     ],
     "best_practices": [
-      "Review generated guidance against your real cloud provider, CI system, and deployment permissions.",
-      "Run helper scripts only on intended project paths and store output in review folders.",
-      "Pair deployment changes with rollback plans, monitoring checks, and clear owners."
+      "Review commands before running them against live infrastructure.",
+      "Keep generated reports inside the project workspace.",
+      "Pair the reference guidance with organization-specific security and deployment policies."
     ],
     "anti_patterns": [
-      "Do not copy deployment commands into production without checking the target context.",
-      "Do not store secrets in generated files, logs, examples, or pipeline output.",
-      "Do not treat placeholder script findings as a complete security or reliability audit."
+      "Running deployment examples without checking the active cluster or cloud account.",
+      "Treating placeholder reference sections as production-ready architecture.",
+      "Writing helper script output over existing configuration or secret files."
     ],
     "faq": [
       {
         "question": "Does this skill deploy applications automatically?",
-        "answer": "No. It provides guidance, scripts, and command examples. Users must choose and run any deployment actions."
+        "answer": "No. It provides guidance, examples, and helper scripts. Deployment commands still require explicit user review."
       },
       {
-        "question": "Can I use it with Claude, Codex, and Claude Code?",
-        "answer": "Yes. The metadata lists Claude, Codex, and Claude Code as supported tools."
+        "question": "Can it generate a complete CI/CD pipeline?",
+        "answer": "No. The scripts are templates and simple report tools. They can support planning, but they do not create complete pipelines."
       },
       {
-        "question": "Does it generate complete Terraform projects?",
-        "answer": "No. The Terraform script is a lightweight helper and the reference material is generic."
+        "question": "Which AI tools can use this skill?",
+        "answer": "It declares support for Claude, Codex, and Claude Code."
       },
       {
-        "question": "What should I review before running examples?",
-        "answer": "Check the target project, cloud account, cluster context, credentials, and any command that changes infrastructure."
+        "question": "Does it require cloud credentials?",
+        "answer": "The documentation discusses cloud workflows. Real deployments still need user-managed credentials and policy review."
       },
       {
-        "question": "Does it handle secrets securely?",
-        "answer": "It gives general security advice. Secret storage and access controls must be configured in your own tools."
+        "question": "Are the Python scripts safe to run?",
+        "answer": "They validate a target path and print simple reports. Use care with --output because it can write to a chosen file path."
       },
       {
-        "question": "Who benefits most from this skill?",
-        "answer": "DevOps, platform, and engineering teams that need structured reviews for pipelines, infrastructure, and releases."
+        "question": "Who should use this skill?",
+        "answer": "Platform engineers, DevOps leads, and application teams can use it to plan and review release operations."
       }
     ]
   },
