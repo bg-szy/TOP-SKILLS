@@ -15,7 +15,7 @@ fetch:
     path: scripts/install_hook.sh
   - url: https://github.com/GoBeyondYang/skills/raw/main/skills/business-conflict-analyzer/references/common_patterns.md
     path: references/common_patterns.md
-description: "Analyzes API, schema, configuration, message, and UI contract changes to identify business impact, affected consumers, and migration needs."
+description: "Analyze API, schema, and contract changes; map affected consumers, assess business risk, generate an impact report, and support commit guarding with compatibility fixes."
 ---
 
 > ⚠️ **IMPORTANT — Companion files (scripts/, references/) download automatically via `fetch`**

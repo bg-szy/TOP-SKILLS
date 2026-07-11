@@ -1,9 +1,9 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-05T11:00:39.220Z",
-    "slug": "halt-catch-fire-youtube-thumbnail-design",
-    "source_url": "https://github.com/halt-catch-fire/skills/tree/main/guides/design/youtube-thumbnail-design/",
+    "generated_at": "2026-07-10T11:12:09.005Z",
+    "slug": "101-skills-youtube-thumbnail-design",
+    "source_url": "https://github.com/101-skills/skills/tree/main/guides/design/youtube-thumbnail-design/",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
@@ -23,18 +23,19 @@
   },
   "skill": {
     "name": "youtube-thumbnail-design",
-    "description": "Design YouTube thumbnails with practical rules for size, contrast, safe zones, text, facial expressions, and mobile readability.",
-    "summary": "Create readable, high-contrast YouTube thumbnails that work at mobile feed size.",
+    "description": "Design YouTube thumbnails using proven dimensions, safe zones, contrast, concise text, expressive subjects, mobile previews, generation prompts, and controlled A/B tests.",
+    "summary": "Create clear, high-contrast YouTube thumbnails that remain readable on mobile.",
     "icon": "📦",
     "version": "1.0.0",
-    "author": "halt-catch-fire",
+    "author": "101-skills",
     "license": "MIT",
+    "category": "design",
     "tags": [
-      "youtube-thumbnails",
+      "youtube",
       "thumbnail-design",
+      "image-generation",
       "ctr-optimization",
-      "ai-image-generation",
-      "video-marketing"
+      "visual-design"
     ],
     "supported_tools": [
       "claude",
@@ -44,29 +45,23 @@
     "risk_factors": [
       "external_commands",
       "network"
-    ],
-    "category": "design"
+    ]
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "low",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Static alerts are false positives caused by Markdown backticks, disclosed CLI examples, and ordinary documentation links. No prompt injection, hidden execution, credential exfiltration, or system reconnaissance intent was found in SKILL.md.",
+    "summary": "Most static alerts are Markdown backticks or design prose, not executable reconnaissance. Confirmed risks are documented npx and belt workflows, mutable external install guidance, and prompt transmission to inference.sh. No prompt injection, secret access, or malicious intent was found.",
     "remediation": [
       {
-        "issue": "External CLI dependency may surprise users.",
-        "suggestion": "State that thumbnail generation uses the inference.sh belt CLI and may send prompts to an external service.",
-        "severity": "low"
+        "issue": "The skill asks agents to install packages and run an authenticated third-party CLI.",
+        "suggestion": "Require explicit user confirmation, pin installable dependencies, and verify package sources before installation or execution.",
+        "severity": "medium"
       },
       {
-        "issue": "Related skill installation commands are broad supply-chain guidance.",
-        "suggestion": "Prefer pinned, official marketplace references for related skills when stable versions are available.",
-        "severity": "low"
-      },
-      {
-        "issue": "Allowed belt command scope is broad for a design guide.",
-        "suggestion": "Narrow tool permissions to specific belt subcommands if the skill format supports finer-grained allow rules.",
+        "issue": "Image prompts are transmitted to inference.sh applications.",
+        "suggestion": "Disclose the external data transfer and warn users not to include confidential, personal, or regulated information.",
         "severity": "low"
       }
     ],
@@ -447,296 +442,495 @@
     "finding_verdicts": [
       {
         "id": "external_commands:SKILL.md:7:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "The inline command is installation documentation for a related CLI skill, not executable Ruby backtick evaluation. It is visible user guidance and does not interpolate untrusted input or hide execution."
+        "verdict": "confirmed",
+        "confidence": 0.98,
+        "reason": "Line 7 instructs users to run npx to install an external CLI skill. This command changes the local environment and introduces supply-chain risk.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:15:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks mark inline Markdown around the tool name and a documentation link, not shell execution. No command is executed from this line by the skill itself."
+        "confidence": 0.99,
+        "reason": "The backticks on line 15 only format the belt command name in Markdown. This line does not execute a shell command."
       },
       {
         "id": "external_commands:SKILL.md:17:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "Lines 17-26 are a fenced Markdown bash example showing belt login and image generation. The commands are explicit examples with static arguments, not dynamic shell evaluation or command injection."
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The Bash block runs belt login and invokes a remote image-generation application. These are genuine external commands with authentication and network effects.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is the closing Markdown fence for the preceding example block. It is syntax for documentation, not Ruby or shell backtick execution."
+        "confidence": 0.99,
+        "reason": "Line 26 is a closing Markdown code fence. It contains no command or executable expression."
       },
       {
         "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Lines 52-67 are an ASCII safe-zone diagram inside a Markdown fence. The content is design guidance and contains no executable command."
+        "confidence": 0.99,
+        "reason": "The fenced block beginning on line 52 is an explanatory safe-zone diagram. It contains no shell command."
       },
       {
         "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This is the closing Markdown fence for a non-executable diagram. It cannot run commands or evaluate code."
+        "confidence": 0.99,
+        "reason": "Line 67 closes the safe-zone diagram fence. The backticks are Markdown syntax, not command execution."
       },
       {
         "id": "external_commands:SKILL.md:139:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "Lines 139-152 are fenced belt CLI examples for generating thumbnail variants. They are explicit user-facing examples and do not contain untrusted shell interpolation."
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The Bash block invokes two belt image-generation applications with prompt data. These are intentional external commands that contact third-party services.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:152:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is the closing Markdown fence for the belt CLI example block. The finding is triggered by formatting backticks, not executable backtick syntax."
+        "confidence": 0.99,
+        "reason": "Line 152 is only the closing fence for the preceding Bash examples. It does not independently execute anything."
       },
       {
         "id": "external_commands:SKILL.md:157:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "Lines 157-163 are a fenced belt CLI example for a tutorial thumbnail. The example uses fixed command structure and does not perform hidden or arbitrary shell execution."
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The Bash block runs belt against a remote image-generation application. This is a real external command with network effects.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:163:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is the closing Markdown fence for a documented example. It is not an execution primitive."
+        "confidence": 0.99,
+        "reason": "Line 163 is a closing Markdown code fence. It contains no shell command."
       },
       {
         "id": "external_commands:SKILL.md:166:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "Lines 166-172 are a fenced belt CLI example for a before-after thumbnail. The content is expected image-generation guidance and has no command injection behavior."
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The Bash block invokes belt to generate an image through an external application. Execution and network access are intentional.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:172:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is the closing Markdown fence for a documented example block. It is not Ruby or shell backtick execution."
+        "confidence": 0.99,
+        "reason": "Line 172 only closes a Markdown code block. No executable operation appears on this line."
       },
       {
         "id": "external_commands:SKILL.md:175:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "Lines 175-181 are a fenced belt CLI example for a review thumbnail. The command is visible and purpose-aligned, with no hidden execution or secret handling."
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The Bash block runs belt with an image prompt against a remote application. This is genuine external command execution.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:181:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is the closing Markdown fence for the review example. The finding is a Markdown formatting false positive."
+        "confidence": 0.99,
+        "reason": "Line 181 is a closing Markdown fence and does not execute a command."
       },
       {
         "id": "external_commands:SKILL.md:184:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "Lines 184-190 are a fenced belt CLI example for listicle thumbnail generation. The command is explicit design workflow documentation, not dynamic code execution."
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The Bash block invokes a remote image-generation application through belt. The command has external execution and network effects.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:190:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is the closing Markdown fence for a documented command example. It does not execute anything by itself."
+        "confidence": 0.99,
+        "reason": "Line 190 closes the preceding Bash example. The detected backticks are Markdown syntax only."
       },
       {
         "id": "external_commands:SKILL.md:205:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "Lines 205-217 are fenced belt CLI examples for A/B variant generation. The commands are transparent examples and do not include unsafe shell metacharacter construction."
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The Bash block starts two asynchronous belt jobs for A/B variants. These are intentional external commands that send prompts to a remote service.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:217:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is the closing Markdown fence for the A/B testing example block. It is not executable backtick syntax."
+        "confidence": 0.99,
+        "reason": "Line 217 is the closing Markdown fence for the A/B examples. It contains no command."
       },
       {
         "id": "external_commands:SKILL.md:246:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "Lines 246-250 are fenced npx examples for adding related skills. They are visible installation suggestions, not hidden execution logic or injected shell code."
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The Bash block instructs users to install three external skills through npx. These commands modify the environment and create supply-chain exposure.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:250:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This is the closing Markdown fence for related-skill install examples. The backticks are Markdown syntax only."
+        "confidence": 0.98,
+        "reason": "Line 250 closes the installation example, and line 252 formats a belt subcommand as documentation. Neither location automatically executes a command."
       },
       {
         "id": "network:SKILL.md:11:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The URL links to inference.sh as the named image-generation provider for the skill. It is disclosed documentation, not an undisclosed callback or data exfiltration endpoint."
+        "confidence": 0.98,
+        "reason": "The inference.sh URL is a visible documentation link identifying the service used by the skill. The link itself does not make a network request."
       },
       {
         "id": "network:SKILL.md:15:hardcoded-url",
-        "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "The URL points to public install instructions for the required CLI. It is a transparent documentation link and does not send local data or credentials."
+        "verdict": "confirmed",
+        "confidence": 0.91,
+        "reason": "The skill directs users to mutable installation instructions hosted outside the package. Those instructions can change independently and should be reviewed before use.",
+        "severity": "low"
       },
       {
         "id": "blocker:SKILL.md:69:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The phrase \"Avoid placing critical elements\" refers to thumbnail layout safe zones. It is visual design guidance, not system reconnaissance."
+        "confidence": 1,
+        "reason": "The phrase describes visual areas to avoid when placing thumbnail elements. It does not inspect the system or collect environment information."
       },
       {
         "id": "blocker:SKILL.md:90:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This line advises against low-contrast color combinations. It does not inspect the host system or request environment details."
+        "confidence": 1,
+        "reason": "This is color-composition advice about adjacent warm colors. It has no relationship to system reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:130:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The word \"Neutral\" appears in a face-expression table for thumbnail performance. It has no system reconnaissance meaning in context."
+        "confidence": 1,
+        "reason": "The table ranks neutral facial expressions for thumbnail performance. It does not contain reconnaissance or system access instructions."
       }
     ],
-    "semantic_findings": [],
+    "semantic_findings": [
+      {
+        "title": "Third-Party Prompt Transmission",
+        "description": "The examples send image prompts to inference.sh applications through belt. Users could expose sensitive creative plans or personal details included in prompts.",
+        "severity": "low",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 17,
+            "line_end": 25
+          }
+        ],
+        "confidence": 0.96,
+        "confidence_reasoning": "The command explicitly invokes a remote application with a prompt payload. The transfer is intentional, but the skill does not warn against sensitive prompt content."
+      }
+    ],
     "critical_findings": [],
     "high_findings": [],
-    "medium_findings": [],
-    "low_findings": [],
+    "medium_findings": [
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "> **Install the belt CLI skill:** `npx skills add belt-sh/cli`",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 7,
+            "line_end": 7
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.98,
+        "confidence_reasoning": "Line 7 instructs users to run npx to install an external CLI skill. This command changes the local environment and introduces supply-chain risk."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 17,
+            "line_end": 26
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The Bash block runs belt login and invokes a remote image-generation application. These are genuine external commands with authentication and network effects."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 139,
+            "line_end": 152
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The Bash block invokes two belt image-generation applications with prompt data. These are intentional external commands that contact third-party services."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 157,
+            "line_end": 163
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The Bash block runs belt against a remote image-generation application. This is a real external command with network effects."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 166,
+            "line_end": 172
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The Bash block invokes belt to generate an image through an external application. Execution and network access are intentional."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 175,
+            "line_end": 181
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The Bash block runs belt with an image prompt against a remote application. This is genuine external command execution."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 184,
+            "line_end": 190
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The Bash block invokes a remote image-generation application through belt. The command has external execution and network effects."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 205,
+            "line_end": 217
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The Bash block starts two asynchronous belt jobs for A/B variants. These are intentional external commands that send prompts to a remote service."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 246,
+            "line_end": 250
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The Bash block instructs users to install three external skills through npx. These commands modify the environment and create supply-chain exposure."
+      }
+    ],
+    "low_findings": [
+      {
+        "title": "Hardcoded URL",
+        "description": "> Requires inference.sh CLI (`belt`). [Install instructions](https://raw.githubusercontent.com/infer",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 15,
+            "line_end": 15
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.91,
+        "confidence_reasoning": "The skill directs users to mutable installation instructions hosted outside the package. Those instructions can change independently and should be reviewed before use."
+      },
+      {
+        "title": "Third-Party Prompt Transmission",
+        "description": "The examples send image prompts to inference.sh applications through belt. Users could expose sensitive creative plans or personal details included in prompts.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 17,
+            "line_end": 25
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "low",
+        "confidence": 0.96,
+        "confidence_reasoning": "The command explicitly invokes a remote application with a prompt payload. The transfer is intentional, but the skill does not warn against sensitive prompt content."
+      }
+    ],
     "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 254,
     "audit_model": "codex",
-    "audited_at": "2026-07-05T11:00:39.221Z",
+    "audited_at": "2026-07-10T11:12:09.005Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Design High-CTR YouTube Thumbnails",
-    "value_statement": "YouTube thumbnails must be clear at mobile feed size and still earn clicks. This skill gives practical rules for layout, color, text, faces, and A/B testing.",
+    "user_title": "Design High-Impact YouTube Thumbnails",
+    "value_statement": "Weak thumbnails lose clicks before viewers evaluate the video. This skill provides layout rules, generation prompts, mobile checks, and testing guidance for stronger designs.",
     "seo_keywords": [
+      "YouTube thumbnail design",
+      "YouTube thumbnail prompts",
+      "CTR optimization",
+      "mobile thumbnail preview",
+      "thumbnail safe zones",
+      "AI image generation",
       "Claude",
       "Codex",
-      "Claude Code",
-      "YouTube thumbnail design",
-      "thumbnail CTR",
-      "video thumbnail optimization",
-      "AI image generation",
-      "thumbnail safe zones",
-      "thumbnail A/B testing",
-      "YouTube cover image"
+      "Claude Code"
     ],
     "actual_capabilities": [
-      "Defines YouTube thumbnail dimensions, aspect ratio, file size, and supported formats.",
-      "Explains how to test thumbnail readability at 120 pixels wide.",
-      "Identifies safe zones around timestamps, chapter markers, progress bars, and crop edges.",
-      "Gives contrast, color count, font size, and text length rules for readable thumbnails.",
-      "Maps facial expressions and composition choices to common video goals.",
-      "Provides belt CLI prompt examples for tutorial, review, listicle, and A/B test thumbnails."
+      "Defines thumbnail dimensions, aspect ratio, file-size limits, and supported image formats.",
+      "Applies a 120-pixel mobile readability test and identifies unsafe overlay zones.",
+      "Recommends contrast pairs, text limits, subject placement, and facial expressions.",
+      "Provides belt CLI prompt examples for common thumbnail formats and content types.",
+      "Structures single-variable A/B tests and supplies a practical review checklist."
     ],
     "limitations": [
-      "Image generation examples require the inference.sh belt CLI and an authenticated account.",
-      "The skill does not upload thumbnails or read YouTube Studio analytics.",
-      "CTR guidance is heuristic and should be tested against each channel audience.",
-      "Generated images may need brand, likeness, and rights review before publishing."
+      "Image generation requires the belt CLI, an inference.sh account, and network access.",
+      "The skill does not perform image editing, typography placement, or file compression by itself.",
+      "Design recommendations are heuristics and cannot guarantee higher click-through rates.",
+      "External application names, commands, pricing, and availability may change."
     ],
     "use_cases": [
       {
         "title": "Plan a Creator Thumbnail",
-        "description": "Choose a readable composition, strong color pair, and short text for a new YouTube upload.",
-        "target_user": "Independent creator"
+        "description": "Turn a video topic into a focused composition, short text concept, color pair, and generation prompt.",
+        "target_user": "Independent YouTube creators"
       },
       {
-        "title": "Create Video Series Templates",
-        "description": "Build repeatable thumbnail patterns that keep a channel recognizable without making every image look identical.",
-        "target_user": "Video editor"
+        "title": "Standardize Channel Reviews",
+        "description": "Evaluate thumbnails against mobile readability, safe zones, contrast, brand consistency, and content accuracy.",
+        "target_user": "Channel managers"
       },
       {
-        "title": "Run Thumbnail Experiments",
-        "description": "Define controlled A/B thumbnail variants that test one visual variable at a time.",
-        "target_user": "Growth marketer"
+        "title": "Prepare Controlled Tests",
+        "description": "Create paired thumbnail concepts that change one variable while preserving the remaining design.",
+        "target_user": "Designers and growth marketers"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Check a Thumbnail Idea",
-        "scenario": "Beginner review before design work starts.",
-        "prompt": "Review this YouTube video idea and suggest one thumbnail concept that passes the 120px mobile readability test: [video idea]."
+        "title": "Create a Basic Concept",
+        "prompt": "Design a YouTube thumbnail concept for [video topic]. Suggest one focal subject, one color pair, optional text under six words, and a mobile-safe layout.",
+        "scenario": "Use when starting from a video topic."
       },
       {
-        "title": "Design a Safe Layout",
-        "scenario": "Intermediate composition planning.",
-        "prompt": "Create a thumbnail layout plan for this video: [title]. Include safe zones, focal point, text placement, and a three-color palette."
+        "title": "Write an Image Prompt",
+        "prompt": "Write an image-generation prompt for [video topic] at 16:9. Include composition, expression, lighting, contrast, background, subject placement, and empty space for text.",
+        "scenario": "Use when preparing an AI-generated base image."
       },
       {
-        "title": "Generate Image Prompt Options",
-        "scenario": "Advanced image-generation preparation.",
-        "prompt": "Write three AI image prompts for a YouTube thumbnail about [topic]. Vary expression, background, and composition while keeping text readable."
+        "title": "Review an Existing Thumbnail",
+        "prompt": "Review this thumbnail description: [description]. Check the 120-pixel test, safe zones, contrast, text length, focal hierarchy, accuracy, and likely mobile readability.",
+        "scenario": "Use before publishing or revising a design."
       },
       {
-        "title": "Plan an A/B Test",
-        "scenario": "Advanced CTR optimization.",
-        "prompt": "Create two thumbnail variants for [video topic]. Keep one variable different, explain the hypothesis, and list what to measure after publishing."
+        "title": "Build an A/B Test",
+        "prompt": "Create two thumbnail briefs for [video]. Change only [test variable]. Keep subject, framing, text, branding, and visual complexity consistent. Explain the measurement plan.",
+        "scenario": "Use for controlled click-through testing."
       }
     ],
     "output_examples": [
       {
-        "input": "A tutorial video titled “Build a Portfolio Website in One Hour.”",
+        "input": "Create a thumbnail concept for a beginner video about fixing slow laptops.",
         "output": [
-          "Use a clean workspace with a laptop as the main subject.",
-          "Place the creator face on the left and the result preview on the right.",
-          "Use blue and orange contrast with no more than four words of text."
+          "Subject: concerned creator beside a slow laptop icon.",
+          "Text: SPEED IT UP.",
+          "Colors: yellow, black, and white.",
+          "Layout: face left, laptop center, text upper right."
         ]
       },
       {
-        "input": "A product comparison video for two microphones.",
-        "output": [
-          "Show both products facing each other with a clear versus marker.",
-          "Use one bright accent color for each side of the comparison.",
-          "Avoid placing logos or key details near the bottom-right timestamp area."
-        ]
+        "input": "Review a thumbnail with eight small words and a product in the bottom-right corner.",
+        "output": "Reduce the text to six words or fewer. Move the product away from the duration overlay and increase subject contrast."
       },
       {
-        "input": "A request to improve a cluttered thumbnail concept.",
+        "input": "Plan a test comparing a bright background with a dark background.",
         "output": [
-          "Reduce the concept to one focal subject, one emotion, and one short text phrase.",
-          "Increase contrast between the subject and background.",
-          "Preview the design at 120 pixels wide before creating final variants."
+          "Variant A uses a bright yellow background.",
+          "Variant B uses a dark navy background.",
+          "Keep the face, text, crop, and subject placement unchanged.",
+          "Compare click-through rate over equivalent audience samples."
         ]
       }
     ],
     "best_practices": [
-      "Test every concept at 120 pixels wide before treating it as finished.",
-      "Use one clear focal point and reserve corners for platform overlays.",
-      "Change only one major visual variable when comparing A/B variants."
+      "Preview every design at approximately 120 pixels before approval.",
+      "Keep one dominant focal point and reserve overlay-safe space near the lower corners.",
+      "Test one variable at a time and match every thumbnail to the actual video."
     ],
     "anti_patterns": [
-      "Do not add text that repeats the full video title.",
-      "Do not place important faces, logos, or results under YouTube overlay areas.",
-      "Do not rely on tiny details that disappear in the mobile feed."
+      "Do not repeat the full video title in small thumbnail text.",
+      "Do not place important subjects beneath duration, chapter, or progress overlays.",
+      "Do not compare test variants that change multiple visual variables simultaneously."
     ],
     "faq": [
       {
-        "question": "Does this skill generate thumbnails directly?",
-        "answer": "It includes belt CLI examples for AI image generation, but users need the inference.sh CLI and account access."
+        "question": "What thumbnail size does the skill recommend?",
+        "answer": "Use at least 1280 by 720 pixels with a 16:9 aspect ratio. The guide also recommends 1920 by 1080 pixels."
       },
       {
-        "question": "What thumbnail size does it recommend?",
-        "answer": "It recommends at least 1280 by 720 pixels, with 1920 by 1080 pixels preferred."
+        "question": "Does this skill generate images directly?",
+        "answer": "It provides belt CLI examples for inference.sh applications. Generation requires the external CLI, an account, and network access."
       },
       {
-        "question": "Can it improve click-through rate?",
-        "answer": "It provides CTR-focused design rules, but results depend on audience, topic, title, and testing."
+        "question": "How much text should a thumbnail contain?",
+        "answer": "Use no more than six words. Choose bold text that remains readable in a 120-pixel mobile preview."
       },
       {
-        "question": "Does it cover mobile readability?",
-        "answer": "Yes. It emphasizes checking thumbnails at about 120 pixels wide, where many viewers first see them."
+        "question": "Can the skill guarantee a higher click-through rate?",
+        "answer": "No. It provides design heuristics and testing methods, but performance depends on audience, topic, title, competition, and distribution."
       },
       {
-        "question": "Does it support A/B testing?",
-        "answer": "Yes. It explains how to create variants by changing one variable at a time."
+        "question": "How should I run an A/B test?",
+        "answer": "Change one variable between variants. Keep composition, subject, text, and branding stable, then compare equivalent audience samples."
       },
       {
-        "question": "Is this only for creators who show their face?",
-        "answer": "No. It covers face-based thumbnails and faceless patterns such as tutorials, comparisons, and listicles."
+        "question": "What information should I avoid sending to image services?",
+        "answer": "Do not include confidential plans, personal data, credentials, regulated information, or unpublished client material in external prompts."
       }
     ]
   },

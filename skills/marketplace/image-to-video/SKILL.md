@@ -1,205 +1,245 @@
 ---
 name: image-to-video
-displayName: "Image-to-Video — Pro Pack on RunComfy"
-description: >
-  Animate any still image on RunComfy — this skill is a smart router
-  that matches the user's intent to the right i2v model in the
-  RunComfy catalog. Picks HappyHorse 1.0 I2V (Arena #1, native audio,
-  identity preservation) for general animations, Wan 2.7 with
-  `audio_url` for custom-voiceover lip-sync, or Seedance 2.0 Pro for
-  multi-modal animation from image + reference video + reference
-  audio. Bundles each model's documented prompting patterns so the
-  caller gets sharper output without burning iterations on the wrong
-  model. Calls `runcomfy run <vendor>/<model>/image-to-video` (or
-  endpoint variant) through the local RunComfy CLI. Triggers on
-  "image to video", "image-to-video", "i2v", "animate image", "make
-  this move", or any explicit ask to turn a still into video.
-homepage: https://www.runcomfy.com
-license: MIT
+description: "Still-to-video conversion guide: model selection, motion prompting, and camera movement. Covers Wan 2.5 i2v, Seedance, Fabric, Grok Video with when to use each. Use for: animating images, creating video from stills, adding motion, product animations. Triggers: image to video, i2v, animate image, still to video, add motion to image, image animation, photo to video, animate still, wan i2v, image2video, bring image to life, animate photo, motion from image"
+allowed-tools: Bash(belt *)
 ---
 
-# Image-to-Video — Pro Pack on RunComfy
+> **Install the belt CLI skill:** `npx skills add belt-sh/cli`
 
-[runcomfy.com](https://www.runcomfy.com/?utm_source=skills.sh&utm_medium=skill&utm_campaign=image-to-video) · [HappyHorse I2V](https://www.runcomfy.com/models/happyhorse/happyhorse-1-0/image-to-video?utm_source=skills.sh&utm_medium=skill&utm_campaign=image-to-video) · [Wan 2.7](https://www.runcomfy.com/models/wan-ai/wan-2-7/text-to-video?utm_source=skills.sh&utm_medium=skill&utm_campaign=image-to-video) · [Seedance 2.0 Pro](https://www.runcomfy.com/models/bytedance/seedance-v2/pro?utm_source=skills.sh&utm_medium=skill&utm_campaign=image-to-video) · [GitHub](https://github.com/agentspace-so/runcomfy-skills/tree/main/image-to-video)
+# Image to Video
 
-**Image-to-video, intent-routed.** This skill doesn't lock you to one model — it picks the right i2v model in the RunComfy catalog based on what the user actually wants: portrait animation, custom-voiceover lip-sync, or multi-modal composition.
+Convert still images to animated videos via [inference.sh](https://inference.sh) CLI.
+
+## Quick Start
+
+> Requires inference.sh CLI (`belt`). [Install instructions](https://raw.githubusercontent.com/inference-sh/skills/refs/heads/main/cli-install.md)
 
 ```bash
-npx skills add agentspace-so/runcomfy-skills --skill image-to-video -g
+belt login
+
+# Generate a still image
+belt app run falai/flux-dev-lora --input '{
+  "prompt": "serene mountain lake at sunset, snow-capped peaks reflected in still water, golden hour light, landscape photography",
+  "width": 1248,
+  "height": 832
+}'
+
+# Animate it
+belt app run falai/wan-2-5-i2v --input '{
+  "prompt": "gentle ripples on the lake surface, clouds slowly drifting, warm light shifting, birds flying in the distance",
+  "image": "path/to/lake-image.png"
+}'
 ```
 
-## Pick the right model for the user's intent
 
-| User intent | Model | Why |
-|---|---|---|
-| Animate a portrait — keep identity stable | **HappyHorse 1.0 I2V** | #1 on Artificial Analysis Arena (Elo 1392); strong facial fidelity |
-| Product reveal / 360 / macro motion | **HappyHorse 1.0 I2V** | Geometry preservation + smooth camera moves |
-| Native synchronized ambient audio in one pass | **HappyHorse 1.0 I2V** | In-pass audio synthesis |
-| Animate **and** lip-sync to a **custom voiceover track** | **Wan 2.7 + `audio_url`** | Accepts your own MP3/WAV (3–30s, ≤15MB) and drives lip-sync to it |
-| Multi-language dub variants (same image, different audio per call) | **Wan 2.7 + `audio_url`** | Same shot, swap `audio_url` per language |
-| Multi-modal — image + reference video + reference audio together | **Seedance 2.0 Pro** | Up to 9 image refs, 3 video refs (2–15s each), 3 audio refs |
-| Brand-consistent narrative with character ref + scene ref + voice ref | **Seedance 2.0 Pro** | Image holds identity, video holds scene, audio holds voice |
-| Default if unspecified | **HappyHorse 1.0 I2V** | Best all-round quality + native audio |
+## Model Selection
 
-The agent reads this table, classifies the user's intent, and picks the matching subsection below.
+| Model | App ID | Best For | Motion Style |
+|-------|--------|----------|-------------|
+| **Wan 2.5 i2v** | `falai/wan-2-5-i2v` | Realistic motion, natural movement | Photorealistic, subtle |
+| **WAN-I2V (Pruna)** | `pruna/wan-i2v` | Economical, fast, 480p/720p | Natural, efficient |
+| **Seedance 2.0** | `bytedance/seedance-2-0` | Up to 1080p, sync audio, all input types | Versatile, high quality |
+| **Seedance 2.0 Fast** | `bytedance/seedance-2-0-fast` | Fast variant, same capabilities | Versatile, fast |
+| **Fabric 1.0** | `falai/fabric-1-0` | Cloth, fabric, liquid, flowing materials | Physics-based flow |
+| **Grok Imagine Video** | `xai/grok-imagine-video` | General animation, text-guided | Versatile |
 
-## Prerequisites
+### When to Use Each
 
-1. **RunComfy CLI** — `npm i -g @runcomfy/cli`
-2. **RunComfy account** — `runcomfy login` opens a browser device-code flow.
-3. **CI / containers** — set `RUNCOMFY_TOKEN=<token>`.
-4. **A source image URL** — JPEG/PNG/WebP, min 300px, ≤10MB; aspect 1:2.5 to 2.5:1 (HappyHorse) — other models have similar specs.
+| Scenario | Best Model | Why |
+|----------|-----------|-----|
+| Landscape with water/clouds | **Wan 2.5 i2v** | Best at natural, realistic motion |
+| Portrait with subtle expression | **Wan 2.5 i2v** | Maintains face fidelity |
+| Product with fabric/cloth | **Fabric 1.0** | Specialized in material physics |
+| Flag waving, curtain flowing | **Fabric 1.0** | Cloth simulation |
+| Illustrated/artistic image | **Seedance 2.0** | Matches stylized content |
+| General "bring to life" | **Seedance 2.0** | Good all-rounder, up to 1080p |
+| Quick test/iteration | **Seedance 2.0 Fast** | Faster generation |
 
----
+## Motion Types
 
-## Route 1: HappyHorse 1.0 I2V — default for portrait / product / general animation
+### Camera Movement
 
-**Model**: `happyhorse/happyhorse-1-0/image-to-video` · **Arena rank**: #1 (Elo 1392)
+| Movement | Prompt Keyword | Effect |
+|----------|---------------|--------|
+| Push in / Dolly forward | "slow dolly forward", "camera pushes in" | Increasing intimacy/focus |
+| Pull out / Dolly back | "camera pulls back", "slow zoom out" | Reveal, context |
+| Pan left/right | "camera pans slowly to the right" | Scanning, following |
+| Tilt up/down | "camera tilts upward" | Revealing height |
+| Orbit | "camera orbits around the subject" | 3D exploration |
+| Crane up | "camera rises upward" | Grand reveal |
+| Static | (no camera movement prompt) | Subject motion only |
 
-### Schema
+### Subject Motion
 
-| Field | Type | Required | Default | Notes |
-|---|---|---|---|---|
-| `image_url` | string | yes | — | JPEG/JPG/PNG/WEBP. Min 300px. Aspect 1:2.5–2.5:1. ≤10MB. |
-| `prompt` | string | yes | — | ≤5000 non-CJK or 2500 CJK chars. **Motion / camera / lighting** description. |
-| `resolution` | enum | no | `1080P` | `720P` or `1080P`. |
-| `duration` | int | no | 5 | 3–15 seconds. |
-| `seed` | int | no | 0 | Reuse for variant comparisons. |
-| `watermark` | bool | no | true | Provider watermark toggle. |
+| Type | Prompt Examples |
+|------|----------------|
+| Natural elements | "water rippling", "clouds drifting", "leaves rustling in breeze" |
+| Hair/clothing | "hair blowing gently in wind", "dress fabric flowing" |
+| Atmospheric | "fog slowly rolling", "dust particles floating in light beams" |
+| Character | "person slowly turns to camera", "subtle breathing motion" |
+| Mechanical | "gears turning", "clock hands moving" |
+| Liquid | "coffee steam rising", "paint dripping", "water pouring" |
 
-Output aspect = input aspect. No independent reframing.
+## Prompting Best Practices
 
-### Invoke
+### The Golden Rule: Subtle > Dramatic
+
+AI video models produce better results with **gentle, subtle motion** than dramatic action. Requesting too much movement causes distortion and artifacts.
+
+```
+❌ "person running and jumping over obstacles while the camera spins"
+✅ "person slowly walking forward, gentle breeze, camera follows alongside"
+
+❌ "explosion with debris flying everywhere"
+✅ "candle flame flickering gently, warm ambient light shifting"
+
+❌ "fast zoom into the eyes with dramatic camera shake"
+✅ "slow dolly forward toward the subject, subtle focus shift"
+```
+
+### Prompt Structure
+
+```
+[Camera movement] + [Subject motion] + [Atmospheric effects] + [Mood/pace]
+```
+
+### Examples by Scenario
 
 ```bash
-runcomfy run happyhorse/happyhorse-1-0/image-to-video \
-  --input '{
-    "image_url": "https://.../portrait.jpg",
-    "prompt": "Gentle camera drift around the subject'\''s face, subtle breathing motion, identity-stable features, soft natural light."
-  }' \
-  --output-dir <absolute/path>
+# Landscape animation
+belt app run falai/wan-2-5-i2v --input '{
+  "prompt": "gentle camera pan right, water reflecting moving clouds, trees swaying slightly in breeze, warm golden light, peaceful and slow",
+  "image": "landscape.png"
+}'
+
+# Portrait animation
+belt app run falai/wan-2-5-i2v --input '{
+  "prompt": "subtle breathing motion, slight head turn, natural eye blink, hair moving gently, soft ambient lighting shifts",
+  "image": "portrait.png"
+}'
+
+# Product shot animation
+belt app run bytedance/seedance-2-0 --input '{
+  "prompt": "slow 360 degree orbit around the product, gentle spotlight movement, subtle reflections shifting, premium product showcase, smooth motion",
+  "image": "product.png",
+  "generate_audio": true
+}'
+
+# Fabric/cloth animation
+belt app run falai/fabric-1-0 --input '{
+  "prompt": "fabric flowing and rippling in gentle wind, natural cloth physics, soft movement",
+  "image": "fabric-scene.png"
+}'
+
+# Architectural visualization
+belt app run falai/wan-2-5-i2v --input '{
+  "prompt": "slow dolly forward through the entrance, slight camera tilt upward, ambient light filtering through windows, dust particles in light beams",
+  "image": "building-interior.png"
+}'
 ```
 
-### Prompting tips
+## Duration Guidelines
 
-- **Lead with motion verbs**: "drift", "dolly in", "orbit", "tilt up", "reveal", "blink", "breathe". Front-load what's MOVING.
-- **Don't restate the image** — the model sees it. Focus tokens on what changes.
-- **Preservation goals explicit**: "identity-stable features", "packaging unchanged", "background geometry stable".
-- **Lighting evolution**: "rim light intensifying", "shadows shortening as camera rises".
-- **One beat per clip** — single primary motion (orbit OR dolly OR tilt OR character action).
+| Duration | Quality | Use For |
+|----------|---------|---------|
+| 2-3 seconds | Highest quality | GIFs, looping backgrounds, cinemagraphs |
+| 4-5 seconds | High quality | Social media posts, product reveals |
+| 6-8 seconds | Good quality | Short clips, transitions |
+| 10+ seconds | Quality degrades | Avoid unless stitching shorter clips |
 
----
+### Extending Duration
 
-## Route 2: Wan 2.7 + `audio_url` — when the user has a custom voiceover
-
-**Model**: `wan-ai/wan-2-7/text-to-video` (NOT `/image-to-video` — Wan 2.7's t2v endpoint accepts an `audio_url` that drives lip-sync)
-
-**Note on i2v with Wan 2.7**: Wan 2.7's primary i2v animation isn't on a dedicated endpoint here. For pure i2v (image animated by motion prompt only), prefer **HappyHorse i2v**. Use Wan 2.7 specifically when the user has a custom audio track they want lip-synced to a generated talking-head clip.
-
-### Schema (Wan 2.7 t2v with audio)
-
-| Field | Type | Required | Default | Notes |
-|---|---|---|---|---|
-| `prompt` | string | yes | — | Up to ~5000 chars. Describe the talking-head shot: framing, lighting, motion. |
-| `audio_url` | string | yes (for lip-sync) | — | WAV/MP3, 3–30s, ≤15MB. **Drives lip-sync.** |
-| `aspect_ratio` | enum | no | `16:9` | `16:9`, `9:16`, `1:1`, `4:3`, `3:4`. |
-| `resolution` | enum | no | `1080p` | `720p` or `1080p`. |
-| `duration` | enum | no | `5` | 2–15 (whole seconds). Match your audio length. |
-| `negative_prompt` | string | no | — | Concrete issues to avoid (e.g. "no subtitles, no flicker"). |
-| `seed` | int | no | — | Reproducibility. |
-
-### Invoke
+For longer videos, generate multiple short clips and stitch:
 
 ```bash
-runcomfy run wan-ai/wan-2-7/text-to-video \
-  --input '{
-    "prompt": "Medium close-up of a confident spokesperson in a softly-lit recording booth, leaning slightly toward the camera, locked tripod, shallow DOF, warm key light from camera-left.",
-    "audio_url": "https://.../voiceover-en.mp3",
-    "duration": 12,
-    "aspect_ratio": "9:16"
-  }' \
-  --output-dir <absolute/path>
+# Generate 3 clips from the same image with progressive motion
+belt app run falai/wan-2-5-i2v --input '{
+  "prompt": "slow pan left, gentle water motion",
+  "image": "scene.png"
+}' --no-wait
+
+belt app run falai/wan-2-5-i2v --input '{
+  "prompt": "continuing pan, clouds shifting, light changing",
+  "image": "scene.png"
+}' --no-wait
+
+# Stitch together
+belt app run infsh/media-merger --input '{
+  "media": ["clip1.mp4", "clip2.mp4"]
+}'
 ```
 
-### Prompting tips
+## The Full Workflow
 
-- **Describe the talking-head shot** — framing, lighting, lens feel. The audio drives the lip-sync; the prompt builds the visual frame around it.
-- **Match `duration` to audio length** — clip will be silent past the audio if too long.
-- **Use `negative_prompt` for issues**: `"no subtitles, no flicker, no distorted hands"`.
-- **For multi-language dubs** — same prompt, swap `audio_url` per call. Lock seed for visual consistency across languages.
-
----
-
-## Route 3: Seedance 2.0 Pro — multi-modal animation (image + ref video + ref audio)
-
-**Model**: `bytedance/seedance-v2/pro`
-
-Use when the user wants a single clip that combines: a **subject image** + **scene from a reference video** + **voice tone from a reference audio**.
-
-### Schema (Seedance 2.0 Pro, i2v-relevant fields)
-
-| Field | Type | Required | Default | Notes |
-|---|---|---|---|---|
-| `prompt` | string | yes | — | CN ≤500 chars OR EN ≤1000 words. |
-| `image_url` | array | yes (for i2v) | `[]` | 0–9 images. **First is the primary subject.** |
-| `video_url` | array | no | `[]` | 0–3 reference clips (MP4/MOV), 2–15s each. |
-| `audio_url` | array | no | `[]` | 0–3 reference audio (WAV/MP3), 2–15s, < 15MB each. |
-| `aspect_ratio` | enum | no | `adaptive` | `adaptive`, `16:9`, `9:16`, `4:3`, `3:4`, `1:1`, `21:9`. |
-| `duration` | int | no | 5 | 4–15 (whole seconds). |
-| `resolution` | enum | no | `720p` | `480p` or `720p`. |
-| `generate_audio` | bool | no | true | In-pass synchronized speech / SFX / music. |
-| `seed` | int | no | — | Reproducibility. |
-
-### Invoke
+### Still-to-Final-Video Pipeline
 
 ```bash
-runcomfy run bytedance/seedance-v2/pro \
-  --input '{
-    "prompt": "Subject from image 1 walks through the café in video 1, voice tone matches audio 1. Medium close-up, slow push-in, warm light, gentle ambience.",
-    "image_url": ["https://.../subject.jpg"],
-    "video_url": ["https://.../cafe-locked-shot.mp4"],
-    "audio_url": ["https://.../voice-tone.mp3"],
-    "duration": 8
-  }' \
-  --output-dir <absolute/path>
+# 1. Generate source image (best quality)
+belt app run bytedance/seedream-4-5 --input '{
+  "prompt": "cinematic landscape, misty mountains at dawn, lake in foreground, dramatic clouds, golden hour, 4K quality, professional photography",
+  "size": "2K"
+}'
+
+# 2. Animate the image
+belt app run falai/wan-2-5-i2v --input '{
+  "prompt": "gentle mist rolling through the valley, lake surface rippling, clouds slowly moving, birds in distance, warm light shifting",
+  "image": "landscape.png"
+}'
+
+# 3. Upscale video if needed
+belt app run falai/topaz-video-upscaler --input '{
+  "video": "animated-landscape.mp4"
+}'
+
+# 4. Add ambient audio
+belt app run infsh/hunyuanvideo-foley --input '{
+  "video": "animated-landscape.mp4",
+  "prompt": "gentle nature ambience, distant birds, soft wind, water lapping"
+}'
+
+# 5. Merge video with audio
+belt app run infsh/video-audio-merger --input '{
+  "video": "upscaled-landscape.mp4",
+  "audio": "ambient-audio.mp3"
+}'
 ```
 
-### Prompting tips
+## Cinemagraph Effect
 
-- **Image vs text division** — use `image_url` for what must stay stable (face, costume, brand); use `prompt` for what should evolve (action, mood, lighting).
-- **Number the refs** in the prompt: `"subject from image 1, lighting from video 1, voice from audio 1"`. Seedance routes cues correctly.
-- **Reference media specs** — videos / audio must be 2–15s; audio < 15MB.
-- **Don't mix radically different aesthetics** — if image 1 is a watercolor and video 1 is photoreal, output drifts.
+A cinemagraph is a still photo where only one element moves (e.g., waterfall moving in an otherwise frozen scene). To achieve this:
 
----
+1. Generate the still image with the motion element clearly defined
+2. Prompt for motion only in that specific element
+3. Keep to 2-4 seconds for seamless looping
 
-## Limitations
+```bash
+belt app run falai/wan-2-5-i2v --input '{
+  "prompt": "only the waterfall is moving, everything else remains perfectly still, water cascading smoothly, rest of scene frozen",
+  "image": "waterfall-scene.png"
+}'
+```
 
-- **Each route inherits its model's limits.** HappyHorse: 15s cap, output aspect = input aspect. Wan 2.7: 15s cap, audio 3–30s/15MB. Seedance: 720p ceiling on this template, 15s cap.
-- **No multi-route blending.** This skill picks one model per call. If the user wants HappyHorse animation + Wan-style lip-sync in the same clip, that's two calls + a stitch (out of scope here).
-- **Brand-specific overrides** — if the user named a specific model variant not listed (e.g. Wan 2.6, Seedance 1.5), route to the corresponding brand skill (`wan-2-7`, `seedance-v2`) instead of forcing it through here.
+## Common Mistakes
 
-## Exit codes
+| Mistake | Problem | Fix |
+|---------|---------|-----|
+| Too much motion requested | Distortion, artifacts, warping | Subtle > dramatic, always |
+| Wrong model for content type | Poor results | Use selection guide above |
+| Clips too long (10s+) | Quality degrades significantly | Keep to 3-5 seconds, stitch if needed |
+| No camera movement specified | Random/unpredictable motion | Always specify camera behavior |
+| Conflicting motion directions | Chaotic, unnatural | One primary motion direction |
+| Low-res source image | Low-res video output | Start with highest quality source |
+| Complex action scenes | Models can't handle | Keep motion simple and natural |
 
-| code | meaning |
-|---|---|
-| 0  | success |
-| 64 | bad CLI args |
-| 65 | bad input JSON / schema mismatch |
-| 69 | upstream 5xx |
-| 75 | retryable: timeout / 429 |
-| 77 | not signed in or token rejected |
+## Related Skills
 
-Full reference: [docs.runcomfy.com/cli/troubleshooting](https://docs.runcomfy.com/cli/troubleshooting?utm_source=skills.sh&utm_medium=skill&utm_campaign=image-to-video).
+```bash
+npx skills add inference-sh/skills@ai-video-generation
+npx skills add inference-sh/skills@ai-image-generation
+npx skills add inference-sh/skills@p-video
+npx skills add inference-sh/skills@video-prompting-guide
+npx skills add inference-sh/skills@prompt-engineering
+```
 
-## How it works
+Browse all apps: `belt app store`
 
-The skill picks one of HappyHorse 1.0 I2V / Wan 2.7 t2v+audio / Seedance 2.0 Pro based on user intent and invokes `runcomfy run <model_id>` with the matching JSON body. The CLI POSTs to the Model API, polls the request, fetches the result, and downloads any `.runcomfy.net`/`.runcomfy.com` URL into `--output-dir`. `Ctrl-C` cancels the remote request before exit.
-
-## Security & Privacy
-
-- **Token storage**: `runcomfy login` writes the API token to `~/.config/runcomfy/token.json` with mode 0600 (owner-only read/write). Set `RUNCOMFY_TOKEN` env var to bypass the file entirely in CI / containers.
-- **Input boundary**: the user prompt is passed as a JSON string to the CLI via `--input`. The CLI does NOT shell-expand the prompt; it transmits the JSON body directly to the Model API over HTTPS. No shell injection surface from prompt content.
-- **Third-party content**: image / mask / video URLs you pass are fetched by the RunComfy model server, not by the CLI on your machine. Treat external URLs as untrusted; image-based prompt injection is a known risk for any image-edit / video-edit model.
-- **Outbound endpoints**: only `model-api.runcomfy.net` (request submission) and `*.runcomfy.net` / `*.runcomfy.com` (download whitelist for generated outputs). No telemetry, no callbacks.
-- **Generated-file size cap**: the CLI aborts any single download > 2 GiB to prevent disk-fill from a malicious or runaway model output.
