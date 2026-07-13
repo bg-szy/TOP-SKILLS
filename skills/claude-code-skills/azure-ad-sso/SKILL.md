@@ -335,9 +335,9 @@ kubectl exec -n <ns> deploy/<app> -c <container> -- env | grep -i azure
 
 | Environment | Key Vault | Managed Identity | Tenant ID |
 |-------------|-----------|------------------|-----------|
-| cafehyna-dev | `kv-cafehyna-dev-hlg` | `f1a14a8f-6d38-40a0-a935-3cdd91a25f47` | `3f7a3df4-f85b-4ca8-98d0-08b1034e6567` |
-| cafehyna-hub | `kv-cafehyna-default` | `f1a14a8f-6d38-40a0-a935-3cdd91a25f47` | `3f7a3df4-f85b-4ca8-98d0-08b1034e6567` |
-| cafehyna-prd | `kv-cafehyna-prd` | `f1a14a8f-6d38-40a0-a935-3cdd91a25f47` | `3f7a3df4-f85b-4ca8-98d0-08b1034e6567` |
+| example-app-dev | `kv-example-dev-hlg` | `<WORKLOAD_IDENTITY_CLIENT_ID>` | `<TENANT_ID>` |
+| example-app-hub | `kv-example-default` | `<WORKLOAD_IDENTITY_CLIENT_ID>` | `<TENANT_ID>` |
+| example-app-prd | `kv-example-prd` | `<WORKLOAD_IDENTITY_CLIENT_ID>` | `<TENANT_ID>` |
 
 ## Detailed Reference
 

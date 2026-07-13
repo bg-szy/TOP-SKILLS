@@ -116,7 +116,7 @@ argo-cd-helm-values/
   kube-addons/
     dependency-track/
       azure-ad-setup.sh         # Azure AD App Registration script
-      cafehyna-dev/
+      example-app-dev/
         values.yaml             # Environment-specific Helm values
         secretproviderclass.yaml # Azure Key Vault CSI integration
 ```
@@ -132,7 +132,7 @@ spec:
   generators:
     - list:
         elements:
-          - cluster: cafehyna-dev
+          - cluster: example-app-dev
             url: https://aks-cluster-url:443
             project: kube-addons
             branch: main
@@ -371,7 +371,7 @@ export DTRACK_URL="https://dtrack.example.com"
 export DTRACK_API_KEY="your-api-key"
 
 # Azure AD Group Object ID
-AZURE_GROUP_ID="31d6daa5-5cc2-4e5f-9bf5-75ee8e09198c"
+AZURE_GROUP_ID="<AAD_GROUP_ID_ADMIN>"
 
 # 1. Create a Team (if doesn't exist)
 curl -X PUT "${DTRACK_URL}/api/v1/team" \
@@ -442,14 +442,14 @@ TEAM_NAME="Administrators"
   }'
 ```
 
-**Example Output (cafehyna-dev cluster):**
+**Example Output (example-app-dev cluster):**
 ```json
 [
-  {"team": "Administrators", "oidcGroups": ["31d6daa5-5cc2-4e5f-9bf5-75ee8e09198c"]},
-  {"team": "Auditors", "oidcGroups": ["39d0ddb2-8a0d-47c9-bc55-1993aadf7fe8"]},
-  {"team": "Developers", "oidcGroups": ["7144c503-7934-40fe-99e2-f45f67cb383e"]},
-  {"team": "Moderators", "oidcGroups": ["d34a2ea3-34c9-4744-a031-4e4a55d72746"]},
-  {"team": "ReadOnly", "oidcGroups": ["7109c419-028e-4b7b-8246-66517d512c3c"]}
+  {"team": "Administrators", "oidcGroups": ["<AAD_GROUP_ID_ADMIN>"]},
+  {"team": "Auditors", "oidcGroups": ["<AAD_GROUP_ID_AUDITOR>"]},
+  {"team": "Developers", "oidcGroups": ["<AAD_GROUP_ID_DEVELOPER>"]},
+  {"team": "Moderators", "oidcGroups": ["<AAD_GROUP_ID_MODERATOR>"]},
+  {"team": "ReadOnly", "oidcGroups": ["<AAD_GROUP_ID_READONLY>"]}
 ]
 ```
 
@@ -465,7 +465,7 @@ TEAM_NAME="Administrators"
 2. **Map Groups**:
    - Go to Administration > Access Management > OpenID Connect Groups
    - Click "Create Group"
-   - Enter Azure AD Group Object ID (e.g., `31d6daa5-5cc2-4e5f-9bf5-75ee8e09198c`)
+   - Enter Azure AD Group Object ID (e.g., `<AAD_GROUP_ID_ADMIN>`)
    - Select Team to map to
    - Save
 

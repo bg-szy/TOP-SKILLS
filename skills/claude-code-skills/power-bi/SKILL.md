@@ -1,6 +1,6 @@
 ---
 name: power-bi
-description: Power BI development with PBIP format — TMDL models, Power Query (M), DAX measures, star schema design, report authoring, publishing to Power BI Service, scheduled refresh, and connector troubleshooting. USE WHEN user mentions Power BI, PBIP, TMDL, DAX measures, Power Query, semantic model, PBI report, star schema for PBI, publish to Power BI, scheduled refresh, data gateway, PBI connector, cost management connector, EA connector, Power BI template app, or any Power BI development task. Also use when editing .tmdl, .pq, .pbip, .pbir, .pbism files, or working with HyperaTheme.json.
+description: Power BI development with PBIP format — TMDL models, Power Query (M), DAX measures, star schema design, report authoring, publishing to Power BI Service, scheduled refresh, and connector troubleshooting. USE WHEN user mentions Power BI, PBIP, TMDL, DAX measures, Power Query, semantic model, PBI report, star schema for PBI, publish to Power BI, scheduled refresh, data gateway, PBI connector, cost management connector, EA connector, Power BI template app, or any Power BI development task. Also use when editing .tmdl, .pq, .pbip, .pbir, .pbism files, or working with CorpTheme.json.
 ---
 
 # Power BI Development Skill

@@ -336,20 +336,11 @@ jobs:
         run: ./deploy.sh
 ```
 
-### Current Environments (Barbosa Account)
+### Naming your environments
 
-| Environment | Vault | Description |
-|-------------|-------|-------------|
-| hypera-azure-rg-hypera-cafehyna-web-dev | - | Azure RG - Cafehyna Web Dev |
-| hypera-azure-devops-team-az-cli-pim | - | Azure DevOps Team - CLI PIM |
-| devops-team-pim | - | DevOps Team PIM credentials |
-| hypera-github-python-devops | - | GitHub - Python DevOps |
-| hypera-azure-rg-hypera-cafehyna-web | - | Azure RG - Cafehyna Web Prod |
-| repos-github-zsh | - | GitHub - ZSH repository |
-| hypera | - | General Hypera infrastructure |
-| Azure OpenAI-finops | - | Azure OpenAI FinOps config |
-
-See `references/environments/inventory.md` for detailed documentation.
+Name each 1Password Developer Environment after the thing it holds credentials for, e.g.
+`<project>-azure-rg-<name>-dev`, `<team>-pim`, `<project>-github`. Keep the actual inventory of your
+environments in a git-ignored local note, not in a committed (and potentially public) skill file.
 
 ## Secret Retrieval
 
@@ -1007,7 +998,6 @@ kubectl describe secretstore <name>
 - `references/kubernetes-examples.md` - Kubernetes manifest examples
 - `references/python-sdk.md` - Python SDK reference and integration guide
 - `references/environments/README.md` - Developer Environments guide
-- `references/environments/inventory.md` - Current environments inventory
 
 ### Tools
 

@@ -145,7 +145,7 @@ git worktree prune
 |---------|---------|---------|
 | Worktree directory | `.claude/worktrees/{name}` | `.claude/worktrees/story-1-3` |
 | Branch | `{convention}/{name}` | `bmad/story-1-3-deploy-nat-gateway` |
-| tmux window | `{session}-{name}` | `hypera-golden-image-story-1-3` |
+| tmux window | `{session}-{name}` | `myproject-golden-image-story-1-3` |
 
 The branch naming convention depends on the project. Check CLAUDE.md for project-specific patterns (e.g., `bmad/story-{id}` for BMAD projects).
 

@@ -32,7 +32,7 @@ If this directory exists, load and apply any PREFERENCES.md, configurations, or 
 
 # azure-network-calculator-skill
 
-Automates CIDR calculation, subnet allocation, and Terraform code generation for Hypera's Azure hub-spoke infrastructure.
+Automates CIDR calculation, subnet allocation, and Terraform code generation for your organization's Azure hub-spoke infrastructure.
 
 ## Workflow Routing
 
@@ -85,13 +85,13 @@ nsg-{purpose}-{rg}-{env}-{region}
 natg-{rg}-{env}-{region}
 ```
 
-Where `{rg}` is the resource group name (without `rg-hypera-` prefix), `{env}` is `dev`/`hlg`/`prd`, `{region}` is the shortcode (e.g., `eus`).
+Where `{rg}` is the resource group name (without `rg-example-` prefix), `{env}` is `dev`/`hlg`/`prd`, `{region}` is the shortcode (e.g., `eus`).
 
 ## Context Files
 
 | File                                               | Purpose                                     |
 | -------------------------------------------------- | ------------------------------------------- |
-| [CidrMasterAllocation.md](CidrMasterAllocation.md) | All 16 subscriptions, known VNets, formulas |
+| your CIDR master allocation (maintained outside this skill) | All 16 subscriptions, known VNets, formulas |
 | [SubnetTemplates.md](SubnetTemplates.md)           | 4 workload archetype subnet layouts         |
 | [TerraformSnippets.md](TerraformSnippets.md)       | AVM module HCL matching repo patterns       |
 

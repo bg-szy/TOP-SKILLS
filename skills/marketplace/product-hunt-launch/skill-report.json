@@ -1,23 +1,20 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-06T16:52:43.866Z",
-    "slug": "halt-catch-fire-product-hunt-launch",
-    "source_url": "https://github.com/halt-catch-fire/skills/tree/main/guides/product/product-hunt-launch/",
+    "generated_at": "2026-07-12T09:47:48.563Z",
+    "slug": "101-skills-product-hunt-launch",
+    "source_url": "https://github.com/101-skills/skills/tree/main/guides/product/product-hunt-launch/",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "df2ba091451e67a7d657681d7bbdb1288b2329a6a32617c383b6bf4fe06b8ed8",
-    "tree_hash": "d81daa4e8e2a58e5e17f7ec098b960be018be4c48d0b664d530ae94498d04987",
+    "tree_hash": "d309c14153206a2c5c9e48ccf532e60352af0d24968ea2d1463b30c041e05956",
     "provenance": {
-      "model_requested": "gpt-5.5:high",
-      "model_effective": "codex:gpt-5.5:high",
+      "model_effective": "codex",
       "fallback_chain": [
         {
           "agent": "codex",
-          "model": "gpt-5.5",
-          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -26,18 +23,19 @@
   },
   "skill": {
     "name": "product-hunt-launch",
-    "description": "Guides Product Hunt launch planning with listing specifications, gallery strategy, timing, maker comments, launch day actions, and follow-up tasks.",
-    "summary": "Plan and improve Product Hunt launches with practical timing, content, gallery, and engagement guidance.",
+    "description": "Plan Product Hunt listings, gallery images, taglines, maker comments, launch timing, engagement, research, and post-launch follow-up.",
+    "summary": "Create a practical Product Hunt launch plan with listing guidance, visual prompts, and an engagement timeline.",
     "icon": "📦",
     "version": "1.0.0",
-    "author": "halt-catch-fire",
+    "author": "101-skills",
     "license": "MIT",
+    "category": "productivity",
     "tags": [
       "product-hunt",
-      "launch-planning",
+      "product-launch",
+      "launch-strategy",
       "startup-marketing",
-      "gallery-assets",
-      "maker-comments"
+      "gallery-images"
     ],
     "supported_tools": [
       "claude",
@@ -47,16 +45,26 @@
     "risk_factors": [
       "external_commands",
       "network"
-    ],
-    "category": "productivity"
+    ]
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "medium",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The skill is a Markdown Product Hunt launch guide with visible belt CLI examples and documentation links. The static findings are Markdown backticks, fenced examples, ordinary links, and launch-planning wording rather than hidden execution, malware behavior, prompt injection, or data exfiltration.",
-    "remediation": [],
+    "summary": "Most alerts are Markdown backticks or code fences, not Ruby or shell backtick execution. The skill does contain intentional installation and belt commands, and hosted app calls may send launch materials to third-party services.",
+    "remediation": [
+      {
+        "issue": "The skill recommends installing external skills and a CLI without a pinned version or integrity check.",
+        "suggestion": "Pin trusted versions where supported, identify the package source, and tell users to review installation instructions before execution.",
+        "severity": "medium"
+      },
+      {
+        "issue": "Hosted image and search commands may transmit product details or local assets to third-party services.",
+        "suggestion": "Add a privacy warning and advise users to remove secrets, customer data, and confidential launch details before running hosted apps.",
+        "severity": "medium"
+      }
+    ],
     "risk_factor_evidence": [
       {
         "factor": "external_commands",
@@ -364,267 +372,395 @@
     "finding_verdicts": [
       {
         "id": "external_commands:SKILL.md:7:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The detected backticks wrap an inline Markdown install command, not Ruby or shell backtick execution inside executable code. It is visible documentation and is not automatically evaluated by the skill file."
+        "verdict": "confirmed",
+        "confidence": 0.98,
+        "reason": "The line contains an npx command that installs an external skill. It is intentional package execution, although it is not Ruby backtick syntax.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:15:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "The backticks only format the CLI name in a prerequisite note. The line links to install instructions and does not execute a command or interpolate user input."
+        "confidence": 0.99,
+        "reason": "The backticks only format the belt CLI name in Markdown. This line does not execute a shell command."
       },
       {
         "id": "external_commands:SKILL.md:17:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is the opening of a fenced bash example showing belt usage for login, image generation, and search. It is documentation text, not hidden execution logic in the skill."
+        "verdict": "confirmed",
+        "confidence": 0.98,
+        "reason": "This fenced block contains belt login and hosted app commands. They intentionally invoke an external CLI and can make network requests.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is the closing fence for the Quick Start command example. A Markdown fence delimiter is not executable code and creates no command injection path."
+        "confidence": 1,
+        "reason": "This line is only the closing delimiter of a Markdown code fence. It performs no command execution."
       },
       {
         "id": "external_commands:SKILL.md:68:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This opens a fenced bash example for optional gallery image generation commands. The commands are presented openly for user review and are not run by the Markdown file itself."
+        "verdict": "confirmed",
+        "confidence": 0.98,
+        "reason": "The fenced block includes belt commands for hosted image generation and image stitching. These are deliberate external CLI operations.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:95:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is only a Markdown code fence boundary after example belt commands. It does not invoke a shell or evaluate attacker-controlled data."
+        "confidence": 1,
+        "reason": "This line only closes a Markdown code fence. It is not executable Ruby or shell backtick syntax."
       },
       {
         "id": "external_commands:SKILL.md:113:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This fenced block contains tagline examples, not shell syntax. The backticks are Markdown formatting and have no execution semantics."
+        "confidence": 0.99,
+        "reason": "This opens a plain text example block containing sample taglines. The block has no shell commands."
       },
       {
         "id": "external_commands:SKILL.md:121:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is the closing delimiter for non-executable tagline text examples. It is a documentation artifact rather than command execution."
+        "confidence": 1,
+        "reason": "This line only closes the sample tagline code fence. It cannot execute a command."
       },
       {
         "id": "external_commands:SKILL.md:147:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This fenced block contains a maker comment template for copywriting. It does not contain shell commands or executable instructions."
+        "confidence": 0.99,
+        "reason": "This opens a text template for a maker comment. No executable command appears in the block."
       },
       {
         "id": "external_commands:SKILL.md:159:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is the closing delimiter for the maker comment template. Markdown backticks here do not create a runtime execution path."
+        "confidence": 1,
+        "reason": "This line is a Markdown fence delimiter. It has no command execution behavior."
       },
       {
         "id": "external_commands:SKILL.md:163:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This fenced block contains sample launch comment prose. It is non-executable text and does not process user input as code."
+        "confidence": 0.99,
+        "reason": "This opens a prose example of a Product Hunt maker comment. The content is not shell code."
       },
       {
         "id": "external_commands:SKILL.md:178:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is the closing delimiter for a prose example. No shell interpreter or Ruby backtick execution is involved."
+        "confidence": 1,
+        "reason": "This line only closes a Markdown example block. It does not invoke an interpreter or external process."
       },
       {
         "id": "external_commands:SKILL.md:214:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This opens a fenced bash example for research commands using belt apps. The commands are visible examples and are not automatically executed by the skill file."
+        "verdict": "confirmed",
+        "confidence": 0.98,
+        "reason": "The fenced block invokes belt search apps against hosted services. These commands intentionally execute an external CLI and send search queries.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:229:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is the closing fence for documented research commands. The delimiter itself is not executable and does not hide command behavior."
+        "confidence": 1,
+        "reason": "This line is the closing marker for a Markdown command example. The delimiter itself does not execute anything."
       },
       {
         "id": "external_commands:SKILL.md:255:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This opens a fenced bash block listing related skill installation commands. The commands are explicit documentation, not covert execution logic."
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The block contains three npx commands that install external skills. Running them can download and execute package tooling.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:259:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This is the closing delimiter for related skill examples. It is Markdown syntax and cannot execute shell commands."
+        "confidence": 1,
+        "reason": "This line only closes a Markdown shell block. It has no independent execution behavior."
       },
       {
         "id": "network:SKILL.md:11:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The URL is a plain documentation link to inference.sh, the service named by the skill. It is not used in code to transmit data or contact an endpoint automatically."
+        "confidence": 0.98,
+        "reason": "The URL is a visible link to the named inference.sh service. A documentation hyperlink does not automatically issue a network request."
       },
       {
         "id": "network:SKILL.md:15:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The URL points to public install instructions in GitHub raw content. It is disclosed documentation, not a hidden callback or exfiltration endpoint."
+        "confidence": 0.94,
+        "reason": "The URL visibly links to CLI installation documentation on GitHub. It does not fetch or execute the remote content automatically."
       },
       {
         "id": "blocker:SKILL.md:78:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The phrase appears inside an image prompt describing a split-screen product feature showcase. It does not instruct system discovery or host reconnaissance."
+        "confidence": 1,
+        "reason": "The phrase describes a split-screen product image prompt. It does not inspect the host system or collect system information."
       },
       {
         "id": "blocker:SKILL.md:131:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The line advises avoiding major Apple or Google events when scheduling a launch. This is marketing calendar guidance, not reconnaissance of the local system."
+        "confidence": 1,
+        "reason": "The line advises avoiding launch dates near major technology events. It contains no reconnaissance instruction or system access."
       }
     ],
-    "semantic_findings": [],
+    "semantic_findings": [
+      {
+        "title": "Third-Party Processing of Launch Materials",
+        "description": "Hosted belt app commands send prompts, search queries, and potentially image inputs to external providers without a privacy warning.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 20,
+            "line_end": 30
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 68,
+            "line_end": 94
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 214,
+            "line_end": 228
+          }
+        ],
+        "confidence": 0.9,
+        "confidence_reasoning": "The documented belt app run commands target hosted image and search services with explicit user-supplied inputs. The file provides no data-handling caution."
+      }
+    ],
     "critical_findings": [],
     "high_findings": [],
-    "medium_findings": [],
+    "medium_findings": [
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "> **Install the belt CLI skill:** `npx skills add belt-sh/cli`",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 7,
+            "line_end": 7
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.98,
+        "confidence_reasoning": "The line contains an npx command that installs an external skill. It is intentional package execution, although it is not Ruby backtick syntax."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 17,
+            "line_end": 31
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.98,
+        "confidence_reasoning": "This fenced block contains belt login and hosted app commands. They intentionally invoke an external CLI and can make network requests."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 68,
+            "line_end": 95
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.98,
+        "confidence_reasoning": "The fenced block includes belt commands for hosted image generation and image stitching. These are deliberate external CLI operations."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 214,
+            "line_end": 229
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.98,
+        "confidence_reasoning": "The fenced block invokes belt search apps against hosted services. These commands intentionally execute an external CLI and send search queries."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 255,
+            "line_end": 259
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The block contains three npx commands that install external skills. Running them can download and execute package tooling."
+      },
+      {
+        "title": "Third-Party Processing of Launch Materials",
+        "description": "Hosted belt app commands send prompts, search queries, and potentially image inputs to external providers without a privacy warning.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 20,
+            "line_end": 30
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 68,
+            "line_end": 94
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 214,
+            "line_end": 228
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.9,
+        "confidence_reasoning": "The documented belt app run commands target hosted image and search services with explicit user-supplied inputs. The file provides no data-handling caution."
+      }
+    ],
     "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 263,
     "audit_model": "codex",
-    "audited_at": "2026-07-06T16:52:43.866Z",
+    "audited_at": "2026-07-12T09:47:48.563Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Plan Product Hunt Launches",
-    "value_statement": "Product Hunt launches require precise timing, clear positioning, and strong visuals. This skill gives teams a structured checklist for listing copy, gallery assets, comments, research, and launch day execution.",
+    "user_title": "Plan a Strong Product Hunt Launch",
+    "value_statement": "Product Hunt launches require coordinated copy, visuals, timing, and engagement. This skill turns product details into a structured preparation and launch-day plan.",
     "seo_keywords": [
       "Product Hunt launch",
-      "launch planning",
-      "startup launch checklist",
+      "Product Hunt strategy",
+      "startup launch plan",
+      "launch day checklist",
       "Product Hunt gallery",
-      "maker comment template",
+      "maker comment",
       "Claude",
       "Codex",
-      "Claude Code",
-      "AI launch assistant",
-      "Product Hunt optimization"
+      "Claude Code"
     ],
     "actual_capabilities": [
-      "Summarizes Product Hunt listing requirements, including tagline length, gallery limits, topics, makers, and product links.",
-      "Recommends gallery image order, dimensions, and content themes for launch pages.",
-      "Provides tagline formulas and examples for clear product positioning.",
-      "Outlines launch timing, maker comment structure, and engagement actions for launch day.",
-      "Suggests research prompts and related belt app commands for launch preparation."
+      "Drafts Product Hunt taglines using five documented formulas and a 60-character target.",
+      "Plans a five-image gallery sequence with goals for each position.",
+      "Structures a maker comment with product, problem, differentiation, and feedback sections.",
+      "Builds preparation, launch-day, and post-launch checklists.",
+      "Provides belt commands for hosted image generation and competitor research."
     ],
     "limitations": [
-      "It does not submit products to Product Hunt or manage an account.",
-      "It cannot guarantee ranking, upvotes, press coverage, or community response.",
-      "Generated image prompts and research commands may need review for brand accuracy.",
-      "Product Hunt rules and interface details may change after the skill content was written."
+      "It does not submit listings, schedule launches, or reply to comments.",
+      "Image and search workflows require the external belt CLI, authentication, and network access.",
+      "Platform limits and ranking behavior may change after the skill was published.",
+      "Generated visuals and claims require human review for accuracy, branding, and rights."
     ],
     "use_cases": [
       {
         "title": "Prepare a Startup Launch",
-        "description": "Create a Product Hunt listing plan with tagline, gallery sequence, maker comment, and launch day timeline.",
+        "description": "Create listing copy, a gallery sequence, and a launch-day timeline for a new software product.",
         "target_user": "Startup founders"
       },
       {
-        "title": "Package a Side Project",
-        "description": "Turn a small product into a clearer launch story with concise positioning and practical asset guidance.",
-        "target_user": "Independent makers"
+        "title": "Coordinate Client Campaigns",
+        "description": "Turn approved positioning into launch assets, engagement tasks, and follow-up actions.",
+        "target_user": "Product marketing consultants"
       },
       {
-        "title": "Coordinate Launch Operations",
-        "description": "Use the checklist to assign copy, visuals, support replies, social posts, and post-launch follow-up tasks.",
-        "target_user": "Product marketing teams"
+        "title": "Launch a Side Project",
+        "description": "Build a focused checklist and clear maker comment with limited time and resources.",
+        "target_user": "Independent makers"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Draft a Basic Launch Plan",
-        "scenario": "Beginner planning for a new Product Hunt submission.",
-        "prompt": "Help me plan a Product Hunt launch for [product name]. The product helps [audience] solve [problem]. Create a tagline, gallery outline, maker comment draft, and launch day checklist."
+        "title": "Draft Taglines",
+        "prompt": "Create ten Product Hunt taglines for [product]. The audience is [audience], and the main benefit is [benefit]. Keep each under 60 characters.",
+        "scenario": "Begin with concise listing copy."
       },
       {
-        "title": "Improve Listing Positioning",
-        "scenario": "Refine copy before submitting the launch page.",
-        "prompt": "Review this Product Hunt listing draft: [paste draft]. Improve the tagline, short description, topic choices, and first gallery image concept while keeping the message clear."
+        "title": "Plan the Gallery",
+        "prompt": "Plan five Product Hunt gallery images for [product]. Describe each image, its message, required source assets, and one image-generation prompt.",
+        "scenario": "Organize the visual story before production."
       },
       {
-        "title": "Build Gallery Strategy",
-        "scenario": "Plan visual assets for a launch page.",
-        "prompt": "Create a five-image Product Hunt gallery plan for [product]. Include the goal of each image, the visible product state, and a concise generation prompt for each image."
+        "title": "Write the Maker Comment",
+        "prompt": "Draft a maker comment for [product]. Include what it does, why we built it, the key difference, our next step, and a feedback question.",
+        "scenario": "Prepare a credible opening comment."
       },
       {
-        "title": "Run a Launch Readiness Audit",
-        "scenario": "Advanced review before launch day.",
-        "prompt": "Audit my Product Hunt launch plan for [product]. Check timing, tagline, gallery order, maker comment, outreach plan, engagement rules, and post-launch follow-up. List risks and fixes."
+        "title": "Build the Full Launch Plan",
+        "prompt": "Create a Product Hunt launch plan for [product] on [date]. Include readiness gaps, listing copy, gallery sequence, research tasks, timeline, engagement, and follow-up.",
+        "scenario": "Coordinate an advanced end-to-end launch."
       }
     ],
     "output_examples": [
       {
-        "input": "A founder needs a launch checklist for an analytics product.",
+        "input": "Draft a tagline for an analytics tool that explains unusual metric changes.",
+        "output": "Analytics that explains every change"
+      },
+      {
+        "input": "Outline a gallery for a document automation product.",
         "output": [
-          "A recommended Tuesday through Thursday launch window at 12:01 AM Pacific Time.",
-          "A concise tagline focused on the analytics outcome, not internal technology.",
-          "A five-image gallery plan showing product value, feature proof, and social proof.",
-          "A maker comment structure with problem, solution, differentiator, and feedback request."
+          "Hero: show the real editor turning a source file into a finished document.",
+          "Feature: show the template selection and field mapping workflow.",
+          "Transformation: compare manual formatting with the automated result.",
+          "Proof: present verified time savings with clear context.",
+          "Integrations: show supported storage and collaboration tools."
         ]
       },
       {
-        "input": "A maker asks for gallery guidance for a small developer tool.",
-        "output": [
-          "First image: product in use with the core workflow visible.",
-          "Second image: the fastest path to the main result.",
-          "Third image: before-and-after comparison showing saved effort.",
-          "Later images: integrations, metrics, or technical differentiators."
-        ]
-      },
-      {
-        "input": "A marketing lead wants to improve launch day engagement.",
-        "output": [
-          "A timeline for posting, sharing updates, checking comments, and replying through the full Product Hunt day.",
-          "Guidance to share naturally and avoid asking for upvotes.",
-          "Follow-up tasks for comments, lessons learned content, and interested users."
-        ]
+        "input": "Create a short launch-day engagement plan.",
+        "output": "Publish the maker comment immediately, monitor comments throughout the day, answer every question, and share the launch naturally in relevant communities."
       }
     ],
     "best_practices": [
-      "Start with a clear audience and outcome before writing the tagline or gallery prompts.",
-      "Show real product value in the first gallery image because it appears across Product Hunt surfaces.",
-      "Prepare replies, social posts, and follow-up tasks before launch day begins."
+      "Verify current Product Hunt requirements before finalizing the listing.",
+      "Use real product screens and evidence instead of generic marketing visuals.",
+      "Review every generated claim, prompt, and image before publication."
     ],
     "anti_patterns": [
-      "Do not use vague superlatives or buzzwords that hide what the product does.",
-      "Do not ask people for upvotes because it can violate Product Hunt rules.",
-      "Do not rely on generic gallery images that fail to show the actual product workflow."
+      "Do not ask users or communities for upvotes.",
+      "Do not publish vague taglines filled with unsupported superlatives.",
+      "Do not send confidential product or customer data to hosted tools."
     ],
     "faq": [
       {
-        "question": "Does this skill submit my product to Product Hunt?",
-        "answer": "No. It helps plan launch materials and tactics, but submission remains a manual Product Hunt workflow."
+        "question": "Does this skill publish my Product Hunt listing?",
+        "answer": "No. It prepares copy, visual plans, research commands, and checklists for manual execution."
       },
       {
-        "question": "Can it create gallery image prompts?",
-        "answer": "Yes. It includes guidance for hero, feature, before-and-after, social proof, and differentiator images."
+        "question": "Do I need the belt CLI?",
+        "answer": "Only the hosted image and search examples require belt. The planning and writing guidance works without it."
       },
       {
-        "question": "Does it require the belt CLI?",
-        "answer": "The written guidance works without belt. Some optional research and image examples use belt commands."
+        "question": "Can it generate gallery images?",
+        "answer": "It provides belt commands and prompts for external image services. You must review and export the resulting assets."
       },
       {
-        "question": "Will this guarantee a top Product Hunt ranking?",
-        "answer": "No. It improves preparation and clarity, but ranking depends on product fit, timing, audience, and community response."
+        "question": "Are the listed Product Hunt specifications guaranteed current?",
+        "answer": "No. Confirm current limits, supported formats, and policies on Product Hunt before launch."
       },
       {
-        "question": "Is it suitable for non-SaaS products?",
-        "answer": "Yes. The launch structure can support many product types, but some gallery examples are SaaS-focused."
+        "question": "Can I use it for a non-software product?",
+        "answer": "Yes. Adapt the gallery, tagline, and maker comment guidance to show the product clearly and support truthful claims."
       },
       {
-        "question": "Can teams use it for launch coordination?",
-        "answer": "Yes. The checklist and timeline can help assign copy, visuals, posting, replies, and follow-up tasks."
+        "question": "How should I protect confidential information?",
+        "answer": "Remove secrets, personal data, customer records, and unreleased details before sending inputs to any hosted app."
       }
     ]
   },

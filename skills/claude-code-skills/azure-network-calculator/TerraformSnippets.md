@@ -1,6 +1,6 @@
 # Terraform Snippets
 
-HCL templates matching the existing `rg-hypera-packer-image` repo patterns. Uses AVM (Azure Verified Modules).
+HCL templates matching the existing `rg-example-packer-image` repo patterns. Uses AVM (Azure Verified Modules).
 
 ## VNet + Subnets Module Block
 

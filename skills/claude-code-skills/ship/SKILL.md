@@ -26,7 +26,7 @@ metadata:
 `ship` takes a finished branch the last mile: commit it cleanly, push it (working around Azure
 DevOps auth when needed), open a pull request, link it to its work item, and — once it's merged —
 tear down the branch and worktree. It auto-detects whether you're on **Azure Repos** or **GitHub**
-and follows the matching path, so the same command works at Hypera and in a github.com repo.
+and follows the matching path, so the same command works at your organization and in a github.com repo.
 
 It is deliberately narrow. It does *not* merge locally, run pipelines, or manage backlogs — it
 hands a reviewable PR to the platform and cleans up after the merge.
@@ -116,7 +116,7 @@ bun scripts/ship-pr.ts --title "<title>" --body-file /tmp/pr-body.md \
   (`getWorkItem`). The branch-name parse is only a heuristic — a branch like `1234-foo` can carry a
   number that isn't a real item, which is why existence is checked, not assumed.
 - **If no real work item is found, one is created per task and linked to the PR**, each **assigned
-  to** `$SHIP_ADO_ASSIGNEE` (default `juliano.barbosa@hypera.com.br`; override with `--assignee`).
+  to** `$SHIP_ADO_ASSIGNEE` (default `you@example.com`; override with `--assignee`).
   Pass `--task "<title>"` once per task (repeatable), or `--tasks-file <file>` (one title per line),
   to create one item each. With no `--task`, a single item is created from the PR `--title`. Type
   defaults to `Task` (`--work-item-type "User Story"|Bug`). Disable creation with

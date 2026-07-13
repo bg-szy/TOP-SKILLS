@@ -19,7 +19,7 @@ Operational skill for bootstrapping ArgoCD clusters using the app-of-apps patter
 
 **Example 1: Diagnose a sync failure caused by missing CRD**
 ```
-User: "cafehyna-hub-adp-agent is SyncFailed with missing AzureKeyVaultSecret CRD"
+User: "example-app-hub-adp-agent is SyncFailed with missing AzureKeyVaultSecret CRD"
 -> Invokes DiagnoseSyncFailure workflow
 -> Traces dependency chain: adp-agent needs akv2k8s CRDs
 -> Checks if akv2k8s ApplicationSet exists on cluster
@@ -39,7 +39,7 @@ User: "Create a root Application to manage all ApplicationSets via GitOps"
 
 **Example 3: Add a new cluster to existing ApplicationSets**
 ```
-User: "Onboard cafehyna-prd cluster to the otel ApplicationSet"
+User: "Onboard example-app-prd cluster to the otel ApplicationSet"
 -> Invokes OnboardCluster workflow
 -> Reads existing ApplicationSet generator list
 -> Adds new cluster element with correct URL, project, branch
@@ -73,6 +73,6 @@ root-applicationsets (Application)
 - **ApplicationSet directory**: `infra-team/applicationset/`
 - **Kustomization file**: `infra-team/applicationset/kustomization.yaml`
 - **Values repo**: `argo-cd-helm-values/kube-addons/{addon}/{cluster}/values.yaml`
-- **Git repo URL**: `https://hyperadevops@dev.azure.com/hyperadevops/devops-team/_git/argocd`
+- **Git repo URL**: `https://your-org@dev.azure.com/your-org/devops-team/_git/argocd`
 
 **Full documentation:** See workflow files in `Workflows/` directory.

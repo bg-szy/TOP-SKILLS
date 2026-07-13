@@ -1,6 +1,6 @@
 # Subnet Templates
 
-Four workload archetypes covering ~90% of Hypera deployments. For custom layouts, use these as starting points and adjust.
+Four workload archetypes covering ~90% of your organization deployments. For custom layouts, use these as starting points and adjust.
 
 ## Template 1: Hub Network
 
@@ -70,7 +70,7 @@ Production environment — same structure as dev but with `/22` AKS subnet for s
 
 ## Template 4: Packer/DevOps
 
-Infrastructure tooling — image builds, CI/CD agents, automation. Matches `rg-hypera-packer-image` pattern.
+Infrastructure tooling — image builds, CI/CD agents, automation. Matches `rg-example-packer-image` pattern.
 
 | Subnet | Offset | CIDR Mask | Usable Hosts | Purpose |
 |--------|--------|-----------|--------------|---------|

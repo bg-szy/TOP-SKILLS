@@ -25,7 +25,7 @@ az acr import --name <registry> \
   --image <local-path>/<image>:<tag>
 
 # Example: import code-server
-az acr import --name cafehyna \
+az acr import --name example-app \
   --source docker.io/codercom/code-server:4.107.1 \
   --image addons/code-server:4.107.1
 
@@ -39,7 +39,7 @@ Then update the Dockerfile `FROM` to reference the ACR copy:
 FROM codercom/code-server:latest
 
 # After (pulls from local ACR — no rate limit)
-FROM cafehyna.azurecr.io/addons/code-server:4.107.1
+FROM example-app.azurecr.io/addons/code-server:4.107.1
 ```
 
 **Important**: ACR cloud builds (`az acr build`) are unauthenticated against Docker Hub. Any `FROM` referencing Docker Hub will eventually hit rate limits. Always import first.

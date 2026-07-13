@@ -7,7 +7,7 @@ description: Azure Key Vault + CSI Driver integration for Kubernetes secrets man
 
 ## Overview
 
-This skill provides guidance for integrating Azure Key Vault with Kubernetes using the Secrets Store CSI Driver. All sensitive data in the Hypera clusters is stored in Azure Key Vault and accessed via the CSI driver.
+This skill provides guidance for integrating Azure Key Vault with Kubernetes using the Secrets Store CSI Driver. All sensitive data in the your organization clusters is stored in Azure Key Vault and accessed via the CSI driver.
 
 ## Quick Reference
 
@@ -15,11 +15,11 @@ This skill provides guidance for integrating Azure Key Vault with Kubernetes usi
 
 | Cluster | Key Vault | Managed Identity (Client ID) | Tenant ID |
 |---------|-----------|------------------------------|-----------|
-| cafehyna-dev | `kv-cafehyna-dev-hlg` | `f1a14a8f-6d38-40a0-a935-3cdd91a25f47` | `3f7a3df4-f85b-4ca8-98d0-08b1034e6567` |
-| cafehyna-hub | `kv-cafehyna-default` | `f1a14a8f-6d38-40a0-a935-3cdd91a25f47` | `3f7a3df4-f85b-4ca8-98d0-08b1034e6567` |
-| cafehyna-prd | `kv-cafehyna-prd` | `f1a14a8f-6d38-40a0-a935-3cdd91a25f47` | `3f7a3df4-f85b-4ca8-98d0-08b1034e6567` |
-| painelclientes-dev | `painel-clientes-hml` | Check cluster identity | `3f7a3df4-f85b-4ca8-98d0-08b1034e6567` |
-| painelclientes-prd | `painel-clientes-prd` | Check cluster identity | `3f7a3df4-f85b-4ca8-98d0-08b1034e6567` |
+| example-app-dev | `kv-example-dev-hlg` | `<WORKLOAD_IDENTITY_CLIENT_ID>` | `<TENANT_ID>` |
+| example-app-hub | `kv-example-default` | `<WORKLOAD_IDENTITY_CLIENT_ID>` | `<TENANT_ID>` |
+| example-app-prd | `kv-example-prd` | `<WORKLOAD_IDENTITY_CLIENT_ID>` | `<TENANT_ID>` |
+| example-app2-dev | `kv-example2-dev` | Check cluster identity | `<TENANT_ID>` |
+| example-app2-prd | `kv-example2-prd` | Check cluster identity | `<TENANT_ID>` |
 
 ## SecretProviderClass Template
 
@@ -96,14 +96,14 @@ spec:
   parameters:
     usePodIdentity: "false"
     useVMManagedIdentity: "true"
-    userAssignedIdentityID: "f1a14a8f-6d38-40a0-a935-3cdd91a25f47"
-    keyvaultName: "kv-cafehyna-dev-hlg"
+    userAssignedIdentityID: "<WORKLOAD_IDENTITY_CLIENT_ID>"
+    keyvaultName: "kv-example-dev-hlg"
     objects: |
       array:
         - |
           objectName: cloudflare-api-token
           objectType: secret
-    tenantId: "3f7a3df4-f85b-4ca8-98d0-08b1034e6567"
+    tenantId: "<TENANT_ID>"
 ```
 
 ### Pattern 2: Multiple Secrets to Multiple K8s Secrets
@@ -189,9 +189,9 @@ argo-cd-helm-values/kube-addons/<application>/<cluster>/secretproviderclass.yaml
 
 Examples:
 
-- `argo-cd-helm-values/kube-addons/defectdojo/cafehyna-dev/secretproviderclass.yaml`
-- `argo-cd-helm-values/kube-addons/external-dns/cafehyna-dev/secretproviderclass.yaml`
-- `argo-cd-helm-values/kube-addons/cert-manager/cafehyna-dev/csi-cloudflare-api-key.yaml`
+- `argo-cd-helm-values/kube-addons/defectdojo/example-app-dev/secretproviderclass.yaml`
+- `argo-cd-helm-values/kube-addons/external-dns/example-app-dev/secretproviderclass.yaml`
+- `argo-cd-helm-values/kube-addons/cert-manager/example-app-dev/csi-cloudflare-api-key.yaml`
 
 ## Troubleshooting
 
@@ -253,7 +253,7 @@ kubectl logs -n kube-system -l app=secrets-store-provider-azure
 
 # Or quick manual command
 az keyvault set-policy \
-  --name "kv-cafehyna-dev-hlg" \
+  --name "kv-example-dev-hlg" \
   --object-id "<object-id>" \
   --secret-permissions get list
 ```
@@ -262,7 +262,7 @@ az keyvault set-policy \
 
 ```bash
 az keyvault secret set \
-  --vault-name "kv-cafehyna-dev-hlg" \
+  --vault-name "kv-example-dev-hlg" \
   --name "my-app-secret" \
   --value "secret-value"
 ```

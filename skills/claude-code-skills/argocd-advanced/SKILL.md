@@ -15,7 +15,6 @@ Routing entrypoint for advanced/automation-oriented ArgoCD operations. Each sub-
 | Automate container image updates for ArgoCD-managed workloads (update strategies, ImageUpdater CRD, git write-back) | `References/image-updater.md` + `References/image-updater/` + `References/ArgocdImageUpdater/` + `Samples/image-updater/` |
 | Bootstrap a new Kubernetes cluster into the multi-repo GitOps environment | `References/cluster-bootstrapping.md` + `References/cluster-bootstrapping/` + `References/ArgocdClusterBootstrapping/` |
 | Onboard a new workload via the standardized ApplicationSet template | `References/application-install.md` + `Workflows/application-install/` + `Tools/application-install/` |
-| Look up which clusters target which services | `References/ClusterInventory.md` |
 
 ## Decision tree
 
@@ -31,5 +30,5 @@ Need images to roll forward automatically?         -> image-updater
 - **ApplicationSet generators are ordered.** With matrix/merge generators, the parent generator's result is the input to the child — get the order wrong and you get an empty parameter set with no error.
 - **Image Updater + git write-back requires a write credential.** A read-only repo cred will silently leave images stuck on the original version. Check Image Updater pod logs for `permission denied` on push.
 - **Bootstrap cluster secrets must carry the labels your ApplicationSet generators select on.** A cluster registered without the expected label key/value is invisible to existing ApplicationSets — and there is no error, just zero apps.
-- **`application-install` ships a Hypera/Cafehyna-specific template.** The Workflows assume the multi-repo layout. If you're not in that environment, treat it as a reference pattern, not a runnable recipe.
+- **`application-install` ships a your organization/ExampleApp-specific template.** The Workflows assume the multi-repo layout. If you're not in that environment, treat it as a reference pattern, not a runnable recipe.
 - **CRD versions matter.** ApplicationSet ships with ArgoCD 2.3+; certain generators (SCM, pull request) need 2.5+. Read `References/applicationset.md` Version Compatibility before adopting.

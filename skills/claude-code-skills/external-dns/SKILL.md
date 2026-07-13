@@ -433,7 +433,7 @@ spec:
 
 ## Gotchas
 
-- **`txtOwnerId` collisions silently corrupt DNS across clusters:** Two clusters with the same owner ID will reconcile each other's records into oblivion. Always use cluster-name + env (e.g., `aks-cafehyna-prd`) and verify with `dig TXT _externaldns.<host>`.
+- **`txtOwnerId` collisions silently corrupt DNS across clusters:** Two clusters with the same owner ID will reconcile each other's records into oblivion. Always use cluster-name + env (e.g., `aks-example-app-prd`) and verify with `dig TXT _externaldns.<host>`.
 - **`policy: sync` deletes records External-DNS didn't create when names match patterns:** A manually-created A record matching a managed hostname will be deleted on next reconcile. Production must be `upsert-only`; only dev clusters get `sync`.
 - **RBAC on K8s side AND DNS provider creds are both required:** External-DNS needs to read Ingress/Service objects AND have DNS-zone write. Read-only DNS creds produce silent no-ops with zero events emitted to the watched resources — only the pod logs show the auth error.
 - **Workload Identity needs three things, not one:** ServiceAccount annotation + pod label + federated credential on the managed identity. Missing the federated credential gives `ManagedIdentityCredential: 400` that looks like a token problem but is an identity-binding problem.

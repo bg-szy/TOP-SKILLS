@@ -5,7 +5,7 @@ description: Configure timezone for Kubernetes pods using TZ environment variabl
 
 # Kubernetes Pod Timezone Configuration
 
-**Standard timezone for Hypera infrastructure:** `America/Sao_Paulo`
+**Standard timezone for your organization infrastructure:** `America/Sao_Paulo`
 
 ## Problem
 
@@ -106,7 +106,7 @@ kubectl exec -it <pod-name> -n <namespace> -- date
 3. **Init containers**: Also set TZ on init containers if they log timestamps
 4. **Cron jobs**: Kubernetes CronJob schedules are always UTC - TZ only affects container-level time
 
-## Hypera GitOps Workflow
+## your organization GitOps Workflow
 
 1. Edit values.yaml in `argo-cd-helm-values/kube-addons/<service>/<cluster>/values.yaml`
 2. Add TZ environment variable to all containers

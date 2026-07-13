@@ -126,7 +126,7 @@ The MCP server is configured in `.mcp.json`:
       "command": "python",
       "args": [".claude/mcp-servers/defectdojo-mcp/defectdojo_mcp.py"],
       "env": {
-        "DEFECTDOJO_URL": "https://defectdojo.dev.cafehyna.com.br",
+        "DEFECTDOJO_URL": "https://defectdojo.dev.example.com",
         "DEFECTDOJO_API_TOKEN": "${DEFECTDOJO_API_TOKEN}"
       }
     }
@@ -576,15 +576,15 @@ extraEnv:
 
 | Cluster | Key Vault | Azure AD Tenant ID |
 |---------|-----------|-------------------|
-| cafehyna-dev | `kv-cafehyna-dev-hlg` | `3f7a3df4-f85b-4ca8-98d0-08b1034e6567` |
+| example-app-dev | `kv-example-dev-hlg` | `<TENANT_ID>` |
 
 ### Azure AD App Registration
 
 | Setting | Value |
 |---------|-------|
-| Application (Client) ID | `79ada8c7-4270-41e8-9ea0-1e1e62afff3d` |
-| Tenant ID | `3f7a3df4-f85b-4ca8-98d0-08b1034e6567` |
-| Redirect URI | `https://defectdojo.dev.cafehyna.com.br/complete/azuread-tenant-oauth2/` |
+| Application (Client) ID | `<AZURE_AD_APP_ID>` |
+| Tenant ID | `<TENANT_ID>` |
+| Redirect URI | `https://defectdojo.dev.example.com/complete/azuread-tenant-oauth2/` |
 
 ## Azure AD SSO Configuration
 
@@ -659,8 +659,8 @@ For complete Azure AD SSO details, see [references/azure-ad-sso.md](references/a
 
 ```yaml
 # Host configuration
-host: defectdojo.dev.cafehyna.com.br
-siteUrl: https://defectdojo.dev.cafehyna.com.br
+host: defectdojo.dev.example.com
+siteUrl: https://defectdojo.dev.example.com
 
 # Secrets (use CSI driver)
 createSecret: false
@@ -768,7 +768,7 @@ Secrets are managed via Azure Key Vault CSI Driver:
 If SSO breaks, access standard login form:
 
 ```
-https://defectdojo.dev.cafehyna.com.br/login?force_login_form
+https://defectdojo.dev.example.com/login?force_login_form
 ```
 
 For complete troubleshooting guide, see [references/troubleshooting.md](references/troubleshooting.md).
@@ -778,19 +778,19 @@ For complete troubleshooting guide, see [references/troubleshooting.md](referenc
 ### Check Pod Status
 
 ```bash
-KUBECONFIG=~/.kube/aks-rg-hypera-cafehyna-dev-config kubectl get pods -n defectdojo
+KUBECONFIG=~/.kube/aks-rg-example-dev-config kubectl get pods -n defectdojo
 ```
 
 ### View Logs
 
 ```bash
-KUBECONFIG=~/.kube/aks-rg-hypera-cafehyna-dev-config kubectl logs -n defectdojo -l app.kubernetes.io/name=defectdojo -c uwsgi
+KUBECONFIG=~/.kube/aks-rg-example-dev-config kubectl logs -n defectdojo -l app.kubernetes.io/name=defectdojo -c uwsgi
 ```
 
 ### Restart Deployment
 
 ```bash
-KUBECONFIG=~/.kube/aks-rg-hypera-cafehyna-dev-config kubectl rollout restart deployment/defectdojo-django -n defectdojo
+KUBECONFIG=~/.kube/aks-rg-example-dev-config kubectl rollout restart deployment/defectdojo-django -n defectdojo
 ```
 
 ## Additional References
@@ -811,7 +811,7 @@ KUBECONFIG=~/.kube/aks-rg-hypera-cafehyna-dev-config kubectl rollout restart dep
 ### External
 
 - [Official Documentation](https://docs.defectdojo.com/)
-- [Swagger UI](https://defectdojo.dev.cafehyna.com.br/api/v2/oa3/swagger-ui/) - Interactive API docs
+- [Swagger UI](https://defectdojo.dev.example.com/api/v2/oa3/swagger-ui/) - Interactive API docs
 
 ---
 

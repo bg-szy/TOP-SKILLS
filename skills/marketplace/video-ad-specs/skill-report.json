@@ -1,23 +1,20 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-09T11:43:10.752Z",
-    "slug": "halt-catch-fire-video-ad-specs",
-    "source_url": "https://github.com/halt-catch-fire/skills/tree/main/guides/video/video-ad-specs/",
+    "generated_at": "2026-07-12T09:48:13.614Z",
+    "slug": "101-skills-video-ad-specs",
+    "source_url": "https://github.com/101-skills/skills/tree/main/guides/video/video-ad-specs/",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "e4097c8aa52d6dd1cb9ffbd1fe1a715fe8378a1eecd90181ea617347606677d3",
-    "tree_hash": "59606b56da8e36ff042f9dd0301e6e5d48ecadbc0a803147efe59db01e6628d3",
+    "tree_hash": "e254f4d19d91dd4d32870d21926886edb8c5b03d4fc9c4ca73dbee92914927cd",
     "provenance": {
-      "model_requested": "gpt-5.5:high",
-      "model_effective": "codex:gpt-5.5:high",
+      "model_effective": "codex",
       "fallback_chain": [
         {
           "agent": "codex",
-          "model": "gpt-5.5",
-          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -26,18 +23,19 @@
   },
   "skill": {
     "name": "video-ad-specs",
-    "description": "Guide for creating platform-specific video ads for TikTok, Instagram, YouTube, Facebook, and LinkedIn using documented specs and belt CLI examples.",
-    "summary": "Create platform-ready video ads with format specs, AIDA structure, captions, and CLI generation examples.",
+    "description": "Create platform-specific video ad plans for TikTok, Instagram, YouTube, Facebook, and LinkedIn. Apply format specifications, AIDA timing, captions, safe zones, and production guidance.",
+    "summary": "Plan platform-ready video ads with precise formats, timing, captions, and creative structure.",
     "icon": "📦",
     "version": "1.0.0",
-    "author": "halt-catch-fire",
+    "author": "101-skills",
     "license": "MIT",
+    "category": "design",
     "tags": [
-      "video-ads",
+      "video-advertising",
       "social-media",
       "creative-production",
-      "ad-specs",
-      "captions"
+      "ad-specifications",
+      "paid-media"
     ],
     "supported_tools": [
       "claude",
@@ -47,16 +45,31 @@
     "risk_factors": [
       "external_commands",
       "network"
-    ],
-    "category": "design"
+    ]
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "medium",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The static findings are false positives caused by Markdown code fences, inline code, documentation URLs, and advertising terminology. The skill uses transparent belt CLI examples for its stated workflow. No hidden execution, prompt injection, credential access, or malicious exfiltration intent was found.",
-    "remediation": [],
+    "summary": "Seven command findings are confirmed because the skill directs users or agents to invoke remote CLI operations, including package installation and media generation. Markdown fence matches, ordinary reference links, and alleged reconnaissance text are false positives. A broad belt command permission is an additional medium-risk capability.",
+    "remediation": [
+      {
+        "issue": "The skill recommends installing dependencies with unpinned npx commands.",
+        "suggestion": "Pin each skill dependency to a reviewed version or immutable commit and require user confirmation before installation.",
+        "severity": "medium"
+      },
+      {
+        "issue": "Installation guidance points to a mutable raw file on the main branch.",
+        "suggestion": "Link to a versioned release document and publish checksums or signatures for downloaded tooling.",
+        "severity": "low"
+      },
+      {
+        "issue": "The allowed-tools declaration permits every belt subcommand.",
+        "suggestion": "Restrict allowed commands to the specific belt app operations required for video generation and processing.",
+        "severity": "medium"
+      }
+    ],
     "risk_factor_evidence": [
       {
         "factor": "external_commands",
@@ -334,242 +347,418 @@
     "finding_verdicts": [
       {
         "id": "external_commands:SKILL.md:7:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The backticks are Markdown inline code around a visible install command. The skill does not execute Ruby or shell backtick substitution from this line."
+        "verdict": "confirmed",
+        "confidence": 0.94,
+        "reason": "Line 7 instructs users to run npx against a remote skill package. This can download and execute third-party installation logic.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:15:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks mark the literal CLI name in documentation and the URL is an install guide link. There is no command substitution or hidden execution."
+        "confidence": 0.99,
+        "reason": "The backticks only format the belt command name as inline Markdown. This line does not execute a shell command."
       },
       {
         "id": "external_commands:SKILL.md:17:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This is a Markdown bash code fence containing explicit belt examples for the stated video-generation workflow. The commands are visible user-facing examples, not Ruby backtick execution."
+        "verdict": "confirmed",
+        "confidence": 0.98,
+        "reason": "The fenced Bash example invokes belt login and a remote video-generation application. These are intended external CLI operations, despite the inaccurate Ruby pattern label.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line is the closing Markdown code fence. It contains no executable command or dynamic shell evaluation."
+        "confidence": 0.99,
+        "reason": "Line 26 is a closing Markdown fence followed by specification prose. Markdown delimiters do not perform Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:120:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This Markdown fence introduces documented belt CLI examples with literal app names and JSON inputs. It is not Ruby or shell backtick execution, and no command is hidden from the user."
+        "verdict": "confirmed",
+        "confidence": 0.98,
+        "reason": "This Bash block runs several remote belt applications for video, speech, merging, and captions. Following it performs external commands and processes user media.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:149:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line is only a Markdown code fence terminator. It does not run shell code or evaluate dynamic input."
+        "confidence": 0.99,
+        "reason": "The matched text consists of Markdown fence delimiters between examples. The delimiters themselves do not execute commands."
       },
       {
         "id": "external_commands:SKILL.md:153:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.83,
-        "reason": "The line starts a Markdown bash example for a square video ad. The fenced command is an explicit belt invocation for the documented use case, not hidden command execution."
+        "verdict": "confirmed",
+        "confidence": 0.98,
+        "reason": "The fenced Bash example invokes a remote belt video-generation application. This is an intended external command, not Ruby backtick syntax.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:157:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line closes a Markdown code block. There is no shell command or backtick evaluation on the line."
+        "confidence": 0.99,
+        "reason": "The match spans closing and opening Markdown fences. Those formatting markers do not cause command execution."
       },
       {
         "id": "external_commands:SKILL.md:161:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.83,
-        "reason": "The code fence contains explicit belt commands for a YouTube bumper workflow. The commands are visible examples with hardcoded app names, not command-substitution logic."
+        "verdict": "confirmed",
+        "confidence": 0.98,
+        "reason": "This Bash block invokes remote video-generation and text-to-speech applications through belt. Executing the example communicates with third-party services.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:171:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line is the end of a Markdown code fence. It does not contain executable code."
+        "confidence": 0.99,
+        "reason": "The match is a closing Markdown fence and later opening fence around prose. It is not executable backtick syntax."
       },
       {
         "id": "external_commands:SKILL.md:188:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "This Markdown bash block documents a captioning command using explicit local file names. It is a transparent CLI example, not Ruby or shell backtick execution."
+        "verdict": "confirmed",
+        "confidence": 0.98,
+        "reason": "The Bash example runs a remote captioning application with user-supplied media paths. This is an external CLI operation with data-processing implications.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:195:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This is a closing Markdown fence with no command content. No execution path is present."
+        "confidence": 0.99,
+        "reason": "Line 195 closes a Markdown block, and the remaining range contains guidance tables. No Ruby or shell backtick execution occurs."
       },
       {
         "id": "external_commands:SKILL.md:252:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.8,
-        "reason": "The fenced block lists optional npx commands for related skills. They are visible documentation examples and not shell backtick execution by the skill itself."
+        "verdict": "confirmed",
+        "confidence": 0.96,
+        "reason": "The Bash block contains four npx installation commands for remote skills. Running them can retrieve and execute third-party package logic.",
+        "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:257:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.94,
-        "reason": "This line is only the closing Markdown code fence for the related-skills examples. It contains no executable command."
+        "confidence": 0.98,
+        "reason": "Line 257 is a closing Markdown fence, and line 259 formats a command as inline documentation. Neither construct executes automatically."
       },
       {
         "id": "network:SKILL.md:11:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The hardcoded URL is a Markdown link naming the inference.sh service used by the guide. The line does not make a network request or exfiltrate data."
+        "confidence": 0.96,
+        "reason": "The URL is a visible reference to the service that the skill documents. It does not create a hidden or automatic network request."
       },
       {
         "id": "network:SKILL.md:15:hardcoded-url",
-        "verdict": "false_positive",
+        "verdict": "confirmed",
         "confidence": 0.86,
-        "reason": "The URL points to public install instructions in documentation. It is not an automatic fetch, webhook, or data-transfer endpoint."
+        "reason": "The installation link targets a mutable raw file on the main branch. Following changing remote installation instructions creates a supply-chain risk.",
+        "severity": "low"
       },
       {
         "id": "blocker:SKILL.md:3:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line is front matter describing video ad platform specifications. It does not ask for host, network, credential, or environment reconnaissance."
+        "confidence": 0.99,
+        "reason": "Line 3 is marketplace metadata describing video advertising features and trigger phrases. It requests no host, account, process, or network reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:51:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The phrase appears in an Instagram cover-image row where grid means a social media profile grid. There is no system enumeration or reconnaissance behavior."
+        "confidence": 0.99,
+        "reason": "Line 51 explains how an Instagram cover image appears in a grid. It contains no system discovery or reconnaissance instruction."
       }
     ],
-    "semantic_findings": [],
+    "semantic_findings": [
+      {
+        "title": "Broad External Command Permission",
+        "description": "The allowed-tools declaration authorizes every belt subcommand. A mistaken or manipulated prompt could invoke unrelated belt operations beyond video production.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 4,
+            "line_end": 4
+          }
+        ],
+        "confidence": 0.92,
+        "confidence_reasoning": "The wildcard permission is explicit on line 4 and is broader than the documented app commands. Its scope is directly observable."
+      }
+    ],
     "critical_findings": [],
     "high_findings": [],
-    "medium_findings": [],
-    "low_findings": [],
+    "medium_findings": [
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "> **Install the belt CLI skill:** `npx skills add belt-sh/cli`",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 7,
+            "line_end": 7
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.94,
+        "confidence_reasoning": "Line 7 instructs users to run npx against a remote skill package. This can download and execute third-party installation logic."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 17,
+            "line_end": 26
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.98,
+        "confidence_reasoning": "The fenced Bash example invokes belt login and a remote video-generation application. These are intended external CLI operations, despite the inaccurate Ruby pattern label."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 120,
+            "line_end": 149
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.98,
+        "confidence_reasoning": "This Bash block runs several remote belt applications for video, speech, merging, and captions. Following it performs external commands and processes user media."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 153,
+            "line_end": 157
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.98,
+        "confidence_reasoning": "The fenced Bash example invokes a remote belt video-generation application. This is an intended external command, not Ruby backtick syntax."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 161,
+            "line_end": 171
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.98,
+        "confidence_reasoning": "This Bash block invokes remote video-generation and text-to-speech applications through belt. Executing the example communicates with third-party services."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 188,
+            "line_end": 195
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.98,
+        "confidence_reasoning": "The Bash example runs a remote captioning application with user-supplied media paths. This is an external CLI operation with data-processing implications."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 252,
+            "line_end": 257
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.96,
+        "confidence_reasoning": "The Bash block contains four npx installation commands for remote skills. Running them can retrieve and execute third-party package logic."
+      },
+      {
+        "title": "Broad External Command Permission",
+        "description": "The allowed-tools declaration authorizes every belt subcommand. A mistaken or manipulated prompt could invoke unrelated belt operations beyond video production.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 4,
+            "line_end": 4
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.92,
+        "confidence_reasoning": "The wildcard permission is explicit on line 4 and is broader than the documented app commands. Its scope is directly observable."
+      }
+    ],
+    "low_findings": [
+      {
+        "title": "Hardcoded URL",
+        "description": "> Requires inference.sh CLI (`belt`). [Install instructions](https://raw.githubusercontent.com/infer",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 15,
+            "line_end": 15
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "network",
+        "source_severity": "low",
+        "confidence": 0.86,
+        "confidence_reasoning": "The installation link targets a mutable raw file on the main branch. Following changing remote installation instructions creates a supply-chain risk."
+      }
+    ],
     "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 261,
     "audit_model": "codex",
-    "audited_at": "2026-07-09T11:43:10.752Z",
+    "audited_at": "2026-07-12T09:48:13.615Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Create Platform-Ready Video Ads",
-    "value_statement": "Teams often create video ads with the wrong dimensions, duration, captions, or safe zones for each platform. This skill gives Claude, Codex, and Claude Code a platform-specific guide for planning video ads and generating CLI-ready creative prompts.",
+    "value_statement": "Video ad requirements differ across platforms, causing costly formatting and creative mistakes. This skill provides specifications, timed structures, caption guidance, and production prompts.",
     "seo_keywords": [
-      "Claude",
-      "Codex",
-      "Claude Code",
-      "video ad specs",
-      "social media video ads",
-      "TikTok ad creative",
+      "Claude video ad skill",
+      "Codex video advertising",
+      "Claude Code ad production",
+      "video ad specifications",
+      "TikTok ad dimensions",
       "Instagram Reels ads",
       "YouTube bumper ads",
-      "captioned video ads",
-      "inference.sh belt"
+      "social media video",
+      "AIDA video script"
     ],
     "actual_capabilities": [
-      "Provides platform specs for TikTok, Instagram Reels, Instagram Stories, YouTube, Facebook Feed, and LinkedIn.",
-      "Explains aspect ratios, resolution targets, duration norms, sound behavior, and safe zones from the skill guide.",
-      "Maps video ad structure to the AIDA framework with timing guidance for each stage.",
-      "Offers hook techniques, caption rules, and common mistake checks for mobile video ads.",
-      "Includes belt CLI examples for video generation, voiceover, audio merging, and burned-in captions.",
-      "Supplies reusable ad structure templates for testimonial, demo, and before-after formats."
+      "Provides aspect ratios, resolutions, durations, and safe-zone guidance for five major advertising platforms.",
+      "Structures short video concepts with the Attention, Interest, Desire, and Action framework.",
+      "Creates timed outlines for testimonial, demonstration, before-and-after, and bumper ads.",
+      "Recommends captions, voiceovers, hooks, calls to action, and sound-off design choices.",
+      "Supplies belt CLI examples for generating video, speech, merged audio, and burned-in captions."
     ],
     "limitations": [
-      "Generation examples require the inference.sh belt CLI, account access, and any needed model permissions.",
-      "Platform specifications can change, so final ads should be checked against each platform before launch.",
-      "The skill does not replace brand, legal, accessibility, or advertising policy review.",
-      "It does not create final media unless the required CLI, source assets, and credentials are available."
+      "Platform requirements can change, so current publisher documentation remains authoritative.",
+      "The skill does not verify ad policy compliance, legal claims, licensing, or audience targeting.",
+      "Media generation examples require the external belt CLI, an account, and supported remote applications.",
+      "The skill provides production guidance but does not measure campaign performance or conversion results."
     ],
     "use_cases": [
       {
-        "title": "Prepare Social Ad Concepts",
-        "target_user": "Growth marketer",
-        "description": "Plan TikTok, Reels, Stories, Shorts, Facebook, or LinkedIn ad concepts with the correct format before production starts."
+        "title": "Plan Paid Social Creative",
+        "description": "Create correctly sized TikTok, Instagram, and Facebook concepts with hooks, captions, timing, and calls to action.",
+        "target_user": "Paid social marketer"
       },
       {
-        "title": "Translate Briefs Into Production Prompts",
-        "target_user": "Creative producer",
-        "description": "Turn a product brief into scene prompts, voiceover direction, caption needs, and platform-specific delivery requirements."
+        "title": "Prepare Video Production Briefs",
+        "description": "Turn a campaign offer into timed scenes, voiceover direction, overlays, and platform delivery requirements.",
+        "target_user": "Video producer"
       },
       {
-        "title": "Review Video Ad Readiness",
-        "target_user": "Paid media manager",
-        "description": "Check whether an ad concept has the right hook, duration, captions, CTA timing, and safe-zone treatment."
+        "title": "Adapt Campaigns Across Channels",
+        "description": "Convert one campaign idea into distinct YouTube, LinkedIn, and vertical social versions.",
+        "target_user": "Creative strategist"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Choose Platform Specs",
-        "scenario": "Beginner planning for one channel",
-        "prompt": "Use the video-ad-specs skill to list the recommended format, duration, caption needs, and safe zones for a [platform] ad about [product]."
+        "title": "Create a TikTok Ad Plan",
+        "prompt": "Create a 15-second TikTok ad plan for [product]. Include 9:16 specifications, a one-second hook, captions, scene timing, and a clear CTA.",
+        "scenario": "Beginner planning one vertical ad"
       },
       {
-        "title": "Draft AIDA Video Structure",
-        "scenario": "Create a short ad outline",
-        "prompt": "Use the skill to create a 15 to 30 second AIDA outline for [product] targeting [audience] on [platform]. Include hook, product reveal, proof, and CTA timing."
+        "title": "Adapt a Social Concept",
+        "prompt": "Adapt [source concept] for Instagram Reels, Stories, and Facebook Feed. Provide aspect ratio, duration, safe zones, captions, and platform-specific changes.",
+        "scenario": "Intermediate cross-platform adaptation"
       },
       {
-        "title": "Build Production Prompts",
-        "scenario": "Prepare generation-ready creative direction",
-        "prompt": "Use the skill to convert this brief into video scene prompts, voiceover copy, caption guidance, and platform specs: [brief]. Keep each scene matched to [platform]."
+        "title": "Build AIDA Storyboards",
+        "prompt": "Build AIDA storyboards for TikTok, YouTube Shorts, and LinkedIn for [offer]. Include timed scenes, voiceover, overlays, accessibility notes, and production prompts.",
+        "scenario": "Advanced creative development"
       },
       {
-        "title": "Audit Multi-Platform Variants",
-        "scenario": "Advanced paid media quality check",
-        "prompt": "Use the skill to review these ad concepts for TikTok, Instagram, YouTube, Facebook, and LinkedIn. Flag mismatched ratios, weak hooks, missing captions, unsafe text placement, and CTA timing problems: [concepts]."
+        "title": "Design a Creative Test Matrix",
+        "prompt": "Design a test matrix for [campaign] across TikTok, Instagram, YouTube, Facebook, and LinkedIn. Compare hooks, formats, lengths, CTAs, and success hypotheses.",
+        "scenario": "Advanced multi-platform experimentation"
       }
     ],
     "output_examples": [
       {
-        "input": "Plan a 15 second TikTok ad for a desk organizer.",
-        "output": "The response outlines a vertical 9:16 concept with a one-second hook, a messy-desk problem scene, a clean reveal, captions, and a final link-in-bio CTA."
+        "input": "Plan a 15-second TikTok ad for a compact wireless charger.",
+        "output": [
+          "Format: 9:16 at 1080 by 1920 pixels, with essential text kept inside the safe zone.",
+          "0-3 seconds: Show tangled cables and ask, \"Still charging like this?\"",
+          "3-12 seconds: Reveal the charger, demonstrate three devices, and add concise captions.",
+          "12-15 seconds: Show the product name and the CTA, \"Simplify your desk today.\""
+        ]
       },
       {
-        "input": "Adapt one software demo ad for YouTube and LinkedIn.",
-        "output": "The response separates a six-second YouTube bumper from a professional LinkedIn feed version, with different aspect ratios, pacing, and CTA placement."
+        "input": "Adapt a software demo for LinkedIn and YouTube bumper ads.",
+        "output": [
+          "LinkedIn: Use a professional square or widescreen edit with captions and a 20-second problem-to-result structure.",
+          "YouTube bumper: Use one widescreen visual, one benefit, and one CTA within exactly six seconds.",
+          "Keep branding near the end and make both versions understandable without sound."
+        ]
       },
       {
-        "input": "Check this video ad script before launch.",
-        "output": "The response flags late branding, missing captions, platform duration risk, unsafe bottom text placement, and unclear final action."
+        "input": "Review my vertical ad checklist before production.",
+        "output": "Confirm 9:16 delivery, an immediate hook, readable captions, protected safe zones, sound-off clarity, platform duration, and a visible final CTA."
       }
     ],
     "best_practices": [
-      "Name the target platform before asking for specs or production guidance.",
-      "Provide the product, audience, offer, proof point, and desired CTA in the prompt.",
-      "Verify final dimensions, duration, captions, and policy requirements in the ad platform before publishing."
+      "Verify current platform specifications before final export because requirements can change.",
+      "Design for silent viewing with readable captions, strong contrast, and meaningful visuals.",
+      "Create distinct platform versions with suitable framing, duration, tone, and safe zones."
     ],
     "anti_patterns": [
-      "Using one landscape video for every social platform without resizing or restructuring it.",
-      "Skipping captions because the ad includes voiceover or music.",
-      "Requesting final launch approval without checking platform rules, claims, rights, and brand standards."
+      "Do not reuse one landscape export across vertical feeds.",
+      "Do not delay the hook or CTA beyond the expected viewing window.",
+      "Do not place essential text beneath platform controls or outside safe zones."
     ],
     "faq": [
       {
         "question": "Which platforms does this skill cover?",
-        "answer": "It covers TikTok, Instagram Reels, Instagram Stories, YouTube, Facebook Feed, and LinkedIn video ad formats."
+        "answer": "It covers TikTok, Instagram Reels, Instagram Stories, YouTube, Facebook Feed, and LinkedIn."
       },
       {
-        "question": "Can it generate video files directly?",
-        "answer": "It provides belt CLI examples for generation workflows, but actual file creation requires the CLI, credentials, and service access."
+        "question": "Can it generate finished video files?",
+        "answer": "It provides belt CLI examples that can call external media applications when the required service and account are available."
       },
       {
-        "question": "Does it help with captions?",
-        "answer": "Yes. It explains why captions matter and includes guidance for readable, high-contrast captions on mobile video."
+        "question": "Does it provide scripts and storyboards?",
+        "answer": "Yes. It can structure hooks, scenes, voiceovers, captions, benefits, and calls to action using timed formats."
       },
       {
-        "question": "Can I use it for paid media production?",
-        "answer": "Yes. It is useful for planning paid social creative, briefing production, and checking platform-specific requirements."
+        "question": "Are the platform specifications guaranteed current?",
+        "answer": "No. Platform rules change, so verify final dimensions, durations, file limits, and policies with each publisher."
       },
       {
-        "question": "Are the platform specs guaranteed to be current?",
-        "answer": "No. The skill provides the included guide content, but platforms can change specs and policies after publication."
+        "question": "Does it check advertising policy compliance?",
+        "answer": "No. Review claims, disclosures, rights, targeting, and restricted-content rules separately before publishing."
       },
       {
-        "question": "Does it replace legal or platform policy review?",
-        "answer": "No. Use it for creative and technical planning, then verify claims, rights, targeting, and platform policy compliance separately."
+        "question": "Why are captions emphasized?",
+        "answer": "Many social videos autoplay without sound. Captions preserve the message and improve accessibility for more viewers."
       }
     ]
   },
