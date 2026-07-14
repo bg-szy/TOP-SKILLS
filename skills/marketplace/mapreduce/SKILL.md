@@ -1,6 +1,6 @@
 ---
 name: mapreduce
-description: The MapReduce skill enables parallel task execution across multiple AI providers or agent instances, followed by intelligent consolidation of results. This produces higher-quality outputs by levera...
+description: Fan-out tasks to multiple AI providers or agent instances in parallel, then consolidate the results into a single high-quality output. Use for parallel planning, multi-implementation code generation, and debug consensus across Claude subagents and external CLI providers.
 ---
 
 # MapReduce Skill

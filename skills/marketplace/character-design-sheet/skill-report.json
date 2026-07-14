@@ -1,23 +1,20 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-06T16:37:16.987Z",
-    "slug": "halt-catch-fire-character-design-sheet",
-    "source_url": "https://github.com/halt-catch-fire/skills/tree/main/guides/design/character-design-sheet/",
+    "generated_at": "2026-07-13T10:55:21.983Z",
+    "slug": "101-skills-character-design-sheet",
+    "source_url": "https://github.com/101-skills/skills/tree/main/guides/design/character-design-sheet/",
     "source_ref": "main",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "df75a3bcbcec6ed8f4c1a42508d22c8b1c1e1b59e12b7373402f0098b4bf8b60",
-    "tree_hash": "515936b20fd50cd6fcd3daa8b6a40d6f55fbadf2b7df32553947fdb5725475f9",
+    "tree_hash": "19b2c33dc4d41236ed4ede0e43f8be24336f5589069ed8208086877eb0bb4c78",
     "provenance": {
-      "model_requested": "gpt-5.5:high",
-      "model_effective": "codex:gpt-5.5:high",
+      "model_effective": "codex",
       "fallback_chain": [
         {
           "agent": "codex",
-          "model": "gpt-5.5",
-          "effort": "high",
           "outcome": "success"
         }
       ],
@@ -26,18 +23,19 @@
   },
   "skill": {
     "name": "character-design-sheet",
-    "description": "Guides consistent AI character design using reference sheets, description anchors, turnaround views, expression sets, color palettes, and LoRA planning.",
-    "summary": "Create consistent AI character reference sheets for repeated visual use.",
+    "description": "Guides consistent AI character creation with turnaround, expression, outfit, palette, description-anchor, and LoRA workflows for inference.sh.",
+    "summary": "Build reusable character references and prompts that reduce visual drift across AI-generated images.",
     "icon": "📦",
     "version": "1.0.0",
-    "author": "halt-catch-fire",
+    "author": "101-skills",
     "license": "MIT",
+    "category": "design",
     "tags": [
-      "character-design",
-      "ai-image-generation",
-      "reference-sheets",
-      "lora",
-      "concept-art"
+      "character design",
+      "AI image generation",
+      "reference sheets",
+      "prompt engineering",
+      "LoRA"
     ],
     "supported_tools": [
       "claude",
@@ -47,32 +45,15 @@
     "risk_factors": [
       "external_commands",
       "network"
-    ],
-    "category": "design"
+    ]
   },
   "security_audit": {
-    "risk_level": "medium",
+    "risk_level": "safe",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The skill is not malicious, but it depends on broad belt CLI access and third-party inference services. Real command and network findings were confirmed, while markdown diagrams, templates, and the line 207 reconnaissance hit were dismissed as false positives. Publication should require clear user confirmation for login, installs, remote app runs, and possible service costs.",
-    "remediation": [
-      {
-        "issue": "Broad Bash(belt *) permission",
-        "suggestion": "Narrow allowed tools to required belt subcommands, or require explicit confirmation before login, app listing, and remote job execution.",
-        "severity": "medium"
-      },
-      {
-        "issue": "Third-party inference execution",
-        "suggestion": "Tell users before execution that prompts, image references, and LoRA paths may be sent to inference.sh or model providers.",
-        "severity": "medium"
-      },
-      {
-        "issue": "External installation recommendations",
-        "suggestion": "Keep npx skill-install commands as optional manual steps, and avoid asking agents to execute them automatically.",
-        "severity": "medium"
-      }
-    ],
+    "summary": "All 27 static findings are false positives. Markdown formatting and illustrative commands triggered shell patterns, but the file contains no executable script or automatic command runner. The URLs are documentation links, and line 207 is an image prompt rather than system reconnaissance.",
+    "remediation": [],
     "risk_factor_evidence": [
       {
         "factor": "external_commands",
@@ -490,503 +471,307 @@
     "finding_verdicts": [
       {
         "id": "external_commands:SKILL.md:7:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.72,
-        "severity": "medium",
-        "reason": "Line 7 gives an npx command to install another CLI skill, which is real external command execution. It is transparent setup guidance, but it still asks users to run code from an external package source."
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The backticks form an inline Markdown code span around an explicit, user-invoked installation command. The file does not execute the command or use a shell backtick operator."
       },
       {
         "id": "external_commands:SKILL.md:15:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This line uses inline code to name the belt CLI and links install documentation. It does not execute a command or construct shell input."
+        "confidence": 0.99,
+        "reason": "The backticks only format the CLI name in explanatory Markdown. No shell substitution or automatic command execution occurs."
       },
       {
         "id": "external_commands:SKILL.md:17:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "severity": "medium",
-        "reason": "The quick start runs belt login and belt app run against a remote image model. This is intended behavior, but it executes an external CLI and may send prompt data to a third-party service."
+        "verdict": "false_positive",
+        "confidence": 0.98,
+        "reason": "This location opens a fenced Bash example containing documented belt commands with fixed structure. Markdown fences do not execute their contents."
       },
       {
         "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This range is markdown structure and explanatory prose after the quick start. It contains no executable command beyond the already reviewed quick start block."
+        "confidence": 0.99,
+        "reason": "This location closes a Markdown command example and later opens a plain-text diagram. Neither fence is a shell backtick execution construct."
       },
       {
         "id": "external_commands:SKILL.md:49:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This fenced block is an ASCII turnaround sheet diagram. It is not Ruby or shell execution and contains no command text."
+        "confidence": 1,
+        "reason": "The fenced content is an ASCII turnaround-sheet diagram. It contains no command and cannot execute."
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This range only closes the diagram and opens the next example section. It does not include executable command content."
+        "confidence": 0.99,
+        "reason": "This range closes a text diagram and opens a documented Bash example. These are Markdown delimiters, not executable backticks."
       },
       {
         "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.86,
-        "severity": "medium",
-        "reason": "This bash block runs several belt app run commands and a stitch-images job. The commands are fixed examples, but they still invoke external processing through the belt CLI."
+        "verdict": "false_positive",
+        "confidence": 0.98,
+        "reason": "The fenced block documents user-invoked belt image-generation and stitching commands. It has no automatic runner, dynamic interpolation, or hidden execution path."
       },
       {
         "id": "external_commands:SKILL.md:92:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This range is the end of the turnaround example plus expression-sheet prose. It does not contain shell execution."
+        "confidence": 0.99,
+        "reason": "This range closes a documented Bash example and opens a plain-text expression diagram. Markdown fences do not invoke a shell."
       },
       {
         "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This fenced block is an ASCII expression sheet diagram. It is visual documentation, not an executable command."
+        "confidence": 1,
+        "reason": "The fenced content is an ASCII expression-sheet diagram. It contains no executable command."
       },
       {
         "id": "external_commands:SKILL.md:106:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This range closes a diagram and states the minimum expression list. It contains no command execution pattern."
+        "confidence": 0.99,
+        "reason": "This range closes a text diagram and opens a documented Bash example. The backticks are only Markdown syntax."
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "severity": "medium",
-        "reason": "The expression sheet example contains belt app run commands for remote image generation. There is no command injection evidence, but the external CLI execution risk is real."
+        "verdict": "false_positive",
+        "confidence": 0.98,
+        "reason": "The block presents user-invoked belt commands for expression images using fixed JSON structures. The Markdown file has no mechanism that executes them automatically."
       },
       {
         "id": "external_commands:SKILL.md:133:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This range is markdown prose and a costume table after the expression command block. It does not include a shell command."
+        "confidence": 0.99,
+        "reason": "This range closes a Bash example, contains an outfit table, and opens a palette example. None of these Markdown elements execute commands."
       },
       {
         "id": "external_commands:SKILL.md:150:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This fenced block documents a color palette with hex values. It is not executable code."
+        "confidence": 1,
+        "reason": "The fenced block is a static character color palette. It contains no shell command or substitution."
       },
       {
         "id": "external_commands:SKILL.md:160:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This range transitions from the palette block to a description template. It contains no shell execution."
+        "confidence": 0.99,
+        "reason": "This range closes the palette example and opens a plain-text description template. The delimiters are not executable shell syntax."
       },
       {
         "id": "external_commands:SKILL.md:168:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This fenced block is a natural-language description template. It is not Ruby or shell code."
+        "confidence": 1,
+        "reason": "The fenced content is a prose template for describing character attributes. It contains no commands."
       },
       {
         "id": "external_commands:SKILL.md:173:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This range only closes a template and introduces an example. It does not contain executable command text."
+        "confidence": 0.99,
+        "reason": "This range closes a prose template and opens a prose example. Both fences are inert Markdown formatting."
       },
       {
         "id": "external_commands:SKILL.md:177:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This fenced block is a sample character description. It is prompt prose, not a shell command."
+        "confidence": 1,
+        "reason": "The fenced block contains only a natural-language character description. There is no command execution."
       },
       {
         "id": "external_commands:SKILL.md:184:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This range is prose and a proportions table before the LoRA command example. It does not execute anything itself."
+        "confidence": 0.99,
+        "reason": "This range closes a prose example and later opens a documented belt command block. Markdown does not run either block."
       },
       {
         "id": "external_commands:SKILL.md:204:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.83,
-        "severity": "medium",
-        "reason": "The LoRA example invokes belt app run with a local LoRA path and remote model. This can transmit prompt and file reference data to an external inference workflow."
+        "verdict": "false_positive",
+        "confidence": 0.98,
+        "reason": "The fenced Bash block documents a user-invoked belt request using an explicitly selected local LoRA path. It is not automatically executed and has no input interpolation."
       },
       {
         "id": "external_commands:SKILL.md:210:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This range closes the LoRA command block and lists training tips. It contains no shell command execution."
+        "confidence": 0.99,
+        "reason": "This range closes a command example, presents guidance and a table, then opens a Markdown template. None of these elements execute a shell."
       },
       {
         "id": "external_commands:SKILL.md:233:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This fenced markdown block is a character bible template. It is documentation content, not executable shell code."
+        "confidence": 1,
+        "reason": "The fenced content is a sample character bible written in Markdown. It contains reference data, not executable commands."
       },
       {
         "id": "external_commands:SKILL.md:259:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This range closes the character bible template and introduces related skills. It does not include the install commands themselves."
+        "confidence": 0.99,
+        "reason": "This range closes the sample character bible and later opens a documented command block. The Markdown delimiters are inert."
       },
       {
         "id": "external_commands:SKILL.md:274:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.74,
-        "severity": "medium",
-        "reason": "The related skills block provides npx skills add commands for additional external skill installs. They are optional documentation, but they remain shell commands that fetch external content."
+        "verdict": "false_positive",
+        "confidence": 0.98,
+        "reason": "The fenced Bash block lists explicit, user-invoked installation commands for related skills. There is no automatic execution, shell substitution, or untrusted argument interpolation."
       },
       {
         "id": "external_commands:SKILL.md:278:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.64,
-        "severity": "medium",
-        "reason": "The range includes the belt app store command, which uses the permitted external CLI to browse remote apps. The risk is low in intent but still involves external command and network use."
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "This location closes a Markdown command example, while the later backticks format a belt command for display. Neither form executes within the skill file."
       },
       {
         "id": "network:SKILL.md:11:hardcoded-url",
-        "verdict": "confirmed",
-        "confidence": 0.78,
-        "severity": "low",
-        "reason": "Line 11 identifies inference.sh as the external service used for image generation. This is disclosed, but it confirms the skill depends on third-party network processing."
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The URL is a visible Markdown link to the named inference.sh service. The skill does not automatically request it or transmit data through the link."
       },
       {
         "id": "network:SKILL.md:15:hardcoded-url",
-        "verdict": "confirmed",
-        "confidence": 0.68,
-        "severity": "low",
-        "reason": "Line 15 links to GitHub-hosted install instructions for the required CLI. This is transparent setup documentation, but it is still a hardcoded external dependency."
+        "verdict": "false_positive",
+        "confidence": 0.98,
+        "reason": "The URL is a visible installation-documentation link under the matching inference-sh GitHub organization. It is not fetched or executed by the skill."
       },
       {
         "id": "blocker:SKILL.md:207:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "Line 207 is an image prompt describing a character reading a book at a cafe. It is not system reconnaissance or an attempt to inspect the host environment."
+        "confidence": 1,
+        "reason": "The line is a natural-language image prompt describing a fictional character reading at a cafe. It performs no system discovery or reconnaissance."
       }
     ],
-    "semantic_findings": [
-      {
-        "title": "Overbroad Belt CLI Permission",
-        "description": "The skill allows Bash(belt *) and then asks users to log in and run remote inference commands. This grants broad access to belt subcommands beyond the listed image examples.",
-        "severity": "medium",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 4,
-            "line_end": 4
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 18,
-            "line_end": 21
-          }
-        ],
-        "confidence": 0.86,
-        "confidence_reasoning": "The allowed-tools declaration permits every belt subcommand, and the quick start uses account login and app execution. No malicious intent appears, but the permission scope is broader than needed."
-      }
-    ],
+    "semantic_findings": [],
     "critical_findings": [],
     "high_findings": [],
-    "medium_findings": [
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "> **Install the belt CLI skill:** `npx skills add belt-sh/cli`",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 7,
-            "line_end": 7
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "Line 7 gives an npx command to install another CLI skill, which is real external command execution. It is transparent setup guidance, but it still asks users to run code from an external package source."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 17,
-            "line_end": 26
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The quick start runs belt login and belt app run against a remote image model. This is intended behavior, but it executes an external CLI and may send prompt data to a third-party service."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 58,
-            "line_end": 92
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "This bash block runs several belt app run commands and a stitch-images job. The commands are fixed examples, but they still invoke external processing through the belt CLI."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 110,
-            "line_end": 133
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The expression sheet example contains belt app run commands for remote image generation. There is no command injection evidence, but the external CLI execution risk is real."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 204,
-            "line_end": 210
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.83,
-        "confidence_reasoning": "The LoRA example invokes belt app run with a local LoRA path and remote model. This can transmit prompt and file reference data to an external inference workflow."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 274,
-            "line_end": 278
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The related skills block provides npx skills add commands for additional external skill installs. They are optional documentation, but they remain shell commands that fetch external content."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 278,
-            "line_end": 280
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.64,
-        "confidence_reasoning": "The range includes the belt app store command, which uses the permitted external CLI to browse remote apps. The risk is low in intent but still involves external command and network use."
-      },
-      {
-        "title": "Overbroad Belt CLI Permission",
-        "description": "The skill allows Bash(belt *) and then asks users to log in and run remote inference commands. This grants broad access to belt subcommands beyond the listed image examples.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 4,
-            "line_end": 4
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 18,
-            "line_end": 21
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "semantic",
-        "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "The allowed-tools declaration permits every belt subcommand, and the quick start uses account login and app execution. No malicious intent appears, but the permission scope is broader than needed."
-      }
-    ],
-    "low_findings": [
-      {
-        "title": "Hardcoded URL",
-        "description": "Create consistent characters across multiple AI-generated images via [inference.sh](https://inferenc",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 11,
-            "line_end": 11
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.78,
-        "confidence_reasoning": "Line 11 identifies inference.sh as the external service used for image generation. This is disclosed, but it confirms the skill depends on third-party network processing."
-      },
-      {
-        "title": "Hardcoded URL",
-        "description": "> Requires inference.sh CLI (`belt`). [Install instructions](https://raw.githubusercontent.com/infer",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 15,
-            "line_end": 15
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "network",
-        "source_severity": "low",
-        "confidence": 0.68,
-        "confidence_reasoning": "Line 15 links to GitHub-hosted install instructions for the required CLI. This is transparent setup documentation, but it is still a hardcoded external dependency."
-      }
-    ],
+    "medium_findings": [],
+    "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 282,
     "audit_model": "codex",
-    "audited_at": "2026-07-06T16:37:16.987Z",
+    "audited_at": "2026-07-13T10:55:21.983Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Create Consistent Character Design Sheets",
-    "value_statement": "AI image generators often change a character between images. This skill guides Claude, Codex, and Claude Code through reference sheets, description anchors, and LoRA planning.",
+    "value_statement": "AI image generators often change a character's face, colors, clothing, and proportions between images. This skill provides reference-sheet, description-anchor, palette, and LoRA workflows for more consistent results.",
     "seo_keywords": [
+      "character design sheet",
+      "AI character consistency",
+      "character reference sheet",
+      "turnaround sheet",
+      "expression sheet",
+      "LoRA character workflow",
       "Claude",
       "Codex",
       "Claude Code",
-      "character design sheet",
-      "AI character consistency",
-      "reference sheet prompts",
-      "LoRA character workflow",
-      "turnaround sheet",
-      "expression sheet",
-      "AI image generation"
+      "inference.sh"
     ],
     "actual_capabilities": [
-      "Explains turnaround, expression, outfit, and color palette sheet formats.",
-      "Provides prompt patterns for FLUX and LoRA character generation.",
-      "Defines a reusable description-anchor method for consistent prompts.",
-      "Recommends LoRA trigger words, reference image counts, and scale ranges.",
-      "Lists common consistency failures with practical mitigations."
+      "Plans front, three-quarter, side, and back turnaround views.",
+      "Creates prompt structures for neutral, happy, angry, sad, surprised, and thinking expressions.",
+      "Documents appearance anchors, exact palette colors, outfits, proportions, and style keywords.",
+      "Provides belt CLI examples for FLUX image generation and image stitching.",
+      "Explains repeated descriptions, fixed seeds, reference images, image refinement, and character LoRAs.",
+      "Supplies a character bible structure for ongoing projects."
     ],
     "limitations": [
-      "Command examples require the belt CLI and an inference.sh login.",
-      "The skill does not train a LoRA by itself.",
-      "Exact visual consistency still depends on model behavior and reference quality.",
-      "Remote generation may send prompt data to third-party services."
+      "Requires the inference.sh belt CLI and an authenticated account for generation examples.",
+      "Does not generate images without access to a compatible inference service.",
+      "Description anchors reduce drift but cannot guarantee identical faces across generations.",
+      "LoRA training guidance is conceptual and does not provide a complete training pipeline."
     ],
     "use_cases": [
       {
-        "title": "Prepare Game Character References",
-        "description": "Build front, side, back, outfit, and color references before producing game art.",
-        "target_user": "Game artist"
+        "title": "Build Game Character References",
+        "description": "Create turnaround, expression, outfit, and palette references before producing game portraits or scene art.",
+        "target_user": "Game artists and art directors"
       },
       {
-        "title": "Plan Comic Expression Sheets",
-        "description": "Create a repeatable face and emotion set for recurring comic or visual novel characters.",
-        "target_user": "Comic creator"
+        "title": "Maintain Comic Character Continuity",
+        "description": "Reuse one detailed appearance anchor across panels, covers, promotional images, and changing scenes.",
+        "target_user": "Comic artists and illustrators"
       },
       {
-        "title": "Standardize AI Art Direction",
-        "description": "Document anchors, palettes, and LoRA notes so a team can generate consistent scenes.",
-        "target_user": "Art director"
+        "title": "Prepare Animation Character Bibles",
+        "description": "Document proportions, colors, gestures, expressions, style terms, and LoRA settings for a shared production reference.",
+        "target_user": "Animation designers and production teams"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Start a Character Sheet",
-        "scenario": "Beginner request for a new character.",
-        "prompt": "Create a character design sheet plan for [character idea]. Include a description anchor, turnaround views, expressions, palette notes, and missing questions."
+        "title": "Draft a Character Anchor",
+        "prompt": "Create a detailed character description anchor for [character role]. Include age, hair, eyes, skin, distinctive features, clothing, shoes, accessories, and proportions.",
+        "scenario": "Start a new character from a short concept."
       },
       {
-        "title": "Build a Turnaround Prompt Set",
-        "scenario": "Generate consistent full-body views.",
-        "prompt": "Turn this character description into matching front, three-quarter, side, and back view prompts. Keep the identity details unchanged."
+        "title": "Plan a Turnaround Sheet",
+        "prompt": "Turn this character anchor into four generation prompts for front, three-quarter, side, and back views. Keep every identity and clothing detail unchanged: [anchor].",
+        "scenario": "Prepare consistent full-body reference views."
       },
       {
-        "title": "Diagnose Consistency Drift",
-        "scenario": "Improve an existing prompt workflow.",
-        "prompt": "Review my character prompts for consistency drift. Identify weak visual anchors, missing color details, and changes that may alter the character."
+        "title": "Create an Expression Sheet",
+        "prompt": "Using [anchor], write six close-up portrait prompts for neutral, happy, angry, sad, surprised, and thinking expressions. Keep camera, background, palette, and style consistent.",
+        "scenario": "Develop facial acting while preserving identity."
       },
       {
-        "title": "Plan a LoRA Character Workflow",
-        "scenario": "Advanced workflow for many generated images.",
-        "prompt": "Design a LoRA preparation plan for this character. Specify reference image coverage, trigger wording, scale guidance, sheet outputs, and validation checks."
+        "title": "Build a Production Character Bible",
+        "prompt": "Build a production character bible from [concept]. Include the reusable anchor, palette, proportions, turnaround prompts, expression prompts, outfit variants, LoRA trigger, scale, and consistency checklist.",
+        "scenario": "Coordinate a recurring character across many generated images."
       }
     ],
     "output_examples": [
       {
-        "input": "I need a recurring fantasy merchant for a game prototype.",
+        "input": "Create a consistent design for a young courier with silver hair and a yellow raincoat.",
         "output": [
-          "A reusable 50-word visual anchor for the merchant.",
-          "A four-view turnaround plan with fixed clothing and proportions.",
-          "A palette record for skin, hair, fabric, trim, and accessories."
+          "Anchor: A twenty-two-year-old courier with chin-length silver hair, brown eyes, warm skin, and a small scar above the right eyebrow.",
+          "Primary outfit: Mustard raincoat, charcoal trousers, black waterproof boots, and a red canvas messenger bag.",
+          "Proportions and style: Realistic 7.5-head proportions, clean concept art, white background, and sharp details."
         ]
       },
       {
-        "input": "My comic character changes face shape between images.",
+        "input": "Plan an expression sheet for the courier.",
         "output": [
-          "A drift diagnosis focused on vague age, hair, eye, and face cues.",
-          "A stronger prompt structure that repeats identity details first.",
-          "An expression sheet plan for neutral, happy, angry, sad, surprised, and thinking views."
+          "Six close-up prompts cover neutral, happy, angry, sad, surprised, and thinking expressions.",
+          "Each prompt preserves the silver hair, eyebrow scar, brown eyes, camera angle, white background, and concept-art style."
         ]
       },
       {
-        "input": "I want to use a LoRA for a long visual novel project.",
+        "input": "Prepare an advanced consistency plan for a recurring visual novel character.",
         "output": [
-          "A reference image coverage checklist for poses, lighting, outfits, and close-ups.",
-          "A trigger word and scale recommendation for consistent character recall.",
-          "A validation plan comparing generated scenes against the reference sheet."
+          "Use a fixed description anchor for every image and document exact palette values.",
+          "Create turnaround, expression, and outfit sheets before scene production.",
+          "Train a LoRA from 10-20 consistent references, then test scales from 0.7 to 0.9."
         ]
       }
     ],
     "best_practices": [
-      "Write a detailed description anchor and reuse it exactly.",
-      "Record exact colors, proportions, clothing, and distinguishing marks.",
-      "Generate reference views and expressions before complex scene images."
+      "Write one detailed appearance anchor and reuse it unchanged in every prompt.",
+      "Record exact colors, proportions, outfit details, and distinctive facial features before generating variants.",
+      "Create neutral reference views before producing dramatic poses, scenes, or lighting changes."
     ],
     "anti_patterns": [
-      "Starting scene generation before defining a reference sheet.",
-      "Using vague traits such as young, cool outfit, or red hair.",
-      "Changing identity details or prompt order between generations."
+      "Do not rely on vague labels such as young, red-haired, or stylish.",
+      "Do not change prompt order, identity details, style terms, and scene variables simultaneously.",
+      "Do not train a character LoRA from inconsistent poses, appearances, or art styles."
     ],
     "faq": [
       {
         "question": "Does this skill generate images directly?",
-        "answer": "It provides guidance and command examples. Direct generation requires the belt CLI and a compatible inference service."
-      },
-      {
-        "question": "Can it guarantee identical characters?",
-        "answer": "No. It improves consistency through anchors, sheets, and LoRA planning, but model output can still vary."
+        "answer": "It provides belt CLI workflows and prompts. Image generation requires inference.sh access and a compatible model."
       },
       {
         "question": "What is a description anchor?",
-        "answer": "It is a detailed identity paragraph reused in every prompt so the model sees stable character details."
+        "answer": "It is a detailed appearance block reused unchanged in every prompt to reduce identity and clothing drift."
       },
       {
-        "question": "When should I use LoRA?",
-        "answer": "Use LoRA when a project needs many images of the same character across scenes, poses, or outfits."
+        "question": "Which reference views should I create first?",
+        "answer": "Start with front, three-quarter, side, and back full-body views on a clean background."
       },
       {
-        "question": "Is this useful without the belt CLI?",
-        "answer": "Yes. The reference sheet methods and prompt structure can be used with other image generation tools."
+        "question": "How many expressions should an expression sheet include?",
+        "answer": "The guide recommends at least neutral, happy, angry, sad, surprised, and thinking expressions."
       },
       {
-        "question": "What data may leave my machine?",
-        "answer": "Prompt text, image references, and LoRA paths may be sent when you run remote inference commands."
+        "question": "When should I use a character LoRA?",
+        "answer": "Use a LoRA for recurring characters across larger projects where prompt-only consistency is insufficient."
+      },
+      {
+        "question": "Can the workflow guarantee identical results?",
+        "answer": "No. Detailed anchors and LoRAs improve consistency, but model behavior, seeds, poses, and scenes still affect results."
       }
     ]
   },

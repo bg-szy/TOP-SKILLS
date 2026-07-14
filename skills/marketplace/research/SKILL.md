@@ -1,75 +1,12 @@
 ---
 name: research
-description: Multi-source parallel research with confidence-based synthesis.
+description: Investigate a question against high-trust primary sources and capture the findings as a Markdown file in the repo. Use when the user wants a topic researched, docs or API facts gathered, or reading legwork delegated to a background agent.
 ---
 
-# Research Skill
+Spin up a **background agent** to do the research, so you keep working while it reads.
 
-Multi-source parallel research with confidence-based synthesis.
+Its job:
 
-## Trigger Phrases
-
-When user asks:
-- "research X for me"
-- "find out about X"
-- "what's the current status of X"
-- "gather information on X"
-- "deep dive into X"
-
-## Quick Reference
-
-| Mode | Speed | Depth | Use Case |
-|------|-------|-------|----------|
-| quick | ~30s | Shallow | Fact check, simple lookup |
-| standard | ~2min | Moderate | Typical research |
-| extensive | ~8min | Deep | Comprehensive analysis |
-
-## Command
-
-```
-/ai-dev-kit:research [mode] [query]
-```
-
-## Mode Selection
-
-```
-Need quick answer? ─────────────► quick
-  │
-  ├─ Need current info? ────────► standard
-  │
-  └─ Need comprehensive? ───────► extensive
-```
-
-## Research Types
-
-| Type | Sources | Best For |
-|------|---------|----------|
-| Web | WebSearch | Current events, latest docs |
-| Docs | Local ai-docs/ | Library usage, patterns |
-| Code | Codebase grep | Implementation examples |
-
-## Confidence Levels
-
-| Level | Meaning | Source Count |
-|-------|---------|--------------|
-| HIGH | Very reliable | 3+ agree |
-| MEDIUM | Likely accurate | 2 agree |
-| LOW | Needs verification | 1 only |
-| CONFLICTING | Check manually | Sources disagree |
-
-## Cookbook
-
-- `cookbook/quick-mode.md` - Fast fact-checking pattern
-- `cookbook/standard-mode.md` - Balanced research pattern
-- `cookbook/extensive-mode.md` - Deep research pattern
-
-## Reference
-
-- `reference/researcher-types.md` - Available researcher agents
-- `reference/synthesis-patterns.md` - How findings are combined
-
-## Common Gotchas
-
-- **Timeout**: Extensive mode may timeout on slow connections. Results are still returned.
-- **Docs only**: If web is down, doc-only results are returned with note.
-- **Conflicting info**: Review "Conflicting Information" section when present.
+1. Investigate the question against **primary sources** — official docs, source code, specs, first-party APIs — not a secondary write-up of them. Follow every claim back to the source that owns it.
+2. Write the findings to a single Markdown file, citing each claim's source.
+3. Save it where the repo already keeps such notes; match the existing convention, and if there is none, put it somewhere sensible and say where.
