@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-13T19:10:54.095Z",
+    "generated_at": "2026-07-14T23:04:16.936Z",
     "slug": "danielgwilson-image-edit",
     "source_url": "https://github.com/danielgwilson/image-skill-cli/tree/main/skills/image-edit",
     "source_ref": "main",
@@ -23,19 +23,17 @@
   },
   "skill": {
     "name": "image-edit",
-    "description": "Image editing for agents: image-to-image edits, variations, and image-conditioned transforms through Luxin's zero-setup hosted runtime. Use when an agent needs to edit an existing image without provider credentials, OAuth, local runtime, or per-provider billing. Inspect the edit model, upload or reuse an input image, then return durable hosted assets, jobs, cost receipts, stable JSON, and feedback.",
-    "summary": "Edit and transform existing images through the hosted Luxin runtime.",
+    "description": "Edit, vary, restyle, transform, or repair existing images through the hosted Luxin runtime without configuring provider credentials or a local model server.",
+    "summary": "Create hosted image edits with guided commands, spending limits, recoverable jobs, and cost receipts.",
     "icon": "📦",
-    "version": "1.0.1",
     "author": "danielgwilson",
     "license": "MIT",
     "category": "design",
     "tags": [
       "image-editing",
       "image-to-image",
-      "generative-ai",
-      "luxin",
-      "hosted-runtime"
+      "generative-images",
+      "luxin"
     ],
     "supported_tools": [
       "claude",
@@ -49,25 +47,25 @@
     ]
   },
   "security_audit": {
-    "risk_level": "high",
+    "risk_level": "medium",
     "is_blocked": false,
-    "safe_to_publish": false,
+    "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Six static findings are confirmed because their cited ranges instruct agents to execute external CLI or npm commands. Eighteen findings are false positives caused by Markdown formatting, descriptive HTTPS links, or controlled workspace path configuration. Semantic review also found remote-supplied command execution and hosted image disclosure risks.",
+    "summary": "Five findings are confirmed because the cited command blocks instruct agents to download and execute unpinned npm packages. The remaining backtick, URL, and hidden-path detections are Markdown, expected service references, or isolated workspace configuration. The skill also sends input images and generated work to a third-party hosted service for durable storage.",
     "remediation": [
       {
-        "issue": "The skill tells agents to execute data.next_command returned by the hosted service.",
-        "suggestion": "Use structured actions and validate commands and arguments against a local allowlist. Require explicit approval before executing any returned command.",
-        "severity": "high"
-      },
-      {
-        "issue": "Commands download and execute unpinned npm packages with unattended confirmation flags.",
-        "suggestion": "Pin exact package versions and integrity data. Remove automatic confirmation flags and require approval before package download or global installation.",
+        "issue": "Commands execute npm packages without fixed versions.",
+        "suggestion": "Pin exact reviewed package versions and publish integrity or provenance information for every remotely executed package.",
         "severity": "medium"
       },
       {
-        "issue": "Image inputs and prompts are sent to a hosted service and may become durable hosted assets.",
-        "suggestion": "Require user consent before upload. Clearly state retention and access controls, and warn users not to submit sensitive images.",
+        "issue": "Installation examples use global scope and automatic confirmation.",
+        "suggestion": "Remove global and automatic-confirmation defaults, and require users to approve the target directory before installation.",
+        "severity": "medium"
+      },
+      {
+        "issue": "Input images and generated assets are handled by a hosted third-party service.",
+        "suggestion": "Disclose transmission, retention, access, deletion, and privacy terms before upload, and require consent for sensitive images.",
         "severity": "medium"
       }
     ],
@@ -455,207 +453,175 @@
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 24 uses Markdown backticks around product terms. It does not contain Ruby execution or shell command substitution."
+        "reason": "Line 24 uses Markdown inline code to name the luxin skill. It does not use Ruby or shell command substitution."
       },
       {
         "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The backticks on line 28 format response field names and a command name as documentation. They do not execute shell syntax."
+        "reason": "Line 28 uses Markdown inline code for response fields and a command name. No backtick expression is executed by a shell."
       },
       {
         "id": "external_commands:SKILL.md:32:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.98,
-        "reason": "The cited block runs npx with luxin-cli@latest and automatic confirmation. This downloads and executes an unpinned external package.",
+        "confidence": 0.96,
+        "reason": "The cited block instructs the agent to run npx with automatic approval against luxin-cli@latest. This downloads and executes mutable remote package code.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:34:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The cited range contains Markdown fence markers and explanatory text. It does not itself execute a command."
+        "confidence": 0.98,
+        "reason": "The cited text is a closing Markdown fence followed by a section heading and opening fence. It is not shell backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:38:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.98,
-        "reason": "The cited block instructs agents to run the hosted image-edit command through npx with an unpinned latest package. That is real external code execution.",
+        "confidence": 0.96,
+        "reason": "The cited block runs the unpinned luxin-cli@latest package through npx with automatic approval. Package changes can execute on the user's system.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The cited range contains a closing code fence, prose, and an opening code fence. No executable command appears in that range."
+        "confidence": 0.98,
+        "reason": "This range contains Markdown fencing and installation prose, not a Ruby or shell backtick expression."
       },
       {
         "id": "external_commands:SKILL.md:46:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.98,
-        "reason": "The cited block runs npx skills add with global and automatic confirmation options. It executes external package code and changes global agent state.",
+        "confidence": 0.94,
+        "reason": "The command invokes an unpinned npm installer with global scope and automatic confirmation. It can execute remote package code and modify global skill state.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The cited range only closes one Markdown block, provides explanatory text, and opens another block. It contains no command execution."
+        "confidence": 0.98,
+        "reason": "This range contains a closing Markdown fence, explanatory prose, and an opening fence. Those backticks are documentation syntax."
       },
       {
         "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.98,
-        "reason": "The cited block runs npx skills add globally with automatic confirmation. This is an external command with persistent installation effects.",
+        "confidence": 0.94,
+        "reason": "The documented npx command executes an unpinned installer with global scope and automatic confirmation. This creates package supply-chain and filesystem modification risk.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "This range contains a Markdown fence and prose describing configuration paths. It does not invoke Ruby or a shell."
+        "confidence": 0.98,
+        "reason": "The backticks in this range are a closing code fence and inline path formatting. They do not perform command substitution."
       },
       {
         "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 59 formats HOME and CODEX_HOME paths with Markdown backticks. No backtick command substitution or process launch occurs."
+        "reason": "Line 59 formats HOME and CODEX_HOME paths as inline Markdown code. It contains no executable backtick construct."
       },
       {
         "id": "external_commands:SKILL.md:62:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.98,
-        "reason": "The cited shell block changes environment paths, creates directories, and runs a global npx installation. These commands modify local agent state.",
+        "confidence": 0.96,
+        "reason": "The cited shell block changes agent state paths, creates directories, and executes an unpinned npm installer with automatic confirmation. These are real system-changing commands.",
         "severity": "medium"
       },
       {
         "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.94,
-        "reason": "The cited range instructs agents to run the luxin feedback CLI command. This is a real external command that may contact the hosted service.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "Line 67 is only a closing Markdown code fence. It is not Ruby or shell backtick execution."
       },
       {
         "id": "network:SKILL.md:5:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "This is an HTTPS homepage in skill metadata. It does not initiate a request or include credentials."
+        "reason": "This is the declared Luxin homepage in skill metadata. The URL alone does not initiate a network request or expose data."
       },
       {
         "id": "network:SKILL.md:6:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "This is an HTTPS documentation URL in metadata. A static public documentation link is not dangerous by itself."
+        "reason": "This metadata value links to the skill's expected documentation domain. It does not itself perform a request."
       },
       {
         "id": "network:SKILL.md:10:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The canonical skill URL is descriptive metadata using HTTPS. No automatic retrieval or sensitive query data appears here."
+        "confidence": 0.99,
+        "reason": "The canonical skill URL is descriptive metadata on the declared Luxin domain. No automatic retrieval or sensitive transmission appears on this line."
       },
       {
         "id": "network:SKILL.md:11:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The URL identifies the documented hosted API over HTTPS. The literal endpoint alone is not a vulnerability, although hosted processing creates a separate disclosure risk."
+        "confidence": 0.98,
+        "reason": "The canonical API URL identifies the hosted service required by this skill. This line declares an endpoint but does not execute a request."
       },
       {
         "id": "network:SKILL.md:73:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "This is a public HTTPS reference link to the skill contract. It contains no secret or executable request."
+        "reason": "This is a documentation link to the canonical skill contract. It does not trigger network activity."
       },
       {
         "id": "network:SKILL.md:74:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "This line is a public HTTPS documentation reference. It does not cause network access by itself."
+        "reason": "This is a documentation link to the LLM contract on the declared service domain. It does not trigger network activity."
       },
       {
         "id": "network:SKILL.md:75:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "This line links to the public CLI contract over HTTPS. No credentials or unsafe protocol are present."
+        "reason": "This is a documentation link to the CLI contract on the declared service domain. It does not trigger network activity."
       },
       {
         "id": "network:SKILL.md:76:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "This is a documented HTTPS API endpoint rather than an active request. Actual hosted data transfer is addressed separately as a semantic finding."
+        "confidence": 0.98,
+        "reason": "This line identifies the hosted Luxin API expected by the skill. The reference itself does not send credentials or user data."
       },
       {
         "id": "filesystem:SKILL.md:59:hidden-file-access",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 59 only names HOME and CODEX_HOME storage paths. It does not read, write, or enumerate a hidden file."
+        "reason": "Line 59 describes agent state paths in Markdown. It does not read or write a hidden file."
       },
       {
         "id": "filesystem:SKILL.md:63:hidden-file-access",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This export redirects HOME to a new workspace-local directory. It does not access an existing hidden file or unrelated user data."
+        "confidence": 0.96,
+        "reason": "The command redirects HOME to a new workspace-local directory for isolated writable state. It does not access an existing hidden file or secret."
       },
       {
         "id": "filesystem:SKILL.md:64:hidden-file-access",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "This export sets CODEX_HOME beneath the new workspace-local HOME. It configures an isolated state path rather than reading hidden data."
+        "confidence": 0.96,
+        "reason": "The command sets CODEX_HOME beneath the newly isolated workspace HOME. It does not read a pre-existing hidden file or credential store."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Remote-Supplied Command Execution",
-        "description": "The skill directs agents to run data.next_command returned by Luxin when a service-provided flag is true. No local command or argument validation is required.",
-        "severity": "high",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 28,
-            "line_end": 28
-          }
-        ],
-        "confidence": 0.95,
-        "confidence_reasoning": "Line 28 explicitly delegates command selection and run permission to hosted response fields. A compromised or manipulated response could execute unintended shell actions."
-      },
-      {
-        "title": "Hosted Image and Prompt Disclosure",
-        "description": "The workflow uploads image inputs and prompts to Luxin and returns durable hosted media. Sensitive content therefore leaves the local environment and may persist remotely.",
+        "title": "Third-Party Image Upload and Durable Hosting",
+        "description": "The skill directs agents to upload input images and keep generated work in Luxin, creating external disclosure and retention risk for sensitive media.",
         "severity": "medium",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 24,
-            "line_end": 24
+            "line_start": 4,
+            "line_end": 4
           },
-          {
-            "file": "SKILL.md",
-            "line_start": 38,
-            "line_end": 40
-          }
-        ],
-        "confidence": 0.96,
-        "confidence_reasoning": "The source describes durable hosted media and provides a hosted edit command with image input and prompt arguments. Remote processing is central to the workflow."
-      }
-    ],
-    "critical_findings": [],
-    "high_findings": [
-      {
-        "title": "Remote-Supplied Command Execution",
-        "description": "The skill directs agents to run data.next_command returned by Luxin when a service-provided flag is true. No local command or argument validation is required.",
-        "locations": [
           {
             "file": "SKILL.md",
             "line_start": 28,
             "line_end": 28
           }
         ],
-        "review_kind": "security",
-        "source_category": "semantic",
-        "source_severity": "high",
-        "confidence": 0.95,
-        "confidence_reasoning": "Line 28 explicitly delegates command selection and run permission to hosted response fields. A compromised or manipulated response could execute unintended shell actions."
+        "confidence": 0.98,
+        "confidence_reasoning": "Line 4 explicitly describes uploading images and durable hosted assets, while line 28 directs agents to keep generated work in Luxin."
       }
     ],
+    "critical_findings": [],
+    "high_findings": [],
     "medium_findings": [
       {
         "title": "Ruby/shell backtick execution",
@@ -670,8 +636,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.98,
-        "confidence_reasoning": "The cited block runs npx with luxin-cli@latest and automatic confirmation. This downloads and executes an unpinned external package."
+        "confidence": 0.96,
+        "confidence_reasoning": "The cited block instructs the agent to run npx with automatic approval against luxin-cli@latest. This downloads and executes mutable remote package code."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -686,8 +652,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.98,
-        "confidence_reasoning": "The cited block instructs agents to run the hosted image-edit command through npx with an unpinned latest package. That is real external code execution."
+        "confidence": 0.96,
+        "confidence_reasoning": "The cited block runs the unpinned luxin-cli@latest package through npx with automatic approval. Package changes can execute on the user's system."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -702,8 +668,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.98,
-        "confidence_reasoning": "The cited block runs npx skills add with global and automatic confirmation options. It executes external package code and changes global agent state."
+        "confidence": 0.94,
+        "confidence_reasoning": "The command invokes an unpinned npm installer with global scope and automatic confirmation. It can execute remote package code and modify global skill state."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -718,8 +684,8 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.98,
-        "confidence_reasoning": "The cited block runs npx skills add globally with automatic confirmation. This is an external command with persistent installation effects."
+        "confidence": 0.94,
+        "confidence_reasoning": "The documented npx command executes an unpinned installer with global scope and automatic confirmation. This creates package supply-chain and filesystem modification risk."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -734,45 +700,29 @@
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.98,
-        "confidence_reasoning": "The cited shell block changes environment paths, creates directories, and runs a global npx installation. These commands modify local agent state."
+        "confidence": 0.96,
+        "confidence_reasoning": "The cited shell block changes agent state paths, creates directories, and executes an unpinned npm installer with automatic confirmation. These are real system-changing commands."
       },
       {
-        "title": "Ruby/shell backtick execution",
-        "description": "```",
+        "title": "Third-Party Image Upload and Durable Hosting",
+        "description": "The skill directs agents to upload input images and keep generated work in Luxin, creating external disclosure and retention risk for sensitive media.",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 67,
-            "line_end": 78
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.94,
-        "confidence_reasoning": "The cited range instructs agents to run the luxin feedback CLI command. This is a real external command that may contact the hosted service."
-      },
-      {
-        "title": "Hosted Image and Prompt Disclosure",
-        "description": "The workflow uploads image inputs and prompts to Luxin and returns durable hosted media. Sensitive content therefore leaves the local environment and may persist remotely.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 24,
-            "line_end": 24
+            "line_start": 4,
+            "line_end": 4
           },
           {
             "file": "SKILL.md",
-            "line_start": 38,
-            "line_end": 40
+            "line_start": 28,
+            "line_end": 28
           }
         ],
         "review_kind": "security",
         "source_category": "semantic",
         "source_severity": "medium",
-        "confidence": 0.96,
-        "confidence_reasoning": "The source describes durable hosted media and provides a hosted edit command with image input and prompt arguments. Remote processing is central to the workflow."
+        "confidence": 0.98,
+        "confidence_reasoning": "Line 4 explicitly describes uploading images and durable hosted assets, while line 28 directs agents to keep generated work in Luxin."
       }
     ],
     "low_findings": [],
@@ -780,125 +730,129 @@
     "files_scanned": 1,
     "total_lines": 79,
     "audit_model": "codex",
-    "audited_at": "2026-07-13T19:10:54.095Z",
-    "agent_auto_install_policy": "confirmation_required",
+    "audited_at": "2026-07-14T23:04:16.936Z",
+    "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Edit Images Through a Hosted AI Runtime",
-    "value_statement": "Image editing often requires provider accounts, credentials, and local model infrastructure. This skill guides hosted edits through Luxin with cost controls and recoverable results.",
+    "user_title": "Edit Existing Images with Luxin",
+    "value_statement": "Configuring image-editing providers and local runtimes takes time. This skill guides hosted edits with reusable inputs, spending limits, durable results, and recoverable jobs.",
     "seo_keywords": [
       "Claude image editing",
       "Codex image editing",
-      "Claude Code image editing",
-      "AI image editor",
+      "Claude Code image skill",
+      "Luxin image edit",
+      "AI image transformation",
       "image-to-image editing",
-      "Luxin CLI",
-      "hosted image generation",
-      "GPT Image editing",
-      "agent image workflow"
+      "hosted image editing",
+      "generative image repair",
+      "image variation tool"
     ],
     "actual_capabilities": [
-      "Guides image-to-image edits, variations, restyling, transformation, and repair.",
-      "Uses the hosted Luxin runtime without requiring provider API credentials.",
-      "Accepts an existing hosted image identifier with a natural-language edit prompt.",
-      "Supports a maximum estimated cost per image in the documented edit command.",
-      "Requests structured results with hosted assets, recoverable jobs, and cost receipts.",
-      "Provides a feedback command for reporting missing models or capabilities."
+      "Guides image edits through the hosted Luxin runtime.",
+      "Supports variations, restyling, transformations, and repairs of existing images.",
+      "Accepts an uploaded or previously hosted image as the edit input.",
+      "Applies model-specific edit prompts and parameters.",
+      "Limits estimated spending per generated image.",
+      "Returns hosted assets, recoverable jobs, and cost receipts."
     ],
     "limitations": [
-      "The workflow requires internet access and availability of the Luxin hosted service.",
-      "Images and prompts leave the local environment and may persist as hosted assets.",
-      "Creation may consume Luxin credits, even when a maximum estimated cost is specified.",
-      "Available models, latency, policies, and payment options depend on Luxin."
+      "Requires network access to the Luxin hosted service.",
+      "Sends input images and prompts to a third-party service.",
+      "May require Luxin credits and explicit permission before spending.",
+      "Model availability, latency, policies, and supported edit features can vary."
     ],
     "use_cases": [
       {
-        "title": "Restyle a Campaign Image",
-        "description": "Change an existing image style while preserving the main subject and composition.",
-        "target_user": "Graphic designers"
+        "title": "Revise Product Photography",
+        "description": "Replace backgrounds or repair visual details while preserving the main product.",
+        "target_user": "E-commerce designers"
       },
       {
-        "title": "Create Product Asset Variations",
-        "description": "Generate controlled alternatives from an existing product image for interface or catalog testing.",
-        "target_user": "Product developers"
+        "title": "Create Campaign Variations",
+        "description": "Generate controlled style and composition variations from an approved source image.",
+        "target_user": "Marketing teams"
       },
       {
-        "title": "Repair Published Visuals",
-        "description": "Remove defects or replace backgrounds without configuring a separate image provider.",
-        "target_user": "Content teams"
+        "title": "Prototype Image Transformations",
+        "description": "Test image-conditioned prompts, models, and spending limits without configuring provider accounts.",
+        "target_user": "AI application developers"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Make a Simple Edit",
-        "prompt": "Edit image [IMAGE_ID]. Replace the background with [BACKGROUND] while keeping the subject unchanged.",
-        "scenario": "A beginner needs one focused background change."
+        "title": "Simple Background Edit",
+        "prompt": "Edit [input image] by replacing the background with [description]. Keep the main subject unchanged and limit estimated cost to [amount].",
+        "scenario": "A beginner needs one focused image change."
       },
       {
-        "title": "Restyle an Existing Image",
-        "prompt": "Restyle image [IMAGE_ID] as [STYLE]. Preserve the subject, pose, framing, and important text.",
-        "scenario": "A user wants a visual style change with clear preservation rules."
+        "title": "Repair an Image",
+        "prompt": "Repair [problem area] in [input image]. Preserve [important details], match the existing lighting, and return the hosted result with its cost receipt.",
+        "scenario": "A user needs a natural correction without changing the full composition."
       },
       {
-        "title": "Repair With Detailed Constraints",
-        "prompt": "Repair image [IMAGE_ID]. Fix [DEFECTS], preserve [REQUIRED_DETAILS], avoid [UNWANTED_CHANGES], and keep the original dimensions.",
-        "scenario": "A production asset needs precise repairs and exclusions."
+        "title": "Generate Controlled Variations",
+        "prompt": "Create [number] variations of [input image] using [style]. Preserve [fixed elements], vary [allowed elements], and stay within [budget] per image.",
+        "scenario": "A team needs comparable creative options."
       },
       {
-        "title": "Run a Controlled Hosted Workflow",
-        "prompt": "Inspect the edit model for image [IMAGE_ID]. Estimate cost, require approval before spending, apply [EDIT], and return the asset link and receipt.",
-        "scenario": "An advanced user needs model inspection, cost control, and recoverable output."
+        "title": "Run a Model-Specific Transformation",
+        "prompt": "Inspect the available edit model for [goal], reuse [hosted input], apply [parameters], enforce [budget], and report assets, job status, and costs.",
+        "scenario": "An advanced user needs a constrained and recoverable workflow."
       }
     ],
     "output_examples": [
       {
-        "input": "Replace the office background in image_123 with a bright studio. Keep the person and clothing unchanged.",
-        "output": "The edited image is available at the hosted asset link. The subject remains unchanged, and the background is now a bright studio."
+        "input": "Replace the office background with a clean studio wall while preserving the person.",
+        "output": "The edited image is hosted and ready. The person remains unchanged, the background is replaced, and the job includes a cost receipt."
       },
       {
-        "input": "Repair scratches in image_456 and preserve its original colors and dimensions.",
+        "input": "Create three watercolor variations while preserving the building shape.",
         "output": [
-          "The scratches were repaired while retaining the original color treatment.",
-          "The output dimensions match the source image.",
-          "A hosted asset link and cost receipt are available."
+          "Three hosted variations were created.",
+          "The building silhouette is preserved in each result.",
+          "The job can be recovered later with its recorded costs."
         ]
+      },
+      {
+        "input": "Repair scratches in this scanned photograph without changing faces.",
+        "output": "The repaired image is hosted. Visible scratches are reduced, facial details are preserved, and the result includes job and cost information."
       }
     ],
     "best_practices": [
-      "State exactly what must change and what must remain unchanged.",
-      "Review estimated cost and require approval before any paid creation step.",
-      "Use non-sensitive images and confirm hosted retention terms before upload."
+      "Describe the exact region to change and the details to preserve.",
+      "Run the no-spend guide before approving any media charge.",
+      "Set a clear per-image spending limit for every edit."
     ],
     "anti_patterns": [
-      "Do not upload confidential images without permission and an approved retention policy.",
-      "Do not execute service-provided commands without validating their command and arguments.",
-      "Do not use vague prompts when identity, text, dimensions, or composition must remain stable."
+      "Do not upload confidential images without reviewing Luxin privacy and retention terms.",
+      "Do not run suggested spending commands without explicit user approval.",
+      "Do not use vague prompts that omit required preserved elements."
     ],
     "faq": [
       {
-        "question": "Does this skill require an image provider API key?",
-        "answer": "No provider API key is required. The workflow uses a hosted Luxin identity and credit balance."
+        "question": "Does this skill require provider API keys?",
+        "answer": "No. It uses the hosted Luxin runtime instead of direct provider credentials."
       },
       {
-        "question": "Can it edit a local image path directly?",
-        "answer": "The documented edit command expects a Luxin image identifier. Upload or reuse an input image before editing."
+        "question": "Can it edit an existing image?",
+        "answer": "Yes. It supports image-to-image edits, variations, restyling, transformations, and repairs."
       },
       {
-        "question": "Can an edit cost money?",
-        "answer": "Yes. Creation may consume Luxin credits, and the command supports a maximum estimated cost per image."
+        "question": "Can I control spending?",
+        "answer": "Yes. Use the guide first, require spending approval, and set a maximum estimated cost per image."
       },
       {
-        "question": "Where are edited images stored?",
-        "answer": "The skill describes durable hosted media URLs. Review Luxin retention and access terms before using sensitive content."
+        "question": "Where are results stored?",
+        "answer": "Luxin returns durable hosted media and recoverable job records."
       },
       {
-        "question": "Which edit model does the example use?",
-        "answer": "The examples use openai.gpt-image-2-edit through the Luxin CLI."
+        "question": "Does it work offline?",
+        "answer": "No. The skill depends on the hosted Luxin service and requires network access."
       },
       {
         "question": "What happens when Luxin lacks a required capability?",
-        "answer": "Use a fallback only for the missing capability. The skill also documents a feedback command for reporting the gap."
+        "answer": "Use a fallback only for the missing capability, then submit structured feedback about the gap."
       }
     ]
   },
