@@ -1,6 +1,6 @@
 ---
-skill_id: 2073
 name: zhuangxiu-huanbao-bikeng
+skill_id: 2073
 identifier: zhuangxiu-huanbao-bikeng
 slug: zhuangxiu-huanbao-bikeng
 description: 【装修环保必看】你担心装修污染吗？怕甲醛超标、不知道环保材料怎么选、被甲醛治理公司忽悠、搞不懂E0/ENF级？这个Skill内置装修课堂知识库，直接教你环保真相——问甲醛、问板材环保、问乳胶漆、问壁纸壁布、问甲醛治理、问通风方法，全部覆盖。适合担心装修污染、有孩子/老人要入住、想装出健康家的业主。
@@ -133,3 +133,5 @@ trigger:
 | 为什么大品牌也超标 | 污染认知与真相.md |
 | 装修完多久能住 | 污染认知与真相.md |
 | 装修污染严重超标怎么办 | 污染认知与真相.md |
+
+<!-- Marketplace provenance: source=https://github.com/zx029w/zhuangxiu-skills/tree/main/装修环保避坑 ref=main@193635b0d16d8ce06b7ddc2bf6e2a2404ec751a8 reviewed-pr=#2604 recovery=freeze-complete-artifact -->
