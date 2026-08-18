@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-08-13T10:28:17.078Z",
+    "generated_at": "2026-08-13T08:54:04.375Z",
     "slug": "supercmohq-generating-product-photos",
     "source_url": "https://github.com/supercmohq/supercmo-skills/tree/d7094d329f15c7e6c73f1db7f83665c684461672/skills/generating-product-photos",
     "source_ref": "d7094d329f15c7e6c73f1db7f83665c684461672",
@@ -28,19 +28,18 @@
   },
   "skill": {
     "name": "generating-product-photos",
-    "description": "Creates commercial product photography from a product image or URL. It supports studio, lifestyle, campaign, on-model, close-up, flat-lay, seasonal, infographic, creative, and floating compositions.",
-    "summary": "Plan and generate consistent commercial product images across ten photography modes.",
+    "description": "Creates commercial product photography prompts and generated images from a product reference, supporting studio, lifestyle, hero, on-model, close-up, flat-lay, seasonal, infographic, creative, and floating formats.",
+    "summary": "Directs consistent commercial product images across ten photography modes.",
     "icon": "📦",
     "version": "0.2.0",
     "author": "supercmohq",
     "license": "Apache-2.0",
-    "category": "design",
     "tags": [
       "product-photography",
       "image-generation",
-      "commercial-imagery",
       "art-direction",
-      "ecommerce"
+      "commercial-imagery",
+      "creative-production"
     ],
     "supported_tools": [
       "claude",
@@ -49,15 +48,22 @@
     ],
     "risk_factors": [
       "external_commands"
-    ]
+    ],
+    "category": "design"
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "high",
     "is_blocked": false,
-    "safe_to_publish": true,
+    "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "All 48 static findings are false positives caused by ordinary prose or Markdown code formatting. No shell execution, system reconnaissance, prompt injection, or other semantic security risk was found.",
-    "remediation": [],
+    "summary": "All 48 static findings are false positives caused by Markdown formatting and ordinary photography prose. One high-severity semantic finding remains: the skill instructs agents to reframe and switch models after safety or policy rejection.",
+    "remediation": [
+      {
+        "issue": "The failure workflow retries safety or policy rejections with a stand-in and another image model.",
+        "suggestion": "Stop after a safety or policy rejection. Explain the limitation and request a clearly compliant alternative without switching providers to bypass the decision.",
+        "severity": "high"
+      }
+    ],
     "risk_factor_evidence": [
       {
         "factor": "external_commands",
@@ -742,423 +748,456 @@
         "id": "blocker:references/mode-creative.md:5:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line describes commercial placements for creative product photography. It contains no system inspection or reconnaissance instruction."
+        "reason": "The line describes creative photography used for key art, paid social, and out-of-home media. It contains no system discovery or reconnaissance instruction."
       },
       {
         "id": "blocker:references/mode-flat-lay.md:9:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line defines knolling as grid-aligned flat-lay photography. It does not inspect or enumerate system resources."
+        "reason": "The line defines knolling as a flat-lay arrangement aligned to a grid. This is photography terminology, not system reconnaissance."
       },
       {
         "id": "blocker:references/mode-floating.md:50:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line gives composition guidance for floating props and shadows. It contains no system or environment discovery behavior."
+        "reason": "The line gives visual composition guidance for floating companion props. It does not inspect a host, environment, network, or system."
       },
       {
         "id": "blocker:references/mode-studio.md:10:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line explains where a product packshot is used. It has no relationship to system reconnaissance."
+        "reason": "The line defines a packshot and its marketplace uses. It contains no request to discover system information."
       },
       {
         "id": "blocker:references/photographic-craft.md:33:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line preserves a product's physical state between generated images. It does not query system state."
+        "reason": "The line preserves the photographed product state across generated frames. The word pattern is ordinary prose and does not direct system inspection."
       },
       {
         "id": "blocker:references/photographic-craft.md:131:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line advises omitting unrequested text from image prompts. It contains no reconnaissance instruction."
+        "reason": "The line advises omitting text instructions when the user did not request text. This concerns image composition, not system reconnaissance."
       },
       {
         "id": "blocker:references/photographic-craft.md:136:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 1,
-        "reason": "The finding points to a Markdown heading for paid media. The heading has no executable or reconnaissance content."
+        "confidence": 0.99,
+        "reason": "This line is only the Markdown heading for paid-media photography guidance. It has no executable or reconnaissance behavior."
       },
       {
         "id": "external_commands:SKILL.md:14:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format the image_generate tool name as inline Markdown. They are not Ruby or shell command substitution."
+        "reason": "Backticks format the image_generate tool name in Markdown. The line invokes an expected image-generation capability and contains no Ruby or shell execution syntax."
       },
       {
         "id": "external_commands:SKILL.md:21:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks identify the analyzing-products skill in prose. No shell interpreter or command execution is involved."
+        "reason": "Backticks format the analyzing-products skill name in Markdown. The line describes a product-analysis workflow, not a command passed to a shell."
       },
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks identify the image_analysis tool in prose. The line describes normal image inspection, not shell execution."
+        "reason": "Backticks format the image_analysis tool name in Markdown. There is no backtick command substitution or user-controlled shell input."
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a relative reference file path in a Markdown table. The path is not executed."
+        "reason": "Backticks delimit a local Markdown reference path in a routing table. The text neither executes the path nor invokes a shell."
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a relative reference file path in a Markdown table. The path is not executed."
+        "reason": "Backticks delimit a local Markdown reference path in a routing table. The text neither executes the path nor invokes a shell."
       },
       {
         "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a relative reference file path in a Markdown table. The path is not executed."
+        "reason": "Backticks delimit a local Markdown reference path in a routing table. The text neither executes the path nor invokes a shell."
       },
       {
         "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a relative reference file path in a Markdown table. The path is not executed."
+        "reason": "Backticks delimit a local Markdown reference path in a routing table. The text neither executes the path nor invokes a shell."
       },
       {
         "id": "external_commands:SKILL.md:60:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a relative reference file path in a Markdown table. The path is not executed."
+        "reason": "Backticks delimit a local Markdown reference path in a routing table. The text neither executes the path nor invokes a shell."
       },
       {
         "id": "external_commands:SKILL.md:61:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a relative reference file path in a Markdown table. The path is not executed."
+        "reason": "Backticks delimit a local Markdown reference path in a routing table. The text neither executes the path nor invokes a shell."
       },
       {
         "id": "external_commands:SKILL.md:62:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a relative reference file path in a Markdown table. The path is not executed."
+        "reason": "Backticks delimit a local Markdown reference path in a routing table. The text neither executes the path nor invokes a shell."
       },
       {
         "id": "external_commands:SKILL.md:63:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a relative reference file path in a Markdown table. The path is not executed."
+        "reason": "Backticks delimit a local Markdown reference path in a routing table. The text neither executes the path nor invokes a shell."
       },
       {
         "id": "external_commands:SKILL.md:64:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a relative reference file path in a Markdown table. The path is not executed."
+        "reason": "Backticks delimit a local Markdown reference path in a routing table. The text neither executes the path nor invokes a shell."
       },
       {
         "id": "external_commands:SKILL.md:65:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a relative reference file path in a Markdown table. The path is not executed."
+        "reason": "Backticks delimit a local Markdown reference path in a routing table. The text neither executes the path nor invokes a shell."
       },
       {
         "id": "external_commands:SKILL.md:109:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format an image model identifier in a Markdown table. They do not invoke a command."
+        "reason": "Backticks format an image-model identifier in a Markdown table. No process, shell, or Ruby interpreter is called."
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format an image model identifier in a Markdown table. They do not invoke a command."
+        "reason": "Backticks format an image-model identifier in a Markdown table. No process, shell, or Ruby interpreter is called."
       },
       {
         "id": "external_commands:SKILL.md:111:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format an image model identifier in a Markdown table. They do not invoke a command."
+        "reason": "Backticks format an image-model identifier in a Markdown table. No process, shell, or Ruby interpreter is called."
       },
       {
         "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a local reference file path that the agent reads as documentation. No external command is executed."
+        "reason": "Backticks format a local reference filename that the agent should read. This is documentation access, not external command execution."
       },
       {
         "id": "external_commands:SKILL.md:124:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a local reference file path in prompt-writing guidance. No shell execution occurs."
+        "reason": "Backticks format a local reference filename used for prompt guidance. This is documentation access, not external command execution."
       },
       {
         "id": "external_commands:SKILL.md:148:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format image_generate and its requests parameter. This is a documented tool call, not shell command substitution."
+        "reason": "Backticks format the image_generate tool and requests field names. The line describes a structured tool call, with no shell command or interpolation."
       },
       {
         "id": "external_commands:SKILL.md:150:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format image-generation request field names. The line contains no executable shell syntax."
+        "reason": "Backticks format structured image-request field names. They are data keys, not commands or command substitutions."
       },
       {
         "id": "external_commands:SKILL.md:151:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format the reference_images request field. The line only requires attaching the user's product photo."
+        "reason": "Backticks format the reference_images request field. The line passes the user-provided product photo to the expected image tool, not a shell."
       },
       {
         "id": "external_commands:SKILL.md:166:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a tool name and request fields in API guidance. No operating-system command is invoked."
+        "reason": "Backticks format the list_image_models tool and parameter names. This is an expected schema-discovery tool call, not operating-system command execution."
       },
       {
         "id": "external_commands:SKILL.md:167:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format the reference_images field name. The line discusses validation limits, not command execution."
+        "reason": "Backticks format the reference_images parameter name. No shell command, subprocess, or dynamic execution is present."
       },
       {
         "id": "external_commands:SKILL.md:169:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a pending status example and tool names. The described polling uses an image service tool, not a shell."
+        "reason": "Backticks format a pending-status example and image-tool names. The workflow polls a documented job handle and does not invoke a shell."
       },
       {
         "id": "external_commands:SKILL.md:213:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format an image model identifier used after a generation refusal. They are not an execution operator."
+        "reason": "Backticks format an image-model identifier. Although the surrounding safety-retry guidance is addressed separately, this static shell pattern is false."
       },
       {
         "id": "external_commands:SKILL.md:216:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format the reference_images field in error-handling guidance. No command is present."
+        "reason": "Backticks format the reference_images request field. The line advises respecting a tool-reported count limit and contains no command execution."
       },
       {
         "id": "external_commands:SKILL.md:217:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a provider error and hint field. The instruction relays configuration guidance without reading credentials."
+        "reason": "Backticks format an error value and hint field. The line tells the agent to relay a configuration error, not execute external code."
       },
       {
         "id": "external_commands:SKILL.md:223:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a local Markdown reference path. The entry summarizes photography guidance and is not executable."
+        "reason": "Backticks delimit a local Markdown reference path in a documentation index. It is not an executable command."
       },
       {
         "id": "external_commands:SKILL.md:224:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a local Markdown reference path. The entry summarizes photography guidance and is not executable."
+        "reason": "Backticks delimit a local Markdown reference path in a documentation index. It is not an executable command."
       },
       {
         "id": "external_commands:SKILL.md:225:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a local Markdown reference path. The entry summarizes photography guidance and is not executable."
+        "reason": "Backticks delimit a local Markdown reference path in a documentation index. It is not an executable command."
       },
       {
         "id": "external_commands:SKILL.md:226:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a local Markdown reference path. The entry summarizes photography guidance and is not executable."
+        "reason": "Backticks delimit a local Markdown reference path in a documentation index. It is not an executable command."
       },
       {
         "id": "external_commands:SKILL.md:227:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a local Markdown reference path. The entry summarizes photography guidance and is not executable."
+        "reason": "Backticks delimit a local Markdown reference path in a documentation index. It is not an executable command."
       },
       {
         "id": "external_commands:SKILL.md:228:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a local Markdown reference path. The entry summarizes photography guidance and is not executable."
+        "reason": "Backticks delimit a local Markdown reference path in a documentation index. It is not an executable command."
       },
       {
         "id": "external_commands:SKILL.md:229:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a local Markdown reference path. The entry summarizes photography guidance and is not executable."
+        "reason": "Backticks delimit a local Markdown reference path in a documentation index. It is not an executable command."
       },
       {
         "id": "external_commands:SKILL.md:230:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a local Markdown reference path. The entry summarizes photography guidance and is not executable."
+        "reason": "Backticks delimit a local Markdown reference path in a documentation index. It is not an executable command."
       },
       {
         "id": "external_commands:SKILL.md:231:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a local Markdown reference path. The entry summarizes photography guidance and is not executable."
+        "reason": "Backticks delimit a local Markdown reference path in a documentation index. It is not an executable command."
       },
       {
         "id": "external_commands:SKILL.md:232:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a local Markdown reference path. The entry summarizes photography guidance and is not executable."
+        "reason": "Backticks delimit a local Markdown reference path in a documentation index. It is not an executable command."
       },
       {
         "id": "external_commands:SKILL.md:236:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format a local Markdown reference path. The line directs reading photography documentation, not running a command."
+        "reason": "Backticks delimit a local Markdown reference path in a documentation index. It is not an executable command."
       },
       {
         "id": "blocker:SKILL.md:123:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line specifies the order of sections in an image-generation prompt. It contains no system reconnaissance."
+        "reason": "The line specifies the order of prompt sections for image generation. It does not collect or expose system information."
       },
       {
         "id": "blocker:SKILL.md:135:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line explains how to express visual exclusions in a prompt. It does not inspect the host or environment."
+        "reason": "The line explains where image-generation exclusions belong because the tool lacks a negative-prompt parameter. This is prompt-writing guidance, not reconnaissance."
       },
       {
         "id": "blocker:SKILL.md:237:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line lists topics covered by the photography reference. It includes no system discovery or command."
+        "reason": "The line indexes photography topics in a local reference document. It does not instruct the agent to inspect the operating environment."
       }
     ],
-    "semantic_findings": [],
+    "semantic_findings": [
+      {
+        "title": "Safety Rejection Bypass Workflow",
+        "description": "After a safety or policy rejection, the skill directs the agent to use a stand-in, resubmit, and then switch models. This can circumvent a provider safety decision instead of stopping or seeking compliant clarification.",
+        "severity": "high",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 212,
+            "line_end": 213
+          }
+        ],
+        "confidence": 0.98,
+        "confidence_reasoning": "The retry sequence is explicit and specifically triggered by a safety or policy rejection. Switching the framing and model provides a clear bypass path."
+      }
+    ],
     "critical_findings": [],
-    "high_findings": [],
+    "high_findings": [
+      {
+        "title": "Safety Rejection Bypass Workflow",
+        "description": "After a safety or policy rejection, the skill directs the agent to use a stand-in, resubmit, and then switch models. This can circumvent a provider safety decision instead of stopping or seeking compliant clarification.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 212,
+            "line_end": 213
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "high",
+        "confidence": 0.98,
+        "confidence_reasoning": "The retry sequence is explicit and specifically triggered by a safety or policy rejection. Switching the framing and model provides a clear bypass path."
+      }
+    ],
     "medium_findings": [],
     "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 13,
     "total_lines": 1195,
     "audit_model": "codex",
-    "audited_at": "2026-08-13T10:28:17.078Z",
-    "agent_auto_install_policy": "allowed",
+    "audited_at": "2026-08-13T08:54:04.375Z",
+    "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Create Consistent Commercial Product Photos",
-    "value_statement": "Generic image prompts often distort products and produce inconsistent campaign assets. This skill converts product references and briefs into structured commercial photography workflows.",
+    "user_title": "Generate Commercial Product Photos",
+    "value_statement": "Creating consistent product imagery requires careful control of identity, lighting, composition, and output format. This skill analyzes a reference and directs generation across ten commercial photography modes.",
     "seo_keywords": [
-      "Claude",
-      "Codex",
-      "Claude Code",
-      "AI product photography",
-      "commercial image generation",
-      "ecommerce packshots",
-      "lifestyle product photos",
-      "product photo prompts",
-      "campaign imagery",
-      "visual brand consistency"
+      "Claude product photography",
+      "Codex image generation",
+      "Claude Code creative workflow",
+      "AI product photos",
+      "commercial photography prompts",
+      "studio packshot generator",
+      "lifestyle product images",
+      "product image art direction",
+      "ecommerce product photography",
+      "campaign image generation"
     ],
     "actual_capabilities": [
-      "Analyzes a supplied product image or URL before planning a shoot.",
-      "Routes briefs across ten modes, including studio, lifestyle, close-up, infographic, and floating shots.",
-      "Builds prompts with product fidelity, composition, lighting, optics, and exclusion guidance.",
-      "Selects image models according to layout, text, and fallback requirements.",
-      "Plans multi-image sets with consistent references, models, palettes, lighting, and camera direction."
+      "Analyzes a supplied product image before composing generation prompts.",
+      "Routes requests across ten formats, including studio, lifestyle, hero, flat-lay, infographic, and on-model photography.",
+      "Preserves product shape, color, label, texture, design, and physical state through reference-image instructions.",
+      "Specifies lighting, shadows, optics, materials, composition, and color using commercial photography language.",
+      "Builds coordinated multi-image sets with consistent references, models, palettes, lighting, and camera choices.",
+      "Selects image models and request settings based on text, layout, fallback, crop, and resolution needs."
     ],
     "limitations": [
-      "Requires an available image-generation tool and configured provider.",
-      "Cannot guarantee exact labels, typography, materials, or geometry in generated outputs.",
-      "Does not build marketplace listing galleries or photograph non-product subjects.",
-      "Does not independently regenerate or evaluate billed outputs without user direction."
+      "A source photo is required for reliable product identity and packaging fidelity.",
+      "Generated labels, hands, faces, reflections, and fine geometry may still contain image-model errors.",
+      "Each generated frame can incur provider charges, and automatic quality regeneration is intentionally limited.",
+      "Marketplace listing galleries and images without a product subject are outside the supported scope."
     ],
     "use_cases": [
       {
         "title": "Build Ecommerce Packshots",
-        "description": "Create clean studio images that preserve product shape, color, materials, and packaging details.",
-        "target_user": "Ecommerce managers"
+        "description": "Create consistent studio views with accurate color, controlled backgrounds, sharp detail, and grounded shadows for product pages.",
+        "target_user": "Ecommerce merchandisers"
       },
       {
-        "title": "Plan Campaign Image Sets",
-        "description": "Develop coordinated hero, lifestyle, close-up, and seasonal frames with a consistent visual direction.",
-        "target_user": "Brand marketers"
+        "title": "Develop Campaign Visuals",
+        "description": "Plan hero, lifestyle, seasonal, and creative frames around a shared product reference and brand direction.",
+        "target_user": "Brand marketing teams"
       },
       {
         "title": "Produce Client Concepts",
-        "description": "Translate a client brief into production-ready compositions, lighting choices, crops, and image-generation prompts.",
+        "description": "Translate a creative brief into production-ready photography prompts with defined lighting, optics, staging, and crops.",
         "target_user": "Designers and creative agencies"
       }
     ],
     "prompt_templates": [
       {
         "title": "Create a Studio Packshot",
-        "prompt": "Create one studio packshot from this product image. Use a clean background and preserve the product exactly. Use the default aspect ratio.",
-        "scenario": "A beginner needs a simple ecommerce product image."
+        "scenario": "Beginner request for one clean product image",
+        "prompt": "Create one clean studio packshot from the attached product photo. Use a neutral seamless background, accurate color, full-product sharpness, and one natural contact shadow."
       },
       {
-        "title": "Create a Lifestyle Frame",
-        "prompt": "Place this product in a realistic setting for [buyer]. Show its correct use and preserve every visible product detail. Use [aspect ratio].",
-        "scenario": "A marketer needs a product shown in context."
+        "title": "Stage a Lifestyle Scene",
+        "scenario": "Intermediate request with audience and placement context",
+        "prompt": "Create a lifestyle image for [target buyer] using the attached product. Place it in [setting] at [time], with believable use and a [aspect ratio] crop."
       },
       {
-        "title": "Plan a Coordinated Set",
-        "prompt": "Plan [number] product images for [channel]. Include studio, lifestyle, and close-up frames. Keep the same palette, lighting, model, and reference image.",
-        "scenario": "A brand needs a consistent set for a campaign."
+        "title": "Direct an On-Model Image",
+        "scenario": "Detailed request involving casting and product interaction",
+        "prompt": "Create an on-model image for [channel]. Show [casting details] using the attached product through its real physical action, with [wardrobe], [crop], and [lighting]."
       },
       {
-        "title": "Direct an Advanced Campaign",
-        "prompt": "Create a campaign sequence for [product] aimed at [buyer]. Define each frame's purpose, mode, crop, lighting, props, continuity, and requested on-image text.",
-        "scenario": "A creative lead needs detailed art direction across several placements."
+        "title": "Plan a Coordinated Campaign Set",
+        "scenario": "Advanced multi-frame production request",
+        "prompt": "Plan [number] campaign frames for [placements] using one attached product reference. Define each frame, then maintain one palette, lighting setup, model, and camera language throughout."
       }
     ],
     "output_examples": [
       {
-        "input": "Create a clean square packshot from this skincare bottle photo.",
-        "output": "A square studio image with the unchanged bottle centered on a continuous light background, accurate materials, controlled highlights, and a grounded shadow."
+        "input": "Generate a clean studio image of this skincare bottle for a square product page.",
+        "output": "A square three-quarter packshot with a seamless pale-gray sweep, neutral daylight color, full-bottle sharpness, and a soft contact shadow."
       },
       {
-        "input": "Create three coordinated images for a premium coffee launch.",
+        "input": "Create three coordinated summer campaign images for this insulated bottle.",
         "output": [
-          "Hero frame with the package as the brightest subject and open space for approved copy.",
-          "Lifestyle frame showing the package in a credible morning setting.",
-          "Close-up frame emphasizing the package texture and finish."
+          "Hero frame: the bottle stands against a bright coastal palette with controlled side light and clear copy space.",
+          "Lifestyle frame: the same bottle appears beside a beach towel and book under matching daylight.",
+          "Detail frame: a close crop shows the lid material and condensation with the same palette and light direction."
         ]
       },
       {
-        "input": "Show this watch floating above a dark surface.",
-        "output": "A floating product frame with the unchanged watch, visible underside, believable displaced shadow, restrained companion props, and a clear sense of height."
+        "input": "Make a vertical social advertisement with two supplied feature callouts.",
+        "output": "A vertical infographic image that preserves the reference product, places the exact callouts with clear hierarchy, and uses anchored leader lines."
       }
     ],
     "best_practices": [
-      "Supply a clear product image and state which visible details must remain unchanged.",
-      "Specify the destination, aspect ratio, buyer, frame count, and any approved brand guidelines.",
-      "Approve a multi-frame plan before generation because each image may incur a separate charge."
+      "Supply a clear, high-resolution product image and state any required product position or moving-part state.",
+      "Name the destination, aspect ratio, buyer, brand constraints, and number of frames before generation.",
+      "Approve a frame list before generating a set because every frame may create a separate provider charge."
     ],
     "anti_patterns": [
-      "Do not request unsupported product actions or invent moving parts.",
-      "Do not replace visual direction with photographer, publication, or competitor names.",
-      "Do not regenerate a disappointing or pending result without explicit user approval."
+      "Do not describe label text from memory because the image model may redraw it incorrectly.",
+      "Do not mix unrelated settings, lighting styles, or image models within one coordinated set.",
+      "Do not request extra comparison images or retries without explicit approval for additional generation charges."
     ],
     "faq": [
       {
         "question": "Do I need a product photo?",
-        "answer": "A product photo is strongly recommended because it anchors identity. Without one, provide a precise description of form, materials, finish, and moving parts."
+        "answer": "A photo is strongly recommended. Without one, the skill relies on written details and cannot reliably preserve packaging identity."
       },
       {
-        "question": "Which photography modes are supported?",
-        "answer": "The skill supports studio, lifestyle, hero, on-model, close-up, flat-lay, seasonal, infographic, creative, and floating modes."
+        "question": "Which photography formats are supported?",
+        "answer": "It supports studio, lifestyle, hero, on-model, close-up, flat-lay, seasonal, infographic, creative, and floating product images."
       },
       {
         "question": "Can it create several images at once?",
-        "answer": "Yes. It first plans a coordinated frame list, then keeps references, models, palettes, lighting, and camera direction consistent."
+        "answer": "Yes. It first defines the frame list, then keeps references, model choice, palette, lighting, and camera language consistent."
       },
       {
-        "question": "Can it add text to an image?",
-        "answer": "Yes. Provide the exact wording, hierarchy, placement, and letterform character. Generated text may still require correction."
+        "question": "Can it add text and feature callouts?",
+        "answer": "Yes. Infographic mode handles exact supplied wording, visual hierarchy, anchor points, leader lines, and placement."
       },
       {
-        "question": "How does it choose an image model?",
-        "answer": "It uses the default model for most images, a layout-focused model for graphics, and a fallback model after refusals or repeated failures."
+        "question": "How does it preserve the original product?",
+        "answer": "It attaches the same reference image and repeats explicit fidelity instructions for shape, color, label, texture, design, and state."
       },
       {
-        "question": "Will it automatically retry a poor result?",
-        "answer": "No. It returns the result and explains possible issues. A new billed generation requires user direction."
+        "question": "Will it automatically fix a weak result?",
+        "answer": "No. It returns the result for review and avoids unapproved regeneration because each additional image may create another charge."
       }
     ]
   },

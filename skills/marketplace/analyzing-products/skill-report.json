@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-08-13T10:16:15.586Z",
+    "generated_at": "2026-08-13T08:30:42.286Z",
     "slug": "supercmohq-analyzing-products",
     "source_url": "https://github.com/supercmohq/supercmo-skills/tree/d7094d329f15c7e6c73f1db7f83665c684461672/skills/analyzing-products",
     "source_ref": "d7094d329f15c7e6c73f1db7f83665c684461672",
@@ -28,19 +28,18 @@
   },
   "skill": {
     "name": "analyzing-products",
-    "description": "Analyzes an e-commerce URL or product photo to produce factual product details, usage mechanics, visual features, and curated reference images.",
-    "summary": "Turn product pages or photos into consistent facts and generation-ready visual references.",
+    "description": "Normalizes a product into generation-ready facts — from an e-commerce URL (a clean description plus curated product images) or from a photo alone (category, how it's used, its moving/opening parts, and key visual details). Use when a product URL or photo needs turning into inputs for image/video generation, or when another skill needs product facts before generating.",
     "icon": "📦",
     "version": "0.1.0",
     "author": "supercmohq",
     "license": "Apache-2.0",
-    "category": "research",
+    "summary": "Turns product URLs and photos into factual briefs for image and video generation.",
+    "category": "design",
     "tags": [
-      "product-analysis",
-      "ecommerce",
-      "image-analysis",
-      "product-research",
-      "creative-briefs"
+      "product analysis",
+      "e-commerce",
+      "image generation",
+      "creative briefs"
     ],
     "supported_tools": [
       "claude",
@@ -57,11 +56,11 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "All eight static findings are false positives caused by ordinary prose, Markdown code spans, or browser version tokens in a user-agent string. URL mode still presents a medium-risk server-side request forgery concern because it downloads extractor-provided URLs without documented destination validation.",
+    "summary": "All eight static findings are false positives. The matched text is product-analysis prose, Markdown references, or a curl example without a literal hardcoded IP. A separate medium-risk finding remains because the URL workflow downloads extractor-supplied URLs without documented host restrictions.",
     "remediation": [
       {
-        "issue": "Extractor-provided image URLs are downloaded with redirects and no documented destination validation.",
-        "suggestion": "Allow only HTTPS image URLs, resolve and reject private or local addresses, revalidate every redirect, and enforce response size and content-type limits.",
+        "issue": "The URL workflow downloads up to ten extractor-supplied image URLs without documented host or private-network restrictions.",
+        "suggestion": "Allow only HTTPS and approved public hosts, reject loopback and private address ranges after DNS resolution, disable unsafe redirects, and enforce response size and timeout limits.",
         "severity": "medium"
       }
     ],
@@ -194,85 +193,85 @@
         "id": "blocker:references/photo-analysis.md:19:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line asks for a precise product category and gives consumer-product examples. It contains no host, operating-system, network, or environment reconnaissance instruction."
+        "reason": "The line describes precise product categorization, such as lipstick or deodorant form. It does not inspect the host system or gather system information."
       },
       {
         "id": "blocker:references/photo-analysis.md:32:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line describes how product caps and lids open before use. It does not request system information or perform reconnaissance."
+        "reason": "The line explains how a product lid or cap opens before use. It concerns physical product mechanics and contains no system reconnaissance behavior."
       },
       {
         "id": "network:references/url-extract.md:27:hardcoded-ip-address",
         "verdict": "false_positive",
         "confidence": 0.98,
-        "reason": "The numeric tokens belong to a browser User-Agent version string, while the request destination is the IMAGE_URL placeholder. No hardcoded IP destination appears on this line."
+        "reason": "The cited line is a curl example with a browser User-Agent and the placeholder IMAGE_URL. No literal IP address appears in the cited text."
       },
       {
         "id": "external_commands:SKILL.md:23:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks only format the reference filename in a Markdown table. The line contains no Ruby interpolation, shell substitution, or executable command."
+        "reason": "The cited line is a Markdown table entry containing a reference path. Its backticks format documentation and do not execute a Ruby or shell command."
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks only format the reference filename in Markdown. No code execution syntax or command invocation is present."
+        "reason": "The cited line is a Markdown table entry describing the photo workflow. The backticked reference path is documentation, not executable shell or Ruby code."
       },
       {
         "id": "external_commands:SKILL.md:53:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The backticks denote filenames and tool names in explanatory Markdown. They are not Ruby backtick operators or shell command substitution."
+        "reason": "The cited line documents a reference workflow using Markdown code spans. It does not contain Ruby backtick execution or invoke an external command."
       },
       {
         "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The backticks format the image_analysis tool name in prose. This line does not invoke a shell or execute a command."
+        "reason": "The cited line names image_analysis and describes a workflow in prose. The backticks are Markdown formatting and do not execute a command."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The backticks format a reference filename in Markdown. There is no executable Ruby or shell expression."
+        "reason": "The cited line is a Markdown reference description for photo analysis. It contains no executable Ruby or shell expression."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Unvalidated Remote URL Download",
-        "description": "URL mode downloads extractor-provided image URLs with curl redirects enabled but documents no scheme, hostname, resolved-address, or redirect validation. A malicious page or extractor result could target local or private network resources.",
+        "title": "Unrestricted URL Fetching May Enable SSRF",
+        "description": "The URL workflow downloads up to ten image URLs returned by extraction with curl, without documented host allowlisting or private-network rejection. A crafted page or input could direct requests to internal services or unintended endpoints.",
         "severity": "medium",
         "locations": [
           {
             "file": "references/url-extract.md",
             "line_start": 20,
-            "line_end": 27
+            "line_end": 28
           }
         ],
-        "confidence": 0.88,
-        "confidence_reasoning": "The documented workflow directly passes candidate URLs into curl with redirects enabled. The cited section includes no controls that restrict destinations or block private addresses."
+        "confidence": 0.78,
+        "confidence_reasoning": "The documented download step clearly accepts extractor-supplied URLs and follows redirects by using curl -L. The files do not document validation against loopback, private, or otherwise untrusted destinations."
       }
     ],
     "critical_findings": [],
     "high_findings": [],
     "medium_findings": [
       {
-        "title": "Unvalidated Remote URL Download",
-        "description": "URL mode downloads extractor-provided image URLs with curl redirects enabled but documents no scheme, hostname, resolved-address, or redirect validation. A malicious page or extractor result could target local or private network resources.",
+        "title": "Unrestricted URL Fetching May Enable SSRF",
+        "description": "The URL workflow downloads up to ten image URLs returned by extraction with curl, without documented host allowlisting or private-network rejection. A crafted page or input could direct requests to internal services or unintended endpoints.",
         "locations": [
           {
             "file": "references/url-extract.md",
             "line_start": 20,
-            "line_end": 27
+            "line_end": 28
           }
         ],
         "review_kind": "security",
         "source_category": "semantic",
         "source_severity": "medium",
-        "confidence": 0.88,
-        "confidence_reasoning": "The documented workflow directly passes candidate URLs into curl with redirects enabled. The cited section includes no controls that restrict destinations or block private addresses."
+        "confidence": 0.78,
+        "confidence_reasoning": "The documented download step clearly accepts extractor-supplied URLs and follows redirects by using curl -L. The files do not document validation against loopback, private, or otherwise untrusted destinations."
       }
     ],
     "low_findings": [],
@@ -280,123 +279,128 @@
     "files_scanned": 4,
     "total_lines": 181,
     "audit_model": "codex",
-    "audited_at": "2026-08-13T10:16:15.586Z",
+    "audited_at": "2026-08-13T08:30:42.286Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Analyze Products from URLs or Photos",
-    "value_statement": "Product pages and photos often lack structured facts for reliable creative generation. This skill extracts product details, usage mechanics, visual features, and reference images.",
+    "user_title": "Analyze Products for Generation-Ready Facts",
+    "value_statement": "Product pages and photos often contain scattered details that lead to inaccurate creative outputs. This skill extracts consistent product facts, usage mechanics, visual details, and reference images for downstream generation.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "product analysis",
       "e-commerce extraction",
-      "product image analysis",
+      "product photography",
+      "image generation prompts",
       "creative brief",
-      "reference image curation",
-      "product research"
+      "product mechanics",
+      "reference images"
     ],
     "actual_capabilities": [
-      "Extracts product names, brands, variants, specifications, features, and image URLs from e-commerce pages.",
-      "Downloads and filters up to ten candidate images, then returns up to five suitable references.",
-      "Identifies precise product categories and real-world usage from a supplied photo.",
-      "Describes moving parts, opening sequences, controls, materials, labels, colors, and distinctive features.",
-      "Produces a factual two-paragraph description for downstream image or video generation."
+      "Analyzes an e-commerce URL and extracts product name, brand, price, variant, specifications, and feature details.",
+      "Downloads up to ten candidate product images and keeps up to five clean, matching product shots.",
+      "Filters candidate images for product focus, visible faces, and variant mismatches.",
+      "Analyzes a product photo for category, real-world use, moving parts, opening steps, and visual details.",
+      "Produces factual descriptions and reusable product facts for image and video generation workflows."
     ],
     "limitations": [
-      "URL analysis requires the url_extraction tool and network access.",
-      "Photo analysis requires the image_analysis tool and a clear, sufficiently detailed image.",
-      "The skill does not rank market position or infer unsupported product mechanics.",
-      "Image filtering can remove every candidate when photos contain faces, wrong variants, or unsuitable layouts."
+      "It cannot reliably determine unclear, cropped, blurry, or ambiguous product details.",
+      "URL extraction depends on the configured url_extraction capability and accessible product pages.",
+      "Image filtering may reject useful lifestyle images because it prioritizes clean product shots.",
+      "It does not rank market position or replace a calling skill's creative direction."
     ],
     "use_cases": [
       {
-        "title": "Prepare Campaign References",
-        "description": "Turn a product listing into a concise description and curated images for campaign asset generation.",
-        "target_user": "Creative marketers"
+        "title": "Prepare Product Creative",
+        "description": "Turn a product page into a factual brief and selected reference images before creating campaign images or videos.",
+        "target_user": "Creative director"
       },
       {
         "title": "Document Product Mechanics",
-        "description": "Analyze a photo to describe how a product opens, moves, and is used.",
-        "target_user": "Product designers"
+        "description": "Analyze a product photo to capture how people hold, operate, open, or use the product in generated scenes.",
+        "target_user": "Product marketer"
       },
       {
-        "title": "Normalize Catalog Inputs",
-        "description": "Convert varied store pages into consistent product facts for downstream creative workflows.",
-        "target_user": "E-commerce operators"
+        "title": "Standardize Catalog Inputs",
+        "description": "Convert inconsistent product links and photos into reusable facts for a team library or downstream generation pipeline.",
+        "target_user": "E-commerce operations specialist"
       }
     ],
     "prompt_templates": [
       {
         "title": "Analyze a Product Photo",
-        "prompt": "Analyze this product photo. Identify the exact category, usage, moving parts, materials, colors, labels, and distinctive visual details.",
+        "prompt": "Analyze this product photo. State what the product is, how people use it, which parts move or open, and its key visual details.",
         "scenario": "Beginner photo analysis"
       },
       {
-        "title": "Extract a Product Page",
-        "prompt": "Analyze this product URL: [URL]. Return a factual description and up to five clean images matching the selected variant.",
-        "scenario": "Standard e-commerce extraction"
+        "title": "Extract Product Page Facts",
+        "prompt": "Extract the product name, brand, price, currency, selected variant, description, specifications, features, and main product photo URLs from this page.",
+        "scenario": "Basic URL research"
       },
       {
         "title": "Build a Generation Brief",
-        "prompt": "Analyze [URL or photo] for [campaign format]. Emphasize dimensions, materials, operation, variant details, and visual features that must remain consistent.",
+        "prompt": "Analyze this product URL and return a factual two-paragraph description, concrete specifications, intended user, and up to five clean matching product images.",
         "scenario": "Intermediate creative preparation"
       },
       {
-        "title": "Compare Source Consistency",
-        "prompt": "Use this listing [URL] and attached photo. Treat the listing as primary, flag visible conflicts, and produce a generation-ready product brief.",
-        "scenario": "Advanced multi-source analysis"
+        "title": "Preserve Product Fidelity",
+        "prompt": "Analyze the provided product URL and image together. Reconcile the listing with the photo, identify the selected variant, describe all operating mechanics, and flag any uncertain detail instead of guessing.",
+        "scenario": "Advanced reference validation"
       }
     ],
     "output_examples": [
       {
-        "input": "A clear photo of a matte black insulated bottle with a loop cap.",
-        "output": "Category: vacuum-insulated reusable bottle. Use: twist off the loop cap, fill, reseal, and carry. Preserve the matte finish, cylindrical shape, cap loop, and printed logo."
+        "input": "Analyze this photo of a countertop coffee grinder.",
+        "output": "A compact electric burr coffee grinder with a matte black cylindrical body, a transparent bean hopper, a front grind-size dial, and a removable grounds container. The hopper lid lifts off, and the container slides forward for emptying."
       },
       {
-        "input": "An e-commerce URL for wireless over-ear headphones in the selected silver variant.",
+        "input": "Extract the product facts from this insulated bottle page.",
         "output": [
-          "A factual description covering brand, fit, controls, connectivity, battery details, materials, and intended user.",
-          "Up to five local image paths for clean silver product shots without faces or conflicting variants."
+          "Stainless steel insulated bottle with a 750 ml capacity, screw-top lid, powder-coated finish, and leak-resistant seal.",
+          "Keep the front product shot and the open-lid detail image. Exclude lifestyle photos, logos, and unrelated color variants."
         ]
+      },
+      {
+        "input": "Prepare this skincare product for an image-generation workflow.",
+        "output": "Product brief: frosted glass dropper bottle with an ivory label, black cap, and clear serum. Preserve the rectangular label placement, short shoulder, glossy pipette, and warm off-white packaging color. The cap unscrews before the dropper is used."
       }
     ],
     "best_practices": [
-      "Provide the selected variant when a listing offers multiple colors, sizes, or configurations.",
-      "Use clear, uncropped photos that show labels, controls, closures, and distinctive features.",
-      "Verify extracted specifications against the visible product before using them in generation."
+      "Provide the product URL or a clear, well-framed product photo.",
+      "State the intended image or video generation context when requesting analysis.",
+      "Review uncertain specifications and downloaded images before publishing generated creative."
     ],
     "anti_patterns": [
-      "Do not ask the skill to invent hidden mechanics or unreadable specifications.",
-      "Do not use lifestyle photos with obscured products as the only visual source.",
-      "Do not treat the output as a market ranking, review summary, or purchasing recommendation."
+      "Do not use a blurry or cropped photo as the only source for precise product mechanics.",
+      "Do not treat extracted product claims as verified technical or safety certification.",
+      "Do not reuse downloaded images without checking licensing and source permissions."
     ],
     "faq": [
       {
         "question": "What inputs does this skill accept?",
-        "answer": "It accepts an e-commerce product URL, a product photo, or both."
+        "answer": "It accepts an e-commerce URL, a product photo, or both."
       },
       {
-        "question": "What happens when both a URL and photo are provided?",
-        "answer": "It uses URL mode for richer details and keeps the photo as an additional reference."
+        "question": "What does URL mode return?",
+        "answer": "It returns factual product details, a concise description, and up to five filtered product image paths."
       },
       {
-        "question": "How many images can it return?",
-        "answer": "It evaluates up to ten candidates and returns up to five suitable product images."
+        "question": "What does photo mode identify?",
+        "answer": "It identifies the product category, real-world use, moving or opening parts, and important visual details."
       },
       {
-        "question": "Which images does it reject?",
-        "answer": "It rejects faces, lifestyle shots, review images, banners, logos, size charts, and conflicting variants."
+        "question": "Can it analyze multiple product variants?",
+        "answer": "It focuses on the selected listing variant and removes candidate images that show a different variant."
       },
       {
-        "question": "Can it analyze a blurry or cropped photo?",
-        "answer": "It reports uncertain details and requests a clearer photo instead of guessing."
+        "question": "What happens when a product page cannot be extracted?",
+        "answer": "The workflow asks for a product photo and switches to photo analysis."
       },
       {
-        "question": "Does it create final images or videos?",
-        "answer": "No. It prepares product facts and references for downstream image or video generation."
+        "question": "Does it create new product images?",
+        "answer": "No. It prepares facts and selects reference images for another image or video generation skill."
       }
     ]
   },
