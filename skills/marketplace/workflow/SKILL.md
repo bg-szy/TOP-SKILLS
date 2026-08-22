@@ -1,34 +1,63 @@
 ---
 name: workflow
-description: "Manages workflow transitions including handoffs between PM and implementation roles, and auto-fixes review comments. Use when user mentions ハンドオフ, handoff, PMに報告, 実装役に渡して, レビュー指摘を自動修正, auto-fix. Triggers: ハンドオフ, handoff, PMに報告, 実装役に渡して, 完了報告, 自動修正, auto-fix. Do not use for 2-Agent setup - use 2agent skill instead."
-allowed-tools: ["Read", "Write", "Edit", "Bash"]
-metadata:
-  skillport:
-    category: workflow
-    tags: [workflow, handoff, pm, implementation, auto-fix]
-    alwaysApply: false
+description: "Workflow orchestration for complex coding tasks. Use for ANY non-trivial task (3+ steps or architectural decisions) to enforce planning, subagent strategy, self-improvement, verification, elegance, and autonomous bug fixing. Triggers: multi-step implementation, bug fixes, refactoring, architectural changes, or any task requiring structured execution."
 ---
 
-# Workflow Skills
+## Workflow Orchestration
 
-PM-実装役間のハンドオフとレビュー指摘の自動修正を担当するスキル群です。
+### 1. Plan Mode Default
 
-## 含まれる小スキル
+- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
+- If something goes sideways, STOP and re-plan immediately — don't keep pushing
+- Use plan mode for verification steps, not just building
+- Write detailed specs upfront to reduce ambiguity
 
-| スキル | 用途 |
-|--------|------|
-| auto-fix | レビュー指摘の自動修正 |
-| handoff-to-impl | PM から実装役へのハンドオフ |
-| handoff-to-pm | 実装役から PM への完了報告 |
+### 2. Subagent Strategy
 
-## ルーティング
+- Use subagents liberally to keep main context window clean
+- Offload research, exploration, and parallel analysis to subagents
+- For complex problems, throw more compute at it via subagents
+- One task per subagent for focused execution
 
-- 自動修正: auto-fix/doc.md
-- PM→実装役: handoff-to-impl/doc.md
-- 実装役→PM: handoff-to-pm/doc.md
+### 3. Self-Improvement Loop
 
-## 実行手順
+- After ANY correction from the user: update `tasks/lessons.md` with the pattern
+- Write rules for yourself that prevent the same mistake
+- Ruthlessly iterate on these lessons until mistake rate drops
+- Review lessons at session start for relevant project
 
-1. ユーザーのリクエストを分類
-2. 適切な小スキルの doc.md を読む
-3. その内容に従って実行
+### 4. Verification Before Done
+
+- Never mark a task complete without proving it works
+- Diff behavior between main and your changes when relevant
+- Ask yourself: "Would a staff engineer approve this?"
+- Run tests, check logs, demonstrate correctness
+
+### 5. Demand Elegance (Balanced)
+
+- For non-trivial changes: pause and ask "is there a more elegant way?"
+- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
+- Skip this for simple, obvious fixes — don't over-engineer
+- Challenge your own work before presenting it
+
+### 6. Autonomous Bug Fixing
+
+- When given a bug report: just fix it. Don't ask for hand-holding
+- Point at logs, errors, failing tests — then resolve them
+- Zero context switching required from the user
+- Go fix failing CI tests without being told how
+
+## Task Management
+
+1. **Plan First**: Write plan to `tasks/todo.md` with checkable items
+2. **Verify Plan**: Check in before starting implementation
+3. **Track Progress**: Mark items complete as you go
+4. **Explain Changes**: High-level summary at each step
+5. **Document Results**: Add review section to `tasks/todo.md`
+6. **Capture Lessons**: Update `tasks/lessons.md` after corrections
+
+## Core Principles
+
+- **Simplicity First**: Make every change as simple as possible. Impact minimal code.
+- **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
+- **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
