@@ -1,177 +1,150 @@
 ---
 name: skill-improver
-description: "Iteratively reviews and fixes Claude Code skill quality issues until they meet standards. Runs automated fix-review cycles using the skill-reviewer agent. Use to fix skill quality issues, improve skill descriptions, run automated skill review loops, or iteratively refine a skill. Triggers on 'fix my skill', 'improve skill quality', 'skill improvement loop'. NOT for one-time reviews—use /skill-reviewer directly."
-argument-hint: "<SKILL_NAME_OR_PATH> [--max-iterations N]"
-allowed-tools: Bash(${CLAUDE_PLUGIN_ROOT}/scripts/setup-skill-improver.sh:*) Task Read Edit Write Glob Grep
+description: "Runs an autonomous review-and-fix improvement loop over a Claude Code skill until a review comes back clean, with a cross-round findings ledger, escalation when fixes stop converging, and a mechanical scope guard. Reviews are performed by the plugin-dev skill-reviewer agent. Use to fix skill quality issues, iteratively refine a skill, or resume a loop after an escalation ('fix my skill', 'improve this skill until it passes review', 'skill improvement loop'). NOT for a one-time review — use the plugin-dev skill-reviewer agent directly."
+argument-hint: "<SKILL_NAME_OR_PATH> [--max-rounds N]"
+allowed-tools: Bash Glob Read TaskOutput TaskStop Workflow
 ---
 
-# Skill Improvement Methodology
+# Skill Improver
 
-Iteratively improve a Claude Code skill using the skill-reviewer agent until it meets quality standards.
+Improve a Claude Code skill by running `/code-improver:improve` — a dynamic workflow
+that loops a reviewer and a fixer subagent until a review reports zero critical/major
+findings, then strips its own residue. This entry point wires the loop to the
+`plugin-dev:skill-reviewer` agent, so the **plugin-dev plugin must be installed**
+(marketplace `claude-plugins-official`). The loop, its ledger, and its guards live in
+the workflow; this skill resolves the target and relays the outcome.
 
-## Prerequisites
-
-Requires the `plugin-dev` plugin which provides the `skill-reviewer` agent.
-
-Verify it's enabled: run `/plugins` — `plugin-dev` should appear in the list. If missing, install from the Trail of Bits plugin repository.
-
-## Starting the Loop
+## Starting the loop
 
 The user provided: `$ARGUMENTS` (if empty, take the target skill from the conversation).
 
-**Skip this section on continuation.** A stop-hook prompt names an iteration and
-session ID — the session is already active, so go straight to the Core Loop.
-The setup script refuses to start a second session for the same skill.
+### 1. Resolve the skill path
 
-### Step 1: Resolve the skill path
-
-1. If input ends with `/SKILL.md` and the file exists, use it directly
-2. If input is a directory containing `SKILL.md`, use that path
+1. If the input ends with `/SKILL.md` and the file exists, use its directory
+2. If the input is a directory containing `SKILL.md`, use that path
 3. Otherwise `Glob(pattern="**/SKILL.md")` and filter by skill name or path substring:
    - **Multiple matches:** ask the user to choose
-   - **No matches:** report available skills
+   - **No matches:** report the available skills
    - **Single match:** proceed
 
-### Step 2: Initialize the session
+### 2. Resolve the loop script
 
-Run the setup script with the resolved absolute path:
+The loop is the dynamic workflow `workflows/improve.js` in this plugin. Launch it by
+path: `scriptPath` takes a resolved absolute path, and the Workflow tool's `name` resolves
+built-in and project workflows, so a marketplace-installed one may not answer to
+`code-improver:improve`. Try in order, first hit wins — the home directories come before
+`.` so an installed copy beats a checkout of this marketplace:
 
-```bash
-"${CLAUDE_PLUGIN_ROOT}/scripts/setup-skill-improver.sh" "<RESOLVED_SKILL_PATH>" [--max-iterations N]
+1. `Bash: ls -d -- "${CLAUDE_PLUGIN_ROOT}/workflows/improve.js"`
+2. `Bash: ls -d -- "${CODEX_PLUGIN_ROOT}/workflows/improve.js"` (if that variable is set instead)
+3. `Bash: find ~/.claude ~/.codex . -maxdepth 7 -path '*/code-improver/workflows/improve.js' -print -quit 2>/dev/null`
+
+Use the path exactly as printed. Its plugin directory — the path with
+`/workflows/improve.js` removed — is `pluginRoot`. If all three come back empty, try
+`{name: "code-improver:improve"}` once; if that is unavailable too, stop and say the loop
+could not be located. Do not assemble a path by hand and do not improvise the loop.
+
+### 3. Invoke the workflow
+
+Run it with the Workflow tool, `{scriptPath: "<the path from step 2>", args: {...}}`:
+
+```json
+{
+  "target": "<resolved absolute path>",
+  "reviewer": {
+    "kind": "agent",
+    "name": "plugin-dev:skill-reviewer",
+    "notes": "The target is a Claude Code skill directory; review it as a skill (frontmatter, triggering description, progressive disclosure, referenced files)."
+  },
+  "pluginRoot": "<the plugin directory from step 2>",
+  "maxRounds": 5
+}
 ```
 
-If `${CLAUDE_PLUGIN_ROOT}` is empty or not substituted (e.g. under Codex), locate
-the script instead: try `${CODEX_PLUGIN_ROOT}/scripts/setup-skill-improver.sh`, else
-`find ~/.claude ~/.codex . -path '*/plugins/skill-improver/scripts/setup-skill-improver.sh' -print -quit`.
+- `maxRounds` only if the user asked for a different cap (`--max-rounds N`).
+- `pluginRoot` lets the run find its metrics collector; omit the key only if step 2 fell
+  through to the workflow name — the workflow then searches for itself.
+- `scope` (repo-relative globs) only if the user restricted or widened what the loop may
+  touch; by default the workflow scopes to the skill's plugin directory.
+- `decision` only on continuation (below).
 
-Add `--max-iterations N` only if the user specified it. The script writes the
-session state file that arms the stop hook; the loop then continues
-automatically until completion.
+The workflow runs in the background and needs no babysitting: it reviews, fixes,
+re-reviews, checks scope after every fix round, and can only complete on a clean review.
+It never commits; all changes stay in the working tree.
 
-## Core Loop
+**If the Workflow tool is unavailable or denied, stop and say so.** Do not improvise the
+loop inline with direct edits — the ledger, scope guard, and escalation guarantees live
+in the workflow, and an inline imitation has none of them (observed failure: an inline
+fallback "fixed" a finding by weakening the documented guarantee, exactly what the loop
+exists to prevent).
 
-1. **Review** - Call skill-reviewer on the target skill
-2. **Categorize** - Parse issues by severity
-3. **Fix** - Address critical and major issues
-4. **Evaluate** - Check minor issues for validity before fixing
-5. **Repeat** - Continue until quality bar is met
+**If the result is `halted: "reviewer-unavailable"`, relay it and stop.** The reviewer
+this skill names is not installed; tell the user to install the `plugin-dev` plugin from
+the `claude-plugins-official` marketplace and re-run. Do not review the skill yourself.
 
-## When to Use
+**Do not end your turn while the loop is running.** The Workflow tool returns a task id
+immediately; the result comes later. In an interactive session the completion
+notification re-invokes you — wait for it. In a non-interactive run (scripted, CI, eval)
+there is no later turn: stopping abandons the loop mid-round, so after launching, poll
+the task (TaskOutput with the returned task id, or sleep-and-recheck) until it completes,
+then relay the result. A session that answers "the loop is running, I'll report later"
+has lost the run.
 
-- Improving a skill with multiple quality issues
-- Iterating on a new skill until it meets standards
-- Automated fix-review cycles instead of manual editing
-- Consistent quality enforcement across skills
+## Relaying the result
 
-## When NOT to Use
+The workflow returns a structured result. Report it honestly — the distinctions matter:
 
-- **One-time review**: Use `/skill-reviewer` directly instead
-- **Quick single fixes**: Edit the file directly
-- **Non-skill files**: Only works on SKILL.md files
-- **Experimental skills**: Manual iteration gives more control during exploration
+- **`converged: true`** — the last action was a review with zero critical/major findings.
+  Report rounds used, remaining minor findings (`open_minor_count`), and the artifact
+  paths (`ledger_path`, `metrics`).
+- **`capped: true`** — the fix budget ran out and the FINAL review still found blocking
+  issues. Say plainly: **capped, NOT converged**, and list `open_blocking`. Do not
+  present this as success.
+- **`escalation`** — the loop detected it was not converging (recurring findings,
+  non-decreasing counts, or a fix relocating a problem). Relay the escalation message and
+  finding ids to the user: this needs a design decision, not more rounds.
+- **`halted`** — a guard fired (scope violation, unregistered new files, a dead or
+  unavailable reviewer, or a finalize pass whose own edits failed the check that follows
+  it). Relay the paths in `violations`/`new_untracked_files`, the sites in
+  `finalize_regressions`, and the notes.
+- **`notes`** always travel with the result — surface them; they include loud warnings
+  such as "a git repository was initialized".
 
-## Issue Categorization
+## Continuing after an escalation
 
-### Critical Issues (MUST fix immediately)
+The loop stops on escalation by design. When the user decides (e.g. "keep the blocklist
+and document the limitation"), start a fresh run with the same `target` plus:
 
-These block skill loading or cause runtime failures:
-
-- Missing required frontmatter fields (name, description) — Claude cannot index or trigger the skill
-- Invalid YAML frontmatter syntax — Parsing fails, skill won't load
-- Referenced files that don't exist — Runtime errors when Claude follows links
-- Broken file paths — Same as above, leads to tool failures
-
-### Major Issues (MUST fix)
-
-These significantly degrade skill effectiveness:
-
-- Weak or vague trigger descriptions — Claude may not recognize when to use the skill
-- Wrong writing voice (second person "you" instead of imperative) — Inconsistent with Claude's execution model
-- SKILL.md exceeds 500 lines without using references/ — Overloads context, reduces comprehension
-- Description doesn't specify when to trigger — Skill may never be selected
-
-### Minor Issues (Evaluate before fixing)
-
-These are polish items that may or may not improve the skill:
-
-- Subjective style preferences — Reviewer may have different taste than author
-- Optional enhancements — May add complexity without proportional value
-- "Nice to have" improvements — Consider cost-benefit before implementing
-- Formatting suggestions — Often valid but low impact
-
-## Minor Issue Evaluation
-
-Before implementing any minor issue fix, evaluate:
-
-1. **Is this a genuine improvement?** - Does it add real value or just satisfy a preference?
-2. **Could this be a false positive?** - Is the reviewer misunderstanding context?
-3. **Would this actually help Claude use the skill?** - Focus on functional improvements
-
-Only implement minor fixes that are clearly beneficial. Skill-reviewer may produce false positives.
-
-## Invoking skill-reviewer
-
-Use the skill-reviewer agent from the plugin-dev plugin. Request a review by asking Claude to:
-
-> Review the skill at [SKILL_PATH] using the plugin-dev:skill-reviewer agent. Provide a detailed quality assessment with issues categorized by severity.
-
-Replace `[SKILL_PATH]` with the absolute path to the skill directory (e.g., `/path/to/plugins/my-plugin/skills/my-skill`).
-
-## Example Fix Cycle
-
-**Iteration 1 — skill-reviewer output:**
-```text
-Critical: SKILL.md:1 - Missing required 'name' field in frontmatter
-Major: SKILL.md:3 - Description uses second person ("you should use")
-Minor: Line 45 is verbose
+```json
+{ "decision": "<the user's ruling, verbatim>" }
 ```
 
-**Fixes applied:**
-- Added name field to frontmatter
-- Rewrote description in third person
+The new run reloads the on-disk ledger, so every finding, rejection, and verdict carries
+over — rounds restart, re-derivation does not.
 
-**Iteration 2 — run skill-reviewer again to verify fixes:**
-```text
-Minor: Line 45 is verbose
-```
+To stop a running loop, stop the workflow task (TaskStop); the ledger on disk is current
+to the last round and a re-run resumes from it.
 
-**Minor issue evaluation:**
-Line 45 communicates effectively as-is. The verbosity provides useful context. Skip.
+## What the loop enforces (so you do not have to)
 
-**All critical/major issues resolved. Output the completion marker:**
-```
-<skill-improvement-complete>
-```
+- **Fix verification** — the next review verifies every fix; fixes to executable
+  behavior carry pins that fail against the pre-fix code.
+- **Scope** — a mechanical git-diff check after every fix round, and after the finalize
+  pass, halts on any out-of-scope change; out-of-scope files git does not track are
+  guarded by content hash, since no diff would show them; completion also requires no
+  unregistered new files in scope.
+- **Report everything** — reviewers report all findings with severity; filtering happens
+  once, at the ledger verdict, and rejections are not re-litigated without new evidence.
+- **Finalize** — before completion the loop strips narration comments, collapses version
+  churn to exactly one bump (in `plugin.json` and the marketplace entry that repeats it),
+  and runs a docs-match-code pass. Those edits land after the last review, so a check
+  reads them: an over-eager narration strip or a false docs claim halts with
+  `finalize-regression` instead of passing as done.
 
-Note: The marker MUST appear in the output. Statements like "quality bar met" or "looks good" will NOT stop the loop.
+## When NOT to use
 
-## Completion Criteria
-
-**CRITICAL**: The stop hook ONLY checks for the explicit marker below. No other signal will terminate the loop.
-
-Output this marker when done:
-
-```
-<skill-improvement-complete>
-```
-
-**When to output the marker:**
-
-1. **skill-reviewer reports "Pass"** or **no issues found** → output marker immediately
-2. **All critical and major issues are fixed** AND you've verified the fixes → output marker
-3. **Remaining issues are only minor** AND you've evaluated them as false positives or not worth fixing → output marker
-
-**When NOT to output the marker:**
-
-- Any critical issue remains unfixed
-- Any major issue remains unfixed
-- You haven't run skill-reviewer to verify your fixes worked
-
-The marker is the ONLY way to complete the loop. Natural language like "looks good" or "quality bar met" will NOT stop the loop.
-
-## Rationalizations to Reject
-
-- "I'll just mark it complete and come back later" - Fix issues now
-- "This minor issue seems wrong, I'll skip all of them" - Evaluate each one individually
-- "The reviewer is being too strict" - The quality bar exists for a reason
-- "It's good enough" - If there are major issues, it's not good enough
+- **One-time review**: dispatch the `plugin-dev:skill-reviewer` agent directly
+- **Quick single fixes**: edit the file directly
+- **Non-skill targets**: use the `code-improver` skill with a reviewer that fits the
+  target, or `pr-improver` for a branch
+- **Exploratory drafting**: manual iteration gives more control while the shape is fluid
