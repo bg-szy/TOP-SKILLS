@@ -118,7 +118,7 @@ claude --skill ./skills/marketplace/skill-name/SKILL.md
                     │  GitHub Upstream         │
                     │  (13 curated repositories)│
                     └────────────┬─────────────┘
-                                 │  daily · 00:23 UTC (08:23 Beijing)
+                                 │  daily · 14:05 UTC (22:05 Beijing)
                     ┌────────────▼─────────────────────────────┐
                     │  GitHub Actions · daily-update.yml       │
                     │                                          │
@@ -138,7 +138,7 @@ Everything runs in the cloud — no local machine required:
 
 | Workflow | Trigger | What it does |
 |----------|---------|--------------|
-| [`daily-update.yml`](.github/workflows/daily-update.yml) | Daily 00:23 UTC · manual | Collect → verify → rebuild site data → commit → deploy |
+| [`daily-update.yml`](.github/workflows/daily-update.yml) | Daily 14:05 UTC (22:05 Beijing) · manual | Collect → verify → rebuild site data → commit → deploy |
 | [`gh-pages.yml`](.github/workflows/gh-pages.yml) | Push to `master` · manual | Rebuild and publish the dashboard to GitHub Pages |
 
 The Daily Update job deploys the site itself, because pushes made with the default `GITHUB_TOKEN` do not trigger other workflows.
@@ -172,7 +172,7 @@ The Daily Update job deploys the site itself, because pushes made with the defau
 | Total Files | 19,000+ |
 | Fastest Growing Source | aiskillstore/marketplace (5,800+ skills) |
 | First Recorded | 2026-05-22 |
-| Update Frequency | Daily at 08:23 Beijing Time (00:23 UTC) via GitHub Actions |
+| Update Frequency | Daily at 22:05 Beijing Time (14:05 UTC) via GitHub Actions |
 
 ---
 

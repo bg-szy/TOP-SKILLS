@@ -116,7 +116,7 @@ claude --skill ./skills/marketplace/skill-name/SKILL.md
                     │  GitHub 上游仓库          │
                     │  （13 个精选来源）        │
                     └────────────┬─────────────┘
-                                 │  每天 00:23 UTC（北京时间 08:23）
+                                 │  每天 14:05 UTC（北京时间 22:05）
                     ┌────────────▼─────────────────────────────┐
                     │  GitHub Actions · daily-update.yml       │
                     │                                          │
@@ -136,7 +136,7 @@ claude --skill ./skills/marketplace/skill-name/SKILL.md
 
 | 工作流 | 触发方式 | 作用 |
 |--------|---------|------|
-| [`daily-update.yml`](.github/workflows/daily-update.yml) | 每天 00:23 UTC · 手动 | 收集 → 校验 → 重建站点数据 → 提交 → 部署 |
+| [`daily-update.yml`](.github/workflows/daily-update.yml) | 每天 14:05 UTC（北京 22:05） · 手动 | 收集 → 校验 → 重建站点数据 → 提交 → 部署 |
 | [`gh-pages.yml`](.github/workflows/gh-pages.yml) | 推送 `master` · 手动 | 重新构建并发布看板到 GitHub Pages |
 
 Daily Update 任务会自行部署站点，因为用默认 `GITHUB_TOKEN` 推送的提交不会触发其他工作流。
@@ -170,7 +170,7 @@ Daily Update 任务会自行部署站点，因为用默认 `GITHUB_TOKEN` 推送
 | 总文件数 | 19,000+ |
 | 增长最快来源 | aiskillstore/marketplace（5,800+ 技能） |
 | 首次记录 | 2026-05-22 |
-| 更新频率 | 每日北京时间 08:23（00:23 UTC），由 GitHub Actions 执行 |
+| 更新频率 | 每日北京时间 22:05（14:05 UTC），由 GitHub Actions 执行 |
 
 ---
 
