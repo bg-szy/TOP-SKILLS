@@ -1,0 +1,99 @@
+name: Daily Update
+
+on:
+  schedule:
+    # 00:23 UTC = 08:23 Asia/Shanghai
+    - cron: "23 0 * * *"
+  workflow_dispatch:
+  # Bootstrap: run once when this workflow file itself is added/changed
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/daily-update.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install pyyaml requests
+
+      - name: Prepare config.yaml
+        run: |
+          python - <<'PY'
+          import yaml
+          with open("config.yaml.example", encoding="utf-8") as f:
+              cfg = yaml.safe_load(f)
+          cfg.setdefault("pipeline", {})["max_skills_per_run"] = 0
+          with open("config.yaml", "w", encoding="utf-8") as f:
+              yaml.safe_dump(cfg, f, allow_unicode=True, sort_keys=False)
+          PY
+
+      - name: Collect skills
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -o pipefail
+          python scripts/collect_skills.py --no-search 2>&1 | tee /tmp/collect.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            if ! grep -q -- "---SUMMARY_END---" /tmp/collect.log; then
+              echo "Collector crashed (exit $status)"
+              exit 1
+            fi
+            echo "Collector finished with partial errors (exit $status), continuing"
+          fi
+
+      - name: Verify skills
+        run: |
+          python scripts/verify_skills.py || python scripts/verify_skills.py --auto-remove
+
+      - name: Generate site data
+        run: python scripts/generate_site.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "bg-szy-bot"
+          git config user.email "bg-szy@users.noreply.github.com"
+          git add -A skills .gitignore
+          if git diff --cached --quiet; then
+            echo "No skill changes to commit"
+          else
+            python scripts/commit_summary.py > /tmp/commit_msg.txt 2>/dev/null || echo "Auto-update skills" > /tmp/commit_msg.txt
+            git commit -F /tmp/commit_msg.txt
+            git push origin HEAD:master || (git pull --rebase --autostash origin master && git push origin HEAD:master)
+          fi
+
+      # A push made with GITHUB_TOKEN does not trigger other workflows,
+      # so deploy here instead of relying on Publish Site.
+      - name: Deploy to gh-pages
+        run: |
+          cp -r site/. /tmp/gh-pages/
+          git checkout --orphan gh-pages
+          rm -f .git/index
+          git clean -fdx
+          cp -r /tmp/gh-pages/. .
+          rm -rf /tmp/gh-pages
+          touch .nojekyll
+          git add -A
+          git commit -m "Deploy $(date -u +%Y%m%d-%H%M%S)"
+          git push origin gh-pages --force
