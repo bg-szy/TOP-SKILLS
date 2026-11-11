@@ -2,6 +2,95 @@
 
 All notable changes to the `mongodb-search-and-ai` skill are documented here.
 
+## [2026-10-19] - Catalog Freshness And Source Sync
+
+### Added
+
+- Refreshed the catalog metadata and retained-client portability baseline.
+
+### Changed
+
+- Updated the catalog metadata and last-updated state for the 2026-10-19 maintenance pass.
+- Kept the retained-client portability, MCP fallback, Anti-Patterns, Verification Protocol, and Related Skills sections aligned.
+
+### Fixed
+
+- Preserved explicit no-MCP fallbacks and the catalog's safety, approval, and source-boundary guidance.
+
+## [2026-09-14] - MongoDB Search and AI Source Refresh
+
+### Added
+
+- Added the current automated-embedding reference and refreshed the hybrid/vector search guidance from mongodb/agent-skills.
+
+### Changed
+
+- Kept lexical, vector, hybrid, and embedding workflows explicit rather than collapsing their activation boundaries.
+
+### Fixed
+
+- Retained the no-MCP MongoDB CLI and local-database fallback.
+
+## [2026-09-08] - Catalog Freshness And Source Sync
+
+### Added
+
+- Refreshed the catalog metadata and retained-client portability baseline.
+
+### Changed
+
+- Updated the catalog metadata and last-updated state for the 2026-09-08 maintenance pass.
+- Kept the retained-client portability, MCP fallback, Anti-Patterns, Verification Protocol, and Related Skills sections aligned.
+
+### Fixed
+
+- Preserved explicit no-MCP fallbacks and the catalog's safety, approval, and source-boundary guidance.
+
+## [2026-09-05] - Catalog Freshness And Source Sync
+
+### Added
+
+- Refreshed the catalog metadata and retained-client portability baseline.
+
+### Changed
+
+- Updated the catalog metadata and last-updated state for the 2026-09-05 maintenance pass.
+- Kept the retained-client portability, MCP fallback, Anti-Patterns, Verification Protocol, and Related Skills sections aligned.
+
+### Fixed
+
+- Preserved explicit no-MCP fallbacks and the catalog's safety, approval, and source-boundary guidance.
+
+## [2026-08-31] - Catalog Freshness And Source Sync
+
+### Added
+
+- Refreshed the catalog metadata and retained-client portability baseline.
+
+### Changed
+
+- Updated the catalog metadata and last-updated state for the 2026-08-31 maintenance pass.
+- Kept the retained-client portability, MCP fallback, Anti-Patterns, Verification Protocol, and Related Skills sections aligned.
+
+### Fixed
+
+- Preserved explicit no-MCP fallbacks and the catalog's safety, approval, and source-boundary guidance.
+
+## [2026-08-29] - Catalog Freshness And Source Sync
+
+### Added
+
+- Refreshed the catalog metadata and retained-client portability baseline.
+
+### Changed
+
+- Updated the catalog metadata and last-updated state for the 2026-08-29 maintenance pass.
+- Kept the retained-client portability, MCP fallback, Anti-Patterns, Verification Protocol, and Related Skills sections aligned.
+
+### Fixed
+
+- Preserved explicit no-MCP fallbacks and the catalog's safety, approval, and source-boundary guidance.
+
 ## [2026-08-24] - Catalog Freshness And Source Sync
 
 ### Added

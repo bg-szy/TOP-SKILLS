@@ -1,418 +1,433 @@
 ---
-name: "rowan"
-description: "Cloud quantum chemistry platform with Python SDK. Run geometry optimization, conformer generation, torsional scans, and energy minimization (DFT/semiempirical), and retrieve properties (dipole, partial charges, frontier orbitals) — no local QC software or HPC needed."
-license: "Proprietary"
+name: rowan
+description: Rowan is a cloud-native molecular modeling and medicinal-chemistry workflow platform with a Python API. Use for pKa and macropKa prediction, conformer and tautomer ensembles, docking and analogue docking, protein-ligand cofolding, MSA generation, molecular dynamics, permeability, descriptor workflows, and related small-molecule or protein modeling tasks. Ideal for programmatic batch screening, multi-step chemistry pipelines, and workflows that would otherwise require maintaining local HPC/GPU infrastructure.
+license: Proprietary (API key required)
+compatibility: Python 3.12+ with rowan-python and its RDKit/stjames dependencies. Requires network access and ROWAN_API_KEY for hosted workflows.
+metadata:
+  version: "1.7"
+  last-reviewed: "2026-09-30"
+  upstream-version: "rowan-python 3.2.0"
+  skill-author: Rowan Science
+  trigger-keywords: pKa prediction, molecular docking, conformer search, chemistry workflow, drug discovery, SMILES, protein structure, batch molecular modeling, cloud chemistry
+  openclaw:
+    primaryEnv: ROWAN_API_KEY
+    envVars:
+    - name: ROWAN_API_KEY
+      required: true
+      description: Rowan computational chemistry API key.
 ---
 
-# rowan
+# Rowan: Cloud-Native Molecular-Modeling and Drug-Design Workflows
 
 ## Overview
 
-Rowan is a cloud quantum chemistry platform that exposes DFT and semiempirical calculations through a Python SDK (`rowan`). Submit calculations (geometry optimization, conformer generation, torsional scans, single-point energies) from Python scripts or Jupyter notebooks, and retrieve results — energies, geometries, partial charges, frontier orbital energies — without managing Gaussian, ORCA, or Psi4 installations. Rowan handles job queuing, execution, and storage. A free tier is available for academic and exploratory use.
+Rowan is a cloud-native workflow platform for molecular simulation, medicinal chemistry, and structure-based design. Its Python API exposes a unified interface for small-molecule modeling, property prediction, docking, molecular dynamics, and AI structure workflows.
 
-## When to Use
+Use Rowan when you want to run medicinal-chemistry or molecular-design workflows programmatically without maintaining local HPC infrastructure, GPU provisioning, or a collection of separate modeling tools. The service manages hosted compute and results; available workflows depend on the account.
 
-- **Geometry optimization of small molecules**: Getting accurate equilibrium geometries for drug candidates, fragments, or building blocks using DFT.
-- **Conformer generation with energy ranking**: Generating and optimizing multiple conformers to identify the lowest-energy conformation for docking or property prediction.
-- **Torsional potential scans**: Mapping the energy profile along a rotatable bond to understand conformational preferences.
-- **Quantum mechanical property calculation**: Computing dipole moments, partial charges (Mulliken, ESP), HOMO/LUMO energies, and electrostatic potential surfaces.
-- **Energy minimization before docking**: Refining ligand geometries before input to structure-based docking tools (DiffDock, AutoDock Vina).
-- **Comparing isomer stability**: Calculating relative energies of tautomers, stereoisomers, or constitutional isomers.
-- For large-scale conformer screening (>1000 molecules), use RDKit's ETKDGv3 + MMFF (force field level, no cloud cost).
-- For protein-scale quantum mechanics/molecular mechanics (QM/MM), specialized packages like ORCA + CP2K are needed.
+## When to use Rowan
 
-## Prerequisites
+**Rowan is a good fit for:**
 
-- **Python packages**: `rowan` (official Python SDK)
-- **Account**: Free account at https://rowan.chem.ucla.edu/ (academic) or https://rowanquantum.com/
-- **API key**: Set `ROWAN_API_KEY` environment variable after account creation
-- **Data requirements**: Molecular structures as SMILES strings or XYZ coordinate blocks
+- Quantum chemistry, semiempirical methods, or neural network potentials
+- Batch property prediction (pKa, descriptors, permeability, solubility)
+- Conformer and tautomer ensemble generation
+- Docking workflows (single-ligand, analogue series, pose refinement)
+- Protein-ligand cofolding and MSA generation
+- Multi-step chemistry pipelines (e.g., tautomer search → docking → pose analysis)
+- Batch medicinal-chemistry campaigns where you need consistent, scalable infrastructure
+
+**Rowan is not the right fit for:**
+- Simple molecular I/O (use RDKit directly)
+- Methods or element/charge regimes outside the selected engine's documented support
+
+## Quick start
 
 ```bash
-pip install rowan
+uv pip install "rowan-python==3.2.0"
+```
 
-# Set API key (add to .bashrc or .env)
+```python
+import rowan
+# Reads ROWAN_API_KEY from the environment.
+
+# Descriptors require a 3D Molecule, not a bare SMILES string.
+mol = rowan.Molecule.from_smiles("CC(=O)Oc1ccccc1C(=O)O")
+wf = rowan.submit_descriptors_workflow(mol, name="aspirin")
+result = wf.result()
+
+print(result.descriptors["MW"])       # exact/monoisotopic mass
+print(result.descriptors["SLogP"])
+print(result.descriptors["TopoPSA"])  # topological PSA
+```
+
+This submits a hosted calculation and consumes credits. Examples target
+[`rowan-python` 3.2.0](https://pypi.org/project/rowan-python/3.2.0/), reviewed
+2026-09-30 against the released SDK and [official reference](https://docs.rowansci.com/api/python/v3/).
+Local schema/serialization smoke tests used `stjames` 0.0.279. Hosted examples
+are illustrative: no authenticated workflows were run for this refresh. Lock
+both package versions for a reproducible campaign.
+
+## Installation
+
+```bash
+uv pip install "rowan-python==3.2.0"
+# Lock dependencies in your own environment; do not install the unrelated "rowan" package.
+```
+
+## Authentication and account access
+
+### Authentication
+
+Set an API key via environment variable (recommended):
+
+```bash
 export ROWAN_API_KEY="your_api_key_here"
 ```
 
-## Quick Start
+Or set directly in Python:
+
+```python
+import rowan
+rowan.api_key = "your_api_key_here"
+```
+
+Verify authentication:
+
+```python
+import rowan
+user = rowan.whoami()  # Returns user info if authenticated
+print(f"User: {user.email}")
+print(f"Credits available: {user.credits_available_string()}")
+print(user.enabled_workflows)  # Account-specific backend workflow slugs
+```
+
+## Molecule input formats
+
+Use SMILES for topology-based methods and real 3D structures for geometry-based
+methods. SMARTS is a substructure-query language, not a general workflow molecule
+input; convert InChI with a chemistry toolkit before passing a supported input.
+Record stereochemistry, charge, protonation state, and the original identifier.
+Canonicalization alone does not resolve these scientific choices.
+
+### SMILES strings versus molecule objects
+
+- pKa: `starling` and `chemprop_nevolianis2025` require a SMILES string;
+  `gxtb_wagen2026` (default) and `aimnet2_wagen2024` require coordinates.
+- Conformer search: SMILES works with OpenConf (default) or ETKDG; CREST/MCMM
+  require a 3D molecule.
+- Membrane permeability: `gnn-mtl` requires SMILES; `pypermm` requires a 3D molecule.
+- ADMET, LogP, macropKa, and solubility are SMILES-based; pose-analysis MD needs
+  ligand SMILES **and a protein complex containing its bound pose**.
+- Descriptors, tautomers, docking, analogue docking, BDE, NMR, and Fukui need a
+  `rowan.Molecule`, `stjames.Molecule`, or RDKit molecule with a conformer.
+  `Chem.MolFromSmiles()` alone has no coordinates. Generate them explicitly with
+  `rowan.Molecule.from_smiles()` or import an existing geometry. For analogue
+  docking, preserve the reference pose in the receptor's coordinate frame.
+
+**Tip:** Use RDKit to validate SMILES before submission:
+
+```python
+from rdkit import Chem
+smiles = "CCO"
+mol = Chem.MolFromSmiles(smiles)
+if mol is None:
+    raise ValueError(f"Invalid SMILES: {smiles}")
+```
+
+## Core usage pattern
+
+Most Rowan tasks follow the same three-step pattern:
+
+1. **Submit** a workflow
+2. **Wait** for completion (with optional streaming)
+3. **Retrieve** typed results with convenience properties
 
 ```python
 import rowan
 
-# Authenticate (uses ROWAN_API_KEY environment variable automatically)
-client = rowan.RowanClient()
-
-# Run geometry optimization of aspirin at GFN2-xTB level
-job = client.compute(
-    smiles="CC(=O)Oc1ccccc1C(=O)O",
-    method="gfn2-xtb",
-    tasks=["optimize"],
+# 1. Submit — named functions build and validate workflow-specific payloads
+workflow = rowan.submit_descriptors_workflow(
+    rowan.Molecule.from_smiles("CC(=O)Oc1ccccc1C(=O)O"),
+    name="aspirin descriptors",
 )
-print(f"Job ID: {job.id}, Status: {job.status}")
 
-# Wait for completion and retrieve energy
-result = client.wait(job.id)
-print(f"Energy: {result.energy:.6f} Hartree")
-print(f"Optimized geometry atoms: {len(result.geometry.atoms)}")
+# 2. & 3. Wait and retrieve
+result = workflow.result()  # Blocks until done (default: wait=True, poll_interval=5)
+print(result.data)              # Raw dict
+print(result.descriptors["MW"]) # exact mass; no result.molecular_weight property
 ```
 
-## Core API
+For long-running workflows, use streaming:
 
-### Module 1: Client Initialization and Authentication
+```python
+for partial in workflow.stream_result(poll_interval=5):
+    print(f"Complete: {partial.complete}")  # bool, not a percentage
+    print(partial.data)
+```
+
+### result() vs. stream_result()
+
+| Pattern | Use when |
+|---|---|
+| `result()` | The process can block for completion |
+| `stream_result()` | Polling snapshots are useful while the job runs |
+
+`stream_result()` polls; it is not a server-pushed event stream. Partial typed
+properties may be unavailable, so inspect `.data` until `.complete` is true.
+`result(wait=False)` can return partial data or raise `WorkflowError` if no data
+exists yet. `done()` includes failed and stopped runs, not only successes.
+
+## Working with results
+
+Rowan's API includes **typed workflow result objects** with convenience properties.
+
+### Using typed properties and .data
+
+Results have two access patterns:
+
+1. **Convenience properties** (recommended first): `result.descriptors`, `result.best_pose`, `result.scores`. Result classes differ: conformer search uses `get_energies()` and `get_conformers()` methods.
+2. **Raw fallback**: `result.data` — raw dictionary from the API
+
+Example:
+
+```python
+result = rowan.submit_descriptors_workflow(
+    rowan.Molecule.from_smiles("CCO"),
+    name="ethanol",
+).result()
+
+# Convenience property (returns all descriptors):
+print(result.descriptors["MW"])       # exact/monoisotopic mass
+print(result.descriptors["SLogP"])
+print(result.descriptors["TopoPSA"])  # usual topological PSA
+
+# Raw data fallback:
+print(result.data["descriptors"])
+```
+
+**Note:** `DescriptorsResult` does **not** have a `molecular_weight` property.
+`MW` is exact/monoisotopic mass, not average molecular weight. `TPSA` is a 3D
+charged-surface descriptor; use `TopoPSA` for the usual topological polar
+surface area used in drug-likeness rules.
+
+### Cache invalidation
+
+Some result properties are lazily loaded (e.g., conformer geometries, protein structures). To refresh:
+
+```python
+result.clear_cache()
+new_structures = result.get_conformers()  # Refetched for ConformerSearchResult
+```
+
+## Projects, folders, and organization
+
+For nontrivial campaigns, use projects and folders to keep work organized.
+
+### Projects
+
+Rowan 3.2.0 has an unresolved `Folder.created_at` type annotation; initialize
+the model once as below before folder operations (see troubleshooting).
 
 ```python
 import rowan
-import os
+from datetime import datetime
+rowan.Folder.model_rebuild(_types_namespace={"datetime": datetime})
 
-# Option 1: automatic (reads ROWAN_API_KEY env variable)
-client = rowan.RowanClient()
+# Create a project
+project = rowan.create_project(name="CDK2 lead optimization")
+rowan.project_uuid = project.uuid
+folder = rowan.create_folder(name="descriptors", parent_uuid=project.root_folder_uuid)
 
-# Option 2: explicit key
-client = rowan.RowanClient(api_key=os.environ["ROWAN_API_KEY"])
-
-print(f"Authenticated as: {client.user.email}")
-print(f"Organization: {client.user.organization}")
-```
-
-### Module 2: Geometry Optimization
-
-Optimize a molecular geometry to the nearest local minimum.
-
-```python
-import rowan
-
-client = rowan.RowanClient()
-
-# GFN2-xTB semiempirical (fast, good for conformer screening)
-job_xtb = client.compute(
-    smiles="CCc1ccc(cc1)NC(=O)C",    # paracetamol
-    method="gfn2-xtb",
-    tasks=["optimize"],
+# Pass the destination folder explicitly on submissions
+wf = rowan.submit_descriptors_workflow(
+    rowan.Molecule.from_smiles("CCO"), name="test compound", folder=folder
 )
-result_xtb = client.wait(job_xtb.id)
-print(f"xTB optimized energy: {result_xtb.energy:.6f} Hartree")
-print(f"Geometry: {len(result_xtb.geometry.atoms)} atoms")
+
+# parent_uuid is a folder UUID, not a project UUID.
+project = rowan.retrieve_project(project.uuid)
+workflows = rowan.list_workflows(parent_uuid=project.root_folder_uuid, page=0, size=50)
+# This lists only workflows directly in the root folder. List folder.uuid for the above job.
 ```
 
+### Folders
+
+Illustrative: `protein`, `pocket`, and the 3D `ligand` must be prepared first.
+Run the `Folder.model_rebuild` initialization above first. `get_folder()` creates
+missing path segments; `create_folder()` creates one folder.
+
 ```python
-# DFT optimization: B3LYP/6-31G* (accurate, slower)
-job_dft = client.compute(
-    smiles="CCc1ccc(cc1)NC(=O)C",
-    method="b3lyp",
-    basis_set="6-31g*",
-    tasks=["optimize"],
-    solvent="water",               # implicit solvent (SMD model)
+# Create a hierarchical folder structure
+folder = rowan.get_folder("docking/batch_1/screening")
+
+wf = rowan.submit_docking_workflow(
+    protein=protein, pocket=pocket, initial_molecule=ligand,
+    folder=folder,
+    name="compound_001",
 )
-result_dft = client.wait(job_dft.id)
-print(f"B3LYP/6-31G* energy (water): {result_dft.energy:.6f} Hartree")
-print(f"Dipole moment: {result_dft.dipole_moment:.3f} Debye")
+
+# List workflows in a folder
+results = rowan.list_workflows(parent_uuid=folder.uuid, page=0, size=50)
 ```
 
-### Module 3: Conformer Generation
+List helpers return one page. Increment the zero-based `page` until an empty
+page; `size` is page size, not a promise to return every match. Folder listing
+is not recursive: walk child folders separately when inventorying a campaign.
 
-Generate multiple 3D conformers and rank by energy.
+## Workflow decision trees
+
+### pKa vs. MacropKa
+
+**Use microscopic pKa when:**
+
+- You need the pKa of a single ionizable group
+- You're interested in acid–base transitions and protonation thermodynamics
+- The molecule has one or two ionizable sites
+- A specific microscopic transition is the scientific question
+
+**Use macropKa when:**
+
+- You need pH-dependent behavior across a physiologically relevant range (e.g., 0–14)
+- You want aggregated charge and protonation-state populations across pH
+- The molecule has multiple ionizable groups with coupled protonation
+- You need downstream properties like aqueous solubility at different pH
+
+**Example decision:**
+
+```text
+Phenol (pKa ~10): Use microscopic pKa
+Amine (pKa ~9–10): Use microscopic pKa
+Multi-ionizable drug (N, O, acidic group): Use macropKa
+ADME assessment across GI pH: Use macropKa
+```
+
+### Conformer search vs. tautomer search
+
+**Use conformer search when:**
+
+- A single tautomeric form is known
+- You need a diverse 3D ensemble for docking, MD, or SAR analysis
+- Rotatable bonds dominate the chemical space
+
+**Use tautomer search when:**
+
+- Tautomeric equilibrium is uncertain (e.g., heterocycles, keto–enol systems)
+- You need same-formula proton-shift isomers; enumerate charge/protonation states separately
+- Downstream calculations (docking, pKa) depend on tautomeric form
+
+**Combined workflow:**
 
 ```python
-import rowan
-import pandas as pd
-
-client = rowan.RowanClient()
-
-# Generate and optimize 10 conformers at GFN2-xTB level
-job = client.compute(
-    smiles="CC(C)CC1=CC=C(C=C1)C(C)C(=O)O",  # ibuprofen
-    method="gfn2-xtb",
-    tasks=["conformers"],
-    n_conformers=10,
+# Step 1: Find best tautomer
+taut_wf = rowan.submit_tautomer_search_workflow(
+    initial_molecule=rowan.Molecule.from_smiles("O=c1cccc[nH]1"),
+    name="2-pyridone tautomers",
 )
-result = client.wait(job.id)
+best_taut = taut_wf.result().best_tautomer  # Molecule or None, not SMILES
+if best_taut is None:
+    raise RuntimeError("No weighted tautomer structure was returned")
 
-# Rank conformers by relative energy
-conformers = result.conformers
-df = pd.DataFrame([
-    {"conformer_id": i,
-     "energy_hartree":    c.energy,
-     "rel_energy_kcal":   (c.energy - min(c2.energy for c2 in conformers)) * 627.509}
-    for i, c in enumerate(conformers)
-]).sort_values("rel_energy_kcal")
-
-print(df.to_string(index=False))
-print(f"\nLowest energy conformer ID: {df.iloc[0]['conformer_id']}")
-```
-
-### Module 4: Torsional Scan
-
-Map energy as a function of a dihedral angle.
-
-```python
-import rowan
-import numpy as np
-import matplotlib.pyplot as plt
-
-client = rowan.RowanClient()
-
-# Scan the C-C=C-C dihedral of butene
-job = client.compute(
-    smiles="CC=CC",             # but-2-ene
-    method="gfn2-xtb",
-    tasks=["torsion_scan"],
-    torsion_atoms=[0, 1, 2, 3],  # atom indices defining dihedral
-    n_scan_points=36,             # 36 points = 10-degree steps
+# Step 2: Generate conformers from best tautomer
+conf_wf = rowan.submit_conformer_search_workflow(
+    initial_molecule=best_taut,
+    name="2-pyridone conformers",
 )
-result = client.wait(job.id)
-
-angles  = [point.angle  for point in result.torsion_scan]
-energies = [point.energy for point in result.torsion_scan]
-rel_e = [(e - min(energies)) * 627.509 for e in energies]  # convert to kcal/mol
-
-fig, ax = plt.subplots(figsize=(7, 4))
-ax.plot(angles, rel_e, "o-", color="steelblue")
-ax.set_xlabel("Dihedral angle (degrees)")
-ax.set_ylabel("Relative energy (kcal/mol)")
-ax.set_title("Torsional potential: but-2-ene C-C=C-C dihedral")
-plt.tight_layout()
-plt.savefig("torsion_scan.png", dpi=150)
-print("Torsion scan saved -> torsion_scan.png")
 ```
 
-### Module 5: Single-Point Properties
+### Docking vs. analogue docking vs. cofolding
 
-Compute electronic properties at a fixed geometry (HOMO/LUMO, partial charges, ESP).
+| Workflow | Use When | Input | Output |
+|----------|----------|-------|--------|
+| Docking | Single ligand, known pocket | Protein + 3D ligand + pocket coords | Poses and scoring records |
+| Analogue docking | Related compounds sharing a scaffold | Protein + SMILES list + bound reference pose | Poses and scores keyed by SMILES |
+| Protein-ligand cofolding | Sequence + ligand, no crystal structure | Protein sequence + SMILES | ML-predicted bound complex |
+
+## Protein utilities
+
+### Upload proteins
+
+Illustrative API calls below require an authenticated account and the named local file; they have not been re-run against the service for this documentation correction. Verify each PDB accession against its target before building a docking campaign: [1M17 is EGFR bound to erlotinib](https://www.rcsb.org/structure/1M17).
 
 ```python
-import rowan
-
-client = rowan.RowanClient()
-
-# Single-point DFT: get frontier orbital energies and partial charges
-job = client.compute(
-    smiles="c1ccccc1N",          # aniline
-    method="b3lyp",
-    basis_set="6-311+g**",
-    tasks=["single_point", "partial_charges", "orbitals"],
+# From local PDB file
+protein = rowan.upload_protein(
+    name="egfr_kinase_domain",
+    file_path="egfr_kinase.pdb",
 )
-result = client.wait(job.id)
 
-print(f"HOMO energy: {result.homo_energy:.4f} eV")
-print(f"LUMO energy: {result.lumo_energy:.4f} eV")
-print(f"HOMO-LUMO gap: {result.lumo_energy - result.homo_energy:.4f} eV")
-print(f"Dipole moment: {result.dipole_moment:.3f} Debye")
-
-# Partial charges (Mulliken)
-for i, (atom, charge) in enumerate(zip(result.geometry.atoms, result.partial_charges)):
-    print(f"  Atom {i} ({atom.symbol}): {charge:+.4f} e")
-```
-
-### Module 6: Batch Job Submission
-
-Submit multiple molecules concurrently.
-
-```python
-import rowan
-import pandas as pd
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
-client = rowan.RowanClient()
-
-smiles_list = [
-    ("aspirin",      "CC(=O)Oc1ccccc1C(=O)O"),
-    ("caffeine",     "Cn1cnc2c1c(=O)n(c(=O)n2C)C"),
-    ("paracetamol",  "CC(=O)Nc1ccc(O)cc1"),
-    ("ibuprofen",    "CC(C)Cc1ccc(cc1)C(C)C(=O)O"),
-]
-
-def submit_and_wait(name, smiles):
-    job = client.compute(smiles=smiles, method="gfn2-xtb", tasks=["optimize"])
-    result = client.wait(job.id)
-    return {"name": name, "smiles": smiles, "energy": result.energy}
-
-results = []
-with ThreadPoolExecutor(max_workers=4) as executor:
-    futures = {executor.submit(submit_and_wait, n, s): n for n, s in smiles_list}
-    for future in as_completed(futures):
-        results.append(future.result())
-
-df = pd.DataFrame(results)
-df.to_csv("batch_energies.csv", index=False)
-print(df)
-```
-
-## Key Parameters
-
-| Parameter | Module | Default | Range / Options | Effect |
-|-----------|--------|---------|-----------------|--------|
-| `method` | compute | required | `"gfn2-xtb"`, `"b3lyp"`, `"wb97x-d"`, `"mp2"` | QC method; xTB is fastest, DFT is accurate, MP2 for correlation |
-| `basis_set` | compute (DFT) | method-dependent | `"6-31g*"`, `"6-311+g**"`, `"def2-svp"`, `"def2-tzvp"` | Basis set; larger = more accurate and slower |
-| `tasks` | compute | required | `["optimize"]`, `["single_point"]`, `["conformers"]`, `["torsion_scan"]` | What calculation to run |
-| `n_conformers` | conformers task | `10` | `1`–`100` | Number of conformers to generate and optimize |
-| `n_scan_points` | torsion_scan | `36` | `12`–`72` | Number of dihedral scan points (360/n gives step size) |
-| `solvent` | compute | `None` | `"water"`, `"dmso"`, `"methanol"`, etc. | Implicit SMD solvation model |
-| `torsion_atoms` | torsion_scan | required | list of 4 atom indices | Defines the dihedral angle for the scan |
-
-## Best Practices
-
-1. **Use GFN2-xTB for screening, DFT for final characterization**: xTB is 100–1000x faster than DFT and adequate for conformer ranking and geometry exploration. Switch to B3LYP or wB97X-D for accurate energetics, HOMO/LUMO gaps, and publishable results.
-
-2. **Always optimize geometry before computing properties**: Single-point calculations on unrelaxed geometries (e.g., from SMILES 3D embedding) give unreliable energies and electronic properties. Run `tasks=["optimize"]` first.
-
-3. **Set `solvent` for biologically relevant molecules**: Gas-phase energies often differ dramatically from solution-phase for charged or highly polar molecules. Use `solvent="water"` for drug candidates evaluated in aqueous conditions.
-
-4. **Poll job status for long DFT calculations**: Use `client.wait()` with a timeout or poll with `client.get_job(job_id).status` in long-running batch workflows to avoid blocking.
-
-5. **Export optimized geometries as XYZ for reuse**: Save the optimized geometry to avoid re-running costly DFT jobs when different property calculations are needed on the same structure.
-   ```python
-   with open("optimized.xyz", "w") as f:
-       f.write(result.geometry.to_xyz())
-   ```
-
-## Common Workflows
-
-### Workflow 1: Conformer Search and Property Calculation
-
-**Goal**: Find the lowest-energy conformer of a drug candidate and compute its electronic properties.
-
-```python
-import rowan
-import pandas as pd
-
-client = rowan.RowanClient()
-smiles = "CC(C)Cc1ccc(cc1)C(C)C(=O)O"   # ibuprofen
-
-# Step 1: Generate and rank conformers at fast xTB level
-conf_job = client.compute(
-    smiles=smiles, method="gfn2-xtb", tasks=["conformers"], n_conformers=20
+# From PDB database
+protein_from_pdb = rowan.create_protein_from_pdb_id(
+    name="EGFR (1M17)",
+    code="1M17",
 )
-conf_result = client.wait(conf_job.id)
-lowest_conf = min(conf_result.conformers, key=lambda c: c.energy)
-print(f"Lowest conformer energy: {lowest_conf.energy:.6f} Hartree")
 
-# Step 2: Refine with DFT and compute properties
-dft_job = client.compute(
-    xyz=lowest_conf.to_xyz(),      # use optimized xTB geometry as DFT start
-    method="b3lyp",
-    basis_set="6-31g*",
-    tasks=["optimize", "partial_charges", "orbitals"],
-    solvent="water",
-)
-dft_result = client.wait(dft_job.id)
+# Retrieve previously uploaded protein
+protein = rowan.retrieve_protein("protein-uuid")
 
-print(f"B3LYP/6-31G* energy (water): {dft_result.energy:.6f} Hartree")
-print(f"HOMO-LUMO gap: {dft_result.lumo_energy - dft_result.homo_energy:.4f} eV")
-print(f"Dipole moment: {dft_result.dipole_moment:.3f} Debye")
+# List the first page of proteins
+my_proteins = rowan.list_proteins(page=0, size=20)
 ```
 
-### Workflow 2: Relative Stability of Tautomers
+### Protein preparation guidance
 
-**Goal**: Compare the energies of two tautomers to determine which is more stable in water.
+- **File format**: `upload_protein` selects mmCIF for `.cif`/`.mmcif`, PDB otherwise.
+- **Preparation**: Upload/import stores a structure; it does not establish docking readiness.
+  Inspect chain selection, alternate locations, missing atoms/residues, protonation,
+  waters, metals, cofactors, and retained ligands for the chosen workflow.
+- **Multi-chain structures**: Select the intended chains explicitly when appropriate.
+- **Preparation workflow**: `submit_protein_preparation_workflow` exposes pH, missing-atom
+  completion, and non-polymer retention; inspect those settings before using its defaults.
+- **Pocket**: Derive coordinates from the prepared receptor or its bound ligand. Arbitrary
+  example coordinates are not transferable between structures. Validate docking by
+  redocking a known ligand and inspecting geometry; scores are not measured binding free energies.
 
-```python
-import rowan
+## Workflow catalog
 
-client = rowan.RowanClient()
+Nine common workflow categories — descriptors, microscopic pKa, MacropKa, conformer
+search, tautomer search, docking, analogue docking, MSA generation, and protein-ligand
+cofolding — each with submission code and result shapes, plus a directory of
+workflow functions (core modeling, structure-based design, advanced computational
+chemistry, reaction chemistry, advanced properties, binding free energy, and sequence and
+structural biology) are in
+[references/workflow_catalog.md](references/workflow_catalog.md).
 
-tautomers = {
-    "keto":   "CC(=O)CC(=O)C",     # acetylacetone keto form
-    "enol":   "CC(=O)C=C(O)C",     # acetylacetone enol form
-}
+## Batch submission, webhooks, and asynchronous work
 
-energies = {}
-for name, smiles in tautomers.items():
-    job = client.compute(
-        smiles=smiles,
-        method="b3lyp",
-        basis_set="6-311+g**",
-        tasks=["optimize"],
-        solvent="water",
-    )
-    result = client.wait(job.id)
-    energies[name] = result.energy
-    print(f"{name}: {result.energy:.6f} Hartree")
+Batch submit/poll/retrieve, the non-blocking fire-and-check pattern, webhook setup,
+secret creation and rotation, signature verification (with a FastAPI
+handler), and the limits of the published payload contract are in
+[references/batch_and_webhooks.md](references/batch_and_webhooks.md).
 
-delta_e_hartree = energies["enol"] - energies["keto"]
-delta_e_kcal    = delta_e_hartree * 627.509
-print(f"\nDelta E (enol - keto): {delta_e_kcal:.2f} kcal/mol")
-print(f"More stable form: {'enol' if delta_e_kcal < 0 else 'keto'}")
-```
+## Access, pricing, and credits
 
-## Expected Outputs
+Account access, dated published credit rates, and campaign budget guidance are in
+[references/access_and_pricing.md](references/access_and_pricing.md).
 
-- `result.energy` — total electronic energy in Hartree
-- `result.geometry` — optimized 3D geometry (atoms + coordinates)
-- `result.dipole_moment` — scalar dipole moment in Debye
-- `result.homo_energy`, `result.lumo_energy` — frontier orbital energies in eV
-- `result.partial_charges` — list of per-atom charges in elementary charge units
-- `result.conformers` — list of conformer objects with individual energies
-- `result.torsion_scan` — list of (angle, energy) scan points
+## Worked example and troubleshooting
 
-## Common Recipes
+A full lead-optimization campaign — project setup, tautomers, pKa across an analogue
+series, result collection, and a docking follow-up — is in
+[references/end_to_end_example.md](references/end_to_end_example.md).
 
-### Recipe: Quick Single-Point Energy
+Common errors with their fixes, and debugging tips, are in
+[references/troubleshooting.md](references/troubleshooting.md).
 
-When to use: Compare relative energies of two conformers or reaction intermediates in one call.
+## Recommended usage patterns
 
-```python
-import rowan
+- **Prefer Rowan-native workflows** over low-level assembly when they exist
+- **Use projects and folders** for any nontrivial campaign (>5 workflows)
+- **Use `result()` to block until complete** (default: `wait=True, poll_interval=5`)
+- **Use typed result properties first**, fall back to `.data` for unmapped fields
+- **Use batch submission** for compound libraries or analogue series
+- **Chain workflows** for multi-step chemistry campaigns:
+  - `pKa → macropKa → permeability` (ADME assessment)
+  - `tautomer search → docking → pose-analysis MD` (pose refinement)
+  - `MSA generation → protein-ligand cofolding` (AI structure prediction)
+- **Use webhooks** for long-running campaigns (>50 workflows) or asynchronous pipelines
+- **Use streaming** for interactive feedback on large conformer/docking searches
 
-client = rowan.Client()
+## Summary
 
-smiles_list = ["CC(=O)O", "C(=O)(O)C"]  # Acetic acid, two representations
-jobs = []
-for smi in smiles_list:
-    job = client.compute(
-        molecule=rowan.Molecule.from_smiles(smi),
-        theory_level="gfn2-xtb",
-        task="single_point",
-    )
-    jobs.append(job)
+Use Rowan when your workflow requires cloud execution for molecular-design tasks, especially when you want one unified API and consistent result handling across small-molecule modeling, proteins, docking, ADME prediction, and ML structure generation.
 
-# Collect energies
-for smi, job in zip(smiles_list, jobs):
-    result = client.wait(job)
-    print(f"{smi}: energy = {result.energy:.6f} Hartree")
-```
-
-### Recipe: Check Running Job Status
-
-When to use: Monitor a long-running optimization or conformer search without blocking.
-
-```python
-import rowan, time
-
-client = rowan.Client()
-job = client.compute(
-    molecule=rowan.Molecule.from_smiles("c1ccccc1"),
-    theory_level="gfn2-xtb",
-    task="optimize",
-)
-print(f"Job ID: {job.id}")
-
-# Poll every 10 seconds (non-blocking)
-for _ in range(30):
-    status = client.status(job)
-    print(f"Status: {status}")
-    if status in ("completed", "failed"):
-        break
-    time.sleep(10)
-
-result = client.get(job)
-print(f"Final energy: {result.energy:.6f} Hartree")
-```
-
-## Troubleshooting
-
-| Problem | Cause | Solution |
-|---------|-------|----------|
-| `AuthenticationError` | API key not set or expired | Set `ROWAN_API_KEY` env variable; regenerate key at rowanquantum.com |
-| Job stays in `queued` status | High server load on free tier | Wait or upgrade to paid tier; free tier may queue during peak hours |
-| `SCF not converged` error | DFT self-consistent field failed | Try a smaller basis set; use `method="gfn2-xtb"` first to get a better starting geometry |
-| `ValueError: invalid SMILES` | Malformed SMILES string | Validate with `Chem.MolFromSmiles(smiles)` using RDKit before submission |
-| High energy after optimization | Geometry stuck in local minimum | Generate multiple conformers with `tasks=["conformers"]` and pick the lowest |
-| Missing `result.homo_energy` | Orbital calculation not requested | Add `"orbitals"` to the `tasks` list |
-
-## References
-
-- [Rowan Documentation](https://docs.rowanquantum.com/) — official SDK and API reference
-- [Rowan Python SDK (GitHub)](https://github.com/rowansci/rowan-python) — source code and examples
-- [GFN2-xTB paper: Bannwarth et al. (2019), J. Chem. Theory Comput.](https://doi.org/10.1021/acs.jctc.8b01176) — xTB semiempirical method used by Rowan
-- [B3LYP functional reference: Becke (1993), J. Chem. Phys.](https://doi.org/10.1063/1.464913) — foundational DFT method
+Rowan is a molecular-design workflow platform, not just a remote chemistry engine. It handles infrastructure scaling, result persistence, and multi-step pipeline orchestration so you can focus on science.

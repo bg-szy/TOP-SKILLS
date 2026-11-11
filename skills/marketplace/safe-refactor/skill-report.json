@@ -1,15 +1,15 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-08-12T09:08:17.561Z",
-    "slug": "juliusbrussee-safe-refactor",
-    "source_url": "https://github.com/juliusbrussee/caveman/tree/a0109974ea3258a14aadaef1ed1f8ff2837d30d5/skills/safe-refactor",
-    "source_ref": "a0109974ea3258a14aadaef1ed1f8ff2837d30d5",
+    "generated_at": "2026-10-22T19:27:59.207Z",
+    "slug": "agentkitco-safe-refactor",
+    "source_url": "https://github.com/agentkitco/agentkit-dev-skills/tree/a5058856442fcb89bd538b1c01f94558488bfac3/skills/safe-refactor",
+    "source_ref": "a5058856442fcb89bd538b1c01f94558488bfac3",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "cd52867aba26aafb53379d43068cef9b2feca3a3fff850f877a99f710ccd02c0",
-    "tree_hash": "983259ea248d5f709f099236e69f1b29bb0d8d3370b3b77e7d481935b0c69db9",
+    "content_hash": "27d94e586faa8e2d21e9d487b98aa131f22a8f58e27e3aa6d1bbb1e60598157f",
+    "tree_hash": "2ac924be1ad8453ab10bcdd2226cc3c437f70dd7e7cca9a3fbc83fb0d88f3e3b",
     "provenance": {
       "model_effective": "codex",
       "fallback_chain": [
@@ -20,60 +20,113 @@
       ],
       "analysis_version": "3.0.0"
     },
-    "upstream_version_raw": null,
+    "upstream_version_raw": "1.0",
     "upstream_version_normalized": null,
-    "upstream_version_source": "none",
-    "upstream_version_status": "missing",
-    "upstream_commit_sha": "a0109974ea3258a14aadaef1ed1f8ff2837d30d5"
+    "upstream_version_source": "metadata.version",
+    "upstream_version_status": "invalid",
+    "upstream_commit_sha": "a5058856442fcb89bd538b1c01f94558488bfac3",
+    "previous_tree_hash": "2ac924be1ad8453ab10bcdd2226cc3c437f70dd7e7cca9a3fbc83fb0d88f3e3b",
+    "previous_source_ref": "3de707c7875147b65ddff504d86b0d0dbf713fa7"
   },
   "skill": {
     "name": "safe-refactor",
-    "description": "Restructure code while preserving behavior. Use for extraction, consolidation, ownership moves, or cleanup where verification must bracket structural edits.",
-    "summary": "Guide focused refactors with verification before and after each structural change.",
+    "description": "Refactor in small, verified steps, with behavior locked by tests before any change. Use when asked to refactor, clean up, rename, extract or restructure code without changing behavior.",
+    "summary": "Guide behavior-preserving refactors with baseline tests, small changes, dependency checks, and explicit verification.",
     "icon": "📦",
-    "author": "juliusbrussee",
+    "version": "1.0",
+    "author": "agentkitco",
     "license": "MIT",
     "category": "coding",
     "tags": [
       "refactoring",
+      "characterization-tests",
       "code-quality",
       "behavior-preservation",
-      "testing",
-      "software-maintenance"
+      "incremental-changes"
     ],
     "supported_tools": [
       "claude",
       "codex",
       "claude-code"
     ],
-    "risk_factors": []
+    "risk_factors": [
+      "external_commands"
+    ]
   },
   "security_audit": {
     "risk_level": "safe",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "The only static finding is a false positive caused by a normal refactoring constraint in SKILL.md. No malicious intent, unsafe system access, or prompt injection was found.",
+    "summary": "All three static findings are false positives: Markdown command references are not Ruby execution, and the completion report is not system reconnaissance. No evidence found of prompt injection, data exfiltration, or malicious intent in SKILL.md.",
     "remediation": [],
-    "risk_factor_evidence": [],
+    "risk_factor_evidence": [
+      {
+        "factor": "external_commands",
+        "evidence": [
+          {
+            "file": "SKILL.md",
+            "line_start": 19,
+            "line_end": 19
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 24,
+            "line_end": 24
+          }
+        ]
+      }
+    ],
     "static_findings": [
       {
-        "id": "blocker:SKILL.md:14:system-reconnaissance",
+        "id": "external_commands:SKILL.md:19:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 19,
+        "line_end": 19,
+        "snippet": "4. **Check the blast radius.** Search for callers and dependents (`rg`), including tests, scripts, d"
+      },
+      {
+        "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 24,
+        "line_end": 24,
+        "snippet": "- **After every step** run the relevant tests plus type check or lint. If red, undo the step (`git r"
+      },
+      {
+        "id": "blocker:SKILL.md:31:system-reconnaissance",
         "category": "blocker",
         "severity": "low",
         "pattern": "System reconnaissance",
         "file": "SKILL.md",
-        "line_start": 14,
-        "line_end": 14,
-        "snippet": "- Avoid dependency or configuration growth without correctness need."
+        "line_start": 31,
+        "line_end": 31,
+        "snippet": "Report: the steps taken, tests run and results, what you deliberately did not change, bugs or smells"
       }
     ],
     "finding_verdicts": [
       {
-        "id": "blocker:SKILL.md:14:system-reconnaissance",
+        "id": "external_commands:SKILL.md:19:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 14 only advises avoiding unnecessary dependency or configuration growth during refactoring. It does not request system reconnaissance, configuration discovery, or privileged access."
+        "reason": "Line 19 uses Markdown backticks around rg to recommend searching project callers and dependents. This is ordinary refactoring preparation, not Ruby execution or command injection."
+      },
+      {
+        "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.97,
+        "reason": "Line 24 uses Markdown backticks around git restore while directing the agent to undo only the failed refactoring step. No Ruby code, shell interpolation, or instruction to discard unrelated changes appears."
+      },
+      {
+        "id": "blocker:SKILL.md:31:system-reconnaissance",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "Line 31 requests a summary of refactoring steps, test results, unchanged scope, and remaining uncertainty. It does not request host enumeration, credential collection, or system reconnaissance."
       }
     ],
     "semantic_findings": [],
@@ -82,153 +135,145 @@
     "medium_findings": [],
     "low_findings": [],
     "dangerous_patterns": [],
-    "files_scanned": 2,
-    "total_lines": 22,
+    "files_scanned": 1,
+    "total_lines": 38,
     "audit_model": "codex",
-    "audited_at": "2026-08-12T09:08:17.561Z",
+    "audited_at": "2026-10-22T19:27:59.207Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Refactor Code Without Changing Behavior",
-    "value_statement": "Structural code changes can introduce subtle regressions and expand scope. This skill defines behavior boundaries and brackets focused refactors with verification.",
+    "user_title": "Refactor Code with Tests and Small Changes",
+    "value_statement": "Code cleanup can introduce behavior changes that are difficult to detect. This skill guides small refactoring steps with baseline tests, dependency checks, and repeated verification.",
     "seo_keywords": [
-      "safe refactoring",
-      "behavior-preserving refactor",
-      "code restructuring",
-      "regression prevention",
-      "software maintenance",
       "Claude",
       "Codex",
       "Claude Code",
-      "test-driven refactoring"
+      "safe refactoring",
+      "behavior preservation",
+      "characterization tests",
+      "code cleanup",
+      "incremental refactoring",
+      "regression testing"
     ],
     "actual_capabilities": [
-      "Defines the behavior that a refactor must preserve.",
-      "Separates structural work from feature changes.",
-      "Plans one ownership-boundary move at a time.",
-      "Preserves interfaces, failures, ordering, and compatibility unless scope says otherwise.",
-      "Requires equivalent verification before and after structural edits."
+      "Defines the refactoring goal and boundaries before editing code.",
+      "Directs baseline test runs and records pre-existing failures.",
+      "Guides characterization tests for behavior that lacks coverage.",
+      "Checks callers, dependents, documentation, and configuration before renaming symbols.",
+      "Separates changes into small steps with tests and type checks or lint after each step.",
+      "Reports completed work, verification results, excluded changes, and remaining uncertainty."
     ],
     "limitations": [
-      "Does not provide language-specific refactoring commands.",
-      "Does not create tests when no verification method exists.",
-      "Does not approve intentional behavior or interface changes.",
-      "Depends on available builds, tests, or other observable proof."
+      "Provides workflow instructions rather than a bundled refactoring engine or test runner.",
+      "Depends on the host assistant and project tools to inspect, edit, and test code.",
+      "Tests cannot prove preservation of behavior they do not exercise.",
+      "Requires user input for unclear failures, public API breaks, or discovered bugs."
     ],
     "use_cases": [
       {
-        "title": "Extract a Shared Module",
-        "description": "Plan a focused extraction while preserving callers, error behavior, and test results.",
+        "title": "Clean Up a Working Module",
+        "description": "Extract duplicated logic while preserving outputs, error messages, logging, and edge cases through small, verified edits.",
         "target_user": "Application developers"
       },
       {
-        "title": "Move Component Ownership",
-        "description": "Transfer one responsibility between packages while keeping public interfaces stable.",
-        "target_user": "Software architects"
+        "title": "Protect Legacy Behavior",
+        "description": "Add characterization tests before restructuring code that lacks coverage, and document behavior that remains unverified.",
+        "target_user": "Legacy system maintainers"
       },
       {
-        "title": "Review Maintenance Changes",
-        "description": "Check whether a cleanup remains structural and includes equivalent verification.",
-        "target_user": "Code reviewers"
+        "title": "Review a Shared API Rename",
+        "description": "Identify callers and dependents before renaming exported symbols, and request approval when compatibility requires a breaking change.",
+        "target_user": "Library maintainers"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Plan a Small Refactor",
-        "prompt": "Use safe-refactor to plan this cleanup. Identify preserved behavior, the smallest structural change, and verification before and after the edit.",
-        "scenario": "A beginner needs a clear plan for a contained cleanup."
+        "title": "Assess a Refactoring Task",
+        "prompt": "Use safe-refactor to assess [module]. State the goal, behavior boundaries, existing tests, and baseline results before proposing any edits.",
+        "scenario": "Beginner: establish scope and verification before changing code."
       },
       {
         "title": "Extract Repeated Logic",
-        "prompt": "Extract the repeated logic into one owner. Preserve interfaces, failures, ordering, and compatibility. Keep each intermediate state buildable and testable.",
-        "scenario": "A developer wants to consolidate duplicated behavior."
+        "prompt": "Use safe-refactor to extract repeated logic in [file]. Preserve behavior, make one change per step, and run relevant tests after each step.",
+        "scenario": "Intermediate: reduce duplication in code with existing tests."
       },
       {
-        "title": "Move an Ownership Boundary",
-        "prompt": "Move this responsibility from the current module to the target module. Separate feature changes and verify every affected public contract.",
-        "scenario": "A team is reorganizing responsibilities across modules."
+        "title": "Characterize Untested Code",
+        "prompt": "Use safe-refactor on [legacy module]. Add characterization tests for realistic inputs before restructuring. Preserve current errors and ordering, and report coverage gaps.",
+        "scenario": "Intermediate: establish a safety net for legacy code."
       },
       {
-        "title": "Design a Staged Refactor",
-        "prompt": "Design staged changes for this cross-package refactor. Define invariants, compatibility constraints, rollback points, and equivalent proof for every stage.",
-        "scenario": "A senior engineer is planning a high-impact structural change."
+        "title": "Plan a Shared Symbol Rename",
+        "prompt": "Use safe-refactor to rename [exported symbol]. Check all callers and dependents, propose a deprecation path, and request approval before any API break.",
+        "scenario": "Advanced: coordinate a compatibility-sensitive change across dependent code."
       }
     ],
     "output_examples": [
       {
-        "input": "Move validation from the controller into the domain service without changing API behavior.",
+        "input": "Extract duplicated validation from two functions without changing their behavior.",
         "output": [
-          "Boundary: preserve response status, error messages, validation order, and public service signatures.",
-          "Sequence: characterize current behavior, move validation, keep the controller adapter, then remove duplication.",
-          "Verification: run the same controller and service tests before and after each step."
+          "Boundary: preserve validation order, error messages, and return values.",
+          "Baseline: relevant tests passed before editing.",
+          "Change: extracted the shared validation logic in one reviewable step.",
+          "Verification: relevant tests and lint passed after extraction.",
+          "Left unchanged: an unrelated naming inconsistency."
         ]
       },
       {
-        "input": "Consolidate duplicate cache invalidation logic used by two modules.",
+        "input": "Restructure a legacy parser that has no tests.",
         "output": [
-          "Boundary: preserve invalidation timing, key format, failure handling, and call order.",
-          "Sequence: introduce one owner, migrate one caller, verify, then migrate the second caller.",
-          "Stop condition: both callers use the shared owner and existing behavior remains proven."
+          "Characterization tests added for representative valid and invalid inputs.",
+          "Baseline behavior recorded, including existing error messages.",
+          "Restructuring completed in separate, verified steps.",
+          "Uncertainty: large input performance was not exercised.",
+          "Observed bug reported separately and left unchanged."
         ]
       }
     ],
     "best_practices": [
-      "Record observable behavior and verification commands before editing.",
-      "Move one responsibility at a time and keep every state testable.",
-      "Run the same proof after changes and stop when the requested structure is achieved."
+      "Define behavior boundaries and record baseline failures before editing.",
+      "Add characterization tests before restructuring untested behavior.",
+      "Review each small diff and verify that rollback preserves pre-existing user edits."
     ],
     "anti_patterns": [
-      "Mixing new features with structural changes.",
-      "Changing public contracts without explicit scope.",
-      "Adding dependencies or configuration without a correctness need."
+      "Mixing refactoring with bug fixes, features, or dependency upgrades.",
+      "Continuing through failing tests instead of undoing the last step and reducing its scope.",
+      "Changing public APIs without approval or a deprecation path."
     ],
     "faq": [
       {
-        "question": "What counts as a safe refactor?",
-        "answer": "A safe refactor changes structure while preserving explicitly defined observable behavior."
+        "question": "What does this skill provide?",
+        "answer": "It provides a structured workflow for behavior-preserving refactoring, including test baselines, dependency checks, incremental edits, and a final report."
       },
       {
-        "question": "Does this skill write code?",
-        "answer": "It guides an agent through scoped structural edits when code and verification tools are available."
+        "question": "What happens when the code has no tests?",
+        "answer": "The workflow calls for characterization tests that record current behavior before refactoring begins."
       },
       {
-        "question": "Can I change an API during the refactor?",
-        "answer": "Only when the API change is explicitly scoped. Otherwise, public interfaces should remain stable."
+        "question": "Does it guarantee identical behavior?",
+        "answer": "No. Verification depends on test coverage and available checks, and the final report must identify behavior that remains uncertain."
       },
       {
-        "question": "What verification should I use?",
-        "answer": "Use existing tests, builds, static checks, or focused behavior checks that cover the preserved boundary."
+        "question": "Can it fix bugs during a refactor?",
+        "answer": "It directs the assistant to report discovered bugs and handle fixes as separate changes."
       },
       {
-        "question": "Can this skill add dependencies?",
-        "answer": "It discourages dependency growth unless a dependency is required for correctness."
+        "question": "When does it ask for user input?",
+        "answer": "It asks when tests cannot run, baseline failures are unexplained, a public API break is needed, or a real bug is found."
       },
       {
-        "question": "When should the refactor stop?",
-        "answer": "Stop when behavior matches the baseline and the requested structure is achieved."
+        "question": "Does it require a specific programming language?",
+        "answer": "No specific language is required. The host assistant must use the existing project tests, type checker, or linter."
       }
     ]
   },
   "file_structure": [
     {
-      "name": "agents",
-      "type": "dir",
-      "path": "agents",
-      "children": [
-        {
-          "name": "openai.yaml",
-          "type": "file",
-          "path": "agents/openai.yaml",
-          "lines": 5
-        }
-      ]
-    },
-    {
       "name": "SKILL.md",
       "type": "file",
       "path": "SKILL.md",
-      "lines": 17
+      "lines": 38
     }
   ]
 }

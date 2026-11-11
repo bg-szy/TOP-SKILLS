@@ -86,6 +86,54 @@ shared column x-position. Placing each letter at `(0, 1)` in its subfigure's
 coordinate frame (`transform=sf.transSubfigure`) guarantees it hugs its panel
 regardless of neighbors' label widths.
 
+## Pre-flight Interview
+
+Settle these with the user before writing any analysis code.
+
+```yaml
+decisions:
+  - id: D1
+    param: panelSelection
+    kind: required
+    source: user
+    ask: "Which results earn a panel, and what claim should the assembled figure make?"
+    default: null
+
+  - id: D2
+    param: panelOrder
+    kind: required
+    source: user
+    depends_on: [D1]
+    ask: "In what order should the panels be read, and which belong on the same row as a group?"
+    default: "analysis order"
+
+  - id: D3
+    param: sharedScales
+    kind: required
+    source: user
+    depends_on: [D1]
+    ask: "Should panels that show the same quantity share one axis range, or each get its own?"
+    default: "shared within a row of comparable panels"
+
+  - id: D4
+    param: figureDimensions
+    kind: required
+    source: user
+    ask: "What column width and page format is this figure for?"
+    default: "single column, portrait"
+
+  - id: D5
+    param: exportFormat
+    kind: optional
+    source: user
+    ask: "Vector for submission, raster for a slide, or both?"
+    default: "vector PDF plus a raster preview"
+```
+
+D3 is the only one here that changes what a reader concludes rather than how it
+looks. Independent y-axes make a small effect and a large one occupy the same
+visual height, and side-by-side panels invite exactly that comparison.
+
 ## Decision Framework
 
 Start from what you have, then how panels relate:
@@ -143,9 +191,9 @@ Layout: sketch the grid [[...]], nest subfigures for spanning panels, fill every
    subfigure axis and a standalone figure), build the subfigures (nest for spanning
    panels), call each `draw_<letter>` onto its axis (data) or `imshow` the image,
    collect the subfigures into a `panels` dict, and add panel letters with the helper.
-   Then **always save both outputs** to **workspace-relative** paths under `plots/`:
-   - the **composite** as `plots/combined_figure1.pdf` + `plots/combined_figure1.png`, and
-   - **each individual panel** as `plots/figure1A.png`, `plots/figure1B.png`, … (plus
+   Then **always save both outputs** to **workspace-relative** paths under `figures/`:
+   - the **composite** as `figures/combined_figure1.pdf` + `figures/combined_figure1.png`, and
+   - **each individual panel** as `figures/figure1A.png`, `figures/figure1B.png`, … (plus
      matching `.pdf`) by rendering every `draw_<letter>` onto a fresh standalone figure.
    See "Exporting individual panels" for the exact loop.
 5. **Report the saved paths** back to the user — the combined figure and every
@@ -319,22 +367,22 @@ panels = {"A": sfs[0, 0], "B": sfs[0, 1], "C": top[1]}
 for letter, sf in panels.items():
     DATA_PANELS[letter](sf.subplots())
 add_panel_labels(panels)
-fig.savefig("plots/combined_figure1.pdf")
-fig.savefig("plots/combined_figure1.png", dpi=300)
+fig.savefig("figures/combined_figure1.pdf")
+fig.savefig("figures/combined_figure1.png", dpi=300)
 
 # 3) Individual panels — same functions onto fresh standalone figures (no letter).
 for letter, draw in DATA_PANELS.items():
     w_mm, h_mm = PANEL_SIZE_MM[letter]
     fp = plt.figure(layout="constrained", figsize=(w_mm / 25.4, h_mm / 25.4))
     draw(fp.subplots())
-    fp.savefig(f"plots/figure1{letter}.pdf")
-    fp.savefig(f"plots/figure1{letter}.png", dpi=300)
+    fp.savefig(f"figures/figure1{letter}.pdf")
+    fp.savefig(f"figures/figure1{letter}.png", dpi=300)
     plt.close(fp)
 ```
 
 Output files (Figure 1 with panels A, B, C):
-`plots/combined_figure1.pdf`, `plots/combined_figure1.png`,
-`plots/figure1A.{pdf,png}`, `plots/figure1B.{pdf,png}`, `plots/figure1C.{pdf,png}`.
+`figures/combined_figure1.pdf`, `figures/combined_figure1.png`,
+`figures/figure1A.{pdf,png}`, `figures/figure1B.{pdf,png}`, `figures/figure1C.{pdf,png}`.
 
 Notes:
 - **No panel letter on standalones** — the `A/B/C` label belongs to the composite
@@ -352,11 +400,11 @@ Notes:
 
 - **One figure, one style.** Never stitch separate PNGs or call standalone plot
   functions for a composite; copy their bodies onto each subfigure's axis.
-- **Workspace-relative paths only.** Save under `plots/` (create it if needed);
+- **Workspace-relative paths only.** Save under `figures/` (create it if needed);
   never absolute paths like `/tmp` or `/home/...`.
 - **Only plot data that exists.** Never invent columns, groups, or values.
 - **Label every axis, keep every legend inside its panel, fill every cell.**
-- **Always export both** a vector `.pdf` and a `.png` (dpi≥300) under `plots/`.
+- **Always export both** a vector `.pdf` and a `.png` (dpi≥300) under `figures/`.
 
 ## Common Pitfalls
 

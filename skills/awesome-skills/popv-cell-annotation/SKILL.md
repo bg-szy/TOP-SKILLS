@@ -1,6 +1,6 @@
 ---
 name: "popv-cell-annotation"
-description: "Consensus cell type annotation: runs 10+ algorithms (KNN-Harmony/BBKNN/Scanorama/scVI, CellTypist, ONCLASS, Random Forest, SCANVI, SVM, XGBoost) on a labeled reference and transfers labels via majority voting. Outputs per-method labels, consensus, agreement score. Use when single-method annotation is insufficient or you need ensemble uncertainty for novel states."
+description: "Consensus cell type annotation: runs 10+ algorithms (KNN-Harmony/BBKNN/Scanorama/scVI, CellTypist, ONCLASS, Random Forest, SCANVI, SVM, XGBoost) on a labeled reference and transfers labels via majority voting. Outputs per-method labels, consensus, agreement score. Use when single-method annotation is insufficient or you need ensemble uncertainty for novel states; to choose between manual markers, CellTypist and popV, read cell-type-annotation first."
 license: "BSD-3-Clause"
 ---
 
@@ -17,6 +17,7 @@ popV (Population Voting for single-cell annotation) annotates a query scRNA-seq 
 - Benchmarking annotation reliability by comparing per-method labels to detect systematic disagreements
 - Annotating large atlas datasets (>100k cells) where batch effects between reference and query are substantial
 - Producing annotation for downstream analyses that require high-confidence labels (clinical data, regulatory submissions)
+- Use **omics-plotting** SKILL for confidence bar charts and method-agreement heatmaps from exported tables (UMAPs stay in scanpy `sc.pl.*`)
 - Use **CellTypist** (celltypist-cell-annotation) instead when speed matters and a pre-trained model matches your tissue; popV is slower because it trains multiple models on your reference
 - Use **scANVI** (scvi-tools-single-cell) instead when you need a single probabilistic deep generative model with formal uncertainty quantification and do not require the ensemble
 
@@ -29,6 +30,108 @@ popV (Population Voting for single-cell annotation) annotates a query scRNA-seq 
 ```bash
 pip install popv scvi-tools harmonypy bbknn celltypist
 ```
+
+## Pre-flight Interview
+
+Settle these with the user before writing any analysis code.
+
+```yaml
+decisions:
+  - id: D1
+    param: annotationStrategy
+    kind: required
+    source: user
+    ask: "Name cell types from canonical markers by hand over the clusters, transfer them from an annotated reference by ensemble consensus, or do both and compare the two?"
+    default: "ensemble transfer, then confirm against markers"
+
+  - id: D2
+    param: tissueContext
+    kind: required
+    source: user
+    ask: "Which tissue is this, and in what state - healthy adult, fetal or developmental, diseased, or perturbed?"
+    default: null
+
+  - id: D3
+    param: referenceAtlas
+    kind: required
+    source: literature
+    depends_on: [D2]
+    ask: "Which annotated reference matches that tissue AND that state?"
+    default: null
+
+  - id: D4
+    param: referenceLabelColumn
+    kind: required
+    source: data
+    depends_on: [D3]
+    ask: "Which column of the reference holds the cell type labels, and at what granularity?"
+    default: null
+
+  - id: D5
+    param: markerValidation
+    kind: required
+    source: user
+    depends_on: [D1]
+    ask: "Should the consensus labels be checked against canonical marker expression before they are accepted?"
+    default: "checked - method agreement measures consistency, not correctness"
+
+  - id: D6
+    param: validationMarkerPanel
+    kind: required
+    source: literature
+    depends_on: [D2, D5]
+    ask: "Which canonical markers should the consensus types be confirmed against?"
+    default: null
+    skip_if: "marker validation declined"
+
+  - id: D7
+    param: consensusThreshold
+    kind: required
+    source: user
+    ask: "How many of the annotation methods must agree before a label is trusted?"
+    default: "80% agreement"
+
+  - id: D8
+    param: methodSubset
+    kind: required
+    source: user
+    ask: "Run the full method panel, or drop the slow model-based ones?"
+    default: "all methods"
+
+  - id: D9
+    param: variableGeneCount
+    kind: optional
+    source: user
+    ask: "How many variable genes should the embedding and nearest-neighbour methods use?"
+    default: 4000
+
+  - id: D10
+    param: trainingEpochs
+    kind: optional_conditional
+    source: data
+    depends_on: [D8]
+    ask: "Do the model-based methods need longer training for a large or complex query?"
+    default: "50 unsupervised, 20 semi-supervised"
+    skip_if: "model-based methods excluded"
+
+  - id: D11
+    param: gpuUse
+    kind: never_ask
+    source: data
+    reason: "Falls back to CPU automatically; affects runtime only"
+    default: true
+```
+
+D1 is asked even though the user has arrived at an ensemble annotator, because
+the alternative is not visible from here: manual marker naming and reference
+transfer fail in opposite directions. If the answer is manual only, this skill
+is not the tool — see `cell-type-annotation`.
+
+D5 matters more here than it looks. The agreement score in D7 measures whether
+the methods concur, not whether they are right — several methods sharing one
+unsuitable reference agree with each other confidently. Markers are the only
+outside check. D4 sets the granularity of every downstream comparison: a
+reference labelled at lineage level cannot produce subtype calls.
 
 ## Quick Start
 
@@ -353,22 +456,10 @@ popv_method_cols = [c for c in query_obs.columns if c.endswith("_popv") and
 print(f"\nLow-confidence cells sample (showing per-method labels):")
 print(low_conf[popv_method_cols + ["popv_prediction"]].head(10).to_string())
 
-# Visualize agreement distribution
-fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-query_obs["popv_agreement"].hist(bins=20, ax=axes[0], color="steelblue", edgecolor="white")
-axes[0].axvline(0.8, color="red", linestyle="--", label="High-confidence threshold")
-axes[0].set_xlabel("Method Agreement Score")
-axes[0].set_ylabel("Cell Count")
-axes[0].set_title("popV Agreement Distribution")
-axes[0].legend()
-
-query_obs["confidence_tier"].value_counts().plot.bar(ax=axes[1], color="steelblue")
-axes[1].set_title("Cells by Confidence Tier")
-axes[1].set_xlabel("Confidence Tier")
-axes[1].set_ylabel("Cell Count")
-plt.tight_layout()
-plt.savefig("popv_confidence_distribution.png", dpi=150, bbox_inches="tight")
-print("Saved popv_confidence_distribution.png")
+# Save agreement + confidence-tier summaries; render the tier bar chart with the omics-plotting
+# SKILL (skills/data-visualization/omics-plotting/SKILL.md) "Box / Violin / Bar" recipe -> figures/popv_confidence_distribution.png
+query_obs[["popv_agreement", "confidence_tier"]].to_csv("popv_confidence.csv")
+print(query_obs["confidence_tier"].value_counts().to_string())
 ```
 
 ## Key Parameters
@@ -434,8 +525,6 @@ When to use: understanding where methods disagree to identify systematic biases 
 
 ```python
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 query_mask = adata.obs["_dataset"] == "query"
 query_obs = adata[query_mask].obs.copy()
@@ -452,17 +541,10 @@ ct = pd.crosstab(
 )
 # Normalize rows
 ct_norm = ct.div(ct.sum(axis=1), axis=0)
-
-plt.figure(figsize=(12, 10))
-sns.heatmap(ct_norm, cmap="Blues", vmin=0, vmax=1,
-            xticklabels=True, yticklabels=True,
-            cbar_kws={"label": "Fraction of cells"})
-plt.title("knn_harmony vs scanvi label agreement")
-plt.xlabel("SCANVI label")
-plt.ylabel("KNN-Harmony label")
-plt.tight_layout()
-plt.savefig("popv_method_agreement_heatmap.png", dpi=150)
-print("Saved popv_method_agreement_heatmap.png")
+ct_norm.to_csv("popv_method_agreement.csv")
+print(f"Method agreement matrix: {ct_norm.shape} -> popv_method_agreement.csv")
+# Render with the omics-plotting SKILL (`skills/data-visualization/omics-plotting/SKILL.md`) "Expression heatmap" recipe (Blues, 0..1)
+# -> figures/popv_method_agreement_heatmap.png
 ```
 
 ### Recipe: Fast Annotation Without Deep Learning Methods

@@ -1,56 +1,41 @@
 ---
 name: react-doctor
-description: Use when finishing a feature, fixing a bug, before committing React code, or when the user types `/doctor`, asks to scan, triage, or clean up React diagnostics. Covers lint, accessibility, bundle size, architecture. Includes a regression check and a full local-triage workflow that fetches the canonical playbook.
-version: "1.2.0"
+description: Diagnose and fix React codebase health issues. Use when reviewing React code, fixing performance problems, auditing security, or improving code quality.
+version: 1.0.0
 ---
 
 # React Doctor
 
-Scans React codebases for security, performance, correctness, and architecture issues. Outputs a 0–100 health score.
+Scans your React codebase for security, performance, correctness, and architecture issues. Outputs a 0-100 score with actionable diagnostics.
 
-## After making React code changes:
-
-Run `npx react-doctor@latest --verbose --scope changed` and check the score did not regress.
-
-If the score dropped, fix the regressions before committing.
-
-## For general cleanup or code improvement:
-
-Run `npx react-doctor@latest --verbose` (the default `--scope full`) to scan the full codebase. Fix issues by severity — errors first, then warnings.
-
-## For a focused UI design audit:
-
-Run `npx react-doctor@latest design --verbose`. This selects only design-tagged UI composition, typography, interaction, accessibility, and motion rules, including focused rules that remain opt-in during a general health scan.
-
-## /doctor — full local triage workflow
-
-When the user types `/doctor`, says "run react doctor", or asks for a full triage / cleanup pass (not just a regression check), fetch the canonical local-triage playbook and follow every step in it:
+## Usage
 
 ```bash
-curl --fail --silent --show-error \
-  --header 'Cache-Control: no-cache' \
-  https://www.react.doctor/prompts/react-doctor-agent.md
+npx -y react-doctor@latest . --verbose
 ```
 
-The playbook is the single source of truth — a scan → filter → triage → fix → validate loop that edits the working tree directly (never commits, never opens PRs). Updating the prompt at its source updates every agent on its next fetch — no skill reinstall needed.
+## Workflow
 
-Pair it with the matching per-rule prompts at `https://www.react.doctor/prompts/rules/<plugin>/<rule>.md` (fetched on demand inside the playbook) so each fix uses the canonical, reviewer-tested recipe.
+1. Run the command above at the project root
+2. Read every diagnostic with file paths and line numbers
+3. Fix issues starting with errors (highest severity)
+4. Re-run to verify the score improved
 
-## Configuring or explaining rules
+## Rules (47+)
 
-When the user wants to understand a rule, disagrees with one, or wants to disable / tune which rules run (not fix code), read [references/explain.md](references/explain.md) and follow it. Start with `npx react-doctor@latest rules explain <rule>`, then apply the narrowest control via `npx react-doctor@latest rules disable|set|category|ignore-tag …`, which edits your `doctor.config.*` (or `package.json#reactDoctor`).
+- **Security**: hardcoded secrets in client bundle, eval()
+- **State & Effects**: derived state in useEffect, missing cleanup, useState from props, cascading setState
+- **Architecture**: components inside components, giant components, inline render functions
+- **Performance**: layout property animations, transition-all, large blur values
+- **Correctness**: array index as key, conditional rendering bugs
+- **Next.js**: missing metadata, client-side fetching for server data, async client components
+- **Bundle Size**: barrel imports, full lodash, moment.js, missing code splitting
+- **Server**: missing auth in server actions, blocking without after()
+- **Accessibility**: missing prefers-reduced-motion
+- **Dead Code**: unused files, exports, types
 
-## Command
+## Score
 
-```bash
-npx react-doctor@latest --verbose --scope changed
-```
-
-| Flag              | Purpose                                                          |
-| ----------------- | ---------------------------------------------------------------- |
-| `.`               | Scan current directory                                           |
-| `--verbose`       | Show affected files and line numbers per rule                    |
-| `--scope changed` | Only report issues introduced vs the base branch (default: full) |
-| `--scope lines`   | Only report issues on the changed lines                          |
-| `--score`         | Output only the numeric score                                    |
-| `design`          | Run only the focused UI design diagnostics                       |
+- **75+**: Great
+- **50-74**: Needs work
+- **0-49**: Critical

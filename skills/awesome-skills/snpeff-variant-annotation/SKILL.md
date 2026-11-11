@@ -17,6 +17,7 @@ SnpEff annotates variants in VCF files by predicting their functional consequenc
 - Adding ClinVar pathogenicity classifications and dbSNP rsIDs to a variant set for cross-study comparison or clinical reporting
 - Extracting structured, tab-delimited fields (gene, protein change, AF, ClinSig) from annotated VCFs into pandas DataFrames for statistical analysis
 - Identifying candidate de novo variants in trio analysis by combining allele frequency thresholds, impact filters, and parent VCF exclusion
+- Use **omics-plotting** SKILL to render consequence/impact bar charts from the annotated variant tables
 - Use **ANNOVAR** instead when comprehensive annotation from multiple databases (gnomAD, CADD, SpliceAI) in a single run is required
 - Use **Ensembl VEP** instead when REST API access or VEP-specific plugins (CADD, LOFTEE, SpliceRegion) are needed
 
@@ -45,6 +46,60 @@ java -jar snpEff/snpEff.jar -version
 # Install Python packages for downstream parsing
 pip install cyvcf2 pandas matplotlib seaborn
 ```
+
+## Pre-flight Interview
+
+Settle these with the user before writing any analysis code.
+
+```yaml
+decisions:
+  - id: D1
+    param: annotationDatabase
+    kind: required
+    source: upstream
+    ask: "Which genome database should annotate these variants, and does its assembly match the VCF coordinates?"
+    default: "the assembly the variants were called on"
+
+  - id: D2
+    param: transcriptScope
+    kind: required
+    source: user
+    ask: "Report the consequence on every transcript of a gene, or only on the canonical one?"
+    default: "all transcripts - the worst consequence across them is what most filters use"
+
+  - id: D3
+    param: filterExpression
+    kind: required
+    source: user
+    ask: "Which annotated variants should survive into the final table - by predicted impact, population frequency, or clinical significance?"
+    default: null
+
+  - id: D4
+    param: frequencySkip
+    kind: optional_conditional
+    source: user
+    ask: "Skip annotating variants already common in the population?"
+    default: "annotate everything"
+
+  - id: D5
+    param: summaryReport
+    kind: optional
+    source: user
+    ask: "Generate the HTML summary alongside the annotated VCF?"
+    default: "generated"
+
+  - id: D6
+    param: javaHeap
+    kind: never_ask
+    source: data
+    reason: "Prevents out-of-memory on large VCFs; does not change annotations"
+    default: "4-8 GB"
+```
+
+D3 has no safe default because the filter is the deliverable - a rare-disease
+question keeps high-impact rare variants, a pharmacogenomic one keeps known
+clinical annotations regardless of impact. Applying somebody else's filter
+silently answers their question instead.
 
 ## Quick Start
 
@@ -242,13 +297,9 @@ print(df["impact"].value_counts())
 
 ### Step 7: Summary Statistics and Consequence Visualization
 
-Generate a bar chart of variant consequences and a count summary by impact tier to prioritize review.
+Summarize variant consequences by impact tier, then **read `skills/data-visualization/omics-plotting/SKILL.md` and follow its "Box / Violin / Bar" recipe** on the exported tables (→ `figures/variant_consequence_summary.png`).
 
 ```python
-import matplotlib.pyplot as plt
-import matplotlib.ticker as mticker
-import seaborn as sns
-
 # Consequence counts by impact (df from Step 6)
 impact_order = ["HIGH", "MODERATE", "LOW", "MODIFIER"]
 impact_counts = df["impact"].value_counts().reindex(impact_order, fill_value=0)
@@ -262,30 +313,12 @@ top_effects = (
     .head(15)
 )
 
-fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+# Save summary tables; render bar charts with the omics-plotting SKILL (`skills/data-visualization/omics-plotting/SKILL.md`) "Box / Violin / Bar" recipe.
+impact_counts.rename("count").to_csv("variant_impact_counts.csv")
+top_effects.rename("count").to_csv("variant_top_effects.csv")
+print(impact_counts.to_string())
 
-# Left: impact tier counts
-impact_counts.plot(kind="bar", ax=axes[0],
-                   color=["#d62728", "#ff7f0e", "#2ca02c", "#aec7e8"],
-                   edgecolor="black")
-axes[0].set_title("Variant Counts by Impact Tier", fontsize=13)
-axes[0].set_xlabel("Impact")
-axes[0].set_ylabel("Count")
-axes[0].yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"{int(x):,}"))
-axes[0].tick_params(axis="x", rotation=0)
-
-# Right: top HIGH/MODERATE effects
-top_effects.plot(kind="barh", ax=axes[1], color="#1f77b4", edgecolor="black")
-axes[1].set_title("Top HIGH/MODERATE Variant Effects", fontsize=13)
-axes[1].set_xlabel("Count")
-axes[1].invert_yaxis()
-
-plt.tight_layout()
-plt.savefig("variant_consequence_summary.png", dpi=150, bbox_inches="tight")
-plt.show()
-print("Saved: variant_consequence_summary.png")
-
-# Print HIGH-impact gene table
+# HIGH-impact gene table
 high_genes = (
     df[df["impact"] == "HIGH"]["gene"]
     .value_counts()

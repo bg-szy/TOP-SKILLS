@@ -2,6 +2,111 @@
 
 All notable changes to the `avoid-ai-writing` skill will be documented in this file.
 
+## [2026-10-19] - Detector And Catalog Test Compatibility
+
+### Added
+
+- Declined Chinese and Japanese documents when unsegmented script characters dominate, matching the standalone detector workflow and avoiding a false clean score from whitespace-based word counts.
+
+### Changed
+
+- Marked the supported-contrast editorial card as judgment-only because the detector exposes no dedicated type for that frame.
+- Adapted helper tests to the curated catalog layout and optional upstream evaluation archives without importing bulky evaluation artifacts.
+- Aligned the root CLI's accepted context values with the shared detector API.
+
+### Fixed
+
+- Kept the root CLI and standalone detector aligned on shared scoring output while retaining standalone diagnostic counters.
+
+## [2026-10-19] - Catalog Freshness And Source Sync
+
+### Added
+
+- Refreshed the catalog metadata and retained-client portability baseline.
+
+### Changed
+
+- Updated the catalog metadata and last-updated state for the 2026-10-19 maintenance pass.
+- Kept the retained-client portability, MCP fallback, Anti-Patterns, Verification Protocol, and Related Skills sections aligned.
+
+### Fixed
+
+- Preserved explicit no-MCP fallbacks and the catalog's safety, approval, and source-boundary guidance.
+
+## [2026-09-14] - Avoid AI Writing v3.35.0 Source Refresh
+
+### Added
+
+- Refreshed the catalog's mapped Avoid AI Writing core, detector, corpus, and measurement helpers from the upstream v3.35.0 source while retaining the cross-client catalog tail and safety boundaries.
+
+### Changed
+
+- Kept the catalog copy focused on runtime and verification support; upstream marketplace metadata, CI, and package-publishing metadata remain outside this skill while the current runtime CLI and gate entry points are retained.
+
+### Fixed
+
+- Updated detector-facing fixtures and corpus guidance, including the current false-positive preprocessing/comparison and bounded local regression checks, so supported local checks follow the upstream behavior.
+
+## [2026-09-08] - Catalog Freshness And Source Sync
+
+### Added
+
+- Refreshed the catalog metadata and retained-client portability baseline.
+
+### Changed
+
+- Updated the catalog metadata and last-updated state for the 2026-09-08 maintenance pass.
+- Kept the retained-client portability, MCP fallback, Anti-Patterns, Verification Protocol, and Related Skills sections aligned.
+
+### Fixed
+
+- Preserved explicit no-MCP fallbacks and the catalog's safety, approval, and source-boundary guidance.
+
+## [2026-09-05] - Catalog Freshness And Source Sync
+
+### Added
+
+- Refreshed the catalog metadata and retained-client portability baseline.
+
+### Changed
+
+- Updated the catalog metadata and last-updated state for the 2026-09-05 maintenance pass.
+- Kept the retained-client portability, MCP fallback, Anti-Patterns, Verification Protocol, and Related Skills sections aligned.
+
+### Fixed
+
+- Preserved explicit no-MCP fallbacks and the catalog's safety, approval, and source-boundary guidance.
+
+## [2026-08-31] - Catalog Freshness And Source Sync
+
+### Added
+
+- Refreshed the catalog metadata and retained-client portability baseline.
+
+### Changed
+
+- Updated the catalog metadata and last-updated state for the 2026-08-31 maintenance pass.
+- Kept the retained-client portability, MCP fallback, Anti-Patterns, Verification Protocol, and Related Skills sections aligned.
+
+### Fixed
+
+- Preserved explicit no-MCP fallbacks and the catalog's safety, approval, and source-boundary guidance.
+
+## [2026-08-29] - Catalog Freshness And Source Sync
+
+### Added
+
+- Refreshed the catalog metadata and retained-client portability baseline.
+
+### Changed
+
+- Updated the catalog metadata and last-updated state for the 2026-08-29 maintenance pass.
+- Kept the retained-client portability, MCP fallback, Anti-Patterns, Verification Protocol, and Related Skills sections aligned.
+
+### Fixed
+
+- Preserved explicit no-MCP fallbacks and the catalog's safety, approval, and source-boundary guidance.
+
 ## [2026-08-24] - Catalog Freshness And Source Sync
 
 ### Added

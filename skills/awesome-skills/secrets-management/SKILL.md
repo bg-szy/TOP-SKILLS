@@ -114,8 +114,6 @@ deploy:
       # Use $DB_PASSWORD, $API_KEY
 ```
 
-**Reference:** See `references/vault-setup.md`
-
 ## AWS Secrets Manager
 
 ### Store Secret
@@ -196,8 +194,6 @@ deploy:
         ./deploy.sh
 ```
 
-**Reference:** See `references/github-secrets.md`
-
 ## GitLab CI/CD Variables
 
 ### Project Variables
@@ -205,8 +201,9 @@ deploy:
 ```yaml
 deploy:
   script:
-    - echo "Deploying with $API_KEY"
-    - echo "Database: $DATABASE_URL"
+    # Fail if a variable is missing, but never print its value
+    - test -n "$API_KEY" || { echo "API_KEY is not set"; exit 1; }
+    - test -n "$DATABASE_URL" || { echo "DATABASE_URL is not set"; exit 1; }
 ```
 
 ### Protected and Masked Variables

@@ -18,6 +18,7 @@ CNVkit detects somatic copy number variants (CNVs) from whole-exome sequencing (
 - Estimating tumor purity and ploidy for samples where purity is unknown, to interpret copy ratio calls
 - Generating SEG format copy number files for GISTIC2, cBioPortal, or IGV visualization
 - Identifying focal amplifications (e.g., ERBB2, MYC) or homozygous deletions (e.g., CDKN2A, RB1)
+- Use **omics-plotting** SKILL for generic coverage/log2-ratio figures from exported tables; genome-wide CNV views use `cnvkit.py scatter/diagram`
 - Use **GATK CNV** (`gatk DenoiseReadCounts` / `gatk ModelSegments`) instead for deep WGS cohorts with large matched panel-of-normals (PoN); CNVkit is better suited for targeted/exome data
 - Use **Control-FREEC** instead when you need allele-frequency-based B-allele fraction modeling alongside CNV calling
 
@@ -48,6 +49,77 @@ Rscript -e 'if (!requireNamespace("BiocManager")) install.packages("BiocManager"
 samtools index tumor.bam
 samtools index normal.bam
 ```
+
+## Pre-flight Interview
+
+Settle these with the user before writing any analysis code.
+
+```yaml
+decisions:
+  - id: D1
+    param: sequencingMethod
+    kind: required
+    source: data
+    ask: "Was this whole-genome, hybrid-capture exome, or amplicon sequencing?"
+    default: null
+
+  - id: D2
+    param: referenceNormals
+    kind: required
+    source: user
+    ask: "Which normal samples should define the expected coverage baseline?"
+    default: null
+
+  - id: D3
+    param: targetRegions
+    kind: required
+    source: user
+    depends_on: [D1]
+    ask: "Which BED file describes the captured regions?"
+    default: null
+    skip_if: "whole-genome sequencing - there are no capture targets"
+
+  - id: D4
+    param: tumorPurity
+    kind: required
+    source: user
+    ask: "What fraction of the sample is tumour rather than contaminating normal tissue?"
+    default: "1.0 - assumes a pure sample, which understates every copy-number change"
+
+  - id: D5
+    param: ploidy
+    kind: required
+    source: user
+    ask: "What baseline ploidy should absolute copy number be called against?"
+    default: 2
+
+  - id: D6
+    param: segmentMethod
+    kind: optional
+    source: user
+    ask: "Which algorithm should join bins into segments?"
+    default: "circular binary segmentation"
+
+  - id: D7
+    param: binSizes
+    kind: optional_conditional
+    source: user
+    depends_on: [D1]
+    ask: "Do the default target and antitarget bin sizes suit this capture design?"
+    default: "200 bp targets, 150 kb antitargets"
+
+  - id: D8
+    param: processes
+    kind: never_ask
+    source: data
+    reason: "Affects runtime only, not the copy-number calls"
+    default: "min(8, available_cores)"
+```
+
+D2 and D4 are the two that decide whether the calls mean anything. A flat
+reference instead of matched normals leaves capture bias in the log2 ratios,
+and a purity of 1.0 on a 40%-tumour sample compresses every real gain and loss
+toward neutral. Both produce a complete, plausible-looking segment table.
 
 ## Quick Start
 
@@ -142,16 +214,10 @@ print(f"Antitarget bins: {len(antitarget_cov)}")
 print(f"Mean target depth: {target_cov['depth'].mean():.1f}×")
 print(f"Median target depth: {target_cov['depth'].median():.1f}×")
 
-# Check coverage distribution
-import matplotlib.pyplot as plt
-fig, ax = plt.subplots(figsize=(8, 4))
-target_cov["depth"].clip(upper=500).hist(bins=50, ax=ax, color="#2c6fad", alpha=0.7)
-ax.set_xlabel("Read depth")
-ax.set_ylabel("Bin count")
-ax.set_title("Target bin coverage distribution")
-plt.tight_layout()
-plt.savefig("coverage_distribution.png", dpi=150)
-print("Saved: coverage_distribution.png")
+# Export target-bin depths; render the coverage histogram with the omics-plotting SKILL (`skills/data-visualization/omics-plotting/SKILL.md`)
+# "Box / Violin / Bar" recipe (or a histogram) -> figures/coverage_distribution.png
+target_cov["depth"].clip(upper=500).to_csv("target_depths.csv", index=False)
+print("Saved: target_depths.csv")
 ```
 
 ### Step 3: Normalize and Correct Copy Ratios
@@ -317,45 +383,20 @@ echo "Plots saved: tumor-scatter.png, tumor-diagram.pdf, cohort_heatmap.pdf"
 ```
 
 ```python
-# Custom scatter plot with matplotlib highlighting specific genes
+# Extract a single chromosome's bins + segments for a custom log2-ratio scatter
 import cnvlib
-import matplotlib.pyplot as plt
-import numpy as np
 
 cnr = cnvlib.read("tumor.cnr")
 cns = cnvlib.read("tumor.cns")
 
-# Plot chr7 (EGFR locus) in detail
-fig, ax = plt.subplots(figsize=(12, 4))
-chrom = "chr7"
-cnr_chr = cnr.data[cnr.data["chromosome"] == chrom]
-cns_chr = cns.data[cns.data["chromosome"] == chrom]
-
-# Bin dots
-ax.scatter(cnr_chr["start"], cnr_chr["log2"],
-           s=3, alpha=0.3, color="#aaa", label="Bins")
-# Segment lines
-for _, seg in cns_chr.iterrows():
-    ax.hlines(seg["log2"], seg["start"], seg["end"],
-              colors=("#d32f2f" if seg["log2"] > 0.3 else
-                      "#1565c0" if seg["log2"] < -0.3 else "#666"),
-              lw=3, label="_nolegend_")
-
-# Mark EGFR
-egfr_start, egfr_end = 55_019_017, 55_211_628
-ax.axvspan(egfr_start, egfr_end, alpha=0.15, color="orange")
-ax.text((egfr_start + egfr_end) / 2, ax.get_ylim()[1] * 0.85,
-        "EGFR", ha="center", fontsize=9, color="darkorange")
-
-ax.axhline(0, color="black", lw=0.8, ls="--")
-ax.axhline(0.585, color="#d32f2f", lw=0.5, ls=":")   # gain threshold
-ax.axhline(-1.0, color="#1565c0", lw=0.5, ls=":")    # loss threshold
-ax.set_xlabel("Chromosome 7 position (bp)")
-ax.set_ylabel("Log2 copy ratio")
-ax.set_title(f"CNV Profile — {chrom}")
-plt.tight_layout()
-plt.savefig("chr7_cnv_scatter.png", dpi=150, bbox_inches="tight")
-print("Saved: chr7_cnv_scatter.png")
+chrom = "chr7"   # EGFR locus
+cnr_chr = cnr.data[cnr.data["chromosome"] == chrom][["start", "log2"]]
+cns_chr = cns.data[cns.data["chromosome"] == chrom][["start", "end", "log2"]]
+cnr_chr.to_csv(f"{chrom}_bins.csv", index=False)
+cns_chr.to_csv(f"{chrom}_segments.csv", index=False)
+print(f"{chrom}: {len(cnr_chr)} bins, {len(cns_chr)} segments")
+# Render a per-chromosome log2 scatter with the omics-plotting SKILL (`skills/data-visualization/omics-plotting/SKILL.md`) scatter recipe
+# (overlay segment hlines and a gene-locus axvspan for EGFR) -> figures/chr7_cnv_scatter.png
 ```
 
 ### Step 7: Estimate Tumor Purity and Ploidy

@@ -21,7 +21,8 @@ DESeq2 is the Bioconductor R package for differential gene expression analysis f
 - Working in an R/Bioconductor ecosystem where integration with SummarizedExperiment, clusterProfiler, or EnhancedVolcano is needed
 - Use **pydeseq2-differential-expression** instead for Python-based pipelines with the same statistical model
 - Use **edgeR** for negative binomial DE with TMM normalization, quasi-likelihood F-tests, or TREAT testing
-- Use **gseapy-gene-enrichment** after DE to interpret results at the pathway level
+- Use **omics-plotting** SKILL after DE and for publication-quality plots of DESeq2 results
+- Use **gseapy-gene-enrichment** SKILL after DE to interpret results at the pathway level
 
 ## Prerequisites
 
@@ -38,6 +39,85 @@ BiocManager::install(c("DESeq2", "tximeta", "tximport", "apeglm",
                         "EnhancedVolcano"))
 install.packages(c("pheatmap", "ggplot2", "dplyr"))
 ```
+
+## Pre-flight Interview
+
+Settle these with the user before writing any analysis code.
+
+```yaml
+decisions:
+  - id: D1
+    param: design
+    kind: required
+    source: data
+    ask: "Which column of the sample sheet separates the groups you want to compare?"
+    default: null
+
+  - id: D2
+    param: contrast
+    kind: required
+    source: user
+    depends_on: [D1]
+    ask: "Which two groups should be compared, and which group should have positive log2 fold changes?"
+    default: null
+
+  - id: D3
+    param: design
+    kind: required
+    source: data
+    depends_on: [D1]
+    ask: "Which available variables should be included to adjust for nuisance variation (batch, donor, sex, sequencing run)?"
+    default: "none"
+    skip_if: "sample sheet carries no column besides the grouping variable"
+
+  - id: D4
+    param: test
+    kind: required
+    source: user
+    depends_on: [D1, D2]
+    ask: "Is the primary hypothesis a named comparison, or an overall effect of this factor across its levels?"
+    default: "named comparison (Wald test)"
+
+  - id: D5
+    param: alpha
+    kind: optional
+    source: user
+    ask: "How strong must the evidence be before a gene counts as changed (false-discovery rate)?"
+    default: 0.05
+
+  - id: D6
+    param: lfcThreshold
+    kind: optional
+    source: user
+    ask: "Test against a zero change, or against a minimum fold change worth caring about?"
+    default: 0
+
+  - id: D7
+    param: lfcShrink.type
+    kind: derived
+    source: upstream
+    ask: "Shrink fold-change estimates so low-count genes stop dominating the rankings and plots?"
+    default: "apeglm, applied for ranking and visualization"
+
+  - id: D8
+    param: blind (vst/rlog)
+    kind: derived
+    source: upstream
+    ask: "Should the variance-stabilizing transform ignore the design?"
+    default: "TRUE for QC/clustering, FALSE for design-aware downstream uses"
+
+  - id: D9
+    param: independentFilter
+    kind: optional
+    source: user
+    ask: "Should DESeq2 use its adaptive mean-count filter to maximize discoveries at the chosen FDR threshold?"
+    default: true
+```
+
+`design` appears twice because the formula is assembled from both D1 and D3;
+D2 defines the direction of the reported effect. The pipeline explicitly passes
+`alpha: 0.05` to `results()` so independent filtering is optimized for the
+reported FDR threshold rather than DESeq2's default of `0.1`.
 
 ## Quick Start
 
@@ -244,32 +324,13 @@ write.csv(sig_genes, "deseq2_significant.csv")
 ### Step 7: Visualize — MA Plot, Volcano Plot, and Heatmap
 
 > **Compute/viz separation (required):** Do not combine DESeq2 computation and plotting in the same code block. Step 6 (or Step 5) saves the results CSV; this step loads that CSV and produces plots only. This way plots can be regenerated or restyled without re-running the expensive computation.
+> **Plotting:** for the volcano, **read `skills/data-visualization/omics-plotting/SKILL.md` and follow its "Volcano" recipe** on the exported DEG CSV (→ `figures/volcano_plot.pdf`). The heatmap below stays native R (`pheatmap`).
 
 ```r
-library(EnhancedVolcano)
+# Volcano: use the omics-plotting SKILL (`skills/data-visualization/omics-plotting/SKILL.md`) "Volcano" recipe on the exported DEG CSV -> figures/volcano_plot.pdf
+
 library(pheatmap)
-
-# --- MA Plot (base DESeq2) ---
-plotMA(res_shrunk, ylim = c(-5, 5),
-       main = "MA Plot (apeglm-shrunk LFC)",
-       colSig = "firebrick", colNonSig = "grey60")
-# Blue points are significantly DE genes; y-axis is shrunk log2FC
-
-# --- Volcano Plot (EnhancedVolcano) ---
-EnhancedVolcano(res_shrunk_df,
-    lab        = rownames(res_shrunk_df),
-    x          = "log2FoldChange",
-    y          = "padj",
-    pCutoff    = 0.05,
-    FCcutoff   = 1.0,
-    xlim       = c(-6, 6),
-    title      = "Treated vs. Control",
-    subtitle   = "apeglm-shrunk LFC | BH-adjusted p-value",
-    legendLabels = c("NS", "LFC", "padj", "padj & LFC"))
-
-ggsave("volcano_plot.pdf", width = 8, height = 7)
-
-# --- Heatmap of top 50 DE genes ---
+# ---Heatmap of top 50 DE genes ---
 top50 <- head(rownames(sig_genes[order(sig_genes$padj), ]), 50)
 mat   <- assay(vsd)[top50, ]            # variance-stabilized expression
 mat   <- mat - rowMeans(mat)            # center by gene mean
@@ -279,17 +340,17 @@ annotation_col <- data.frame(
     Batch     = coldata$batch,
     row.names = colnames(mat)
 )
-
+# Use the code in the omics-plotting SKILL (`skills/data-visualization/omics-plotting/SKILL.md`) for publication-quality heatmap plots or use below code to generate a heatmap
 pheatmap(mat,
          annotation_col  = annotation_col,
          cluster_rows    = TRUE,
          cluster_cols    = TRUE,
          show_rownames   = TRUE,
          fontsize_row    = 6,
-         filename        = "heatmap_top50.pdf",
+         filename        = "figures/heatmap_top50.pdf",
          width           = 8,
          height          = 10)
-cat("Saved volcano_plot.pdf and heatmap_top50.pdf\n")
+
 ```
 
 ### Step 8: Multi-Factor Design and Interaction Terms
@@ -461,8 +522,8 @@ res_reloaded <- results(dds_loaded, contrast = c("condition", "treated", "contro
 | `deseq2_significant.csv` | Filtered results: padj < 0.05 and |LFC| > 1 |
 | `pca_plot.pdf` | PCA of variance-stabilized counts; used to check batch structure and outliers |
 | `dispersion_plot.pdf` | Gene-wise vs. fitted dispersions; should show tight cloud around trend |
-| `volcano_plot.pdf` | Volcano plot with significance and LFC thresholds labeled |
-| `heatmap_top50.pdf` | Hierarchically clustered heatmap of top 50 DE genes |
+| `figures/volcano_plot.pdf` | Volcano plot with significance and LFC thresholds labeled |
+| `figures/heatmap_top50.pdf` | Hierarchically clustered heatmap of top 50 DE genes |
 | `gsea_ranked_list.rnk` | Pre-ranked gene list for pathway enrichment (fgsea/gseapy) |
 | `dds_fitted.rds` | Serialized DESeqDataSet for checkpoint/resume |
 
@@ -478,7 +539,6 @@ res_reloaded <- results(dds_loaded, contrast = c("condition", "treated", "contro
 | `apeglm` fails with convergence warning | Extreme LFC estimates (sparse data or complete separation) | Switch to `type = "ashr"` which is more robust to these cases |
 | Very large size factors (> 5) | Extremely different library sizes, or normalized counts accidentally used | Check `colSums(counts(dds))`; ensure input is raw integer counts from aligner/counter |
 | Dispersion plot shows outlier cloud far from trend | Noisy or failed libraries; incorrect metadata grouping | Examine PCA; remove outlier samples; check that `design` formula matches biological groups |
-| Volcano plot: no labeled points | `EnhancedVolcano` defaults label too few genes | Adjust `pCutoff` and `FCcutoff`; or set `selectLab = rownames(sig_genes)[1:20]` |
 
 ## References
 

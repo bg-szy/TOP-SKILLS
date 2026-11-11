@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-13T17:23:20.099Z",
+    "generated_at": "2026-10-29T18:17:09.227Z",
     "slug": "consiliency-stack-analyzer",
     "source_url": "https://github.com/Consiliency/treesitter-chunker/tree/main/.ai-dev-kit/skills/stack-analyzer",
     "source_ref": "main",
@@ -9,7 +9,7 @@
     "analysis_version": "3.0.0",
     "source_type": "community",
     "content_hash": "bde7ed2e93547a370475c4af5f1d2b9d9239cd131f37617d01e2455d343d4b30",
-    "tree_hash": "5c629d8e67d166fee8d82b5d3e280ec9bd8526ae8a35d3419aff46ab589c29f4",
+    "tree_hash": "4538cfff5b07c04683037df2930be014ccef5a12babb74bad27798815e932de7",
     "provenance": {
       "model_effective": "codex",
       "fallback_chain": [
@@ -23,10 +23,9 @@
   },
   "skill": {
     "name": "stack-analyzer",
-    "description": "Analyzes a project stack, recommends relevant AI development skills, and can scaffold project-specific research, domain, and testing skill templates.",
-    "summary": "Match detected technologies to relevant skills and optional project templates.",
+    "description": "Analyze project stack and recommend skills. Auto-detects frameworks, activates generic ai-dev-kit skills, and optionally scaffolds project-specific skills in the target repo.",
+    "summary": "Match a detected technology stack to development skills and optionally scaffold project-specific templates.",
     "icon": "📦",
-    "version": "1.0.1",
     "author": "Consiliency",
     "license": "MIT",
     "category": "coding",
@@ -34,6 +33,7 @@
       "stack-analysis",
       "skill-recommendations",
       "project-scaffolding",
+      "ai-dev-kit",
       "developer-tooling"
     ],
     "supported_tools": [
@@ -48,26 +48,16 @@
     ]
   },
   "security_audit": {
-    "risk_level": "high",
+    "risk_level": "medium",
     "is_blocked": false,
-    "safe_to_publish": false,
+    "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most external-command detections are Markdown formatting, examples, or inline paths and are false positives. The scaffolding block executes filesystem commands and can overwrite the wrong SKILL.md through relative paths. Manual review found no prompt injection in the three templates, but their placeholder frontmatter prevents static parsing.",
+    "summary": "All 61 static alerts are false positives involving Markdown, benign date substitution, a schema identifier, and expected optional repository writes. Scaffolding has a separate overwrite risk because header generation replaces SKILL.md in the current directory rather than the copied destination. No evidence found of malicious prompt injection, credential theft, or data exfiltration in the reviewed files.",
     "remediation": [
       {
-        "issue": "The scaffold workflow moves a temporary file to relative SKILL.md and then edits that file.",
-        "suggestion": "Resolve the generated destination first, create the temporary file beside it, and atomically replace only that destination.",
-        "severity": "high"
-      },
-      {
-        "issue": "Scaffold commands interpolate project names, template names, and target paths without validation or consistent quoting.",
-        "suggestion": "Allowlist template names, validate project names, quote every path, and replace sed interpolation with a structured templating step.",
+        "issue": "Scaffolding writes SKILL.md and a predictable temporary file in the current directory instead of the copied destination.",
+        "suggestion": "Resolve the destination explicitly, quote paths, create temporary files securely there, and require confirmation before replacing existing skill files.",
         "severity": "medium"
-      },
-      {
-        "issue": "Placeholder names make the three template frontmatter blocks invalid before generation.",
-        "suggestion": "Use valid quoted placeholder values and validate every template before packaging.",
-        "severity": "low"
       }
     ],
     "risk_factor_evidence": [
@@ -278,6 +268,51 @@
             "file": "SKILL.md",
             "line_start": 124,
             "line_end": 134
+          },
+          {
+            "file": "templates/project-domain/SKILL.md",
+            "line_start": 47,
+            "line_end": 54
+          },
+          {
+            "file": "templates/project-domain/SKILL.md",
+            "line_start": 54,
+            "line_end": 87
+          },
+          {
+            "file": "templates/project-domain/SKILL.md",
+            "line_start": 87,
+            "line_end": 88
+          },
+          {
+            "file": "templates/project-research/SKILL.md",
+            "line_start": 78,
+            "line_end": 83
+          },
+          {
+            "file": "templates/project-research/SKILL.md",
+            "line_start": 83,
+            "line_end": 88
+          },
+          {
+            "file": "templates/project-research/SKILL.md",
+            "line_start": 88,
+            "line_end": 90
+          },
+          {
+            "file": "templates/project-testing/SKILL.md",
+            "line_start": 43,
+            "line_end": 43
+          },
+          {
+            "file": "templates/project-testing/SKILL.md",
+            "line_start": 52,
+            "line_end": 52
+          },
+          {
+            "file": "templates/project-testing/SKILL.md",
+            "line_start": 61,
+            "line_end": 61
           }
         ]
       },
@@ -734,34 +769,184 @@
         "snippet": "cp -r ./templates/{template}/ ${TARGET_REPO}/.claude/skills/{project}-{template}/"
       },
       {
-        "id": "metadata:templates/project-research/SKILL.md:1:unscanned-file-invalid-frontmatter-manual-review",
-        "category": "metadata",
-        "severity": "low",
-        "pattern": "Unscanned file (invalid_frontmatter) — manual review required",
-        "file": "templates/project-research/SKILL.md",
-        "line_start": 1,
-        "line_end": 1,
-        "snippet": "[unscanned: invalid_frontmatter]"
-      },
-      {
-        "id": "metadata:templates/project-domain/SKILL.md:1:unscanned-file-invalid-frontmatter-manual-review",
-        "category": "metadata",
-        "severity": "low",
-        "pattern": "Unscanned file (invalid_frontmatter) — manual review required",
+        "id": "external_commands:templates/project-domain/SKILL.md:47:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
         "file": "templates/project-domain/SKILL.md",
-        "line_start": 1,
-        "line_end": 1,
-        "snippet": "[unscanned: invalid_frontmatter]"
+        "line_start": 47,
+        "line_end": 54,
+        "snippet": "```"
       },
       {
-        "id": "metadata:templates/project-testing/SKILL.md:1:unscanned-file-invalid-frontmatter-manual-review",
-        "category": "metadata",
+        "id": "external_commands:templates/project-domain/SKILL.md:54:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "templates/project-domain/SKILL.md",
+        "line_start": 54,
+        "line_end": 87,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:templates/project-domain/SKILL.md:87:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "templates/project-domain/SKILL.md",
+        "line_start": 87,
+        "line_end": 88,
+        "snippet": "- ORM models in `src/models/`"
+      },
+      {
+        "id": "blocker:templates/project-domain/SKILL.md:60:system-reconnaissance",
+        "category": "blocker",
         "severity": "low",
-        "pattern": "Unscanned file (invalid_frontmatter) — manual review required",
+        "pattern": "System reconnaissance",
+        "file": "templates/project-domain/SKILL.md",
+        "line_start": 60,
+        "line_end": 60,
+        "snippet": "| Concept | Correct Term | Avoid |"
+      },
+      {
+        "id": "blocker:templates/project-domain/SKILL.md:66:system-reconnaissance",
+        "category": "blocker",
+        "severity": "low",
+        "pattern": "System reconnaissance",
+        "file": "templates/project-domain/SKILL.md",
+        "line_start": 66,
+        "line_end": 66,
+        "snippet": "| Entity | Valid Statuses | Transitions |"
+      },
+      {
+        "id": "external_commands:templates/project-research/SKILL.md:78:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "templates/project-research/SKILL.md",
+        "line_start": 78,
+        "line_end": 83,
+        "snippet": "```markdown"
+      },
+      {
+        "id": "external_commands:templates/project-research/SKILL.md:83:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "templates/project-research/SKILL.md",
+        "line_start": 83,
+        "line_end": 88,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:templates/project-research/SKILL.md:88:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "templates/project-research/SKILL.md",
+        "line_start": 88,
+        "line_end": 90,
+        "snippet": "- Research subagents in `.claude/agents/`"
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:43:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
         "file": "templates/project-testing/SKILL.md",
-        "line_start": 1,
-        "line_end": 1,
-        "snippet": "[unscanned: invalid_frontmatter]"
+        "line_start": 43,
+        "line_end": 43,
+        "snippet": "Location: `tests/unit/`"
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:52:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "templates/project-testing/SKILL.md",
+        "line_start": 52,
+        "line_end": 52,
+        "snippet": "Location: `tests/integration/`"
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:61:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "templates/project-testing/SKILL.md",
+        "line_start": 61,
+        "line_end": 61,
+        "snippet": "Location: `tests/e2e/` or `playwright/`"
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:72:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "templates/project-testing/SKILL.md",
+        "line_start": 72,
+        "line_end": 72,
+        "snippet": "Location: `tests/fixtures/`"
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:75:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "templates/project-testing/SKILL.md",
+        "line_start": 75,
+        "line_end": 82,
+        "snippet": "```python"
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:82:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "templates/project-testing/SKILL.md",
+        "line_start": 82,
+        "line_end": 86,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:86:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "templates/project-testing/SKILL.md",
+        "line_start": 86,
+        "line_end": 95,
+        "snippet": "Location: `tests/mocks/`"
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:95:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "templates/project-testing/SKILL.md",
+        "line_start": 95,
+        "line_end": 95,
+        "snippet": "| Unit | `test_*.py` | `test_<function>_<scenario>` |"
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:96:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "templates/project-testing/SKILL.md",
+        "line_start": 96,
+        "line_end": 96,
+        "snippet": "| Integration | `test_*_integration.py` | `test_<component>_<action>` |"
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:97:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "templates/project-testing/SKILL.md",
+        "line_start": 97,
+        "line_end": 97,
+        "snippet": "| E2E | `*.spec.ts` | `test('<feature> - <scenario>')` |"
       }
     ],
     "finding_verdicts": [
@@ -769,560 +954,534 @@
         "id": "external_commands:SKILL.md:8:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 8 uses Markdown backticks around a slash command. It does not execute Ruby or shell code."
+        "reason": "Backticks format the setup command name in prose. This line contains no Ruby or shell execution."
       },
       {
         "id": "external_commands:SKILL.md:18:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 18 formats a plugin directory as inline Markdown code. No command is executed."
+        "reason": "This table documents the generic skill directory using inline Markdown. The path is not an executable expression."
       },
       {
         "id": "external_commands:SKILL.md:19:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 19 formats a target repository path as inline Markdown code. No command is executed."
+        "reason": "Inline Markdown identifies the project skill directory. No shell backtick substitution occurs."
       },
       {
         "id": "external_commands:SKILL.md:20:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 20 formats a manifest path as inline Markdown code. No command is executed."
+        "reason": "The table displays the generated manifest path as inline code. It does not execute a command."
       },
       {
         "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 45 names another skill with Markdown backticks. The backticks are not shell execution syntax in this context."
+        "reason": "Backticks identify the library-detection skill dependency. This is workflow documentation, not Ruby or shell syntax."
       },
       {
         "id": "external_commands:SKILL.md:65:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 65 names the library-detection skill with inline Markdown formatting. It contains no shell command."
+        "reason": "The skill name is formatted with inline Markdown. The line does not contain executable backticks."
       },
       {
         "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Lines 67 through 76 are a fenced Markdown example describing another skill's output. The fence is not executable backtick syntax."
+        "confidence": 0.99,
+        "reason": "This Markdown fence encloses instructions for invoking the detection dependency and describing its output. It is not shell substitution."
       },
       {
         "id": "external_commands:SKILL.md:76:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 76 closes a Markdown code fence. It does not invoke a command."
+        "confidence": 0.99,
+        "reason": "The matched characters close a Markdown example. No executable backtick expression is present."
       },
       {
         "id": "external_commands:SKILL.md:80:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 80 formats a configuration path as inline code. It does not execute the path."
+        "reason": "Inline Markdown names the local recommendation configuration. Reading this configuration is part of the stated workflow, not shell execution."
       },
       {
         "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Lines 82 through 88 contain illustrative YAML pseudocode. Markdown fences do not execute it."
+        "confidence": 0.99,
+        "reason": "The YAML fence contains recommendation matching pseudocode. Markdown delimiters are not Ruby or shell backticks."
       },
       {
         "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 88 closes a YAML example fence. It is not command execution."
+        "confidence": 0.99,
+        "reason": "This is the closing fence for matching pseudocode. It performs no command execution."
       },
       {
         "id": "external_commands:SKILL.md:94:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Lines 94 through 118 show a sample Markdown report. The code fence is documentation, not executable backticks."
+        "confidence": 0.99,
+        "reason": "The fenced Markdown shows an example stack analysis report. Its tables and headings are output examples, not executable commands."
       },
       {
         "id": "external_commands:SKILL.md:118:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 118 closes the sample report fence. It does not execute a command."
+        "confidence": 0.99,
+        "reason": "The matched delimiter closes the report example. It is Markdown formatting rather than backtick execution."
       },
       {
         "id": "external_commands:SKILL.md:124:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.96,
-        "reason": "Lines 124 through 134 define an executable Bash scaffolding workflow that copies files, moves a temporary file, and runs sed.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The matched backticks open a Bash code fence, not a Ruby or shell substitution. The separate scaffolding overwrite issue is recorded semantically."
       },
       {
         "id": "external_commands:SKILL.md:134:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 134 is the closing Markdown fence for the Bash example. The fence itself is not backtick execution."
+        "confidence": 0.99,
+        "reason": "This delimiter closes the scaffolding code block. It is not an executable backtick expression."
       },
       {
         "id": "external_commands:SKILL.md:138:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 138 formats the generated manifest path as inline Markdown code. No command is executed."
+        "reason": "Inline Markdown identifies the generated manifest. The documented bookkeeping path is not a shell command."
       },
       {
         "id": "external_commands:SKILL.md:140:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Lines 140 through 157 contain an example JSON manifest. The Markdown fence is not executable."
+        "confidence": 0.99,
+        "reason": "The fenced JSON illustrates manifest fields and generated artifact tracking. No Ruby or shell execution occurs."
       },
       {
         "id": "external_commands:SKILL.md:157:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 157 closes a JSON example fence. It does not invoke a command."
+        "confidence": 0.99,
+        "reason": "This is the closing Markdown fence for the manifest example. It does not execute its contents."
       },
       {
         "id": "external_commands:SKILL.md:165:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 165 uses inline code for skill names, paths, and dependencies in a recommendation table. It is descriptive only."
+        "reason": "Backticks format BAML skill names, file globs, and dependency names in a recommendation table. They are not executable expressions."
       },
       {
         "id": "external_commands:SKILL.md:166:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 166 uses inline code for Supabase detection criteria. It contains no executable backtick expression."
+        "reason": "The table formats Supabase detection criteria as inline code. No shell command is embedded in the backticks."
       },
       {
         "id": "external_commands:SKILL.md:167:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 167 lists ORM identifiers with Markdown formatting. It does not execute them."
+        "reason": "Inline Markdown lists ORM dependency names and the schema-alignment skill. These identifiers are recommendation data, not commands."
       },
       {
         "id": "external_commands:SKILL.md:168:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 168 lists tree-sitter dependency names as inline code. It contains no command."
+        "reason": "Backticks format the Tree-sitter skill and dependency names. No Ruby or shell execution is specified."
       },
       {
         "id": "external_commands:SKILL.md:169:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 169 formats a recommended skill name as inline code. It is not command execution."
+        "reason": "The security-audit skill name is an inline Markdown identifier. The surrounding table recommends a development skill rather than executing shell code."
       },
       {
         "id": "external_commands:SKILL.md:175:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 175 documents file and text matching patterns. Markdown backticks do not execute those patterns."
+        "reason": "The research template row contains formatted file globs and a detection pattern. These are matching criteria, not shell substitutions."
       },
       {
         "id": "external_commands:SKILL.md:176:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 176 documents model directory patterns. It does not execute a command."
+        "reason": "Inline Markdown names the domain template and model directory patterns. No executable backticks occur."
       },
       {
         "id": "external_commands:SKILL.md:177:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 177 formats a template name in a table. It contains no executable backtick expression."
+        "reason": "The testing template name is formatted as inline code. The row describes a scaffolding trigger, not a command."
       },
       {
         "id": "external_commands:SKILL.md:185:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Lines 185 through 192 show a directory tree in a plain code fence. The content is not a command."
+        "confidence": 0.99,
+        "reason": "This fence displays the proposed research template directory tree. Directory diagrams do not execute shell code."
       },
       {
         "id": "external_commands:SKILL.md:192:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 192 closes a directory tree example. It does not execute code."
+        "confidence": 0.99,
+        "reason": "The delimiter closes the research directory diagram. The backticks are Markdown syntax only."
       },
       {
         "id": "external_commands:SKILL.md:198:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Lines 198 through 205 show a project-domain directory tree. The fenced text is descriptive."
+        "confidence": 0.99,
+        "reason": "This code fence contains a proposed domain template directory tree. It contains no executable shell substitution."
       },
       {
         "id": "external_commands:SKILL.md:205:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 205 closes a directory tree example. It is not shell execution."
+        "confidence": 0.99,
+        "reason": "The matched delimiter closes the domain directory diagram. It does not execute commands."
       },
       {
         "id": "external_commands:SKILL.md:211:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Lines 211 through 218 show a project-testing directory tree. The Markdown fence is not executable."
+        "confidence": 0.99,
+        "reason": "The fenced block illustrates testing template directories. The backticks delimit documentation, not Ruby or shell expressions."
       },
       {
         "id": "external_commands:SKILL.md:218:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 218 closes a directory tree example. It does not invoke a command."
+        "confidence": 0.99,
+        "reason": "This is the closing Markdown fence for a directory diagram. No command execution occurs."
       },
       {
         "id": "external_commands:SKILL.md:226:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Lines 226 through 237 document an interactive plugin workflow. The Markdown code fence does not execute the listed steps."
+        "confidence": 0.99,
+        "reason": "The Markdown example describes setup integration with explicit activation and scaffolding prompts. Its fence is not an executable expression."
       },
       {
         "id": "external_commands:SKILL.md:237:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 237 closes a Markdown workflow example. It is not executable backtick syntax."
+        "confidence": 0.99,
+        "reason": "The delimiter closes the setup integration example. It is Markdown formatting only."
       },
       {
         "id": "external_commands:SKILL.md:243:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "Lines 243 through 255 document user-invoked plugin slash commands. They are examples and do not execute merely by appearing in the skill."
+        "confidence": 0.99,
+        "reason": "The Bash fence lists documented plugin slash-command options. The matched backticks are not Ruby or shell command substitution."
       },
       {
         "id": "external_commands:SKILL.md:255:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 255 closes a Bash-labeled example. The fence itself is not command execution."
+        "confidence": 0.99,
+        "reason": "This closes the invocation examples. No executable backtick expression appears."
       },
       {
         "id": "external_commands:SKILL.md:259:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Lines 259 through 295 define an output JSON Schema example. The Markdown fence is not executable."
+        "confidence": 0.99,
+        "reason": "The fenced block defines the expected report schema in JSON. The backticks are presentation syntax, not shell execution."
       },
       {
         "id": "external_commands:SKILL.md:295:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Line 295 closes a JSON Schema example. It does not invoke a command."
+        "confidence": 0.99,
+        "reason": "The delimiter closes the output schema example. It is not an executable expression."
       },
       {
         "id": "external_commands:SKILL.md:301:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Lines 301 through 317 show a sample uninstall notice. The Markdown fence is documentation only."
+        "confidence": 0.99,
+        "reason": "This Markdown block contains an uninstall notice listing generated artifacts. It does not execute cleanup or shell commands."
       },
       {
         "id": "external_commands:SKILL.md:129:shell-command-substitution",
-        "verdict": "confirmed",
-        "confidence": 0.99,
-        "reason": "Line 129 executes date through shell command substitution within a pipeline that prepares a file write.",
-        "severity": "medium"
+        "verdict": "false_positive",
+        "confidence": 0.98,
+        "reason": "The substitution runs the fixed date command solely to timestamp a generation header. No untrusted input becomes executable code through this substitution."
       },
       {
         "id": "external_commands:SKILL.md:124:template-literal-with-command-substitution",
-        "verdict": "confirmed",
+        "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The Bash block includes command substitution and multiple filesystem-changing commands with interpolated variables.",
-        "severity": "medium"
+        "reason": "This is a fenced Bash example, not a JavaScript template literal. Its date substitution is benign; the separate destination error is recorded semantically."
       },
       {
         "id": "network:SKILL.md:261:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The URL is a JSON Schema identifier inside an example document. The skill does not request that URL."
+        "reason": "The URL identifies the JSON Schema draft in a documentation example. There is no request instruction or data transmission at this location."
       },
       {
         "id": "filesystem:SKILL.md:126:hidden-file-access",
-        "verdict": "confirmed",
+        "verdict": "false_positive",
+        "confidence": 0.97,
+        "reason": "Copying templates into repository-local .claude/skills is the documented optional scaffolding function. Hidden-directory placement alone does not indicate secret access or unauthorized persistence."
+      },
+      {
+        "id": "external_commands:templates/project-domain/SKILL.md:47:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 126 recursively copies a template into the target repository's hidden .claude/skills directory.",
-        "severity": "medium"
+        "reason": "This fenced block contains a placeholder entity relationship diagram. It is not executable Ruby or shell code."
       },
       {
-        "id": "metadata:templates/project-research/SKILL.md:1:unscanned-file-invalid-frontmatter-manual-review",
+        "id": "external_commands:templates/project-domain/SKILL.md:54:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "Manual review found a benign research template with unsubstituted placeholders and no prompt injection or dangerous commands."
+        "confidence": 0.99,
+        "reason": "The matched backticks close the entity relationship example. The following vocabulary tables also contain no commands."
       },
       {
-        "id": "metadata:templates/project-domain/SKILL.md:1:unscanned-file-invalid-frontmatter-manual-review",
+        "id": "external_commands:templates/project-domain/SKILL.md:87:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "Manual review found a benign domain vocabulary template with placeholders and no prompt injection or dangerous commands."
+        "confidence": 0.99,
+        "reason": "Inline Markdown names the ORM model directory. The path is an integration reference, not a shell expression."
       },
       {
-        "id": "metadata:templates/project-testing/SKILL.md:1:unscanned-file-invalid-frontmatter-manual-review",
+        "id": "blocker:templates/project-domain/SKILL.md:60:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "Manual review found a benign testing template with placeholders and ordinary non-executing sample test code."
+        "confidence": 1,
+        "reason": "The complete line is a vocabulary table header: Concept, Correct Term, Avoid. It performs no host or system reconnaissance."
+      },
+      {
+        "id": "blocker:templates/project-domain/SKILL.md:66:system-reconnaissance",
+        "verdict": "false_positive",
+        "confidence": 1,
+        "reason": "The complete line labels entity statuses and transitions in a domain table. It contains no system discovery behavior."
+      },
+      {
+        "id": "external_commands:templates/project-research/SKILL.md:78:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The Markdown fence contains a placeholder research pattern with trigger, action, and output labels. It does not execute commands."
+      },
+      {
+        "id": "external_commands:templates/project-research/SKILL.md:83:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The delimiter closes the research pattern example. It is Markdown formatting rather than executable backticks."
+      },
+      {
+        "id": "external_commands:templates/project-research/SKILL.md:88:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "Inline code formats the research subagent directory. The line documents integration and does not execute the directory contents."
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:43:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The unit test directory is shown with inline Markdown. There is no Ruby or shell execution."
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:52:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "Backticks format the integration test directory. This is a location reference, not an executable expression."
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:61:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The line lists possible E2E test directories using inline code. It does not invoke browser tooling or shell commands."
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:72:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "Inline Markdown identifies the fixture directory. No executable backticks occur."
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:75:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "This Python fence contains an illustrative fixture import and an empty test body. It contains no Ruby or shell command substitution."
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:82:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The delimiter closes the Python fixture example. Markdown fences do not execute their contents."
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:86:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The mock service directory is formatted as inline code. It is not an executable command."
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:95:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The table lists unit test filename and function naming patterns. Backticks mark literal patterns rather than shell code."
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:96:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "Inline code formats integration test naming conventions. The patterns are not executable shell expressions."
+      },
+      {
+        "id": "external_commands:templates/project-testing/SKILL.md:97:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The table shows E2E filename and test naming conventions. These examples do not execute commands or tests."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Scaffolding Workflow Overwrites the Wrong SKILL.md",
-        "description": "The workflow moves a temporary file to relative SKILL.md and edits it instead of the generated target file. Running it from the skill root can overwrite the analyzer source.",
-        "severity": "high",
+        "title": "Scaffolding Can Overwrite the Current Skill",
+        "description": "The copy command targets the repository, but 'mv temp SKILL.md' and sed modify the current directory without changing to that destination. Running from the skill directory can replace the analyzer instructions with a template and leave the copied skill uncustomized.",
+        "severity": "medium",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 129,
+            "line_start": 124,
             "line_end": 133
           }
         ],
         "confidence": 0.98,
-        "confidence_reasoning": "The commands explicitly move temp to relative SKILL.md, then run sed on that same relative path without using TARGET_REPO."
+        "confidence_reasoning": "The example uses relative output paths and never changes directories after copying. The overwrite is clear if followed literally; agent interpretation may differ."
       }
     ],
     "critical_findings": [],
-    "high_findings": [
+    "high_findings": [],
+    "medium_findings": [
       {
-        "title": "Scaffolding Workflow Overwrites the Wrong SKILL.md",
-        "description": "The workflow moves a temporary file to relative SKILL.md and edits it instead of the generated target file. Running it from the skill root can overwrite the analyzer source.",
+        "title": "Scaffolding Can Overwrite the Current Skill",
+        "description": "The copy command targets the repository, but 'mv temp SKILL.md' and sed modify the current directory without changing to that destination. Running from the skill directory can replace the analyzer instructions with a template and leave the copied skill uncustomized.",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 129,
+            "line_start": 124,
             "line_end": 133
           }
         ],
         "review_kind": "security",
         "source_category": "semantic",
-        "source_severity": "high",
+        "source_severity": "medium",
         "confidence": 0.98,
-        "confidence_reasoning": "The commands explicitly move temp to relative SKILL.md, then run sed on that same relative path without using TARGET_REPO."
+        "confidence_reasoning": "The example uses relative output paths and never changes directories after copying. The overwrite is clear if followed literally; agent interpretation may differ."
       }
     ],
-    "medium_findings": [
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 124,
-            "line_end": 134
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.96,
-        "confidence_reasoning": "Lines 124 through 134 define an executable Bash scaffolding workflow that copies files, moves a temporary file, and runs sed."
-      },
-      {
-        "title": "Shell command substitution",
-        "description": "echo \"<!-- Generated by ai-dev-kit:recommend-skills on $(date) -->\" | \\",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 129,
-            "line_end": 129
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.99,
-        "confidence_reasoning": "Line 129 executes date through shell command substitution within a pipeline that prepares a file write."
-      },
-      {
-        "title": "Template literal with command substitution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 124,
-            "line_end": 134
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.99,
-        "confidence_reasoning": "The Bash block includes command substitution and multiple filesystem-changing commands with interpolated variables."
-      },
-      {
-        "title": "Hidden file access",
-        "description": "cp -r ./templates/{template}/ ${TARGET_REPO}/.claude/skills/{project}-{template}/",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 126,
-            "line_end": 126
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.99,
-        "confidence_reasoning": "Line 126 recursively copies a template into the target repository's hidden .claude/skills directory."
-      }
-    ],
-    "low_findings": [
-      {
-        "title": "Unscanned file (invalid_frontmatter) — manual review required",
-        "description": "[unscanned: invalid_frontmatter]",
-        "locations": [
-          {
-            "file": "templates/project-research/SKILL.md",
-            "line_start": 1,
-            "line_end": 1
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "metadata",
-        "source_severity": "low",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed metadata/low static finding; AI false-positive verdict rejected."
-      },
-      {
-        "title": "Unscanned file (invalid_frontmatter) — manual review required",
-        "description": "[unscanned: invalid_frontmatter]",
-        "locations": [
-          {
-            "file": "templates/project-domain/SKILL.md",
-            "line_start": 1,
-            "line_end": 1
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "metadata",
-        "source_severity": "low",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed metadata/low static finding; AI false-positive verdict rejected."
-      },
-      {
-        "title": "Unscanned file (invalid_frontmatter) — manual review required",
-        "description": "[unscanned: invalid_frontmatter]",
-        "locations": [
-          {
-            "file": "templates/project-testing/SKILL.md",
-            "line_start": 1,
-            "line_end": 1
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "metadata",
-        "source_severity": "low",
-        "confidence": 1,
-        "confidence_reasoning": "Force-confirmed metadata/low static finding; AI false-positive verdict rejected."
-      }
-    ],
+    "low_findings": [],
     "dangerous_patterns": [],
-    "files_scanned": 2,
-    "total_lines": 542,
+    "files_scanned": 5,
+    "total_lines": 861,
     "audit_model": "codex",
-    "audited_at": "2026-07-13T17:23:20.099Z",
-    "agent_auto_install_policy": "confirmation_required",
+    "audited_at": "2026-10-29T18:17:09.227Z",
+    "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Analyze Your Stack and Recommend Skills",
-    "value_statement": "Project teams may miss relevant AI development skills for their frameworks and workflows. This skill maps detected technologies to recommendations and optional project templates.",
+    "user_title": "Match Your Project Stack to Development Skills",
+    "value_statement": "Choosing development skills is difficult when a repository uses several technologies. Stack Analyzer maps detected technologies to relevant skills and optional project templates.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
-      "stack analyzer",
-      "technology detection",
+      "technology stack analysis",
+      "AI development skills",
       "skill recommendations",
       "project scaffolding",
-      "AI development toolkit",
+      "ai-dev-kit",
+      "framework detection",
       "developer workflow"
     ],
     "actual_capabilities": [
-      "Uses library-detection results to identify languages, frameworks, databases, testing tools, and build tools.",
-      "Matches detected files and dependencies against configurable skill activation rules.",
-      "Ranks recommendations with high, medium, and low priorities.",
-      "Produces a Markdown report with detected technologies, recommendations, reasons, and activation status.",
-      "Can scaffold research, domain, and testing skill templates and track generated files in a manifest."
+      "Uses the library-detection skill to obtain languages, frameworks, databases, test frameworks, and build tools.",
+      "Matches dependency names and file patterns against configured skill recommendation rules.",
+      "Produces recommendation reports with detected technologies, matching reasons, and skill status.",
+      "Supports optional activation of generic ai-dev-kit skills through the surrounding plugin workflow.",
+      "Provides research, domain vocabulary, and testing templates for optional project-specific scaffolding.",
+      "Documents generated artifacts in a manifest and explains which files persist after plugin removal."
     ],
     "limitations": [
-      "Depends on the separate library-detection skill for stack discovery.",
-      "Recommendation quality depends on file and dependency rules in the bundled configuration.",
-      "Scaffolding changes repository files and should require explicit review before execution.",
-      "The configured project-api template is not included in this package."
+      "Requires the separate library-detection skill and surrounding ai-dev-kit integration for the documented workflow.",
+      "Recommendations depend on configured rules and detection results, not comprehensive architectural analysis.",
+      "Templates contain placeholders; illustrated supporting files and the configured API template are not included in this package.",
+      "The scaffolding example has a current-directory overwrite risk and requires correction before use."
     ],
     "use_cases": [
       {
-        "title": "Audit an Existing Repository",
-        "description": "Review detected technologies and receive evidence-based skill recommendations before changing the project.",
-        "target_user": "Software engineer"
+        "title": "Orient Yourself in an Existing Repository",
+        "description": "Review detected technologies and matching development skills before starting implementation.",
+        "target_user": "Developers joining an existing project"
       },
       {
-        "title": "Standardize Team AI Skills",
-        "description": "Compare repositories against shared recommendation rules and identify consistent development guidance.",
-        "target_user": "Engineering lead"
+        "title": "Standardize Team Skill Selection",
+        "description": "Compare recommendation reasons across repositories and approve generic skills that match verified dependencies.",
+        "target_user": "Technical leads maintaining development workflows"
       },
       {
-        "title": "Bootstrap Project Guidance",
-        "description": "Plan project-specific research, domain, and testing skills with tracked output paths.",
-        "target_user": "Platform engineer"
+        "title": "Plan Project Testing Guidance",
+        "description": "Identify testing template candidates and review fixture, naming, and coverage placeholders before creating project guidance.",
+        "target_user": "QA engineers organizing test conventions"
       }
     ],
     "prompt_templates": [
       {
-        "title": "List Recommendations",
-        "prompt": "Analyze this repository's detected stack and list recommended generic skills. Do not change files.",
-        "scenario": "Beginner report-only review"
+        "title": "Review My Stack",
+        "prompt": "Analyze this repository with Stack Analyzer. Report detected technologies and recommended skills without activating skills or changing files.",
+        "scenario": "Beginner: obtain a read-only overview"
       },
       {
-        "title": "Explain Rule Matches",
-        "prompt": "Compare detected dependencies and paths with recommendation rules. Explain each match and flag uncertain recommendations.",
-        "scenario": "Evidence review"
+        "title": "Explain Each Recommendation",
+        "prompt": "Match the detected stack to recommendation rules. Explain the dependency or file evidence for each match and identify unavailable dependencies.",
+        "scenario": "Intermediate: verify recommendation evidence"
       },
       {
-        "title": "Plan Project Scaffolds",
-        "prompt": "Prepare a scaffold plan for research, domain, and testing skills. Show target paths and required customizations without writing files.",
-        "scenario": "Intermediate project planning"
+        "title": "Plan Project Templates",
+        "prompt": "Identify matching research, domain, and testing templates. List proposed output paths and placeholders for review. Do not copy or overwrite files.",
+        "scenario": "Advanced: prepare optional scaffolding"
       },
       {
-        "title": "Review Full Activation Plan",
-        "prompt": "Rank recommendations, identify missing templates, and propose a reviewed manifest update. Require confirmation before every repository change.",
-        "scenario": "Advanced repository integration"
+        "title": "Prepare Controlled Scaffolding",
+        "prompt": "Prepare a scaffolding plan for approved templates. Use explicit destination paths and protect existing files. Include manifest updates. Wait for approval before writing.",
+        "scenario": "Expert: review filesystem changes before execution"
       }
     ],
     "output_examples": [
       {
-        "input": "Analyze a Next.js project using Supabase and Vitest.",
+        "input": "Review a repository where detection reports BAML and Supabase dependencies.",
         "output": [
-          "Detected React, Next.js, Supabase, and Vitest.",
-          "Recommended react-patterns and supabase-patterns with matching dependency evidence.",
-          "Suggested security-audit for production readiness."
+          "Recommended: baml-integration because a BAML dependency was detected.",
+          "Recommended: supabase-patterns because a Supabase dependency was detected.",
+          "Skills remain recommendations until activation is approved. No project files were changed."
         ]
       },
       {
-        "input": "Plan a domain skill for a project with twelve model files.",
+        "input": "Plan project-specific guidance for a repository with domain models and custom test fixtures.",
         "output": [
-          "Project-domain qualifies because more than five model files were found.",
-          "Proposed path: .claude/skills/acme-domain/.",
-          "No files were created because confirmation was not provided."
+          "Candidate: project-domain for vocabulary, entity relationships, and validation rules, subject to configured detection thresholds.",
+          "Candidate: project-testing for fixture usage, test naming, and coverage requirements, subject to configured detection thresholds.",
+          "Templates require project-specific customization. Review destination paths and correct the scaffolding overwrite issue before generating files."
         ]
       }
     ],
     "best_practices": [
-      "Run report-only analysis before enabling activation or scaffolding.",
-      "Review every detection match and remove recommendations unsupported by repository evidence.",
-      "Commit or back up repository changes before creating project-specific skills."
+      "Start with a report-only review and verify the evidence supporting each recommendation.",
+      "Confirm required companion skills and template files are available before activation or scaffolding.",
+      "Correct scaffolding paths, preserve existing files, and review the manifest and generated content before committing changes."
     ],
     "anti_patterns": [
-      "Do not scaffold templates before reviewing target paths and generated names.",
-      "Do not trust recommendations when detection evidence is missing or stale.",
-      "Do not run shell examples with unvalidated project names or target paths."
+      "Activating skills for technologies that detection did not identify.",
+      "Running the scaffolding example unchanged or overwriting existing project instructions without review.",
+      "Treating template placeholders as finished project knowledge or expecting plugin removal to delete generated project files."
     ],
     "faq": [
       {
-        "question": "What does this skill analyze?",
-        "answer": "It uses detected languages, frameworks, databases, test tools, build tools, files, and dependencies to match recommendation rules."
+        "question": "Does this package detect the stack independently?",
+        "answer": "No. The workflow first invokes the separate library-detection skill, then matches its results against recommendation rules."
       },
       {
-        "question": "Does it detect the stack independently?",
-        "answer": "No. It depends on the separate library-detection skill for initial stack discovery."
+        "question": "Does analysis automatically modify my repository?",
+        "answer": "Activation and scaffolding default to disabled. The documented report-only workflow does not create project skills."
       },
       {
-        "question": "Does it modify repository files?",
-        "answer": "Report-only use does not. Scaffolding can create skills and update a generated manifest after confirmation."
+        "question": "Which project templates are included?",
+        "answer": "Research, domain vocabulary, and testing templates are included. Their project-specific sections require customization."
       },
       {
-        "question": "Which generic skills can it recommend?",
-        "answer": "Rules cover BAML, Supabase, schema alignment, tree-sitter, security, MCP, FastAPI, and React skills."
+        "question": "Can I run the scaffolding commands as written?",
+        "answer": "Correct the destination handling first. The example can overwrite SKILL.md in the current directory instead of customizing the copied skill."
       },
       {
-        "question": "Where are generated skills stored?",
-        "answer": "Project-specific skills use .claude/skills/, while _generated.json records created paths and cleanup information."
+        "question": "What remains after removing ai-dev-kit?",
+        "answer": "Project-specific skills and generated documentation can remain. Use the generated manifest to review artifacts before deleting them."
       },
       {
-        "question": "Can generated files be removed?",
-        "answer": "Yes. Review the generated manifest, confirm each path, and remove files that are no longer needed."
+        "question": "Can I use it with Claude, Codex, or Claude Code?",
+        "answer": "The package declares support for all three. Its documented commands and activation workflow depend on ai-dev-kit integration in your environment."
       }
     ]
   },
@@ -1339,12 +1498,6 @@
           "lines": 224
         }
       ]
-    },
-    {
-      "name": "SKILL.md",
-      "type": "file",
-      "path": "SKILL.md",
-      "lines": 318
     },
     {
       "name": "templates",
@@ -1391,6 +1544,12 @@
           ]
         }
       ]
+    },
+    {
+      "name": "SKILL.md",
+      "type": "file",
+      "path": "SKILL.md",
+      "lines": 318
     }
   ]
 }

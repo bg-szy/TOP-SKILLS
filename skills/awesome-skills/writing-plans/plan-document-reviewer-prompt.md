@@ -7,7 +7,7 @@ Use this template when dispatching a plan document reviewer subagent.
 **Dispatch after:** The complete plan is written.
 
 ```
-Subagent (general-purpose):
+Dispatch with the client's general-purpose worker capability:
   description: "Review plan document"
   prompt: |
     You are a plan document reviewer. Verify this plan is complete and ready for implementation.
@@ -30,7 +30,7 @@ Subagent (general-purpose):
     An implementer building the wrong thing or getting stuck is an issue.
     Minor wording, stylistic preferences, and "nice to have" suggestions are not.
 
-    Approve unless there are serious gaps — missing requirements from the spec,
+    Approve unless there are serious gaps, missing requirements from the spec,
     contradictory steps, placeholder content, or tasks so vague they can't be acted on.
 
     ## Output Format

@@ -4,7 +4,7 @@ description: >-
   End-to-end branch delivery: commit (no AI attribution) → push → open a pull request → ensure a
   Board work item exists (create one per task, assigned to the configured user, if none) and link
   it → after merge, clean up branch and worktree. Auto-detects the platform from the remote —
-  Azure Repos + Boards (azure-devops-node-api SDK; OAuth Bearer push fallback via `az`) or GitHub
+  Azure Repos + Boards (azure-devops-node-api SDK; auth via `az account get-access-token` Bearer) or GitHub
   (Octokit; `gh` for auth). Scripts are TypeScript, run via `bun`. Use whenever
   asked to "ship", "ship it", "ship this branch", "open a PR", "push and open a PR", "raise a PR",
   "deliver this", "send this for review", or "create a PR and link the work item" — and when a
@@ -48,8 +48,23 @@ any), the branch, and an inferred work-item id. Everything below branches on tha
 > **One-time setup:** the scripts depend on `azure-devops-node-api` and `@octokit/rest`. Run
 > `bun install` in the skill dir (`~/.claude/skills/ship/`) once before first use.
 
+### On a bare "ship" — just run it
+A terse `ship` / `ship it` means "do the delivery," not "explain it to me." Run the flow with
+**minimal narration**: the preflight scope result (only if it's not clean), the `pr_url`, any
+created work-item ids, and the cleanup confirm. Don't recap session state, re-derive the plan out
+loud, or list every step before doing it — over-narrating a terse command is its own failure mode.
+The one thing that *does* warrant stopping is a `scope_clean=false` from preflight (step 0).
+
 ### 0. Preflight
-- Confirm there's something to deliver: `git status` and `git log --oneline @{u}.. 2>/dev/null`.
+```bash
+bun scripts/ship-preflight.ts     # anything to deliver? + working-tree scope audit
+```
+- It prints `commits_ahead_of_upstream`, `staged`/`unstaged`/`untracked` counts, and
+  `scope_clean=true|false`.
+- **If `scope_clean=false`, stop and surface the listed files to the user** before committing —
+  confirm they're intentionally excluded. This is the PR #192 guard: a changed file in another
+  directory left unstaged gets silently dropped from the PR. The check is advisory (it never
+  blocks), but an unconfirmed `false` is exactly the scope-creep miss this exists to catch.
 - Note the platform from `ship-detect.ts`. If it says `unknown` (e.g. a custom SSH host alias),
   set `SHIP_PLATFORM=azure` or `SHIP_PLATFORM=github` for the session.
 
@@ -75,9 +90,9 @@ backstop, but don't rely on it — don't write them in the first place). If pre-
 ```bash
 bun scripts/ship-push.ts         # pushes current branch, sets upstream
 ```
-On Azure DevOps, if the normal push fails on auth, this automatically mints an `az` OAuth token and
-retries with a Bearer header — the fallback for when neither SSH nor an HTTPS credential helper is
-available. See `references/azure-devops.md` for the mechanics.
+On Azure DevOps, the push authenticates with an `az account get-access-token` Bearer header first
+(`push_ok=oauth-bearer`), and falls back to the stored git credential only when `az` is not logged
+in (`push_ok=normal`). See `references/azure-devops.md` for the mechanics.
 
 ### 4. Open the PR (+ ensure/link work item, + transition state)
 
@@ -111,8 +126,8 @@ bun scripts/ship-pr.ts --title "<title>" --body-file /tmp/pr-body.md \
   and skipped (`reviewer_skipped=…`), never blocking the PR. GitHub has no per-PR "required"
   reviewer (that's branch protection), so required ones are just requested. The script prints
   `reviewer_added=<name> required=<bool>` for each.
-  When neither flag is given, `$SHIP_ADO_DEFAULT_REVIEWER` (if set) is added as an optional
-  reviewer — a PR with no reviewer record leaves no trace that anyone was asked. Unset = no
+  When neither flag is given on **Azure**, `$SHIP_ADO_DEFAULT_REVIEWER` (if set) is added as an
+  optional reviewer (it is ignored on GitHub, where ADO identities mean nothing) — a PR with no reviewer record leaves no trace that anyone was asked. Unset = no
   reviewer, the prior behaviour.
 - **Azure never opens a PR without a linked Board work item.** The script resolves the id from
   `--work-item` (or the branch name), then **verifies it actually exists** via the SDK
@@ -130,20 +145,43 @@ bun scripts/ship-pr.ts --title "<title>" --body-file /tmp/pr-body.md \
   are process-specific (Agile: Resolved; Scrum: Committed; Basic: Doing) — verify the valid next
   state first; see `references/azure-devops.md`. Omit `--transition` to leave the board untouched.
   (Created items start in the type's initial state, e.g. `New`/`To Do`.)
+- **The Complete dialog's "Complete linked work items after merging" box is pre-checked.** Ship sets
+  `completionOptions.transitionWorkItems=true` with a PATCH right after the create call, so whoever clicks **Complete** on the
+  PR transitions the linked item rather than leaving it open behind a merged PR. This is independent of
+  `--transition`, which fires at PR-open; this one fires at merge, and it is the one that closes the
+  loop, because nobody remembers to tick a box at merge time. Pass `--no-complete-transition` to leave
+  it unchecked. The script prints `complete_transitions_work_items=true|false`, read back from the PATCH response. Ignored on GitHub,
+  where `Closes #<id>` in the body does the same job.
 - The script prints `pr_url=…`; surface it to the user.
 
-### 4b. Tag the PR (optional, recommended)
+#### Related work items (`--related`)
+A long-lived item the PR touches but does not finish (a backlog item, an epic) must **not** be
+linked to the PR: on **Complete**, ADO rewrites the PR's completion options from the dialog, and a
+ticked "Complete linked work items" box closes every linked item, whatever ship set beforehand.
+Pass it as `--related <id>` (comma-separated or repeatable): ship verifies it, links the PR to its
+**own** item (the `--work-item`, or the Task it creates), and links that own item *Related* to the
+long-lived one (`related_linked=<own>-><id>`). Completing the PR then closes only the own item.
+Keep `#<id>` / `AB#<id>` out of the PR body and the commit messages for that item: Azure Repos
+links a mentioned item on its own, and ship warns when it sees one. Azure only; on GitHub, write
+`Refs #<id>` in the body.
+
+### 4b. Tags + reviewers (applied by default)
 Azure DevOps calls them **tags**; GitHub calls them **labels** — same idea: a small, visible signal
 that helps reviewers triage and helps the team organize PRs. Microsoft's guidance is that tags
 "communicate extra information to reviewers, such as that the PR is still a work in progress, or is a
 hotfix for an upcoming release" ([Add tags to a pull request](https://learn.microsoft.com/azure/devops/repos/git/pull-requests#add-tags-to-a-pull-request)).
 
-**A PR is never opened bare.** With no `--tag`, `ship-pr.ts` derives a type label
-from the branch prefix (`feat/…` → `feat`, `fix/`|`hotfix/`|`bugfix/` → `fix`,
-`docs/` → `docs`, `chore/` → `chore`, `refactor/` → `refactor`) and prints a
-`NOTE`. An unrecognised prefix gets a `WARNING`, not a failure — no platform has a
-"require a label" policy, so this is the only enforcement point, and a hard error
-here would break repos with other conventions.
+**A PR is never opened bare.** With no `--tag`, `ship-pr.ts` derives tags, in order:
+1. From the Conventional-Commit title — `docs(finops): …` → `docs`, `finops`.
+2. From the branch prefix — `feat/…` → `feat`, `fix/`|`hotfix/`|`bugfix/` → `fix`,
+   `docs/` → `docs`, `chore/` → `chore`, `refactor/` → `refactor`.
+3. Otherwise `needs-review`, with a `WARNING`.
+
+It never fails here. No platform has a "require a label" policy, so this is the only
+enforcement point, and a hard error would break repos with other conventions. Pass
+`--no-tag` to open the PR with no tags. With no `--reviewer`/`--required-reviewer`,
+`$SHIP_ADO_DEFAULT_REVIEWER` (if set) is added as an optional reviewer; `--no-reviewer`
+skips it.
 
 Apply tags at PR-open time with `--tag` (comma-separated and/or repeatable):
 
@@ -234,19 +272,20 @@ The script auto-fills what's easy to get wrong by hand:
   someone relies on.
 
 Tags are **local until pushed** (shared/visible — confirm first, like opening a PR). Add `--push` to
-push to `origin`; on Azure it falls back to the `az` OAuth Bearer header the same way `ship-push.ts`
+push to `origin`; on Azure it uses the `az` OAuth Bearer header first, the same way `ship-push.ts`
 does. The script prints `tag=`, `commit=`, `branch=`, `pushed=`.
 
 ## Bundled tools
 
 | Script | Does |
 |--------|------|
+| `bun scripts/ship-preflight.ts [remote]` | Anything-to-deliver + working-tree scope audit (`scope_clean=…`); advisory, never blocks. Run first |
 | `bun scripts/ship-detect.ts [remote]` | Print platform + Azure coordinates + branch + inferred work item |
-| `bun scripts/ship-push.ts [-r remote] [-b branch]` | Push + set upstream; Azure OAuth Bearer fallback on auth failure |
-| `bun scripts/ship-pr.ts --title … [opts]` | Open PR on the detected platform; ensure/create + link work item(s) (assigned to the configured user); optional Board transition; optional `--tag`; optional `--reviewer`/`--required-reviewer` — work item + tags + reviewers packed into one create call on Azure |
+| `bun scripts/ship-push.ts [-r remote] [-b branch]` | Push + set upstream; on Azure, `az` OAuth Bearer first, stored credential as fallback |
+| `bun scripts/ship-pr.ts --title … [opts]` | Open PR on the detected platform; ensure/create + link work item(s) (assigned to the configured user); optional Board transition; auto-tag from title/branch (override `--tag`, disable `--no-tag`); optional `--reviewer`/`--required-reviewer` (default `$SHIP_ADO_DEFAULT_REVIEWER`, disable `--no-reviewer`); pre-checks "Complete linked work items after merging" (disable `--no-complete-transition`) — work item + tags + reviewers packed into one create call on Azure |
 | `bun scripts/ship-tag.ts <pr-id> [--add\|--remove "t1,t2"] [--list]` | Add / remove / list PR tags (Azure) or labels (GitHub) on an existing PR |
 | `bun scripts/ship-open.ts <url> [--profile <email>] [--dry-run]` | Open a PR/URL in a chosen browser **account profile** (email→profile via the browser's `Local State`); WSL→Edge/Chrome, macOS→Chrome/Edge; also `--list-profiles`, `--set-default` |
-| `bun scripts/ship-snapshot.ts [-m "para"]… [--daily] [--name <tag>] [--push]` | Save current state as an annotated **git tag** (date-named, self-describing subject); optional push with Azure OAuth fallback |
+| `bun scripts/ship-snapshot.ts [-m "para"]… [--daily] [--name <tag>] [--push]` | Save current state as an annotated **git tag** (date-named, self-describing subject); optional push (Azure: `az` OAuth Bearer first) |
 
 Scripts are TypeScript run via `bun`; shared helpers live in `scripts/ship-lib.ts`. Run `bun install`
 in the skill dir once (installs `azure-devops-node-api` + `@octokit/rest`). Git/push stays a
@@ -268,24 +307,57 @@ detected platform. The PR description starts from `assets/pr-template.md`.
 
 - Both PR-create paths (Octokit `pulls.create`, ADO `createPullRequest`) require the branch to be
   **pushed first** — keep step 3 before step 4.
+- **`ship-pr.ts` refuses a branch with 0 commits ahead of the target (exit 3).** A commit a
+  pre-commit hook rejected leaves the branch at the target's tip; the push still succeeds and the
+  platform would open an empty PR that reads as delivered (2026-11-09, ADO PR 1931, a hook failed
+  on a DNS timeout). On exit 3, read the commit's hook output, commit, and re-run; never open the
+  PR by hand around it. `commitsAhead()` in `ship-lib.ts` compares `<remote>/<target>..<remote>/<source>`.
 - `ship-detect.ts` returning `unknown` is almost always a custom SSH host alias — set `SHIP_PLATFORM`.
   (A `dev.azure.com-<alias>` SSH host is detected as azure but its org/project/repo won't parse —
   same limitation the shell version had; pass coordinates/`--work-item` explicitly if needed.)
 - Scripts need deps: if you see `Cannot find module 'azure-devops-node-api'`, run `bun install` in
   the skill dir.
-- A linked work item does **not** change state on its own; transitioning is a separate step (4).
-- If `AZURE_DEVOPS_EXT_PAT` is set but under-scoped (e.g. Code-only, missing Work Items / Pull
-  Request write), `ship-pr.ts` auto-detects the 401/403 and retries with the `az` OAuth bearer
-  token — no need to unset the PAT manually. The fallback requires `az login` as an org member.
+- A linked work item does **not** change state on its own. There are two separate levers: `--transition`
+  moves it when the PR *opens*, and `completionOptions.transitionWorkItems` (on by default, see step 4)
+  moves it when the PR is *completed*. A PR created before this default existed carries no completion
+  options at all, so its box stays unchecked — that setting is baked in at create time and cannot be
+  added to an already-merged PR.
+- **Azure auth is `az account get-access-token` first, everywhere** (push, snapshot push, SDK,
+  reviewer lookup). The token follows whoever `az login` is right now, so it can't go stale the way
+  a stored PAT or keychain entry can. A set `AZURE_DEVOPS_EXT_PAT` / `AZURE_DEVOPS_PAT` is only the
+  fallback: the scripts move to it on a 401/403, or use it alone when `az` isn't logged in. So
+  `az login` as an org member is the one prerequisite; a stray PAT no longer silently wins.
+- **Every Bearer git call empties `credential.helper`** (`adoBearerGitArgs` in `ship-lib.ts`). A
+  stored HTTPS credential (the keychain entry for `dev.azure.com`) still answers git's 401
+  challenge even when an `http.extraHeader` Bearer is set, so a stale one fails the call with
+  `Authentication failed`. On 2026-10-26 a plain `git pull` and both pushes failed after an Entra
+  account rename while the same token returned 200 via curl; `-c credential.helper=` fixed it.
+  Hand-rolled git calls need the same shape:
+  `git -c credential.helper= -c http.extraHeader="Authorization: Bearer $(az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query accessToken -o tsv)" pull --ff-only`.
+- **`TF400813` with an `az` token right after an Entra UPN rename is ADO's identity cache, not a
+  missing grant.** On 2026-10-26 the renamed account was already Project Collection Administrator
+  and still got `TF400813` on every repo call for a few minutes, then 200 with no change made. Check
+  the org membership before adding the account again: a re-add can't fix it.
 - **A GitHub `404 Not Found` on create is almost always the wrong account, not a missing repo.**
   `gh auth token` answers as whatever account is *active*, ignoring who owns the repo, and GitHub
   hides a private repo you can't see rather than returning 403. `ship-pr.ts` / `ship-tag.ts` now call
   `githubToken(owner)`, which prefers `gh auth token -u <owner>` and falls back to the active account
   for org repos where the owner isn't a logged-in account; `GH_TOKEN`/`GITHUB_TOKEN` still override
   everything. If you still get a 404, check `gh auth status` lists the owning account.
-- Don't hand-roll the PR with raw `az repos pr create` / `gh pr create` and then bolt the work item
-  on afterward — that path skips the auto-create+link invariant and forces a manual "what's the id?"
-  round-trip with the user. Use `ship-pr.ts` so the work item is guaranteed at PR-open.
+- Don't hand-roll the PR with raw `az repos pr create` / `gh pr create` (or the `repo_create_pull_request`
+  MCP tool) and then bolt the work item on afterward — that path skips the auto-create+link invariant
+  and forces a manual "what's the id?" round-trip with the user. It also double-escapes `&` in the
+  title to a literal `&amp;` (an entity the API doesn't decode), so titles render wrong. `ship-pr.ts`
+  passes the title literally via the SDK + an arg array, so `&` stays `&` — another reason to use the
+  script, not the raw path.
+- **`createPullRequest` silently drops `completionOptions`.** The payload is accepted and the PR comes
+  back with `completionOptions: null`, so a setting passed at create never lands (observed on ADO PR
+  1050). Completion options must be set with `updatePullRequest` after the PR exists. Never report
+  such a setting from the flag you passed; read it back from the API response.
+- **Run the scripts from the target repo, by absolute path — never `cd` into the skill dir.** Platform
+  detection reads the cwd's git remote, and the skill dir is its own GitHub repo, so `cd ~/.claude/skills/ship
+  && bun scripts/ship-pr.ts` opens the PR against *that* repo (2026-09-23: only a 422 "No commits between
+  main and main" stopped it). Use `bun ~/.claude/skills/ship/scripts/ship-pr.ts` from the repo being shipped.
 - Deleting a branch while its PR is still open abandons the PR — clean up only after merge (step 5).
 - `ship-open.ts` matches `--profile <email>` against the browser's **signed-in** account emails, so a
   profile with no account attached is only reachable as the Default fallback, not by email. It

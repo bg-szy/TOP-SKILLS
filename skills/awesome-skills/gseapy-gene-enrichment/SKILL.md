@@ -19,6 +19,7 @@ GSEApy provides Python implementations of GSEA and over-representation analysis 
 - Generating publication-ready enrichment dot plots and GSEA running-score plots
 - Use **GSEA Java application** for the official GUI-based analysis with full GSEA desktop interface
 - Use **fgsea** (R) as an alternative with fast permutation-based p-values; GSEApy is preferred for Python-native pipelines
+- Use **omics-plotting** SKILL after DE and for publication-quality plots of gsea results
 
 ## Prerequisites
 
@@ -32,6 +33,84 @@ pip install gseapy
 python -c "import gseapy; print(gseapy.__version__)"
 # 1.1.3
 ```
+
+## Pre-flight Interview
+
+Settle these with the user before writing any analysis code.
+
+```yaml
+decisions:
+  - id: D1
+    param: analysis_mode
+    kind: required
+    source: upstream
+    ask: "Test only the genes that passed a significance cut (ORA), or the whole ranked list without a cut (GSEA prerank)?"
+    default: "prerank when the upstream stage yields a full ranking; ORA when it yields a gene list"
+
+  - id: D2
+    param: organism
+    kind: derived
+    source: upstream
+    ask: "Which species are these genes from?"
+    default: "carried from the upstream dataset"
+
+  - id: D3
+    param: gene_sets
+    kind: required
+    source: user
+    depends_on: [D2]
+    ask: "Which collections should the genes be tested against - GO terms, pathways, disease or perturbation signatures?"
+    default: null
+
+  - id: D4
+    param: rnk
+    kind: optional
+    source: user
+    depends_on: [D1]
+    ask: "What should order the genes - effect size, signed significance, or the test statistic?"
+    default: "log2FoldChange"
+    skip_if: "ORA mode - ranking is not used"
+
+  - id: D5
+    param: cutoff
+    kind: optional
+    source: user
+    ask: "How strong must a term's evidence be before it is reported?"
+    default: 0.05
+
+  - id: D6
+    param: min_size, max_size
+    kind: optional_conditional
+    source: user
+    ask: "Should very small or very broad gene sets be excluded as uninformative?"
+    default: "15-500 genes"
+
+  - id: D7
+    param: permutation_num
+    kind: optional_conditional
+    source: user
+    ask: "More permutations give finer p-values at proportionally more runtime - is the default enough?"
+    default: 1000
+
+  - id: D8
+    param: weighted_score_type
+    kind: optional
+    source: user
+    ask: "Should GSEA use the standard weighted enrichment score, or a different weighting for this ranking?"
+    default: 1
+
+  - id: D9
+    param: seed, threads
+    kind: never_ask
+    source: data
+    reason: "A fixed seed and available CPU cores affect reproducibility and runtime, not the enrichment model."
+    default: "seed fixed, threads min(4, available_cores)"
+```
+
+Two orderings matter here. D3 hangs on D2 because Enrichr's libraries are
+species-specific — the catalog itself changes with the organism. D4 hangs on D1
+because a ranking metric only exists in prerank mode; under ORA the question has
+no answer, which is what `skip_if` records.
 
 ## Quick Start
 
@@ -144,40 +223,30 @@ print(sig.sort_values("NES", ascending=False)[["Term", "NES", "NOM p-val", "FDR 
 
 ### Step 4: Plot GSEA Running Score
 
-Visualize the enrichment score curve for a specific gene set.
+The running enrichment-score curve is GSEApy-specific — draw it with `gseaplot`. (omics-plotting covers the GSEA bar/dot summary plots instead, see Step 5.)
 
 ```python
-import gseapy as gp
-from gseapy.plot import gseaplot
-import matplotlib.pyplot as plt
+from gseapy import gseaplot
 
-# Re-use pre_res from Step 3 (or load saved results)
-# Select the top enriched gene set
+# pre_res: prerank result from Step 3
 top_term = pre_res.res2d.sort_values("NES", ascending=False).index[0]
-print(f"Top enriched gene set: {top_term}")
-
-# Plot running enrichment score
-ax = gseaplot(
+gseaplot(
     rank_metric=pre_res.ranking,
     term=top_term,
     **pre_res.results[top_term],
-    ofname="gsea_results/top_geneset_enrichment.pdf",
+    ofname="figures/gsea_running_score.png",
 )
-plt.tight_layout()
-plt.savefig("gsea_enrichment_plot.png", dpi=150)
-print("Saved: gsea_enrichment_plot.png")
+print(f"Saved figures/gsea_running_score.png ({top_term})")
 ```
 
 ### Step 5: Enrichment Dot Plot for Multiple Terms
 
-Generate a dot plot showing enrichment significance and gene ratio across top pathways.
+Run ORA, then **read `skills/data-visualization/omics-plotting/SKILL.md` and follow its "GSEA dot plot" recipe** on the exported table (→ `figures/enrichment_dotplot.png`). Map GSEApy's `Overlap` column to the recipe's `GeneRatio`.
 
 ```python
 import gseapy as gp
-import matplotlib.pyplot as plt
-from gseapy.plot import dotplot
 
-# Run ORA and plot results
+# enr.results is the enrichment table: Term, Overlap, Adjusted P-value, Genes, ...
 enr = gp.enrichr(
     gene_list=["TP53", "BRCA1", "CDK2", "CCND1", "MYC", "EGFR",
                "KRAS", "PTEN", "RB1", "AKT1", "PIK3CA", "MDM2",
@@ -187,22 +256,9 @@ enr = gp.enrichr(
     outdir=None,
     cutoff=0.05,
 )
-
-# Dot plot: x=gene ratio, size=-log10(p), color=adjusted p-value
-ax = dotplot(
-    enr.results,
-    column="Adjusted P-value",
-    x="Gene_set",
-    title="KEGG Enrichment",
-    cmap="viridis_r",
-    size=10,
-    top_term=15,
-    figsize=(6, 8),
-    ofname="enrichment_dotplot.pdf",
-)
-plt.tight_layout()
-plt.savefig("enrichment_dotplot.png", dpi=150, bbox_inches="tight")
-print("Saved: enrichment_dotplot.png")
+enr.results.to_csv("enrichment.csv", index=False)
+print(f"ORA terms: {len(enr.results)} -> enrichment.csv")
+# Render with the omics-plotting SKILL (`skills/data-visualization/omics-plotting/SKILL.md`) "GSEA dot plot" recipe.
 ```
 
 ### Step 6: Integrate with DESeq2 / scanpy Output

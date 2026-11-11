@@ -1,6 +1,6 @@
 ---
 name: "celltypist-cell-annotation"
-description: "Automated scRNA-seq cell type annotation via pre-trained logistic regression. 45+ models: immune, gut, lung, brain, fetal, cancer microenvironments. Input normalized AnnData; outputs per-cell labels, majority-vote cluster labels, confidence scores. Use for fast, reference-backed annotation without manual marker inspection."
+description: "Automated scRNA-seq cell type annotation via pre-trained logistic regression. 45+ models: immune, gut, lung, brain, fetal, cancer microenvironments. Input normalized AnnData; outputs per-cell labels, majority-vote cluster labels, confidence scores. Use for fast, reference-backed annotation without manual marker inspection; read cell-type-annotation first."
 license: "MIT"
 ---
 
@@ -18,18 +18,104 @@ CellTypist is an automated cell type classifier for single-cell RNA-seq data bui
 - Comparing annotation results across multiple tissue-specific models to determine the most biologically relevant reference
 - Training a custom CellTypist model from a labeled reference dataset for a tissue or species not covered by pre-built models
 - Quantifying annotation confidence to flag low-certainty cells (confidence score < 0.5) for manual review or exclusion
+- Use **omics-plotting** SKILL for generic result-table figures; UMAP/dotplot annotation views use scanpy `sc.pl.*`
 - Use **scVI/scANVI** (scvi-tools-single-cell) instead when you need probabilistic label transfer with batch correction and uncertainty quantification via a variational autoencoder
 - Use **popV** (popv-cell-annotation) instead when you want ensemble consensus from 10+ methods including deep learning and KNN-based approaches
 
 ## Prerequisites
 
-- **Python packages**: `celltypist>=1.6`, `scanpy>=1.9`, `anndata`
+- **Python packages** (pre-installed in the runtime): `celltypist>=1.6`, `scanpy>=1.9`, `anndata`
 - **Data requirements**: AnnData with normalized, log1p-transformed counts in `adata.X` (10,000 UMIs per cell target sum). Raw counts must be normalized before calling CellTypist
-- **Environment**: Python 3.8+; 8 GB RAM sufficient for most datasets; internet access required for model downloads (first run only)
+- **Environment**: Python 3.8+; 8 GB RAM sufficient for most datasets; internet access required to download the selected model(s) on first use
+- **Model download**: download the model for the data (Step 3). Loading a model by name, so download the chosen one first
 
-```bash
-pip install celltypist "scanpy[leiden]" anndata
+## Pre-flight Interview
+
+Settle these with the user before writing any analysis code.
+
+```yaml
+decisions:
+  - id: D1
+    param: annotationStrategy
+    kind: required
+    source: user
+    ask: "Markers (A), a CellTypist model (B), an ensemble on your labelled reference (C), or markers and transfer compared (D)?"
+    default: null
+
+  - id: D2
+    param: tissueContext
+    kind: required
+    source: user
+    ask: "Which tissue, and in what state (healthy, fetal, diseased, cultured, perturbed)?"
+    default: null
+
+  - id: D3
+    param: model
+    kind: optional
+    source: literature
+    ask: "Which model or reference matches this tissue and state?"
+    default: "best match for the stated tissue and state"
+    skip_if: "markers-only annotation"
+
+  - id: D4
+    param: markerValidation
+    kind: optional
+    source: user
+    ask: "Check assigned labels against canonical markers before accepting them?"
+    default: "checked"
+    skip_if: "markers-only annotation"
+
+  - id: D5
+    param: markerPanel
+    kind: optional
+    source: literature
+    ask: "Which canonical markers define the expected populations?"
+    default: "agent-drafted panel for the tissue and state, listed in the plan"
+    skip_if: "label transfer only"
+
+  - id: D6
+    param: labelGranularity
+    kind: required
+    source: user
+    ask: "Name broad lineages, or subtypes and activation states within them?"
+    default: null
+
+  - id: D7
+    param: majorityVoting
+    kind: required
+    source: user
+    ask: "Label each cell, or take a consensus per cluster?"
+    default: "per-cell; voting once clusters are trusted"
+
+  - id: D8
+    param: clusteringKey
+    kind: derived
+    source: upstream
+    depends_on: [D7]
+    ask: "Which clustering is the consensus taken over?"
+    default: "upstream clustering"
+    skip_if: "no majority voting"
+
+  - id: D9
+    param: assignmentThreshold
+    kind: required
+    source: user
+    ask: "Label every cell, or leave uncertain cells unassigned?"
+    default: "best match for every cell"
+
+  - id: D10
+    param: minClusterProportion
+    kind: optional
+    source: user
+    depends_on: [D7]
+    ask: "What fraction of a cluster must agree to apply the consensus?"
+    default: "no minimum"
+    skip_if: "no majority voting"
 ```
+
+D1-D6 match `cell-type-annotation` word for word; ask each once. If D1 is
+markers only, use that skill instead. Check D3 against D2: a mismatched model
+still labels every cell confidently, and only the D4 marker check catches it.
 
 ## Quick Start
 
@@ -38,9 +124,13 @@ Minimal pipeline — annotate a preprocessed AnnData with the pan-immune model:
 ```python
 import celltypist
 import scanpy as sc
+from celltypist import models
 
 # Load a preprocessed AnnData (normalized + log1p, Leiden clusters already in adata.obs)
 adata = sc.read_h5ad("preprocessed_pbmc.h5ad")
+
+# Download only the model to be used (otherwise an empty cache pulls every model)
+models.download_models(model="Immune_All_Low.pkl")
 
 # Run annotation with majority voting across Leiden clusters
 predictions = celltypist.annotate(
@@ -58,29 +148,18 @@ print(adata.obs[["predicted_labels", "majority_voting", "conf_score"]].head(10))
 
 ## Workflow
 
-### Step 1: Installation and Model Setup
+### Step 1: Environment Check and Model Setup
 
-Install CellTypist and download pre-trained models. Models are cached locally after the first download.
-
-```bash
-pip install celltypist "scanpy[leiden]" anndata
-```
+CellTypist, scanpy and anndata are pre-installed — do not run `pip install`.
 
 ```python
-import celltypist
+import celltypist, scanpy, anndata
 from celltypist import models
+print(celltypist.__version__, scanpy.__version__, anndata.__version__)
 
-# Download all available models (only needed once; ~2 GB total)
-models.download_models(force_update=False)
-
-# List available models with metadata
+# Reads the model index only; on_the_fly=True would download every model
 models_df = models.models_description()
-print(models_df[["model", "description", "n_celltypes", "n_cells"]].to_string())
-# Output (excerpt):
-#   model                          description                                 n_celltypes  n_cells
-#   Immune_All_Low.pkl             Pan-immune low-hierarchy (98 cell types)   98           324,320
-#   Immune_All_High.pkl            Pan-immune high-hierarchy (30 cell types)  30           324,320
-#   Human_Lung_Atlas.pkl           Lung cell types from Human Lung Atlas       61           584,944
+print(f"{len(models_df)} models available")
 ```
 
 ### Step 2: Data Preparation
@@ -109,34 +188,33 @@ print(f"adata.X mean: {adata.X.mean():.3f}  (expected ~0.5–2.0 after log1p nor
 
 ### Step 3: Model Selection
 
-Choose the model that best matches your tissue type and desired annotation resolution.
+Search the catalogue for the tissue from D2 and download only the model(s) you pick.
 
 ```python
 from celltypist import models
 
-# Show full model table with filtering
 models_df = models.models_description()
+print(models_df[models_df["description"].str.contains("breast", case=False)])
+#   Cells_Adult_Breast.pkl  cell types from the adult human breast
 
-# Filter to human immune models
-immune_models = models_df[models_df["description"].str.contains("immune|Immune", case=False)]
-print(immune_models[["model", "description", "n_celltypes"]].to_string())
-
-# Load a specific model to inspect its cell type labels
-model = models.Model.load("Immune_All_Low.pkl")
-print(f"Model cell types ({len(model.cell_types)}):")
-print(model.cell_types[:20])  # first 20 labels
+# Breast cancer: no tumour model, so healthy breast + pan-immune
+selected_models = ["Cells_Adult_Breast.pkl", "Immune_All_Low.pkl"]
+models.download_models(model=selected_models)
 ```
+
+A healthy-tissue model has no tumour classes, so malignant cells get a confident normal epithelial label, and markers (D4) cannot tell them apart. Report these clusters as "epithelial (malignancy not resolved)"; resolving it needs CNV inference (inferCNV, CopyKAT), which this runtime does not have.
 
 **Available models (key selection guide):**
 
 | Model | Cell Types | Best For |
 |-------|-----------|---------|
 | `Immune_All_Low.pkl` | 98 | Pan-immune with fine subtypes (e.g., MAIT, Tfh, cDC1) |
-| `Immune_All_High.pkl` | 30 | Pan-immune major lineages (T, B, NK, monocyte, DC) |
+| `Immune_All_High.pkl` | 32 | Pan-immune major lineages (T, B, NK, monocyte, DC) |
+| `Cells_Adult_Breast.pkl` | 58 | Adult human breast: luminal, basal, stromal, endothelial, immune |
 | `Human_Lung_Atlas.pkl` | 61 | Lung: alveolar, stromal, immune, endothelial |
-| `Pan_Fetal_Human.pkl` | 139 | Fetal human multi-organ development |
-| `Developing_Human_Brain.pkl` | 51 | Brain development: progenitors, neurons, glia |
-| `Human_Colorectal_Cancer.pkl` | 62 | Colorectal cancer cells + tumor microenvironment |
+| `Pan_Fetal_Human.pkl` | 138 | Fetal human stromal and immune populations |
+| `Developing_Human_Brain.pkl` | 129 | First-trimester brain development: progenitors, neurons, glia |
+| `Human_Colorectal_Cancer.pkl` | 36 | Colorectal cancer cells + tumor microenvironment |
 
 ### Step 4: Automated Annotation
 
@@ -294,8 +372,8 @@ new_model = celltypist.train(
 new_model.write("custom_tissue_model.pkl")
 print(f"Trained model: {len(new_model.cell_types)} cell types")
 
-# Apply to query
-predictions = celltypist.annotate(query_adata, model="custom_tissue_model.pkl",
+# "./" path, not a bare name: a bare name on an empty cache downloads every model
+predictions = celltypist.annotate(query_adata, model="./custom_tissue_model.pkl",
                                   majority_voting=True)
 ```
 
@@ -306,8 +384,11 @@ When to use: uncertain which model best matches your dataset; run multiple model
 ```python
 import celltypist
 import pandas as pd
+from celltypist import models
 
+# Candidates from the Step 3 search
 model_names = ["Immune_All_High.pkl", "Immune_All_Low.pkl", "Human_Lung_Atlas.pkl"]
+models.download_models(model=model_names)
 results = {}
 
 for model_name in model_names:
@@ -371,7 +452,8 @@ if "sample" in adata.obs.columns:
 | Implausible labels (e.g., immune labels on neurons) | Wrong model selected for tissue | Choose a tissue-specific model (e.g., `Developing_Human_Brain.pkl` for brain data); list options with `models.models_description()` |
 | `MemoryError` on large datasets (>500k cells) | Full probability matrix held in RAM | Subsample to 200k cells for annotation, then transfer labels via KNN; or use `mode="best match"` to skip storing full probability matrix |
 | Low overall `conf_score` (<0.4 median) | Dataset is poorly represented by the reference model | Train a custom model from a matched reference or use `popv-cell-annotation` for ensemble voting |
-| `Model not found` error on download | Network issue or wrong model name | Run `models.download_models(force_update=True)`; verify name with `models.models_description()["model"].tolist()` |
+| `Model not found` error on download | Network issue or wrong model name | Verify the name with `models.models_description()["model"].tolist()`, then run `models.download_models(model="<name>.pkl", force_update=True)` |
+| First `annotate()` / `Model.load()` starts downloading every model | Model folder was empty and the model was referenced by name | Interrupt, run `models.download_models(model=[...])` for the selected models only, then retry |
 
 ## Related Skills
 

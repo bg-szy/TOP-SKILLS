@@ -1,6 +1,13 @@
 ---
 name: gh-stack
-description: "Use for stacked PRs with the gh-stack extension: creating, viewing, editing, pushing, submitting, syncing, rebasing, merging, or checking out a stack, or splitting multi-part work into reviewable layers. Also use whenever a stack is checked out or the user mentions stacks, branch layers, or dependent PRs."
+description: >
+  Manages stacked PRs and splits multi-part work into reviewable branches with gh-stack.
+  Use for stack creation, viewing, edits, push, submit, sync, rebase, merge, or checkout;
+  when asked to split or isolate work for review; whenever a user mentions a stack,
+  branch layers, dependent PRs, or gh stack; or when a stack is checked out.
+metadata:
+  author: github
+  version: "0.2.0"
 ---
 
 # gh-stack
@@ -21,6 +28,8 @@ Foundational work belongs at the bottom, code that depends on it above. For how 
 layers, read `references/stack-design.md`.
 
 ## Setup
+
+Requires Git 2.36+ and an authenticated GitHub CLI.
 
 ```bash
 gh extension install github/gh-stack
@@ -47,11 +56,15 @@ Agent harnesses differ, so always pass the flags below instead of relying on tha
 | `gh stack add <branch>` | `gh stack add` | prompts for a name, and fails even when piped |
 | `gh stack checkout <target>` | `gh stack checkout` | opens a selection menu |
 | `gh stack up` / `down` / `top` / `bottom` | `gh stack switch` | `switch` is menu-only |
-| (none) | `gh stack modify` | TUI-only, no non-interactive path |
+| — | `gh stack modify` | TUI-only, no non-interactive path |
 
 - `view --short` is safe in both modes, but it is formatted for humans. Use `--json` to parse.
 - **`checkout <pr>` when a different local stack already covers those branches** cannot be forced.
   Run `gh stack unstack --local` first (this keeps the stack on GitHub), then retry.
+- **Worktrees:** local stacks share one common-directory catalog. Use `--print-path` with
+  navigation or explicit-target `checkout` to locate a foreign-owned branch without stealing its
+  checkout. Unoccupied targets are checked out here first. Check the exit status before changing
+  directories; parse only successful path-mode stdout, never status messages.
 
 ## Branch placement
 
@@ -82,7 +95,7 @@ gh stack view --json            # confirm
 ```
 
 Add `--open` to `submit` to create PRs ready for review instead of drafts. Branch names are
-verbatim: `gh stack add refactor/foo` creates `refactor/foo`.
+verbatim — `gh stack add refactor/foo` creates `refactor/foo`.
 
 ## Staying in sync
 
@@ -92,7 +105,7 @@ gh stack sync --prune           # also delete local branches for merged PRs
 ```
 
 Pruning never happens without `--prune` when non-interactive. If the local and remote stacks have
-diverged, `sync` prints both chains, makes no changes, and exits 0 with `Sync aborted`; see
+diverged, `sync` prints both chains, makes no changes, and exits 0 with `Sync aborted` — see
 `references/troubleshooting.md`.
 
 ## Merging
@@ -115,8 +128,8 @@ warning; queued PRs may land in separate groups.
 
 ## Reading state
 
-`gh stack view --json` writes JSON to **stdout**. Status messages go to **stderr**. Do not parse
-them; branch on exit codes instead.
+`gh stack view --json` writes JSON to **stdout**. Status messages go to **stderr** — do not parse
+them, branch on exit codes instead.
 
 ```
 trunk           string
@@ -133,7 +146,7 @@ an ancestor of the branch.
 
 | Code | Meaning | Recovery |
 |---|---|---|
-| 0 | Success | (none) |
+| 0 | Success | — |
 | 1 | Generic error | Read stderr |
 | 2 | Not in a stack | `gh stack init`, or `gh stack checkout <target>` |
 | 3 | Rebase conflict | Follow the Exit 3 recovery below |
@@ -155,20 +168,27 @@ an ancestor of the branch.
 ## Constraints
 
 - Stacks are strictly linear: one parent, at most one child. Use separate stacks for parallel work.
+- `rebase` and `sync` automatically update affected clean worktrees; they never auto-stash or
+  create/remove worktrees. Mutations serialize across the clone, and paused operations require
+  recovery in their recorded owners.
+- `modify` supports distributed stack branches, but its editor remains TUI-only. Actions run in
+  affected clean owners; unoccupied branches use the origin. Drop/fold source branches and
+  worktrees are preserved. Recovery flags may run from any worktree and use recorded native
+  operation owners; never resolve/stage in the caller's tree unless the diagnostic names it.
 - There is no non-interactive reorder or removal. Errors may suggest `gh stack modify`, but it is
-  TUI-only; restructure with `unstack` then `init` instead.
+  TUI-only — restructure with `unstack` then `init` instead.
 - PR titles and bodies are auto-generated. Use `gh pr edit` afterwards to change them.
-- `checkout <branch-name>` resolves against local stacks only. Use a stack or PR number to pull a
-  stack down from GitHub.
 
 ## More detail
 
-`gh stack <command> --help` is authoritative for flags and arguments (`gh stack help <command>`
-prints the top-level help instead). Read the reference that matches the task:
+`gh stack <command> --help` is authoritative for flags and arguments. Note that
+`gh stack help <command>` does **not** work — it prints the top-level help.
 
-- `references/stack-design.md`: before creating a stack, when deciding how many layers to use and
-  what belongs in each.
-- `references/commands.md`: when a command fails unexpectedly or you need its preconditions, side
-  effects, atomicity, or ordering guarantees.
-- `references/troubleshooting.md`: on a rebase conflict, after a squash-merge, on local and remote
-  divergence, or when restructuring a stack.
+Open the reference whose trigger matches the task; no need to preload all three.
+
+- `references/stack-design.md` — read before creating a stack, when deciding how many layers to
+  use, what belongs in each one, or whether work belongs in a new stack.
+- `references/commands.md` — read when a command fails unexpectedly or you need its preconditions,
+  side effects, atomicity, or ordering guarantees.
+- `references/troubleshooting.md` — read on a rebase conflict, after a squash-merge, on local and
+  remote divergence, when restructuring a stack, or when driving stacks from another tool.

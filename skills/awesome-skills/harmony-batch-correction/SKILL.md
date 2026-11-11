@@ -17,6 +17,7 @@ Harmony is a fast, scalable algorithm for batch integration in single-cell data.
 - Performing fast, scalable batch correction on datasets with millions of cells where deep generative model training would be prohibitively slow
 - Correcting for multiple confounding variables simultaneously (batch, donor, sequencing platform, tissue processing protocol)
 - Preparing a corrected embedding for UMAP visualization, Leiden clustering, or label transfer without modifying the gene expression count matrix
+- Use **omics-plotting** SKILL for generic result-table figures; batch-evaluation UMAPs use scanpy `sc.pl.*`
 - Use **scVI/scvi-tools** instead when you need probabilistic batch correction with a variational autoencoder (deep learning), differential expression with uncertainty estimates, or multi-modal integration (RNA + protein)
 - Use **BBKNN** instead when you want graph-based integration that avoids constructing a corrected embedding altogether and directly builds a cross-batch nearest-neighbor graph
 - Use **Seurat Integration / CCA** (R) instead when you are already in a Seurat workflow and prefer anchor-based integration methods
@@ -38,6 +39,69 @@ install.packages("harmony")
 # If using Seurat:
 install.packages("Seurat")
 ```
+
+## Pre-flight Interview
+
+Settle these with the user before writing any analysis code.
+
+```yaml
+decisions:
+  - id: D1
+    param: batchKey
+    kind: required
+    source: data
+    ask: "Which variable separates samples that were processed apart - donor, run, chemistry, or a combination?"
+    default: null
+
+  - id: D2
+    param: inputEmbedding
+    kind: derived
+    source: upstream
+    ask: "Which reduced space should be corrected?"
+    default: "the PCA embedding computed upstream"
+
+  - id: D3
+    param: diversityPenalty
+    kind: required
+    source: user
+    depends_on: [D1]
+    ask: "How hard should batches be pushed together? Too hard erases real differences between samples."
+    default: "2.0; raise toward 4-6 when batch sizes are very uneven"
+
+  - id: D4
+    param: numClusters
+    kind: optional_conditional
+    source: data
+    ask: "Does the dataset contain rare populations that need more soft clusters to survive correction?"
+    default: "automatic, min(100, cells/30)"
+
+  - id: D5
+    param: maxIterations
+    kind: optional_conditional
+    source: data
+    ask: "Did the correction converge, or does it need more iterations?"
+    default: 10
+
+  - id: D6
+    param: smallClusterProtection
+    kind: optional_conditional
+    source: user
+    ask: "Are small populations being over-split during correction?"
+    default: "off"
+
+  - id: D7
+    param: kernelBandwidth
+    kind: optional
+    source: user
+    ask: "Should Harmony use its standard soft-clustering bandwidth, or be tuned for unusually heterogeneous batches?"
+    default: 0.1
+```
+
+D3 is where batch correction goes wrong in the direction nobody checks.
+Under-correction is visible - batches stay separated in the embedding.
+Over-correction is not: samples mix beautifully because a real treatment effect
+was removed along with the batch effect. Ask what the batch variable is
+confounded with before raising it.
 
 ## Quick Start
 

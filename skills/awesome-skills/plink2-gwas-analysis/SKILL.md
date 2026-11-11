@@ -18,6 +18,7 @@ PLINK2 is the high-performance successor to PLINK 1.9, designed for genome-wide 
 - Running PCA on genotype data to identify population stratification
 - Converting between PLINK binary, VCF, and BGEN formats
 - Filtering variants by MAF, HWE, missingness, or INFO score in VCF/imputed data
+- Use **omics-plotting** SKILL to render Manhattan and QQ plots from the association results
 - Use **regenie** or **SAIGE** instead for biobank-scale GWAS (>100k samples) requiring mixed model association to control for population structure
 - Use **VCFtools** as an alternative for VCF-specific population genetics statistics
 
@@ -50,6 +51,69 @@ fi
 # Python for downstream analysis
 pip install pandas numpy matplotlib scipy
 ```
+
+## Pre-flight Interview
+
+Settle these with the user before writing any analysis code.
+
+```yaml
+decisions:
+  - id: D1
+    param: phenotype
+    kind: required
+    source: data
+    ask: "Which column holds the trait being tested, and is it a measurement or a case/control status?"
+    default: null
+
+  - id: D2
+    param: regressionMode
+    kind: derived
+    source: data
+    depends_on: [D1]
+    ask: "Should the association test be linear or logistic?"
+    default: "linear for a quantitative trait, logistic for case/control"
+
+  - id: D3
+    param: qcThresholds
+    kind: required
+    source: user
+    ask: "Where should variants and samples be cut for allele frequency, missingness, and Hardy-Weinberg departure?"
+    default: "MAF 0.01, variant missingness 0.05, sample missingness 0.02, HWE 1e-6"
+
+  - id: D4
+    param: covariates
+    kind: required
+    source: data
+    ask: "Which covariates belong in the model - age, sex, batch, study site?"
+    default: null
+
+  - id: D5
+    param: populationStructure
+    kind: required
+    source: user
+    ask: "How many principal components should be included to absorb ancestry differences?"
+    default: "10, computed from LD-pruned variants"
+
+  - id: D6
+    param: ldPruning
+    kind: optional
+    source: user
+    depends_on: [D5]
+    ask: "Which window and correlation threshold should thin variants before computing the components?"
+    default: "50 variant window, step 5, r-squared 0.2"
+
+  - id: D7
+    param: threads
+    kind: never_ask
+    source: data
+    reason: "Affects runtime only, not the association statistics"
+    default: "min(8, available_cores)"
+```
+
+D5 hangs on D4 because the components are themselves covariates - how many to
+include is a question about the covariate set, not a separate knob. Omitting
+them entirely is the classic way to produce a genome-wide significant result
+that reflects ancestry rather than the trait.
 
 ## Quick Start
 
@@ -201,47 +265,23 @@ wc -l results/gwas_qt.*.glm.linear
 
 ### Step 6: Plot Manhattan and QQ Plots
 
-Visualize GWAS results with Python.
+Prepare the association results as a CHR/BP/P table, then **read `skills/data-visualization/omics-plotting/SKILL.md` and follow its "Manhattan" and "QQ plot" recipes** on the exported CSV (→ `figures/manhattan.png`, `figures/qq.png`).
 
 ```python
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import chi2
 
-# Load GWAS results (PLINK2 linear output)
+# Load GWAS results (PLINK2 linear output) as a CHR/BP/P table for plotting
 df = pd.read_csv("results/gwas_qt.PHENO1.glm.linear", sep="\t",
                  usecols=["#CHROM", "POS", "ID", "P"])
-df.columns = ["CHR", "POS", "SNP", "P"]
+df.columns = ["CHR", "BP", "SNP", "P"]
 df = df.dropna(subset=["P"])
 df["P"] = pd.to_numeric(df["P"], errors="coerce")
 df = df[df["P"] > 0].copy()
-df["-log10P"] = -np.log10(df["P"])
+df.to_csv("gwas.csv", index=False)
 
 print(f"Variants: {len(df)}")
 print(f"Genome-wide significant (p<5e-8): {(df['P'] < 5e-8).sum()}")
-
-# Manhattan plot
-fig, ax = plt.subplots(figsize=(14, 4))
-colors = plt.cm.Set1.colors
-chrom_pos = 0
-ticks = []
-for chrom, group in df.groupby("CHR", sort=False):
-    col = colors[int(chrom) % 2] if str(chrom).isdigit() else "gray"
-    ax.scatter(group["POS"] + chrom_pos, group["-log10P"],
-               c=[col], s=2, alpha=0.7)
-    ticks.append((chrom_pos + group["POS"].mean(), str(chrom)))
-    chrom_pos += group["POS"].max() + 1e7
-
-ax.axhline(-np.log10(5e-8), color="red", linestyle="--", lw=1, label="p=5×10⁻⁸")
-ax.set_xticks([t[0] for t in ticks[::2]])
-ax.set_xticklabels([t[1] for t in ticks[::2]], fontsize=6)
-ax.set_xlabel("Chromosome")
-ax.set_ylabel("-log₁₀(p)")
-ax.set_title("GWAS Manhattan Plot")
-plt.tight_layout()
-plt.savefig("manhattan.png", dpi=150)
-print("Saved: manhattan.png")
+# Render with the omics-plotting SKILL (`skills/data-visualization/omics-plotting/SKILL.md`) "Manhattan" and "QQ plot" recipes (input columns CHR, BP, P).
 ```
 
 ## Key Parameters

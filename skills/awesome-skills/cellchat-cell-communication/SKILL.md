@@ -17,6 +17,7 @@ CellChat is an R package that infers and visualizes intercellular signaling netw
 - Comparing intercellular signaling networks between two conditions (e.g., healthy vs. diseased, treatment vs. control) to find rewired or lost communication
 - Discovering pathway-level signaling programs (e.g., MHC-II, COLLAGEN, VEGF) enriched in a particular cell-cell interaction
 - Prioritizing targets for perturbation experiments by ranking signaling pathways by their aggregate communication strength or network centrality
+- Use **omics-plotting** SKILL (Python) for generic figures from exported tables; network chord/heatmap/bubble views use CellChat's R `netVisual_*`
 - Use **liana** (Python/R) instead when you want a pure-Python workflow or a consensus ranking across multiple ligand-receptor databases (CellChat, CellPhoneDB, Connectome, NicheNet)
 - Use **NicheNet** (R) instead when you need ligand-to-target gene regulatory inference — predicting which ligands from sender cells regulate which target genes in receiver cells
 
@@ -40,6 +41,75 @@ devtools::install_github("jinworks/CellChat")
 install.packages(c("NMF", "ggplot2", "ggalluvial", "igraph",
                    "dplyr", "patchwork", "circlize", "RColorBrewer"))
 ```
+
+## Pre-flight Interview
+
+Settle these with the user before writing any analysis code.
+
+```yaml
+decisions:
+  - id: D1
+    param: cellGroupLabels
+    kind: derived
+    source: upstream
+    ask: "Which annotation column defines the sender and receiver groups?"
+    default: "the cell-type labels assigned upstream"
+
+  - id: D2
+    param: ligandReceptorDatabase
+    kind: required
+    source: user
+    ask: "Which species database, and should it cover all interactions or only secreted signalling, ECM-receptor, or cell-contact?"
+    default: "species-matched, all interaction categories"
+
+  - id: D3
+    param: minCellsPerGroup
+    kind: required
+    source: user
+    ask: "How few cells may a group have before its inferred signalling stops being trustworthy?"
+    default: 10
+
+  - id: D4
+    param: expressionAggregation
+    kind: optional
+    source: user
+    ask: "How should per-group expression be summarized - stringently, or more permissively so weaker signals survive?"
+    default: "triMean, the most stringent option"
+
+  - id: D5
+    param: populationSizeWeighting
+    kind: optional
+    source: user
+    ask: "Should communication probability account for how many cells each group has?"
+    default: "weighted"
+
+  - id: D6
+    param: bootstrapIterations
+    kind: optional_conditional
+    source: user
+    ask: "More bootstrap rounds give finer p-values at proportionally more runtime - is the default enough?"
+    default: 100
+
+  - id: D7
+    param: communicationPatterns
+    kind: optional_conditional
+    source: data
+    ask: "How many latent signalling patterns should the data be decomposed into?"
+    default: "chosen from the selectK elbow"
+
+  - id: D8
+    param: centralityThreshold
+    kind: optional
+    source: user
+    ask: "Which interactions are strong enough to enter the network-centrality analysis?"
+    default: "p-value 0.05"
+```
+
+D1 is derived because these groups are the annotation the user already settled
+upstream; re-asking invites a different label set than the one the clusters
+carry. D4 shifts results more than its default suggests - the stringent
+aggregation drops interactions expressed in only part of a group, which is
+usually right and occasionally hides the signal being looked for.
 
 ## Quick Start
 

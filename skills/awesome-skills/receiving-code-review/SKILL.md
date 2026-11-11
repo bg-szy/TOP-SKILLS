@@ -1,7 +1,15 @@
 ---
 name: receiving-code-review
-description: Use when receiving code review feedback, before implementing suggestions, especially if feedback seems unclear or technically questionable - requires technical rigor and verification, not performative agreement or blind implementation
+description: Verifies review feedback with technical rigor, not blind agreement. Use when receiving review before implementing suggestions.
 ---
+<!--
+Adapted from obra/superpowers receiving-code-review skill (v5.0.7),
+MIT-licensed, copyright 2025 Jesse Vincent. Modifications copyright 2026 Joe Amditis. v0.4.0 ports as a consumer category, no research
+phase per the v0.2.0 architecture, since verification-against-codebase
+is already step 3 of the existing flow; review-evaluation is
+per-comment, not entry-point work.
+See CREDITS.md.
+-->
 
 # Code Review Reception
 
@@ -27,7 +35,7 @@ WHEN receiving code review feedback:
 ## Forbidden Responses
 
 **NEVER:**
-- "You're absolutely right!" (explicit instruction-file violation)
+- "You're absolutely right!" (violates the project instruction file)
 - "Great point!" / "Excellent feedback!" (performative)
 - "Let me implement that now" (before verification)
 
@@ -126,7 +134,7 @@ Push back when:
 - Reference working tests/code
 - Involve your human partner if architectural
 
-**If you're uncomfortable pushing back out loud:** Name that tension, then tell your partner about the issue you've seen. They'll appreciate your honesty.
+**Signal if uncomfortable pushing back out loud:** "Strange things are afoot at the Circle K"
 
 ## Acknowledging Correct Feedback
 
@@ -203,3 +211,23 @@ You understand 1,2,3,6. Unclear on 4,5.
 ## GitHub Thread Replies
 
 When replying to inline review comments on GitHub, reply in the comment thread (`gh api repos/{owner}/{repo}/pulls/{pr}/comments/{id}/replies`), not as a top-level PR comment.
+
+For a PR with several findings:
+
+1. Start from the PR's current head. Read every surface: review threads, top-level comments, and failing checks.
+2. Classify each finding as actionable, already fixed, not reproducible, or out of scope. Reproduce it when practical.
+3. Fix only the supported findings. Put all fixes in one push, so hosted CI runs once.
+4. Resolve a thread only after the fix is pushed and the pushed head contains it. A local fix does not resolve a thread.
+5. Report each finding's state accurately: fixed in a named commit, declined with a reason, or still open.
+
+## The Bottom Line
+
+**External feedback = suggestions to evaluate, not orders to follow.**
+
+Verify. Question. Then implement.
+
+No performative agreement. Technical rigor always.
+
+## Reference files
+
+Read [Pull request feedback repair](references/pr-feedback-repair.md) when review feedback may require code changes or thread resolution.

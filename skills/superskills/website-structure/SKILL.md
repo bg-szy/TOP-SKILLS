@@ -1,6 +1,6 @@
 ---
 name: website-structure
-description: When the user wants to plan website structure, decide which pages to build, or prioritize pages for a new or existing site. Also use when the user mentions "website structure," "site structure," "which pages do I need," "page planning," "sitemap planning," "Must Have pages," "website architecture," or "site hierarchy." For a specific page template (e.g. homepage), use homepage-generator or landing-page-generator as appropriate. Not for organic SEO roadmap alone; use seo-strategy.
+description: When the user wants to plan website structure, decide which pages to build, or prioritize pages for a new or existing site. Also use when the user mentions "website structure", "site structure", "which pages do I need" or "page planning". For a specific page template (e.g. homepage), use homepage-generator or landing-page-generator as appropriate. Not for organic SEO roadmap alone; use seo-strategy.
 metadata:
   version: 1.5.0
 ---
@@ -103,7 +103,7 @@ See **homepage-generator** for common modules (Headline, Subheadline, CTA, Benef
 ## References
 
 - [Website structure SEO guide](https://alignify.co/zh/seo/website-structure) — Alignify: structure importance, page priority, generic template, planning workflow, growth mapping, homepage modules
-- **skills-reference §2** (docs/skills-reference.md#2-page-taxonomy) — Full page types, website-type matrix, core vs extended; use for page selection
+- **[skills-reference §2](../../../docs/skills-reference.md#2-page-taxonomy)** — Full page types, website-type matrix, core vs extended; use for page selection
 
 ## Related Skills
 

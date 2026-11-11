@@ -1,11 +1,22 @@
 ---
 name: verification-before-completion
-description: Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always
+description: Runs verification commands and confirms output before success claims. Use before claiming work done or committing or PRs.
 ---
+<!--
+Adapted from obra/superpowers verification-before-completion skill
+(v5.0.7), MIT-licensed, copyright 2025 Jesse Vincent. Modifications
+copyright 2026 Joe Amditis. v0.3.0 ports as a consumer category, no
+research phase per the v0.2.0 architecture. Verification is a gate
+function: the verification command is determined by what was just
+built, so external research adds no value here.
+See CREDITS.md.
+-->
 
 # Verification Before Completion
 
 ## Overview
+
+Claiming work is complete without verification is dishonesty, not efficiency.
 
 **Core principle:** Evidence before claims, always.
 
@@ -79,7 +90,7 @@ Skip any step = lying, not verifying
 ❌ "Should pass now" / "Looks correct"
 ```
 
-**Regression tests (TDD Red-Green):**
+**Regression tests (red-green):**
 ```
 ✅ Write → Run (pass) → Revert fix → Run (MUST FAIL) → Restore → Run (pass)
 ❌ "I've written a regression test" (without red-green verification)
@@ -103,6 +114,15 @@ Skip any step = lying, not verifying
 ❌ Trust agent report
 ```
 
+## Why This Matters
+
+From 24 failure memories:
+- your human partner said "I don't believe you" - trust broken
+- Undefined functions shipped - would crash
+- Missing requirements shipped - incomplete features
+- Time wasted on false completion → redirect → rework
+- Violates: "Honesty is a core value. If you lie, you'll be replaced."
+
 ## When To Apply
 
 **ALWAYS before:**
@@ -118,3 +138,11 @@ Skip any step = lying, not verifying
 - Paraphrases and synonyms
 - Implications of success
 - ANY communication suggesting completion/correctness
+
+## The Bottom Line
+
+**No shortcuts for verification.**
+
+Run the command. Read the output. THEN claim the result.
+
+This is non-negotiable.

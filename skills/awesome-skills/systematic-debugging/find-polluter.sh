@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bisection script to find which test creates unwanted files/state
+# Sequential test scanner, runs tests one-by-one until pollution is detected.
 # Usage: ./find-polluter.sh <file_or_dir_to_check> <test_pattern>
 # Example: ./find-polluter.sh '.git' 'src/**/*.test.ts'
 
@@ -18,24 +18,29 @@ echo "🔍 Searching for test that creates: $POLLUTION_CHECK"
 echo "Test pattern: $TEST_PATTERN"
 echo ""
 
-# Get list of test files (find . emits ./-prefixed paths, so accept the
-# pattern written with or without a leading ./)
-TEST_PATTERN="${TEST_PATTERN#./}"
-# find -path can't match '**/' against zero directory levels, so a pattern
-# like src/**/*.test.ts would skip src/top.test.ts; also try the pattern
-# with '**/' collapsed to cover files directly under the base directory.
-TEST_FILES=$(find . \( -path "./$TEST_PATTERN" -o -path "./${TEST_PATTERN//\*\*\//}" \) | sort -u)
-if [ -z "$TEST_FILES" ]; then
-  TOTAL=0
-else
-  TOTAL=$(printf '%s\n' "$TEST_FILES" | wc -l | tr -d ' ')
+# Get list of test files. Normalize the user-supplied pattern so it matches
+# find's ./-prefixed output: strip a leading "./" or "/", collapse "**" to
+# "*" (find's -path doesn't reliably treat ** as globstar), then prepend
+# "*/" so the pattern matches paths like "./src/foo.test.ts".
+NORMALIZED_PATTERN="${TEST_PATTERN#./}"
+NORMALIZED_PATTERN="${NORMALIZED_PATTERN#/}"
+NORMALIZED_PATTERN="${NORMALIZED_PATTERN//\*\*/\*}"
+NORMALIZED_PATTERN="*/$NORMALIZED_PATTERN"
+
+mapfile -t TEST_FILES < <(find . -type f -path "$NORMALIZED_PATTERN" 2>/dev/null | sort)
+TOTAL=${#TEST_FILES[@]}
+
+if [ "$TOTAL" -eq 0 ]; then
+  echo "❌ No test files matched pattern: $TEST_PATTERN"
+  echo "   (find -path tried: $NORMALIZED_PATTERN)"
+  exit 1
 fi
 
 echo "Found $TOTAL test files"
 echo ""
 
 COUNT=0
-for TEST_FILE in $TEST_FILES; do
+for TEST_FILE in "${TEST_FILES[@]}"; do
   COUNT=$((COUNT + 1))
 
   # Skip if pollution already exists

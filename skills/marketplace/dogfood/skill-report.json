@@ -1,43 +1,45 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-07-09T17:08:12.647Z",
-    "slug": "vercel-labs-dogfood",
-    "source_url": "https://github.com/vercel-labs/agent-browser/tree/main/skills/dogfood/",
-    "source_ref": "main",
+    "generated_at": "2026-09-30T14:31:07.394Z",
+    "slug": "callstack-dogfood",
+    "source_url": "https://github.com/callstack/agent-device/tree/eb51a8805bf457986b43a134b53bec96c5630d98/skills/dogfood",
+    "source_ref": "eb51a8805bf457986b43a134b53bec96c5630d98",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "4d2f19d18a560f02c60129def8846889e7f7d7fe70ab9aa71ee46abbb4d169ac",
-    "tree_hash": "9c11e2fff2ee225ca36db3726a457cc8a5816c68a435f67ebdc475ad074b9d65",
+    "content_hash": "e7f1793c8d48e87262d55c5df40dedbd543eaca696700bd15c999c2ad01135e9",
+    "tree_hash": "7c80a324a60e609aca174078aab26570a5bc9e02f63a2268582aedd082fb42e9",
     "provenance": {
-      "model_requested": "gpt-5.5:high",
-      "model_effective": "codex:gpt-5.5:high",
+      "model_effective": "codex",
       "fallback_chain": [
         {
           "agent": "codex",
-          "model": "gpt-5.5",
-          "effort": "high",
           "outcome": "success"
         }
       ],
       "analysis_version": "3.0.0"
-    }
+    },
+    "upstream_version_raw": null,
+    "upstream_version_normalized": null,
+    "upstream_version_source": "none",
+    "upstream_version_status": "missing",
+    "upstream_commit_sha": "eb51a8805bf457986b43a134b53bec96c5630d98"
   },
   "skill": {
     "name": "dogfood",
-    "description": "Use agent-browser to run structured exploratory QA on web applications. It navigates pages, captures evidence, checks console output, and writes reproducible issue reports.",
-    "summary": "Run browser-based exploratory QA and produce reproducible web app issue reports.",
+    "description": "Systematically explore and test a mobile app on iOS/Android with agent-device to find bugs, UX issues, and other problems. Use when asked to dogfood, QA, exploratory test, find issues, bug hunt, or test this app on mobile.",
+    "summary": "Guide runtime mobile app testing with agent-device and capture evidence for bugs and usability issues.",
     "icon": "📦",
-    "version": "1.0.0",
-    "author": "vercel-labs",
+    "author": "callstack",
     "license": "MIT",
+    "category": "coding",
     "tags": [
-      "web-qa",
-      "exploratory-testing",
-      "bug-reports",
-      "agent-browser",
-      "ux-review"
+      "mobile-testing",
+      "exploratory-qa",
+      "agent-device",
+      "ios",
+      "android"
     ],
     "supported_tools": [
       "claude",
@@ -45,302 +47,83 @@
       "claude-code"
     ],
     "risk_factors": [
-      "external_commands",
-      "network",
-      "filesystem"
-    ],
-    "category": "coding"
+      "external_commands"
+    ]
   },
   "security_audit": {
-    "risk_level": "high",
+    "risk_level": "safe",
     "is_blocked": false,
-    "safe_to_publish": false,
+    "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "Most static findings are Markdown backtick false positives in the taxonomy and instructional prose. Confirmed risks remain where the skill runs agent-browser and shell commands with user-supplied values, captures screenshots or videos, and stores authenticated browser state locally. No prompt injection text was found in the reviewed files.",
-    "remediation": [
-      {
-        "issue": "Unquoted user-controlled command placeholders",
-        "suggestion": "Validate target URLs, session names, and output paths. Quote every shell argument or use structured command APIs instead of interpolated Bash examples.",
-        "severity": "high"
-      },
-      {
-        "issue": "Credentials and auth state can be exposed",
-        "suggestion": "Avoid passing passwords on command lines. Store auth-state.json outside shareable report output, mark it sensitive, and document cleanup steps.",
-        "severity": "high"
-      },
-      {
-        "issue": "Screenshots and videos can contain private data",
-        "suggestion": "Add clear user consent, redact secrets before sharing, and warn users to inspect all evidence files before distribution.",
-        "severity": "medium"
-      },
-      {
-        "issue": "Command examples exceed the declared tool scope",
-        "suggestion": "Either remove mkdir, cp, and sleep shell examples or declare the required tools clearly so installers can enforce accurate permissions.",
-        "severity": "low"
-      }
-    ],
+    "summary": "All eight static findings are false positives: Markdown formatting, authorized testing screenshots, and an app testing description were misclassified. No evidence found of screenshot uploads, system reconnaissance, or prompt injection. The workflow requires a trusted CLI and approval for exact-version npm fallback commands.",
+    "remediation": [],
     "risk_factor_evidence": [
       {
         "factor": "external_commands",
         "evidence": [
           {
             "file": "SKILL.md",
+            "line_start": 11,
+            "line_end": 13
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 13,
+            "line_end": 15
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 15,
+            "line_end": 15
+          },
+          {
+            "file": "SKILL.md",
             "line_start": 17,
             "line_end": 17
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 18,
-            "line_end": 18
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 19,
-            "line_end": 19
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 20,
-            "line_end": 20
           },
           {
             "file": "SKILL.md",
             "line_start": 21,
-            "line_end": 21
+            "line_end": 23
           },
           {
             "file": "SKILL.md",
-            "line_start": 25,
-            "line_end": 25
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 29,
-            "line_end": 36
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 36,
-            "line_end": 40
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 40,
-            "line_end": 42
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 42,
-            "line_end": 46
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 46,
-            "line_end": 48
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 48,
-            "line_end": 52
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 52,
-            "line_end": 55
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 55,
-            "line_end": 61
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 61,
-            "line_end": 68
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 68,
-            "line_end": 74
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 74,
-            "line_end": 76
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 76,
-            "line_end": 82
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 82,
-            "line_end": 85
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 85,
-            "line_end": 103
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 103,
-            "line_end": 108
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 108,
-            "line_end": 126
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 126,
-            "line_end": 128
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 128,
-            "line_end": 132
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 132,
-            "line_end": 140
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 140,
-            "line_end": 144
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 144,
-            "line_end": 147
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 147,
-            "line_end": 151
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 151,
-            "line_end": 153
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 153,
-            "line_end": 161
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 161,
-            "line_end": 163
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 163,
-            "line_end": 165
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 165,
-            "line_end": 181
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 181,
-            "line_end": 184
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 184,
-            "line_end": 186
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 186,
-            "line_end": 198
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 198,
-            "line_end": 199
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 199,
-            "line_end": 202
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 202,
-            "line_end": 206
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 206,
-            "line_end": 206
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 207,
-            "line_end": 207
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 208,
-            "line_end": 208
-          }
-        ]
-      },
-      {
-        "factor": "network",
-        "evidence": [
-          {
-            "file": "SKILL.md",
-            "line_start": 204,
-            "line_end": 204
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 17,
-            "line_end": 17
-          }
-        ]
-      },
-      {
-        "factor": "filesystem",
-        "evidence": [
-          {
-            "file": "SKILL.md",
-            "line_start": 19,
-            "line_end": 19
+            "line_start": 23,
+            "line_end": 27
           }
         ]
       }
     ],
     "static_findings": [
       {
-        "id": "blocker:references/issue-taxonomy.md:39:system-reconnaissance",
-        "category": "blocker",
-        "severity": "low",
-        "pattern": "System reconnaissance",
-        "file": "references/issue-taxonomy.md",
-        "line_start": 39,
-        "line_end": 39,
-        "snippet": "- Form validation that rejects valid input or accepts invalid input"
+        "id": "external_commands:SKILL.md:11:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 11,
+        "line_end": 13,
+        "snippet": "```bash"
       },
       {
-        "id": "blocker:references/issue-taxonomy.md:104:system-reconnaissance",
-        "category": "blocker",
-        "severity": "low",
-        "pattern": "System reconnaissance",
-        "file": "references/issue-taxonomy.md",
-        "line_start": 104,
-        "line_end": 104,
-        "snippet": "3. **Forms** -- Fill and submit. Test empty submission, invalid input, and edge cases."
+        "id": "external_commands:SKILL.md:13:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 13,
+        "line_end": 15,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:SKILL.md:15:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 15,
+        "line_end": 15,
+        "snippet": "If that fails, stop and tell the user to expose a trusted `agent-device` binary on PATH or approve a"
       },
       {
         "id": "external_commands:SKILL.md:17:ruby-shell-backtick-execution",
@@ -350,37 +133,7 @@
         "file": "SKILL.md",
         "line_start": 17,
         "line_end": 17,
-        "snippet": "| **Target URL** | _(required)_ | `vercel.com`, `http://localhost:3000` |"
-      },
-      {
-        "id": "external_commands:SKILL.md:18:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 18,
-        "line_end": 18,
-        "snippet": "| **Session name** | Slugified domain (e.g., `vercel.com` -> `vercel-com`) | `--session my-session` "
-      },
-      {
-        "id": "external_commands:SKILL.md:19:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 19,
-        "line_end": 19,
-        "snippet": "| **Output directory** | `./dogfood-output/` | `Output directory: /tmp/qa` |"
-      },
-      {
-        "id": "external_commands:SKILL.md:20:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 20,
-        "line_end": 20,
-        "snippet": "| **Scope** | Full app | `Focus on the billing page` |"
+        "snippet": "Require `agent-device >= 0.14.0`; older CLIs lack these help topics. If older, stop and tell the use"
       },
       {
         "id": "external_commands:SKILL.md:21:ruby-shell-backtick-execution",
@@ -389,1330 +142,224 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 21,
-        "line_end": 21,
-        "snippet": "| **Authentication** | None | `Sign in to user@example.com` |"
-      },
-      {
-        "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 25,
-        "line_end": 25,
-        "snippet": "Always use `agent-browser` directly -- never `npx agent-browser`. The direct binary uses the fast Ru"
-      },
-      {
-        "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 29,
-        "line_end": 36,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:36:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 36,
-        "line_end": 40,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 40,
-        "line_end": 42,
+        "line_end": 23,
         "snippet": "```bash"
       },
       {
-        "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:23:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 42,
-        "line_end": 46,
+        "line_start": 23,
+        "line_end": 27,
         "snippet": "```"
       },
       {
-        "id": "external_commands:SKILL.md:46:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 46,
-        "line_end": 48,
-        "snippet": "```bash"
-      },
-      {
-        "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 48,
-        "line_end": 52,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 52,
-        "line_end": 55,
-        "snippet": "```bash"
-      },
-      {
-        "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 55,
-        "line_end": 61,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:61:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 61,
-        "line_end": 68,
-        "snippet": "```bash"
-      },
-      {
-        "id": "external_commands:SKILL.md:68:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 68,
-        "line_end": 74,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:74:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 74,
-        "line_end": 76,
-        "snippet": "```bash"
-      },
-      {
-        "id": "external_commands:SKILL.md:76:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 76,
-        "line_end": 82,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 82,
-        "line_end": 85,
-        "snippet": "```bash"
-      },
-      {
-        "id": "external_commands:SKILL.md:85:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 85,
-        "line_end": 103,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:103:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 103,
-        "line_end": 108,
-        "snippet": "```bash"
-      },
-      {
-        "id": "external_commands:SKILL.md:108:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 108,
-        "line_end": 126,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:126:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 126,
-        "line_end": 128,
-        "snippet": "```bash"
-      },
-      {
-        "id": "external_commands:SKILL.md:128:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 128,
-        "line_end": 132,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:132:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 132,
-        "line_end": 140,
-        "snippet": "```bash"
-      },
-      {
-        "id": "external_commands:SKILL.md:140:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 140,
-        "line_end": 144,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:144:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 144,
-        "line_end": 147,
-        "snippet": "```bash"
-      },
-      {
-        "id": "external_commands:SKILL.md:147:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 147,
-        "line_end": 151,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:151:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 151,
-        "line_end": 153,
-        "snippet": "```bash"
-      },
-      {
-        "id": "external_commands:SKILL.md:153:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 153,
-        "line_end": 161,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:161:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 161,
-        "line_end": 163,
-        "snippet": "```bash"
-      },
-      {
-        "id": "external_commands:SKILL.md:163:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 163,
-        "line_end": 165,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:165:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 165,
-        "line_end": 181,
-        "snippet": "Write a brief description and reference the screenshot in the report. Set **Repro Video** to `N/A`."
-      },
-      {
-        "id": "external_commands:SKILL.md:181:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 181,
-        "line_end": 184,
-        "snippet": "1. Re-read the report and update the summary severity counts so they match the actual issues. Every "
-      },
-      {
-        "id": "external_commands:SKILL.md:184:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 184,
-        "line_end": 186,
-        "snippet": "```bash"
-      },
-      {
-        "id": "external_commands:SKILL.md:186:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 186,
-        "line_end": 198,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:198:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 198,
-        "line_end": 199,
-        "snippet": "- `snapshot -i` — for finding clickable/fillable elements (buttons, inputs, links)"
-      },
-      {
-        "id": "external_commands:SKILL.md:199:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 199,
-        "line_end": 202,
-        "snippet": "- `snapshot` (no flag) — for reading page content (text, headings, data lists)"
-      },
-      {
-        "id": "external_commands:SKILL.md:202:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 202,
-        "line_end": 206,
-        "snippet": "- **Never delete output files.** Do not `rm` screenshots, videos, or the report mid-session. Do not "
-      },
-      {
-        "id": "external_commands:SKILL.md:206:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 206,
-        "line_end": 206,
-        "snippet": "- **Type like a human.** When filling form fields during video recording, use `type` instead of `fil"
-      },
-      {
-        "id": "external_commands:SKILL.md:207:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 207,
-        "line_end": 207,
-        "snippet": "- **Pace repro videos for humans.** Add `sleep 1` between actions and `sleep 2` before the final res"
-      },
-      {
-        "id": "external_commands:SKILL.md:208:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 208,
-        "line_end": 208,
-        "snippet": "- **Be efficient with commands.** Batch multiple `agent-browser` commands in a single shell call whe"
-      },
-      {
-        "id": "network:SKILL.md:204:python-http-libraries",
-        "category": "network",
-        "severity": "low",
-        "pattern": "Python HTTP libraries",
-        "file": "SKILL.md",
-        "line_start": 204,
-        "line_end": 204,
-        "snippet": "- **Check the console.** Many issues are invisible in the UI but show up as JS errors or failed requ"
-      },
-      {
-        "id": "network:SKILL.md:17:hardcoded-url",
-        "category": "network",
-        "severity": "low",
-        "pattern": "Hardcoded URL",
-        "file": "SKILL.md",
-        "line_start": 17,
-        "line_end": 17,
-        "snippet": "| **Target URL** | _(required)_ | `vercel.com`, `http://localhost:3000` |"
-      },
-      {
-        "id": "filesystem:SKILL.md:19:temp-directory-access",
-        "category": "filesystem",
-        "severity": "medium",
-        "pattern": "Temp directory access",
-        "file": "SKILL.md",
-        "line_start": 19,
-        "line_end": 19,
-        "snippet": "| **Output directory** | `./dogfood-output/` | `Output directory: /tmp/qa` |"
-      },
-      {
-        "id": "blocker:SKILL.md:195:screen-capture-upload",
+        "id": "blocker:SKILL.md:25:screen-capture-upload",
         "category": "blocker",
         "severity": "high",
         "pattern": "Screen capture upload",
         "file": "SKILL.md",
-        "line_start": 195,
-        "line_end": 195,
-        "snippet": "- **For interactive issues, screenshot each step.** Capture the before, the action, and the after --"
+        "line_start": 25,
+        "line_end": 25,
+        "snippet": "Loop: open app -> snapshot -i + screenshot -> explore flows -> capture evidence per issue -> close."
       },
       {
-        "id": "blocker:SKILL.md:193:system-reconnaissance",
+        "id": "blocker:SKILL.md:3:system-reconnaissance",
         "category": "blocker",
         "severity": "low",
         "pattern": "System reconnaissance",
         "file": "SKILL.md",
-        "line_start": 193,
-        "line_end": 193,
-        "snippet": "- **Verify reproducibility before collecting evidence.** Before recording video or taking screenshot"
+        "line_start": 3,
+        "line_end": 3,
+        "snippet": "description: Systematically explore and test a mobile app on iOS/Android with agent-device to find b"
       }
     ],
     "finding_verdicts": [
       {
-        "id": "blocker:references/issue-taxonomy.md:39:system-reconnaissance",
+        "id": "external_commands:SKILL.md:11:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This line lists form validation problems to look for during QA. It does not instruct system discovery, host enumeration, or reconnaissance."
+        "confidence": 1,
+        "reason": "Lines 11-13 are a Markdown code fence containing agent-device --version, a prerequisite check. The backticks are formatting, not shell command substitution."
       },
       {
-        "id": "blocker:references/issue-taxonomy.md:104:system-reconnaissance",
+        "id": "external_commands:SKILL.md:13:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This checklist item tells testers to submit forms with edge-case inputs. It is application QA guidance, not system reconnaissance."
+        "confidence": 1,
+        "reason": "Line 13 closes the Markdown code fence for the version check. Line 15 requires a trusted binary or approval for an exact-version npm command."
+      },
+      {
+        "id": "external_commands:SKILL.md:15:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 1,
+        "reason": "The backticks mark the agent-device name as inline Markdown code, not an executable substitution. The instruction requires stopping when the trusted binary is unavailable."
       },
       {
         "id": "external_commands:SKILL.md:17:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The backticks wrap example URLs in a setup table. There is no shell command or dynamic code execution on this line."
-      },
-      {
-        "id": "external_commands:SKILL.md:18:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks show an example session flag in documentation. This line does not execute a command by itself."
-      },
-      {
-        "id": "external_commands:SKILL.md:19:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "The backticks show an output path example. Filesystem write risk is handled separately, but this is not Ruby or shell execution."
-      },
-      {
-        "id": "external_commands:SKILL.md:20:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "The backticks contain an example natural-language scope. It is documentation text, not executable shell content."
+        "confidence": 1,
+        "reason": "The backticks format the minimum version and prohibited autonomous installation commands. The text explicitly requires trusted upgrades or approval for exact-version npm commands."
       },
       {
         "id": "external_commands:SKILL.md:21:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "The backticks show an authentication prompt example. No shell command is present on this line."
+        "confidence": 1,
+        "reason": "Lines 21-23 are a Markdown code fence containing agent-device help dogfood. This reads workflow guidance from the trusted CLI, not Ruby or shell backtick execution."
       },
       {
-        "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The skill explicitly instructs use of the external agent-browser binary. That is expected for the skill, but it expands execution surface around user-provided targets.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:23:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This fenced block is a numbered workflow outline. It contains no executable shell command."
+        "confidence": 1,
+        "reason": "Line 23 closes a Markdown code fence, while line 27 uses inline code formatting for help dogfood. Neither represents shell command substitution."
       },
       {
-        "id": "external_commands:SKILL.md:36:ruby-shell-backtick-execution",
+        "id": "blocker:SKILL.md:25:screen-capture-upload",
         "verdict": "false_positive",
-        "confidence": 0.93,
-        "reason": "This range is a closing fence, heading, and opening bash fence. The actual mkdir command is covered by the separate finding at line 40."
+        "confidence": 0.98,
+        "reason": "Line 25 requests screenshots and issue evidence during target app testing, not uploading captured data. No evidence found of an upload destination or external transmission instruction."
       },
       {
-        "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The bash block creates directories using a user-selected output path. Unquoted path placeholders in shell examples create filesystem and command-invocation risk.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:42:ruby-shell-backtick-execution",
+        "id": "blocker:SKILL.md:3:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This range is fence markup and prose before the copy command. The actual command is covered by the finding at line 46."
-      },
-      {
-        "id": "external_commands:SKILL.md:46:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.84,
-        "reason": "The bash block copies a template into a user-selected output directory. This is legitimate setup work, but it is still shell execution with unquoted path placeholders.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.91,
-        "reason": "This range contains fence markup and prose introducing the session start. The actual agent-browser commands are covered at line 52."
-      },
-      {
-        "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.89,
-        "reason": "The command opens a user-provided target URL through an external browser automation tool. Unquoted TARGET_URL and SESSION placeholders create command-injection and unsafe-navigation risk.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This range is fence markup and prose before the login command block. The executable login commands are covered at line 61."
-      },
-      {
-        "id": "external_commands:SKILL.md:61:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.9,
-        "reason": "The login block passes email and password values as shell command arguments. User-provided credentials in unquoted command arguments can leak through process lists or be abused for injection.",
-        "severity": "high"
-      },
-      {
-        "id": "external_commands:SKILL.md:68:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "This range is prose and a code fence marker. The actual auth-state save command is covered by the finding at line 74."
-      },
-      {
-        "id": "external_commands:SKILL.md:74:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.91,
-        "reason": "The command saves authenticated browser state to auth-state.json under the output directory. That file can contain session cookies or tokens and needs explicit sensitive-artifact handling.",
-        "severity": "high"
-      },
-      {
-        "id": "external_commands:SKILL.md:76:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.89,
-        "reason": "This range is fence markup and orientation prose. The screenshot and snapshot commands are covered by the finding at line 82."
-      },
-      {
-        "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "The commands capture screenshots and browser snapshots from the target app. This is expected QA behavior, but it can collect sensitive authenticated page content.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:85:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.86,
-        "reason": "This range is prose and an opening code fence before page-check commands. The executable commands are covered by the finding at line 103."
-      },
-      {
-        "id": "external_commands:SKILL.md:103:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.87,
-        "reason": "The commands collect page snapshots, screenshots, errors, and console output. These artifacts can include private page data, tokens in logs, or internal URLs.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:108:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.78,
-        "reason": "This range is prose and a code fence marker for a later video command. The actual record command is covered by the finding at line 126."
-      },
-      {
-        "id": "external_commands:SKILL.md:126:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.9,
-        "reason": "The command starts a repro video recording to a user-selected path. Recording authenticated workflows can capture sensitive data beyond the immediate bug evidence.",
-        "severity": "high"
-      },
-      {
-        "id": "external_commands:SKILL.md:128:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.89,
-        "reason": "This range is fence markup and prose before the repro-step command block. The executable screenshot and sleep commands are covered at line 132."
-      },
-      {
-        "id": "external_commands:SKILL.md:132:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "The block runs screenshot and sleep commands while reproducing issues. The screenshot commands write potentially sensitive UI states to the output directory.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:140:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.84,
-        "reason": "This range is prose and an opening fence before the result-capture commands. The actual commands are covered at line 144."
-      },
-      {
-        "id": "external_commands:SKILL.md:144:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.86,
-        "reason": "The block captures the final broken state as an annotated screenshot. This is useful evidence, but it may include private application data.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:147:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.89,
-        "reason": "This range is fence markup and prose before the stop-recording command. The actual command is covered at line 151."
-      },
-      {
-        "id": "external_commands:SKILL.md:151:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.74,
-        "reason": "The command invokes agent-browser to stop an active recording. It is part of a confirmed external recording workflow, although this specific command is lower impact.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:153:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This range is prose and an opening fence for a later screenshot command. The actual static-issue screenshot command is covered at line 161."
-      },
-      {
-        "id": "external_commands:SKILL.md:161:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.85,
-        "reason": "The command captures a screenshot for static issues. Local capture is expected, but it can preserve sensitive page content in report artifacts.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:163:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.9,
-        "reason": "This range closes the command block and describes report fields. It does not contain an executable command."
-      },
-      {
-        "id": "external_commands:SKILL.md:165:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "This range contains report-writing guidance and no shell invocation. The backtick content is a field value example, not code execution."
-      },
-      {
-        "id": "external_commands:SKILL.md:181:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.87,
-        "reason": "This range introduces closing the browser session and opens a code fence. The actual close command is covered at line 184."
-      },
-      {
-        "id": "external_commands:SKILL.md:184:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.72,
-        "reason": "The command invokes agent-browser to close the browser session. It is a real external command, though it has limited direct security impact.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:186:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.64,
-        "reason": "This guidance names snapshot commands used to inspect clickable elements and page content. It confirms browser automation data collection, although the command is documented inline.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:198:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.72,
-        "reason": "The line recommends snapshot -i for enumerating clickable and fillable page elements. This is useful QA automation, but it can expose details from authenticated pages.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:199:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.68,
-        "reason": "The line recommends snapshot for reading page content. The command can collect sensitive text from the target app, even though it is part of normal testing.",
-        "severity": "medium"
-      },
-      {
-        "id": "external_commands:SKILL.md:202:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.82,
-        "reason": "This range mostly warns not to run rm and names browser subcommands in prose. It does not provide an executable shell command line."
-      },
-      {
-        "id": "external_commands:SKILL.md:206:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.8,
-        "reason": "This line names agent-browser input methods in prose. The credential-entry command risk is already captured by the login command block."
-      },
-      {
-        "id": "external_commands:SKILL.md:207:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.88,
-        "reason": "This line recommends sleep delays for watchable videos. The timing command is benign and does not access data or expand privileges."
-      },
-      {
-        "id": "external_commands:SKILL.md:208:ruby-shell-backtick-execution",
-        "verdict": "confirmed",
-        "confidence": 0.83,
-        "reason": "The guidance encourages batching agent-browser commands in a shell call and using scroll commands. Shell batching increases injection impact if any user-supplied placeholder is not safely quoted.",
-        "severity": "medium"
-      },
-      {
-        "id": "network:SKILL.md:204:python-http-libraries",
-        "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "This line tells testers to inspect browser console failures. It does not import Python HTTP libraries or make network requests from code."
-      },
-      {
-        "id": "network:SKILL.md:17:hardcoded-url",
-        "verdict": "false_positive",
-        "confidence": 0.92,
-        "reason": "The URLs are examples of user-provided targets, including localhost. They are not hidden hardcoded endpoints or exfiltration destinations."
-      },
-      {
-        "id": "filesystem:SKILL.md:19:temp-directory-access",
-        "verdict": "confirmed",
-        "confidence": 0.83,
-        "reason": "The skill supports writing output to ./dogfood-output or /tmp/qa, and later stores screenshots, videos, reports, and auth state there. This is expected but creates sensitive-artifact storage risk.",
-        "severity": "medium"
-      },
-      {
-        "id": "blocker:SKILL.md:195:screen-capture-upload",
-        "verdict": "confirmed",
-        "confidence": 0.82,
-        "reason": "The line explicitly requires screenshots for each interaction step. No upload is shown, but intentional screen capture can expose authenticated app data in generated evidence.",
-        "severity": "high"
-      },
-      {
-        "id": "blocker:SKILL.md:193:system-reconnaissance",
-        "verdict": "false_positive",
-        "confidence": 0.95,
-        "reason": "This line asks testers to verify that a UI issue is reproducible before recording evidence. It is not host, network, or system reconnaissance."
+        "confidence": 1,
+        "reason": "Line 3 describes testing an iOS or Android app for bugs and UX issues. It does not request host enumeration, credential discovery, or system reconnaissance."
       }
     ],
-    "semantic_findings": [
-      {
-        "title": "Unquoted User-Controlled Shell Arguments",
-        "description": "The workflow accepts target URLs, session names, output paths, and credentials from the user, then shows shell commands with unquoted placeholders. A malicious value with shell metacharacters could be executed if copied into Bash.",
-        "severity": "high",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 52,
-            "line_end": 55
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 61,
-            "line_end": 67
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 74,
-            "line_end": 75
-          }
-        ],
-        "confidence": 0.92,
-        "confidence_reasoning": "The setup table defines user-controlled values, and the cited command blocks interpolate them directly into shell examples without quoting or validation."
-      },
-      {
-        "title": "Authentication State Stored With Report Artifacts",
-        "description": "After login, the skill saves browser state to auth-state.json inside the output directory. That file may contain session cookies or tokens and could be shared with the QA report by mistake.",
-        "severity": "high",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 72,
-            "line_end": 75
-          }
-        ],
-        "confidence": 0.9,
-        "confidence_reasoning": "The instructions explicitly save authenticated state for reuse after login, and the target path is inside the same output tree used for report evidence."
-      }
-    ],
+    "semantic_findings": [],
     "critical_findings": [],
-    "high_findings": [
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 61,
-            "line_end": 68
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The login block passes email and password values as shell command arguments. User-provided credentials in unquoted command arguments can leak through process lists or be abused for injection."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 74,
-            "line_end": 76
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.91,
-        "confidence_reasoning": "The command saves authenticated browser state to auth-state.json under the output directory. That file can contain session cookies or tokens and needs explicit sensitive-artifact handling."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 126,
-            "line_end": 128
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.9,
-        "confidence_reasoning": "The command starts a repro video recording to a user-selected path. Recording authenticated workflows can capture sensitive data beyond the immediate bug evidence."
-      },
-      {
-        "title": "Screen capture upload",
-        "description": "- **For interactive issues, screenshot each step.** Capture the before, the action, and the after --",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 195,
-            "line_end": 195
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "blocker",
-        "source_severity": "high",
-        "confidence": 0.82,
-        "confidence_reasoning": "The line explicitly requires screenshots for each interaction step. No upload is shown, but intentional screen capture can expose authenticated app data in generated evidence."
-      },
-      {
-        "title": "Unquoted User-Controlled Shell Arguments",
-        "description": "The workflow accepts target URLs, session names, output paths, and credentials from the user, then shows shell commands with unquoted placeholders. A malicious value with shell metacharacters could be executed if copied into Bash.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 52,
-            "line_end": 55
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 61,
-            "line_end": 67
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 74,
-            "line_end": 75
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "semantic",
-        "source_severity": "high",
-        "confidence": 0.92,
-        "confidence_reasoning": "The setup table defines user-controlled values, and the cited command blocks interpolate them directly into shell examples without quoting or validation."
-      },
-      {
-        "title": "Authentication State Stored With Report Artifacts",
-        "description": "After login, the skill saves browser state to auth-state.json inside the output directory. That file may contain session cookies or tokens and could be shared with the QA report by mistake.",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 72,
-            "line_end": 75
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "semantic",
-        "source_severity": "high",
-        "confidence": 0.9,
-        "confidence_reasoning": "The instructions explicitly save authenticated state for reuse after login, and the target path is inside the same output tree used for report evidence."
-      }
-    ],
-    "medium_findings": [
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "Always use `agent-browser` directly -- never `npx agent-browser`. The direct binary uses the fast Ru",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 25,
-            "line_end": 25
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.82,
-        "confidence_reasoning": "The skill explicitly instructs use of the external agent-browser binary. That is expected for the skill, but it expands execution surface around user-provided targets."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 40,
-            "line_end": 42
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The bash block creates directories using a user-selected output path. Unquoted path placeholders in shell examples create filesystem and command-invocation risk."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 46,
-            "line_end": 48
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.84,
-        "confidence_reasoning": "The bash block copies a template into a user-selected output directory. This is legitimate setup work, but it is still shell execution with unquoted path placeholders."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 52,
-            "line_end": 55
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.89,
-        "confidence_reasoning": "The command opens a user-provided target URL through an external browser automation tool. Unquoted TARGET_URL and SESSION placeholders create command-injection and unsafe-navigation risk."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 82,
-            "line_end": 85
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "The commands capture screenshots and browser snapshots from the target app. This is expected QA behavior, but it can collect sensitive authenticated page content."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 103,
-            "line_end": 108
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.87,
-        "confidence_reasoning": "The commands collect page snapshots, screenshots, errors, and console output. These artifacts can include private page data, tokens in logs, or internal URLs."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 132,
-            "line_end": 140
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "The block runs screenshot and sleep commands while reproducing issues. The screenshot commands write potentially sensitive UI states to the output directory."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 144,
-            "line_end": 147
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.86,
-        "confidence_reasoning": "The block captures the final broken state as an annotated screenshot. This is useful evidence, but it may include private application data."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 151,
-            "line_end": 153
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.74,
-        "confidence_reasoning": "The command invokes agent-browser to stop an active recording. It is part of a confirmed external recording workflow, although this specific command is lower impact."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 161,
-            "line_end": 163
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.85,
-        "confidence_reasoning": "The command captures a screenshot for static issues. Local capture is expected, but it can preserve sensitive page content in report artifacts."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 184,
-            "line_end": 186
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The command invokes agent-browser to close the browser session. It is a real external command, though it has limited direct security impact."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "```",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 186,
-            "line_end": 198
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.64,
-        "confidence_reasoning": "This guidance names snapshot commands used to inspect clickable elements and page content. It confirms browser automation data collection, although the command is documented inline."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "- `snapshot -i` — for finding clickable/fillable elements (buttons, inputs, links)",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 198,
-            "line_end": 199
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.72,
-        "confidence_reasoning": "The line recommends snapshot -i for enumerating clickable and fillable page elements. This is useful QA automation, but it can expose details from authenticated pages."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "- `snapshot` (no flag) — for reading page content (text, headings, data lists)",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 199,
-            "line_end": 202
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.68,
-        "confidence_reasoning": "The line recommends snapshot for reading page content. The command can collect sensitive text from the target app, even though it is part of normal testing."
-      },
-      {
-        "title": "Ruby/shell backtick execution",
-        "description": "- **Be efficient with commands.** Batch multiple `agent-browser` commands in a single shell call whe",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 208,
-            "line_end": 208
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "external_commands",
-        "source_severity": "medium",
-        "confidence": 0.83,
-        "confidence_reasoning": "The guidance encourages batching agent-browser commands in a shell call and using scroll commands. Shell batching increases injection impact if any user-supplied placeholder is not safely quoted."
-      },
-      {
-        "title": "Temp directory access",
-        "description": "| **Output directory** | `./dogfood-output/` | `Output directory: /tmp/qa` |",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 19,
-            "line_end": 19
-          }
-        ],
-        "review_kind": "capability",
-        "source_category": "filesystem",
-        "source_severity": "medium",
-        "confidence": 0.83,
-        "confidence_reasoning": "The skill supports writing output to ./dogfood-output or /tmp/qa, and later stores screenshots, videos, reports, and auth state there. This is expected but creates sensitive-artifact storage risk."
-      }
-    ],
+    "high_findings": [],
+    "medium_findings": [],
     "low_findings": [],
-    "dangerous_patterns": [
-      {
-        "title": "Screen capture upload",
-        "description": "- **For interactive issues, screenshot each step.** Capture the before, the action, and the after --",
-        "locations": [
-          {
-            "file": "SKILL.md",
-            "line_start": 195,
-            "line_end": 195
-          }
-        ],
-        "review_kind": "security",
-        "source_category": "blocker",
-        "source_severity": "high",
-        "confidence": 0.82,
-        "confidence_reasoning": "The line explicitly requires screenshots for each interaction step. No upload is shown, but intentional screen capture can expose authenticated app data in generated evidence."
-      }
-    ],
-    "files_scanned": 3,
-    "total_lines": 385,
+    "dangerous_patterns": [],
+    "files_scanned": 1,
+    "total_lines": 28,
     "audit_model": "codex",
-    "audited_at": "2026-07-09T17:08:12.647Z",
-    "agent_auto_install_policy": "confirmation_required",
+    "audited_at": "2026-09-30T14:31:07.394Z",
+    "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Test Web Apps With Repro Evidence",
-    "value_statement": "Web app issues are hard to fix when reports lack proof. This skill explores the app in a browser and creates reproducible evidence for each finding.",
+    "user_title": "Test Mobile Apps with Runtime Evidence",
+    "value_statement": "Mobile app bugs and usability problems can remain hidden during routine checks. This skill guides exploratory testing with agent-device and captures runtime evidence for issues.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
-      "web app QA",
+      "agent-device",
+      "mobile app testing",
       "exploratory testing",
-      "dogfooding",
-      "agent-browser",
-      "bug report",
-      "repro evidence",
-      "UX testing"
+      "iOS QA",
+      "Android QA",
+      "runtime evidence",
+      "usability testing"
     ],
     "actual_capabilities": [
-      "Opens a target web app with agent-browser and creates a named test session.",
-      "Captures annotated screenshots, browser snapshots, console output, and browser errors.",
-      "Records repro videos for interactive issues and step-by-step screenshots.",
-      "Uses a severity taxonomy for visual, functional, UX, content, performance, console, and accessibility issues.",
-      "Writes a structured Markdown report with issue counts, repro steps, and evidence paths.",
-      "Saves browser state after login when authenticated testing is required."
+      "Check the installed agent-device version against the required minimum of 0.14.0.",
+      "Read current exploratory QA guidance through agent-device help dogfood.",
+      "Require a target app and infer its platform or ask for clarification.",
+      "Guide an app testing loop with interactive snapshots, screenshots, flow exploration, and app closure.",
+      "Capture evidence for issues observed during runtime testing.",
+      "Use current CLI guidance for report structure and evidence commands."
     ],
     "limitations": [
-      "Requires the agent-browser CLI and browser automation access.",
-      "Tests observed browser behavior, not the target app source code.",
-      "Authenticated testing depends on user-provided credentials or OTP codes.",
-      "Evidence files can contain sensitive page data and need careful handling."
+      "Requires a trusted agent-device installation at version 0.14.0 or newer, or approval for an exact-version npm command.",
+      "Requires an identified target app and access through agent-device.",
+      "Findings must come from runtime behavior, not source code inspection.",
+      "Detailed workflow and report formatting depend on installed CLI help rather than bundled instructions."
     ],
     "use_cases": [
       {
-        "title": "Pre-release exploratory QA",
-        "description": "Run a structured pass across launch-critical flows and produce evidence that engineers can reproduce quickly.",
-        "target_user": "Product manager"
+        "title": "Explore Release Candidate Flows",
+        "description": "Test key mobile app flows and collect runtime evidence for reproducible issues before release.",
+        "target_user": "Mobile QA engineers"
       },
       {
-        "title": "Regression bug hunting",
-        "description": "Check important pages after a release candidate changes navigation, forms, or stateful workflows.",
-        "target_user": "QA engineer"
+        "title": "Investigate Reported App Behavior",
+        "description": "Explore a reported problem in the target app and capture evidence when the behavior occurs.",
+        "target_user": "Mobile developers"
       },
       {
-        "title": "UX quality review",
-        "description": "Find confusing flows, missing feedback, visual defects, and accessibility issues from a user viewpoint.",
-        "target_user": "Designer"
+        "title": "Review Mobile Usability",
+        "description": "Explore onboarding and navigation to identify usability problems visible during real interactions.",
+        "target_user": "Product designers"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Quick app check",
-        "scenario": "Beginner pass on a local or staging app.",
-        "prompt": "Dogfood http://localhost:3000 and create a report in ./dogfood-output."
+        "title": "Explore One App",
+        "prompt": "Explore [app name] on [platform] for visible bugs. Capture runtime evidence for each issue.",
+        "scenario": "Beginner: a first exploratory mobile app session."
       },
       {
-        "title": "Focus on one workflow",
-        "scenario": "Targeted review of a high-priority feature.",
-        "prompt": "Dogfood https://staging.example.com with focus on onboarding. Capture evidence for every issue and summarize severity counts."
+        "title": "Test a Specific Flow",
+        "prompt": "Test [flow name] in [app name] on [platform]. Record observed problems and capture evidence without inspecting source code.",
+        "scenario": "Intermediate: focused review of a user journey."
       },
       {
-        "title": "Authenticated product review",
-        "scenario": "Testing behind a login with user-provided credentials.",
-        "prompt": "Dogfood https://app.example.com. Sign in with the test account I provide, then test account settings and team management."
+        "title": "Compare Platform Behavior",
+        "prompt": "Explore [flow name] in [app name] on iOS and Android. Report observed differences with evidence from each available platform.",
+        "scenario": "Experienced: a comparison across accessible platforms."
       },
       {
-        "title": "Release readiness audit",
-        "scenario": "Advanced pass across multiple critical areas.",
-        "prompt": "Dogfood https://preview.example.com. Prioritize billing, invitations, and project creation. Record videos for interactive failures and use clear repro steps."
+        "title": "Run Scoped Release QA",
+        "prompt": "Test [app name] on [platform] across [approved flows] using test data. Follow current CLI reporting guidance and capture evidence for each issue.",
+        "scenario": "Advanced: a scoped release review across several flows."
       }
     ],
     "output_examples": [
       {
-        "input": "Dogfood http://localhost:3000 with focus on onboarding.",
-        "output": "A Markdown report lists each onboarding issue with severity, category, affected URL, screenshots, and reproducible steps."
+        "input": "Illustrative request: explore onboarding in a mobile test app.",
+        "output": "Illustrative finding: the Continue button becomes hidden when the keyboard opens. Evidence: a screenshot and the interaction sequence that reproduced the issue."
       },
       {
-        "input": "Test the staging billing page after login.",
-        "output": "The report includes billing workflow findings, console errors, annotated screenshots, and videos for interactive failures."
-      },
-      {
-        "input": "Run a broad QA pass on the preview deployment.",
-        "output": "The final summary provides total issues by severity and highlights the most important fixes before release."
+        "input": "Illustrative request: start exploratory QA when agent-device is unavailable.",
+        "output": "Testing paused because a trusted agent-device binary is unavailable. Provide a trusted installation or approve an exact-version npm command before testing."
       }
     ],
     "best_practices": [
-      "Use test accounts and seed data that can be safely changed.",
-      "Review screenshots and videos for sensitive information before sharing them.",
-      "Keep the scope clear so exploration focuses on important workflows."
+      "Identify the target app, platform, and authorized test scope before exploration.",
+      "Use a trusted CLI installation and consult its current dogfood help.",
+      "Use test accounts and review captured evidence for sensitive information before sharing."
     ],
     "anti_patterns": [
-      "Running the skill against production with real customer data without approval.",
-      "Treating the generated report as a substitute for automated regression tests.",
-      "Sharing the output directory before removing secrets, tokens, or private user data."
+      "Do not install or execute the latest npm package autonomously.",
+      "Do not report source code assumptions as observed runtime defects.",
+      "Do not explore unrelated apps or capture personal data outside the approved scope."
     ],
     "faq": [
       {
-        "question": "What does this skill produce?",
-        "answer": "It produces a Markdown QA report with issue details, severity counts, repro steps, screenshots, and videos when needed."
+        "question": "Which mobile platforms does this skill target?",
+        "answer": "The skill targets iOS and Android apps through agent-device."
       },
       {
-        "question": "Does it read the target app source code?",
-        "answer": "No. The workflow tests visible browser behavior and explicitly avoids reading the target application source code."
+        "question": "Which agent-device version is required?",
+        "answer": "Version 0.14.0 or newer is required because older versions lack the needed help topics."
       },
       {
-        "question": "Can it test authenticated apps?",
-        "answer": "Yes. The user must provide test credentials or OTP codes, and output artifacts should be handled as sensitive."
+        "question": "Does the skill automatically install agent-device?",
+        "answer": "No. It requires a trusted binary or approval for an exact-version npm command and prohibits autonomous latest-version installation."
       },
       {
-        "question": "Which tools can use this skill?",
-        "answer": "The report lists support for Claude, Codex, and Claude Code when the required browser automation tooling is available."
+        "question": "Does the skill inspect application source code?",
+        "answer": "No. Findings must come from runtime behavior rather than source reads."
       },
       {
-        "question": "What kinds of issues does it look for?",
-        "answer": "It looks for visual, functional, UX, content, performance, console, and accessibility problems."
+        "question": "What evidence does the workflow capture?",
+        "answer": "The workflow uses interactive snapshots, screenshots, and issue evidence. Current CLI help supplies exact evidence commands."
       },
       {
-        "question": "Is the output safe to share?",
-        "answer": "Review it first. Screenshots, videos, console logs, and auth state can include private data or session information."
+        "question": "Where is the report format defined?",
+        "answer": "The installed CLI supplies the exact report shape through agent-device help dogfood."
       }
     ]
   },
   "file_structure": [
     {
-      "name": "references",
-      "type": "dir",
-      "path": "references",
-      "children": [
-        {
-          "name": "issue-taxonomy.md",
-          "type": "file",
-          "path": "references/issue-taxonomy.md",
-          "lines": 110
-        }
-      ]
-    },
-    {
-      "name": "templates",
-      "type": "dir",
-      "path": "templates",
-      "children": [
-        {
-          "name": "dogfood-report-template.md",
-          "type": "file",
-          "path": "templates/dogfood-report-template.md",
-          "lines": 54
-        }
-      ]
-    },
-    {
       "name": "SKILL.md",
       "type": "file",
       "path": "SKILL.md",
-      "lines": 221
+      "lines": 28
     }
   ]
 }

@@ -22,6 +22,7 @@ allowed-tools:
   - Grep
   - Glob
   - Task
+  - Skill
   - WebFetch
 ---
 
@@ -102,10 +103,28 @@ Goal: surface likely bugs introduced in the window; propose minimal fixes.
    - The **`ultra` tier is cloud-based, billed, and user-triggered** — never
      auto-run it. Recommend it (see §7f) only when a finding here is
      high-stakes and warrants a deep multi-agent cloud review.
+   - `/code-review` runs as a separate background task that starts in the
+     session's working directory, not necessarily the repo under review. Put
+     the repo's absolute path and the commit range in its arguments, for
+     example `high <oldest>..HEAD in /abs/path/to/repo (cd there first)`.
+   - Wait for its result before writing report §2. If it has not returned when
+     the report is due, write §2 as *"pending: /code-review still running"*
+     and put the Step 3 fallback scan under it, labeled as the fallback.
    Fold `/code-review`'s correctness findings into report §2.
-3. **Fallback (only if `/code-review` is unavailable):** read the diff hunks
+3. **Fallback (only if `/code-review` is unavailable).** `/code-review` is a
+   Claude Code built-in, so Codex, Cursor and other hosts use this path.
+   Apply `/review`'s checklist to the window's diff, read-only: the first of
+   `~/.claude/skills/gstack/review/checklist.md`,
+   `~/.codex/skills/gstack/review/checklist.md`, or
+   `vendor/gstack/review/checklist.md` in the superskills install. Do not run
+   `/review` itself here: it applies fixes to the working tree and stops on the
+   base branch, and this sweep is report-only. Title §2 *"fallback: /review
+   checklist"*. If no checklist was found (gstack is not installed), invoke
+   `/basic-review` on the window's diff instead; it is read-only, so it fits
+   this sweep. Title §2 *"fallback: /basic-review"* and fold its findings in.
+   Whichever you use, read the diff hunks
    that touch logic (skip pure docs/config-only changes unless they touch
-   build/CI config) and look for concrete bug signatures only:
+   build/CI config) and look for concrete bug signatures:
    - off-by-one, inverted conditions, swapped args, dropped error handling,
      unhandled null/undefined, race-prone async, accidental `await` removal,
      resource leaks, missing cleanup, regex backtracking, SQL with missing
@@ -153,6 +172,20 @@ explicit current → target versions taken from the repo.
 5. Propose the **smallest viable upgrade set**: prefer one cohesive bump
    per group over many. Mark all target versions as **Suggestion** unless
    they came from an explicit upstream pin in the repo.
+6. **Vendored-tool upstream drift** (always run — read-only, no billing):
+
+   ```bash
+   ./scripts/check-upstream-drift.sh
+   ```
+
+   Compares the vendored pentest tools against their upstreams: Shannon's
+   vendored tag vs the latest stable tag, and clearwing's installed commit
+   vs its vendored pin vs upstream HEAD (by **commit** — upstream's version
+   string is ambiguous). Report its output verbatim in the findings table.
+   It never upgrades anything — when it reports an upgrade available, that is
+   a **Suggestion** with the exact `scripts/sync-*.sh` command it prints, and
+   the sync's contract tests decide whether the upgrade is safe. Offline
+   probes print "unverified"; report that as unverified, never as current.
 
 ## Step 5: Performance / benchmark regression
 
@@ -238,9 +271,12 @@ summary; MEDIUM and LOW go in the report body.
 
 ### 7c. `/pentest` — recommend only (do not auto-run)
 
-`/pentest` uses the external [clearwing](https://github.com/Lazarus-AI/clearwing)
-scanner — requires LLM provider config, network/source authorization
-confirmation, and is much slower. Wrong shape for unattended daily runs.
+`/pentest` defaults to an in-harness source-code hunt (the session's own
+model) but still requires an interactive authorization confirmation, and its
+deeper modes — live network probes, fuzzing-backed hunts, SARIF output — run
+through the external [clearwing](https://github.com/Lazarus-AI/clearwing)
+scanner, which configures its own LLM provider and bills it per run. All of
+that is the wrong shape for unattended daily runs.
 
 **Recommend** `/pentest` when any of:
 - `/defense` flagged CRITICAL or HIGH in §4b
@@ -252,7 +288,7 @@ confirmation, and is much slower. Wrong shape for unattended daily runs.
   config) — a commonly-forgotten attack surface (exposed ports, broad IAM,
   baked-in secrets). `/iac-scan` (§7i) auto-runs the static misconfig scan and
   `/defense` (§4b) sweeps for secrets; recommend `/pentest` only as the deeper
-  **live** probe when those surface HIGH/CRITICAL.
+  hunt when those surface HIGH/CRITICAL.
 
 Output the exact command (`/pentest`) plus the scoped path list. User
 confirms authorization and runs it themselves.
@@ -360,9 +396,37 @@ read-only (uses tfsec/checkov/hadolint/actionlint if installed, signature checks
 otherwise), so it's safe to auto-run like `/defense`. Fold findings into the report
 under §4c "Infra misconfig (auto-run /iac-scan)" with severity and file:line. Only
 CRITICAL/HIGH go in the executive summary. If no infra files changed, skip silently.
-For a deeper live probe after HIGH/CRITICAL, recommend `/pentest` (§7c).
+For a deeper hunt after HIGH/CRITICAL, recommend `/pentest` (§7c).
 
-### 7j. Other related commands — recommend only
+### 7j. `/humanize` — recommend only (prose drift)
+
+Doc-heavy commits land from every branch, and merged prose is exactly what the
+per-branch pipelines never re-check. Recommend `/humanize` when commits in the
+window added or modified user-facing copy: documentation, help prose,
+marketing pages, locale strings, or visible UI text (any file type
+`skills/humanize/toolkit/userfacing.py classify <path>` does not call
+`none`). Internal prompts, agent instructions, plans, and code comments are out of scope.
+Also exclude changelogs, vendored/mirrored trees, and generated files (that
+wording is deliberate or upstream's). It edits, not just reports, and rewrites
+voice, so it never auto-runs unattended.
+
+Include the list of changed prose files so the user can scope the pass, and
+state it as a suggestion with the files as context: e.g. _"Run `/humanize` on
+`docs/billing.md` and `README.md` — the window's commits touched them and the
+prose has not been swept."_
+
+### 7k. `/eval` — recommend only (AI-behavior drift)
+
+Commits in the window that redefine AI behavior are behavior changes, and
+unattended sweeps cannot measure behavior. Judge by content, not filename: a
+prompt string edited inside code, a retrieval parameter, a judge rubric, or an
+agent-loop change is a behavior change even when the file is ordinary source;
+obvious signals are prompts, skill or agent instruction files, and LLM/RAG
+pipeline code or configuration. Recommend `/eval` with the changed files
+listed, stating that the run costs model calls and is launched by the user.
+Never auto-run it: the spend needs a human yes.
+
+### 7l. Other related commands — recommend only
 
 - `/code-review ultra` — when Step 3's local `/code-review` (or a CI failure)
   surfaced a high-stakes correctness concern that warrants a deep multi-agent
@@ -469,7 +533,7 @@ Recommend-only (never auto-run):
 - `/code-review ultra` — deep multi-agent cloud review; billed + user-triggered. Recommend when Step 3 surfaces a high-stakes correctness concern.
 - `/review` — staff-level production-readiness review; recommend for architecturally significant / critical-path changes (heavier than the Step 3 `/code-review`).
 - `/cso` — OWASP+STRIDE threat modeling; design-time (home is `/write-plan`). Backstop-recommend when a trust-boundary change shipped without a threat model.
-- `/pentest` — heavy external scanner (clearwing) with auth confirmation; recommend when `/defense` or `/iac-scan` finds HIGH/CRITICAL, or sensitive code paths changed (a bare infra change is handled statically by auto-run `/iac-scan` §7i — pentest is only the deeper live probe on HIGH/CRITICAL).
+- `/pentest` — authorization-gated security hunt (in-harness pipeline by default; its clearwing integration can run agent-driven on the session via the bundled bridge, with only provider-driven runs billing their own provider); recommend when `/defense` or `/iac-scan` finds HIGH/CRITICAL, or sensitive code paths changed (a bare infra change is handled statically by auto-run `/iac-scan` §7i — pentest is only the deeper hunt on HIGH/CRITICAL).
 - `/qa` — interactive browser QA; recommend when UI changed.
 - `/web-perf` — Core Web Vitals + render trace against a live app (Chrome DevTools MCP); recommend when frontend files, assets, or bundler config changed.
 - `/design-audit` — read-only visual/a11y audit → design plan; recommend alongside `/qa` when UI changed.
@@ -480,6 +544,6 @@ Recommend-only (never auto-run):
 - `/verify` — confirm a proposed fix works in the running app.
 - `/tdd` — write the failing test first when expanding Step 6 coverage.
 - `/test-coverage` — *writes and applies* the missing unit/integration/e2e
-  tests that Step 6 only drafts as a report; the fixer counterpart, and the
-  same relationship it has to `/qa-full` Step 9.
+  tests that Step 6 only drafts as a report; the fixer counterpart (`/qa-full`
+  Step 9 runs it automatically).
 - `/finish-branch` / `/ship` — when a fix from this report is ready to land.
