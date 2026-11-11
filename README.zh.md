@@ -4,10 +4,10 @@
 
 **全球最大的 Claude Code 技能库**  
 
-发现 · 收集 · 管理 — 3,900+ 个 AI 编程技能，一站式搞定
+发现 · 收集 · 管理 — 9,000+ 个 AI 编程技能，一站式搞定
 
 [![Site](https://img.shields.io/github/deployments/bg-szy/TOP-SKILLS/github-pages?label=看板&logo=github&style=flat-square)](https://bg-szy.github.io/TOP-SKILLS/)
-[![Skills](https://img.shields.io/badge/技能-3900+-blue?style=flat-square)](https://bg-szy.github.io/TOP-SKILLS/)
+[![Skills](https://img.shields.io/badge/技能-9000+-blue?style=flat-square)](https://bg-szy.github.io/TOP-SKILLS/)
 [![Sources](https://img.shields.io/badge/来源-13-orange?style=flat-square)](https://bg-szy.github.io/TOP-SKILLS/)
 [![Last Commit](https://img.shields.io/github/last-commit/bg-szy/TOP-SKILLS?style=flat-square&label=更新)](https://github.com/bg-szy/TOP-SKILLS/commits/master)
 [![License](https://img.shields.io/badge/许可-MIT-green?style=flat-square)](LICENSE)
@@ -27,8 +27,8 @@ Claude Code 的自定义指令（`SKILL.md` 文件）能最大化 Claude 的能�
 
 | 优势 | 说明 |
 |------|------|
-| **🌐 统一入口** | 从 13 个精选仓库收集 3,900+ 个技能，不用到处找 |
-| **🔄 每日同步** | 每天自动更新，永远最新 |
+| **🌐 统一入口** | 从 13 个精选仓库收集 9,000+ 个技能，不用到处找 |
+| **🔄 每日同步** | 每天由 GitHub Actions 自动更新，永远最新 |
 | **✅ 质量保障** | 自动安全检测、去重、格式验证 |
 | **🔍 智能搜索** | 网页看板支持搜索、筛选、排序、图表、趋势 |
 | **💰 零成本** | GitHub Pages 纯静态站点，无需服务器 |
@@ -56,7 +56,7 @@ Claude Code 的自定义指令（`SKILL.md` 文件）能最大化 Claude 的能�
 | 前缀 | 仓库 | 说明 |
 |------|------|------|
 | `marketplace` | [aiskillstore/marketplace](https://github.com/aiskillstore/marketplace) | 最大的 Claude Code 技能市场 |
-| `awesome-skills` | [FridrichMethod/awesome-skills](https://github.com/FridrichMethod/awesome-skills) | 1,800+ 自动同步技能（含科学计算） |
+| `awesome-skills` | [FridrichMethod/awesome-skills](https://github.com/FridrichMethod/awesome-skills) | 2,100+ 自动同步技能（含科学计算） |
 | `claude-skills` | [OneWave-AI/claude-skills](https://github.com/OneWave-AI/claude-skills) | 精选 Claude 技能集合 |
 | `Claude-AI-skills-collection-2026` | [obviousworks/Claude-AI-skills-collection-2026](https://github.com/obviousworks/Claude-AI-skills-collection-2026) | 社区精选全品类技能集合 |
 | `skills` | [trailofbits/skills](https://github.com/trailofbits/skills) | Trail of Bits 安全工具链技能 |
@@ -112,27 +112,34 @@ claude --skill ./skills/marketplace/skill-name/SKILL.md
 ## 🏗️ 架构
 
 ```
-                    ┌──────────────────┐
-                    │  GitHub 上游仓库  │
-                    │ (13+ 个来源)      │
-                    └────────┬─────────┘
-                             │
-                    ┌────────▼─────────┐
-                    │  collect_skills   │  ← 每日自动收集
-                    └────────┬─────────┘
-                             │
-                    ┌────────▼─────────┐
-                    │  verify_skills    │  ← 安全与质量检查
-                    └────────┬─────────┘
-                             │
-                    ┌────────▼─────────┐
-                    │  generate_site    │  → site/data/skills.json
-                    └────────┬─────────┘
-                             │
-                    ┌────────▼─────────┐
-                    │  GitHub Actions   │  → gh-pages → 自动部署
-                    └──────────────────┘
+                    ┌──────────────────────────┐
+                    │  GitHub 上游仓库          │
+                    │  （13 个精选来源）        │
+                    └────────────┬─────────────┘
+                                 │  每天 00:23 UTC（北京时间 08:23）
+                    ┌────────────▼─────────────────────────────┐
+                    │  GitHub Actions · daily-update.yml       │
+                    │                                          │
+                    │  collect_skills → verify_skills →        │
+                    │  generate_site → 提交并推送 master        │
+                    └────────────┬─────────────────────────────┘
+                                 │
+                    ┌────────────▼─────────────────────────────┐
+                    │  同一任务内发布站点                       │
+                    │  → gh-pages 分支 → GitHub Pages          │
+                    └──────────────────────────────────────────┘
 ```
+
+### 自动化
+
+全部在云端运行，无需本地机器：
+
+| 工作流 | 触发方式 | 作用 |
+|--------|---------|------|
+| [`daily-update.yml`](.github/workflows/daily-update.yml) | 每天 00:23 UTC · 手动 | 收集 → 校验 → 重建站点数据 → 提交 → 部署 |
+| [`gh-pages.yml`](.github/workflows/gh-pages.yml) | 推送 `master` · 手动 | 重新构建并发布看板到 GitHub Pages |
+
+Daily Update 任务会自行部署站点，因为用默认 `GITHUB_TOKEN` 推送的提交不会触发其他工作流。
 
 ### 核心技术栈
 
@@ -158,12 +165,12 @@ claude --skill ./skills/marketplace/skill-name/SKILL.md
 
 | 指标 | 数值 |
 |------|------|
-| 技能总数 | 3,900+ |
-| 来源仓库 | 13 |
-| 总文件数 | 9,000+ |
-| 增长最快来源 | aiskillstore/marketplace（3,620+ 技能） |
+| 技能总数 | 9,000+ |
+| 来源仓库 | 13 个已配置（当前 9 个有技能产出） |
+| 总文件数 | 19,000+ |
+| 增长最快来源 | aiskillstore/marketplace（5,800+ 技能） |
 | 首次记录 | 2026-05-22 |
-| 更新频率 | 每日北京时间 08:00 |
+| 更新频率 | 每日北京时间 08:23（00:23 UTC），由 GitHub Actions 执行 |
 
 ---
 

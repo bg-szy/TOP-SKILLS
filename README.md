@@ -4,10 +4,10 @@
 
 **The World's Largest Claude Code Skills Directory**  
 
-Discover · Collect · Manage — 3,900+ AI coding skills from the community
+Discover · Collect · Manage — 9,000+ AI coding skills from the community
 
 [![Site](https://img.shields.io/github/deployments/bg-szy/TOP-SKILLS/github-pages?label=Dashboard&logo=github&style=flat-square)](https://bg-szy.github.io/TOP-SKILLS/)
-[![Skills](https://img.shields.io/badge/Skills-3900+-blue?style=flat-square)](https://bg-szy.github.io/TOP-SKILLS/)
+[![Skills](https://img.shields.io/badge/Skills-9000+-blue?style=flat-square)](https://bg-szy.github.io/TOP-SKILLS/)
 [![Sources](https://img.shields.io/badge/Sources-13-orange?style=flat-square)](https://bg-szy.github.io/TOP-SKILLS/)
 [![Last Commit](https://img.shields.io/github/last-commit/bg-szy/TOP-SKILLS?style=flat-square&label=Updated)](https://github.com/bg-szy/TOP-SKILLS/commits/master)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
@@ -27,8 +27,8 @@ Claude Code custom instructions (`SKILL.md` files) unlock Claude's full potentia
 
 | Why Us | Benefit |
 |--------|---------|
-| **🌐 Single Source** | 3,900+ skills from 13 curated repositories, unified |
-| **🔄 Daily Sync** | Auto-collected every day — always up to date |
+| **🌐 Single Source** | 9,000+ skills from 13 curated repositories, unified |
+| **🔄 Daily Sync** | Auto-collected every day on GitHub Actions — always up to date |
 | **✅ Quality Guard** | Auto-verification: security checks, dedup, format validation |
 | **🔍 Smart Dashboard** | Search, filter, sort, charts, trends — all in one page |
 | **💰 Zero Cost** | Pure static site on GitHub Pages, no server needed |
@@ -58,7 +58,7 @@ TOP-SKILLS aggregates from these high-quality repositories:
 | Prefix | Repository | Description |
 |--------|-----------|-------------|
 | `marketplace` | [aiskillstore/marketplace](https://github.com/aiskillstore/marketplace) | Largest Claude Code skill marketplace |
-| `awesome-skills` | [FridrichMethod/awesome-skills](https://github.com/FridrichMethod/awesome-skills) | 1,800+ auto-synced skills incl. scientific computing |
+| `awesome-skills` | [FridrichMethod/awesome-skills](https://github.com/FridrichMethod/awesome-skills) | 2,100+ auto-synced skills incl. scientific computing |
 | `claude-skills` | [OneWave-AI/claude-skills](https://github.com/OneWave-AI/claude-skills) | Curated Claude skill collection |
 | `Claude-AI-skills-collection-2026` | [obviousworks/Claude-AI-skills-collection-2026](https://github.com/obviousworks/Claude-AI-skills-collection-2026) | Community curated full-category collection |
 | `skills` | [trailofbits/skills](https://github.com/trailofbits/skills) | Security toolchain skills by Trail of Bits |
@@ -114,27 +114,34 @@ claude --skill ./skills/marketplace/skill-name/SKILL.md
 ## 🏗️ Architecture
 
 ```
-                    ┌──────────────────┐
-                    │  GitHub Upstream │
-                    │ (13+ sources)    │
-                    └────────┬─────────┘
-                             │
-                    ┌────────▼─────────┐
-                    │  collect_skills   │  ← Daily collection pipeline
-                    └────────┬─────────┘
-                             │
-                    ┌────────▼─────────┐
-                    │  verify_skills    │  ← Security & quality check
-                    └────────┬─────────┘
-                             │
-                    ┌────────▼─────────┐
-                    │  generate_site    │  → site/data/skills.json
-                    └────────┬─────────┘
-                             │
-                    ┌────────▼─────────┐
-                    │  GitHub Actions   │  → gh-pages → GitHub Pages
-                    └──────────────────┘
+                    ┌──────────────────────────┐
+                    │  GitHub Upstream         │
+                    │  (13 curated repositories)│
+                    └────────────┬─────────────┘
+                                 │  daily · 00:23 UTC (08:23 Beijing)
+                    ┌────────────▼─────────────────────────────┐
+                    │  GitHub Actions · daily-update.yml       │
+                    │                                          │
+                    │  collect_skills → verify_skills →        │
+                    │  generate_site → commit & push master    │
+                    └────────────┬─────────────────────────────┘
+                                 │
+                    ┌────────────▼─────────────────────────────┐
+                    │  Publish Site (same job)                 │
+                    │  → gh-pages branch → GitHub Pages        │
+                    └──────────────────────────────────────────┘
 ```
+
+### Automation
+
+Everything runs in the cloud — no local machine required:
+
+| Workflow | Trigger | What it does |
+|----------|---------|--------------|
+| [`daily-update.yml`](.github/workflows/daily-update.yml) | Daily 00:23 UTC · manual | Collect → verify → rebuild site data → commit → deploy |
+| [`gh-pages.yml`](.github/workflows/gh-pages.yml) | Push to `master` · manual | Rebuild and publish the dashboard to GitHub Pages |
+
+The Daily Update job deploys the site itself, because pushes made with the default `GITHUB_TOKEN` do not trigger other workflows.
 
 ### Tech Stack
 
@@ -160,12 +167,12 @@ claude --skill ./skills/marketplace/skill-name/SKILL.md
 
 | Metric | Value |
 |--------|-------|
-| Total Skills | 3,900+ |
-| Source Repositories | 13 |
-| Total Files | 9,000+ |
-| Fastest Growing Source | aiskillstore/marketplace (3,620+ skills) |
+| Total Skills | 9,000+ |
+| Source Repositories | 13 configured (9 currently contributing) |
+| Total Files | 19,000+ |
+| Fastest Growing Source | aiskillstore/marketplace (5,800+ skills) |
 | First Recorded | 2026-05-22 |
-| Update Frequency | Daily at 08:00 Beijing Time |
+| Update Frequency | Daily at 08:23 Beijing Time (00:23 UTC) via GitHub Actions |
 
 ---
 
