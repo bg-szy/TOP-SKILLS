@@ -187,6 +187,35 @@ def is_claude_code_skill(frontmatter: dict) -> bool:
     return True  # Minimum: name + description
 
 
+# Windows reserved device names (case-insensitive, with or without extension).
+WINDOWS_RESERVED_NAMES = {
+    "con", "prn", "aux", "nul",
+    *(f"com{i}" for i in range(1, 10)),
+    *(f"lpt{i}" for i in range(1, 10)),
+}
+
+# Characters that cannot appear in a Windows path component.
+ILLEGAL_PATH_CHARS = re.compile(r'[<>:"\\|?*\x00-\x1f]')
+
+
+def sanitize_skill_name(raw: str) -> str:
+    """Turn a frontmatter name into a directory name that works on every OS.
+
+    Upstream names are free-form; e.g. "ckm:brand" cannot be checked out on
+    Windows. Replace illegal characters with '-' and keep everything else.
+    """
+    name = (raw or "").strip().lower()
+    name = re.sub(r"\s+", "-", name)
+    name = name.replace("/", "-")
+    name = ILLEGAL_PATH_CHARS.sub("-", name)
+    name = name.strip(" .-")
+    if not name:
+        name = "unnamed-skill"
+    if name.split(".")[0] in WINDOWS_RESERVED_NAMES:
+        name = f"_{name}"
+    return name
+
+
 # ---------------------------------------------------------------------------
 # Repository Processing
 # ---------------------------------------------------------------------------
@@ -256,12 +285,15 @@ def process_repo(github: GitHubClient, repo: str, branch: str) -> Tuple[List[dic
             log.debug("  SKILL.md at %s does not appear to be a Claude Code skill (bad frontmatter)", sk_path)
             continue
 
-        # Extract skill name
-        skill_name = fm.get("name", "").strip().lower().replace(" ", "-").replace("/", "-")
+        # Extract skill name (sanitized for cross-platform directory names)
+        raw_name = fm.get("name", "")
+        skill_name = sanitize_skill_name(raw_name)
+        if skill_name != raw_name.strip().lower().replace(" ", "-").replace("/", "-"):
+            log.info("  Sanitized skill name %r -> %r", raw_name, skill_name)
 
         # Avoid duplicate skill names within same source
         if skill_name in seen_skill_names:
-            log.warning("  Duplicate skill name '%s', skipping", skill_name)
+            log.warning("  Duplicate skill name '%s', skipping (dir %s)", skill_name, dir_path)
             continue
         seen_skill_names.add(skill_name)
 
