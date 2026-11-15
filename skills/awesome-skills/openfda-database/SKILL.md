@@ -1,6 +1,8 @@
 ---
 name: openfda-database
 description: "Query, search, and download data from the openFDA API for drugs, devices, foods, tobacco, cosmetics, animal and veterinary products, substances, and transparency data. Use for FDA adverse events, recalls, labeling, approvals, shortages, 510(k) clearances, NDC lookups, and any FDA safety or regulatory data query across all 28 API endpoints."
+metadata:
+  publisher: google
 ---
 
 # openFDA Search and Query

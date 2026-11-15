@@ -1,6 +1,8 @@
 ---
 name: literature-search-openalex
 description: "Query the OpenAlex scholarly database for research papers, authors, institutions, topics, sources, publishers, funders, geo-locations, and keywords. Use when searching academic papers, resolving DOIs, downloading open-access PDFs, finding an author's publications, aggregating bibliometric data (citation counts, h-index, impact factor), exploring the research taxonomies, or performing DOI lookups."
+metadata:
+  publisher: google
 ---
 
 # OpenAlex Skill

@@ -1,6 +1,8 @@
 ---
 name: ncbi-sequence-fetch
 description: "Retrieve protein and nucleotide sequences from NCBI databases using E-utilities. Supports direct accession lookup, CDS translation, gene+organism search, locus lookup, PubMed-linked sequences, patent protein extraction, and organism+length fallback search. Use when you need to fetch biological sequences by accession, gene name, locus tag, PubMed ID, or patent number."
+metadata:
+  publisher: google
 ---
 
 # NCBI Sequence Fetch

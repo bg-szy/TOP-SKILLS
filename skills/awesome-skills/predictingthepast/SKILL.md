@@ -1,6 +1,8 @@
 ---
 name: predictingthepast
 description: "Ancient text restoration, attribution, dating, contextualization, and embedding via Aeneas (Latin) / Ithaca (Ancient Greek). Use when asked to \"restore\", \"attribute\", \"date\", \"contextualize\", \"find parallels\", \"where was it written\", \"when was it written\", \"embed\", or \"analyze\" an ancient text, inscription, or epigraphic document, or when the user mentions \"Aeneas\", or \"Ithaca\"."
+metadata:
+  publisher: google
 ---
 
 # Predicting The Past (Aeneas / Ithaca)

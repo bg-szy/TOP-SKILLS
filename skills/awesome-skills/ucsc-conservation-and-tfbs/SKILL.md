@@ -1,6 +1,8 @@
 ---
 name: ucsc-conservation-and-tfbs
 description: "Fetch Evolutionary Conservation scores (phyloP, phastCons) and Transcription Factor Binding Sites (TFBS) from the UCSC Genome Browser. Use when analyzing whether genomic variants or regions are evolutionarily conserved, functionally important, or bounded by TF regulators across major projects (ENCODE, JASPAR, ReMap)."
+metadata:
+  publisher: google
 ---
 
 # Conservation Scores & TFBS Lookup (UCSC)
