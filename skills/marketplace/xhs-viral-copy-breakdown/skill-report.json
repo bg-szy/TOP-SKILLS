@@ -1,15 +1,15 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-11-02T11:48:07.252Z",
+    "generated_at": "2026-11-18T15:22:53.329Z",
     "slug": "devinchen2014-xhs-viral-copy-breakdown",
-    "source_url": "https://github.com/devinchen2014/socialdatax-skills/tree/c14b6adea4ba2b551557115cdfffde4c17375cbf/modelscope-skills/xhs-viral-copy-breakdown",
-    "source_ref": "c14b6adea4ba2b551557115cdfffde4c17375cbf",
+    "source_url": "https://github.com/devinchen2014/socialdatax-skills/tree/bfe68d5567702709d07b820222e10884268baa62/modelscope-skills/xhs-viral-copy-breakdown",
+    "source_ref": "bfe68d5567702709d07b820222e10884268baa62",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "e4bdb8972c9c6acc60a1e75c7dc6a450dcb6627d10dbe0ea67b1989839e1a0c2",
-    "tree_hash": "3a31d19e5a6e817b5b02ebe21c1f031de5a3712fc497e6481e7d528b71281641",
+    "content_hash": "f4bc4f118b598a9493f978fd0bf8a6793f7d5719e6368cf8c9eb97509401ab98",
+    "tree_hash": "7a638e4ba8aa2575fb941d414bfc81e0d475d3b69c89836e812c983c94581ec0",
     "provenance": {
       "model_effective": "codex",
       "fallback_chain": [
@@ -24,22 +24,22 @@
     "upstream_version_normalized": null,
     "upstream_version_source": "none",
     "upstream_version_status": "missing",
-    "upstream_commit_sha": "c14b6adea4ba2b551557115cdfffde4c17375cbf"
+    "upstream_commit_sha": "bfe68d5567702709d07b820222e10884268baa62",
+    "previous_tree_hash": "3a31d19e5a6e817b5b02ebe21c1f031de5a3712fc497e6481e7d528b71281641",
+    "previous_source_ref": "c14b6adea4ba2b551557115cdfffde4c17375cbf"
   },
   "skill": {
     "name": "xhs-viral-copy-breakdown",
-    "description": "Analyze Xiaohongshu posts through SocialDataX to identify title hooks, openings, selling points, emotional language, and reusable copy structures.",
-    "summary": "Turn sampled XHS posts into evidence-based copy breakdowns and reusable writing frameworks.",
+    "description": "Analyze public Xiaohongshu notes by topic, link, or note ID using SocialDataX. Identify title hooks, openings, selling points, and calls to action.",
+    "summary": "Turn patterns in Xiaohongshu posts into reusable copywriting frameworks.",
     "icon": "📦",
     "author": "devinchen2014",
-    "license": "MIT",
     "category": "writing",
     "tags": [
       "xiaohongshu",
       "copywriting",
-      "content-analysis",
-      "socialdatax",
-      "social-media"
+      "content analysis",
+      "social media"
     ],
     "supported_tools": [
       "claude",
@@ -53,20 +53,30 @@
     ]
   },
   "security_audit": {
-    "risk_level": "medium",
+    "risk_level": "high",
     "is_blocked": false,
-    "safe_to_publish": true,
+    "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "Two findings identify unpinned npm execution; the other 51 alerts concern Markdown, documented API configuration, public service links, or readable Chinese text. A separate privacy concern arises from mandatory retention and forwarding of token-bearing note URLs without redaction. No evidence found of credential exfiltration, encoded payloads, system reconnaissance, or audit-directed prompt injection in the supplied files.",
+    "summary": "Most flags are Markdown formatting, documentation, or readable Chinese text. The CLI runs an unpinned npm package and uses credentials from the environment or a persistent local file. Shell argument handling and full tokenized URL sharing create additional risks; no evidence of audit-targeting prompt injection was found.",
     "remediation": [
       {
-        "issue": "The CLI examples automatically execute socialdatax-skills@latest with the agent's local privileges.",
-        "suggestion": "Pin an audited package version, verify its integrity, and obtain execution consent before installation. Isolate execution and expose only the required credential.",
+        "issue": "The CLI runs an unpinned npm package with access to local credentials.",
+        "suggestion": "Require explicit approval before installing or running the CLI. Pin and verify the package and dependency tree, then run it with minimal filesystem and environment access.",
         "severity": "medium"
       },
       {
-        "issue": "The URL policy requires preserving xsec_token in every display, storage, and forwarding context, and prohibits redaction.",
-        "suggestion": "Keep complete URLs only for authorized retrieval. Redact token parameters in shared reports and logs unless the user approves their disclosure.",
+        "issue": "The CLI can access credentials from environment variables and a persistent local file.",
+        "suggestion": "Use a dedicated, least-privilege service credential and an OS credential store or managed secret injection. Verify that status checks and logs never disclose credentials.",
+        "severity": "high"
+      },
+      {
+        "issue": "Shell examples include placeholders for untrusted input.",
+        "suggestion": "Use structured MCP calls or launch a verified CLI with a fixed argument array and shell interpretation disabled. Validate note IDs and allowed URL hosts.",
+        "severity": "medium"
+      },
+      {
+        "issue": "The report rules require retention and forwarding of tokenized note URLs.",
+        "suggestion": "Use note IDs or verified public links in shareable reports. Keep full tokenized URLs only for retrieval, and require explicit consent before storing or forwarding them.",
         "severity": "medium"
       }
     ],
@@ -91,58 +101,58 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 31,
-            "line_end": 40
+            "line_start": 26,
+            "line_end": 26
           },
           {
             "file": "SKILL.md",
-            "line_start": 40,
-            "line_end": 44
+            "line_start": 27,
+            "line_end": 27
           },
           {
             "file": "SKILL.md",
-            "line_start": 44,
-            "line_end": 48
+            "line_start": 28,
+            "line_end": 28
           },
           {
             "file": "SKILL.md",
-            "line_start": 48,
-            "line_end": 53
+            "line_start": 29,
+            "line_end": 29
           },
           {
             "file": "SKILL.md",
-            "line_start": 53,
+            "line_start": 37,
+            "line_end": 46
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 46,
+            "line_end": 50
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 50,
             "line_end": 54
           },
           {
             "file": "SKILL.md",
             "line_start": 54,
-            "line_end": 54
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 55,
-            "line_end": 55
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 56,
-            "line_end": 56
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 57,
-            "line_end": 57
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 58,
             "line_end": 59
           },
           {
             "file": "SKILL.md",
             "line_start": 59,
-            "line_end": 59
+            "line_end": 60
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 60,
+            "line_end": 60
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 61,
+            "line_end": 61
           },
           {
             "file": "SKILL.md",
@@ -152,21 +162,26 @@
           {
             "file": "SKILL.md",
             "line_start": 63,
-            "line_end": 66
+            "line_end": 63
           },
           {
             "file": "SKILL.md",
-            "line_start": 66,
-            "line_end": 66
+            "line_start": 64,
+            "line_end": 65
           },
           {
             "file": "SKILL.md",
-            "line_start": 67,
-            "line_end": 68
+            "line_start": 65,
+            "line_end": 65
           },
           {
             "file": "SKILL.md",
             "line_start": 68,
+            "line_end": 68
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 69,
             "line_end": 72
           },
           {
@@ -176,63 +191,58 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 80,
-            "line_end": 88
+            "line_start": 73,
+            "line_end": 74
           },
           {
             "file": "SKILL.md",
-            "line_start": 88,
-            "line_end": 89
+            "line_start": 74,
+            "line_end": 78
           },
           {
             "file": "SKILL.md",
-            "line_start": 89,
-            "line_end": 89
+            "line_start": 78,
+            "line_end": 78
           },
           {
             "file": "SKILL.md",
-            "line_start": 90,
-            "line_end": 90
+            "line_start": 86,
+            "line_end": 94
           },
           {
             "file": "SKILL.md",
-            "line_start": 98,
-            "line_end": 99
+            "line_start": 94,
+            "line_end": 95
           },
           {
             "file": "SKILL.md",
-            "line_start": 99,
-            "line_end": 100
+            "line_start": 95,
+            "line_end": 95
           },
           {
             "file": "SKILL.md",
-            "line_start": 100,
-            "line_end": 102
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 102,
-            "line_end": 102
+            "line_start": 96,
+            "line_end": 96
           },
           {
             "file": "SKILL.md",
             "line_start": 104,
-            "line_end": 104
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 105,
             "line_end": 105
           },
           {
             "file": "SKILL.md",
-            "line_start": 107,
-            "line_end": 107
+            "line_start": 105,
+            "line_end": 106
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 106,
+            "line_end": 108
           },
           {
             "file": "SKILL.md",
             "line_start": 108,
-            "line_end": 110
+            "line_end": 108
           },
           {
             "file": "SKILL.md",
@@ -241,33 +251,38 @@
           },
           {
             "file": "SKILL.md",
+            "line_start": 111,
+            "line_end": 111
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 113,
+            "line_end": 113
+          },
+          {
+            "file": "SKILL.md",
             "line_start": 114,
-            "line_end": 123
+            "line_end": 116
           },
           {
             "file": "SKILL.md",
-            "line_start": 123,
-            "line_end": 123
+            "line_start": 116,
+            "line_end": 116
           },
           {
             "file": "SKILL.md",
-            "line_start": 124,
-            "line_end": 125
+            "line_start": 128,
+            "line_end": 131
           },
           {
             "file": "SKILL.md",
-            "line_start": 125,
-            "line_end": 126
+            "line_start": 131,
+            "line_end": 131
           },
           {
             "file": "SKILL.md",
-            "line_start": 126,
-            "line_end": 132
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 132,
-            "line_end": 132
+            "line_start": 133,
+            "line_end": 140
           }
         ]
       },
@@ -286,8 +301,8 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 125,
-            "line_end": 125
+            "line_start": 133,
+            "line_end": 133
           }
         ]
       },
@@ -306,23 +321,8 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 114,
-            "line_end": 114
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 124,
-            "line_end": 124
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 126,
-            "line_end": 126
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 132,
-            "line_end": 132
+            "line_start": 28,
+            "line_end": 28
           }
         ]
       }
@@ -359,54 +359,74 @@
         "snippet": "获取或管理 API Key:访问 <https://socialdatax.com/ai?from=modelscope>,按官网的 API Key 申请/管理入口操作。环境变量名固定使用 `SOCI"
       },
       {
-        "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 31,
-        "line_end": 40,
+        "line_start": 26,
+        "line_end": 26,
+        "snippet": "- 需要 API Key 的 CLI 调用,先在实际执行环境运行 `npx -y socialdatax-skills@latest auth status`;它不调用收费接口,只返回 `apiKey"
+      },
+      {
+        "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 27,
+        "line_end": 27,
+        "snippet": "- 缺少 Key 时,请用户从上述官网获取,在自己打开的本地终端运行 `npx -y socialdatax-skills@latest auth login`,按隐藏输入提示填写。Key 保存到该终"
+      },
+      {
+        "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 28,
+        "line_end": 28,
+        "snippet": "- CLI 每次调用都会读取该私有用户文件,不依赖客户端加载 Shell 配置,不需要改客户端或系统设置。非空 `SOCIALDATAX_API_KEY` 优先,既有旧兼容变量其次,最后读取文件;`s"
+      },
+      {
+        "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 29,
+        "line_end": 29,
+        "snippet": "- 用户完成录入后,在实际业务命令的同一执行环境重新运行 `auth status`。false 时停止业务调用,核对操作系统用户、主目录与文件访问权限;true 只说明凭证可读,鉴权与结果仍以原业务"
+      },
+      {
+        "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 37,
+        "line_end": 46,
         "snippet": "```bash"
       },
       {
-        "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:46:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 40,
-        "line_end": 44,
+        "line_start": 46,
+        "line_end": 50,
         "snippet": "```"
       },
       {
-        "id": "external_commands:SKILL.md:44:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 44,
-        "line_end": 48,
-        "snippet": "```bash"
-      },
-      {
-        "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 48,
-        "line_end": 53,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:53:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 53,
+        "line_start": 50,
         "line_end": 54,
-        "snippet": "- 必填:`--keyword <text>`:当用户给关键词、赛道、人群或产品方向时必填;使用用户真实意图,去掉多余空格,并保持关键词聚焦。"
+        "snippet": "```bash"
       },
       {
         "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
@@ -415,48 +435,8 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 54,
-        "line_end": 54,
-        "snippet": "- 可选:`--sort-type <general|time_descending|like_count_descending|comment_count_descending|collect_co"
-      },
-      {
-        "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 55,
-        "line_end": 55,
-        "snippet": "- 可选:`--note-type <all|image|video>`:可选笔记类型筛选;默认是 `all`。"
-      },
-      {
-        "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 56,
-        "line_end": 56,
-        "snippet": "- 可选:`--publish-time-range <all|day|week|half_year>`:可选发布时间筛选;默认是 `all`。"
-      },
-      {
-        "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 57,
-        "line_end": 57,
-        "snippet": "- 可选:`--pages <n>`:从当前起点继续获取并合并 N 页搜索结果;如果返回了 `next_page_token`,可继续续页。"
-      },
-      {
-        "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 58,
         "line_end": 59,
-        "snippet": "- 可选:`--max-items <n>`:收集到 N 条结果后停止。"
+        "snippet": "```"
       },
       {
         "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
@@ -465,8 +445,28 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 59,
-        "line_end": 59,
-        "snippet": "- 可选:`--since-days <1-365>`:只保留最近 N 天内公开 `publish_time` 落在范围内的结果;范围仍受 `--pages` 限制,不承诺全平台完整覆盖。"
+        "line_end": 60,
+        "snippet": "- 必填:`--keyword <text>`:当用户给关键词、赛道、人群或产品方向时必填;使用用户真实意图,去掉多余空格,并保持关键词聚焦。"
+      },
+      {
+        "id": "external_commands:SKILL.md:60:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 60,
+        "line_end": 60,
+        "snippet": "- 可选:`--sort-type <general|time_descending|like_count_descending|comment_count_descending|collect_co"
+      },
+      {
+        "id": "external_commands:SKILL.md:61:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 61,
+        "line_end": 61,
+        "snippet": "- 可选:`--note-type <all|image|video>`:可选笔记类型筛选;默认是 `all`。"
       },
       {
         "id": "external_commands:SKILL.md:62:ruby-shell-backtick-execution",
@@ -476,7 +476,7 @@
         "file": "SKILL.md",
         "line_start": 62,
         "line_end": 62,
-        "snippet": "- 条件必填:`--note-id <note_id>`:详情命令使用 ID 入口时必填;当用户提供完整 `note_id`,或需要打开某条样本详情时使用完整 `note_id`,不要只传前缀。"
+        "snippet": "- 可选:`--publish-time-range <all|day|week|half_year>`:可选发布时间筛选;默认是 `all`。"
       },
       {
         "id": "external_commands:SKILL.md:63:ruby-shell-backtick-execution",
@@ -485,28 +485,28 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 63,
-        "line_end": 66,
-        "snippet": "- 条件必填:`--url <note_url_or_share_text>`:详情命令使用链接入口时必填;用于笔记链接、短链或分享文本。"
+        "line_end": 63,
+        "snippet": "- 可选:`--pages <n>`:从当前起点继续获取并合并 N 页搜索结果;如果返回了 `next_page_token`,可继续续页。"
       },
       {
-        "id": "external_commands:SKILL.md:66:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:64:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 66,
-        "line_end": 66,
-        "snippet": "- 可选:`--page-token <next_page_token>`:这是不透明的分页 token;第一页不要传。继续同一条搜索链路时,只能原样传回完整返回的 `next_page_token`"
+        "line_start": 64,
+        "line_end": 65,
+        "snippet": "- 可选:`--max-items <n>`:收集到 N 条结果后停止。"
       },
       {
-        "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:65:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 67,
-        "line_end": 68,
-        "snippet": "- 可选:`--pretty`:只影响输出格式,不改变实际请求结果。"
+        "line_start": 65,
+        "line_end": 65,
+        "snippet": "- 可选:`--since-days <1-365>`:只保留最近 N 天内公开 `publish_time` 落在范围内的结果;范围仍受 `--pages` 限制,不承诺全平台完整覆盖。"
       },
       {
         "id": "external_commands:SKILL.md:68:ruby-shell-backtick-execution",
@@ -515,8 +515,18 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 68,
+        "line_end": 68,
+        "snippet": "- 条件必填:`--note-id <note_id>`:详情命令使用 ID 入口时必填;当用户提供完整 `note_id`,或需要打开某条样本详情时使用完整 `note_id`,不要只传前缀。"
+      },
+      {
+        "id": "external_commands:SKILL.md:69:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 69,
         "line_end": 72,
-        "snippet": "- 可选:`--source-client socialdatax-skills --source-platform modelscope --source-skill xhs-viral-copy-"
+        "snippet": "- 条件必填:`--url <note_url_or_share_text>`:详情命令使用链接入口时必填;用于笔记链接、短链或分享文本。"
       },
       {
         "id": "external_commands:SKILL.md:72:ruby-shell-backtick-execution",
@@ -526,87 +536,77 @@
         "file": "SKILL.md",
         "line_start": 72,
         "line_end": 72,
+        "snippet": "- 可选:`--page-token <next_page_token>`:这是不透明的分页 token;第一页不要传。继续同一条搜索链路时,只能原样传回完整返回的 `next_page_token`"
+      },
+      {
+        "id": "external_commands:SKILL.md:73:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 73,
+        "line_end": 74,
+        "snippet": "- 可选:`--pretty`:只影响输出格式,不改变实际请求结果。"
+      },
+      {
+        "id": "external_commands:SKILL.md:74:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 74,
+        "line_end": 78,
+        "snippet": "- 可选:`--source-client socialdatax-skills --source-platform modelscope --source-skill xhs-viral-copy-"
+      },
+      {
+        "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 78,
+        "line_end": 78,
         "snippet": "命令返回 JSON,包含 `platform`、`tool`、`arguments` 和 `data`。"
       },
       {
-        "id": "external_commands:SKILL.md:80:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:86:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 80,
-        "line_end": 88,
+        "line_start": 86,
+        "line_end": 94,
         "snippet": "1. 样本表:保留标题、作者、互动指标、发布时间、完整原始 URL、完整 `note_id`,并用一句话说明为什么值得拆。"
       },
       {
-        "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:94:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 88,
-        "line_end": 89,
+        "line_start": 94,
+        "line_end": 95,
         "snippet": "如果用户给出笔记链接或完整 `note_id`,优先围绕该笔记详情做拆解;如果用户给出关键词或赛道,先用高互动样本建立可复用表达模式。"
       },
       {
-        "id": "external_commands:SKILL.md:89:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:95:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 89,
-        "line_end": 89,
+        "line_start": 95,
+        "line_end": 95,
         "snippet": "对于 XHS 搜索或详情结果里的 `note_url`,无论是在最终回答、展示、引用、存储、输出还是转发时,都要保留完整原始 URL,包括其中的 `xsec_token` 查询参数;不要改写、截断、脱"
       },
       {
-        "id": "external_commands:SKILL.md:90:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:96:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 90,
-        "line_end": 90,
+        "line_start": 96,
+        "line_end": 96,
         "snippet": "对于 XHS `note_id`,要原样复制返回的完整 `note_id`;不要只传或只展示前缀。"
-      },
-      {
-        "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 98,
-        "line_end": 99,
-        "snippet": "- `xhs_search_notes`"
-      },
-      {
-        "id": "external_commands:SKILL.md:99:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 99,
-        "line_end": 100,
-        "snippet": "- `xhs_get_note_detail_by_note_id`"
-      },
-      {
-        "id": "external_commands:SKILL.md:100:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 100,
-        "line_end": 102,
-        "snippet": "- `xhs_get_note_detail_by_note_url`"
-      },
-      {
-        "id": "external_commands:SKILL.md:102:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 102,
-        "line_end": 102,
-        "snippet": "在 XHS 搜索场景中,调用 `xhs_search_notes` 时传 `keyword`,可选传 `page_token`、`sort_type`、`note_type` 和 `publish_t"
       },
       {
         "id": "external_commands:SKILL.md:104:ruby-shell-backtick-execution",
@@ -615,8 +615,8 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 104,
-        "line_end": 104,
-        "snippet": "调用 `xhs_search_notes` 时不要传 `page`;第一页也不要传 `page_token`。"
+        "line_end": 105,
+        "snippet": "- `xhs_search_notes`"
       },
       {
         "id": "external_commands:SKILL.md:105:ruby-shell-backtick-execution",
@@ -625,18 +625,18 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 105,
-        "line_end": 105,
-        "snippet": "只有在 `next_page_token` 非空时才继续翻页;并且在同一个关键词、排序、内容类型、发布时间范围和调用链路下,把完整返回的 `next_page_token` 原样作为 `page_to"
+        "line_end": 106,
+        "snippet": "- `xhs_get_note_detail_by_note_id`"
       },
       {
-        "id": "external_commands:SKILL.md:107:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:106:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 107,
-        "line_end": 107,
-        "snippet": "- `xhs_get_note_detail_by_note_id`:当你已经拿到完整 `note_id` 时使用;不要只传前缀。"
+        "line_start": 106,
+        "line_end": 108,
+        "snippet": "- `xhs_get_note_detail_by_note_url`"
       },
       {
         "id": "external_commands:SKILL.md:108:ruby-shell-backtick-execution",
@@ -645,8 +645,8 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 108,
-        "line_end": 110,
-        "snippet": "- `xhs_get_note_detail_by_note_url`:用于笔记链接、短链或分享文本。"
+        "line_end": 108,
+        "snippet": "在 XHS 搜索场景中,调用 `xhs_search_notes` 时传 `keyword`,可选传 `page_token`、`sort_type`、`note_type` 和 `publish_t"
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
@@ -656,7 +656,27 @@
         "file": "SKILL.md",
         "line_start": 110,
         "line_end": 110,
-        "snippet": "小红书搜索参数命名提醒:direct CLI 使用 `--sort-type`、`--publish-time-range`、`--note-type`;MCP 工具 `xhs_search_note"
+        "snippet": "调用 `xhs_search_notes` 时不要传 `page`;第一页也不要传 `page_token`。"
+      },
+      {
+        "id": "external_commands:SKILL.md:111:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 111,
+        "line_end": 111,
+        "snippet": "只有在 `next_page_token` 非空时才继续翻页;并且在同一个关键词、排序、内容类型、发布时间范围和调用链路下,把完整返回的 `next_page_token` 原样作为 `page_to"
+      },
+      {
+        "id": "external_commands:SKILL.md:113:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 113,
+        "line_end": 113,
+        "snippet": "- `xhs_get_note_detail_by_note_id`:当你已经拿到完整 `note_id` 时使用;不要只传前缀。"
       },
       {
         "id": "external_commands:SKILL.md:114:ruby-shell-backtick-execution",
@@ -665,58 +685,48 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 114,
-        "line_end": 123,
-        "snippet": "这是只读 skill。运行时使用用户环境变量中的 `SOCIALDATAX_API_KEY`;生成的 Skill 文件不包含 API Key。不会读取本地浏览器数据,也不会执行登录、发帖、点赞、评论或"
+        "line_end": 116,
+        "snippet": "- `xhs_get_note_detail_by_note_url`:用于笔记链接、短链或分享文本。"
       },
       {
-        "id": "external_commands:SKILL.md:123:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:116:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 123,
-        "line_end": 123,
+        "line_start": 116,
+        "line_end": 116,
+        "snippet": "小红书搜索参数命名提醒:direct CLI 使用 `--sort-type`、`--publish-time-range`、`--note-type`;MCP 工具 `xhs_search_note"
+      },
+      {
+        "id": "external_commands:SKILL.md:128:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 128,
+        "line_end": 131,
+        "snippet": "- 凭证来源排查:先确认本次调用使用 CLI 还是 MCP。CLI 在实际执行环境中用 `auth status` 确认环境或本地文件来源;MCP 检查当前连接实际使用的鉴权配置,不要求另设本地 CL"
+      },
+      {
+        "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 131,
+        "line_end": 131,
         "snippet": "- CLI 退出码为 1 且输出 `partial: true` 时,保留 `data.items` 和错误,明确结果不完整。此时按以下续页规则恢复,不适用原命令重跑建议;错误解决后(包括充值后),仅"
       },
       {
-        "id": "external_commands:SKILL.md:124:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:133:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 124,
-        "line_end": 125,
-        "snippet": "- 非余额不足的网络或 API 异常:保留错误信息,检查 `SOCIALDATAX_API_KEY`、参数和链接格式后原样重试一次。"
-      },
-      {
-        "id": "external_commands:SKILL.md:125:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 125,
-        "line_end": 126,
+        "line_start": 133,
+        "line_end": 140,
         "snippet": "- 如果返回 `insufficient_balance` 或“积分不足”:不要重复重试;展示错误中的官方充值链接(https://socialdatax.com/dashboard/billing,"
-      },
-      {
-        "id": "external_commands:SKILL.md:126:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 126,
-        "line_end": 132,
-        "snippet": "- 如果用户已经充值但仍提示余额不足:确认当前环境变量 `SOCIALDATAX_API_KEY` 是否来自刚充值的同一个账号;必要时重新复制官网后台的 API Key。"
-      },
-      {
-        "id": "external_commands:SKILL.md:132:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 132,
-        "line_end": 132,
-        "snippet": "- 调用失败:先确认 `SOCIALDATAX_API_KEY` 已配置;如果是 `insufficient_balance` 或“积分不足”,按上述官方充值链接说明完成充值后,按上述恢复规则继续,不"
       },
       {
         "id": "network:SKILL.md:7:hardcoded-url",
@@ -726,7 +736,7 @@
         "file": "SKILL.md",
         "line_start": 7,
         "line_end": 7,
-        "snippet": "metadata: {\"openclaw\":{\"requires\":{\"env\":[\"SOCIALDATAX_API_KEY\"],\"bins\":[\"node\",\"npm\"]},\"primaryEnv\""
+        "snippet": "metadata: {\"openclaw\":{\"requires\":{\"env\":[],\"bins\":[]},\"primaryEnv\":\"SOCIALDATAX_API_KEY\",\"install\":"
       },
       {
         "id": "network:SKILL.md:25:hardcoded-url",
@@ -739,13 +749,13 @@
         "snippet": "获取或管理 API Key:访问 <https://socialdatax.com/ai?from=modelscope>,按官网的 API Key 申请/管理入口操作。环境变量名固定使用 `SOCI"
       },
       {
-        "id": "network:SKILL.md:125:hardcoded-url",
+        "id": "network:SKILL.md:133:hardcoded-url",
         "category": "network",
         "severity": "low",
         "pattern": "Hardcoded URL",
         "file": "SKILL.md",
-        "line_start": 125,
-        "line_end": 125,
+        "line_start": 133,
+        "line_end": 133,
         "snippet": "- 如果返回 `insufficient_balance` 或“积分不足”:不要重复重试;展示错误中的官方充值链接(https://socialdatax.com/dashboard/billing,"
       },
       {
@@ -756,7 +766,7 @@
         "file": "SKILL.md",
         "line_start": 7,
         "line_end": 7,
-        "snippet": "metadata: {\"openclaw\":{\"requires\":{\"env\":[\"SOCIALDATAX_API_KEY\"],\"bins\":[\"node\",\"npm\"]},\"primaryEnv\""
+        "snippet": "metadata: {\"openclaw\":{\"requires\":{\"env\":[],\"bins\":[]},\"primaryEnv\":\"SOCIALDATAX_API_KEY\",\"install\":"
       },
       {
         "id": "env_access:SKILL.md:25:generic-api-secret-keys",
@@ -769,63 +779,43 @@
         "snippet": "获取或管理 API Key:访问 <https://socialdatax.com/ai?from=modelscope>,按官网的 API Key 申请/管理入口操作。环境变量名固定使用 `SOCI"
       },
       {
-        "id": "env_access:SKILL.md:114:generic-api-secret-keys",
+        "id": "env_access:SKILL.md:28:generic-api-secret-keys",
         "category": "env_access",
         "severity": "high",
         "pattern": "Generic API/secret keys",
         "file": "SKILL.md",
-        "line_start": 114,
-        "line_end": 114,
-        "snippet": "这是只读 skill。运行时使用用户环境变量中的 `SOCIALDATAX_API_KEY`;生成的 Skill 文件不包含 API Key。不会读取本地浏览器数据,也不会执行登录、发帖、点赞、评论或"
+        "line_start": 28,
+        "line_end": 28,
+        "snippet": "- CLI 每次调用都会读取该私有用户文件,不依赖客户端加载 Shell 配置,不需要改客户端或系统设置。非空 `SOCIALDATAX_API_KEY` 优先,既有旧兼容变量其次,最后读取文件;`s"
       },
       {
-        "id": "env_access:SKILL.md:124:generic-api-secret-keys",
-        "category": "env_access",
+        "id": "sensitive:SKILL.md:27:credential-json-file",
+        "category": "sensitive",
         "severity": "high",
-        "pattern": "Generic API/secret keys",
+        "pattern": "Credential JSON file",
         "file": "SKILL.md",
-        "line_start": 124,
-        "line_end": 124,
-        "snippet": "- 非余额不足的网络或 API 异常:保留错误信息,检查 `SOCIALDATAX_API_KEY`、参数和链接格式后原样重试一次。"
+        "line_start": 27,
+        "line_end": 27,
+        "snippet": "- 缺少 Key 时,请用户从上述官网获取,在自己打开的本地终端运行 `npx -y socialdatax-skills@latest auth login`,按隐藏输入提示填写。Key 保存到该终"
       },
       {
-        "id": "env_access:SKILL.md:126:generic-api-secret-keys",
-        "category": "env_access",
-        "severity": "high",
-        "pattern": "Generic API/secret keys",
-        "file": "SKILL.md",
-        "line_start": 126,
-        "line_end": 126,
-        "snippet": "- 如果用户已经充值但仍提示余额不足:确认当前环境变量 `SOCIALDATAX_API_KEY` 是否来自刚充值的同一个账号;必要时重新复制官网后台的 API Key。"
-      },
-      {
-        "id": "env_access:SKILL.md:132:generic-api-secret-keys",
-        "category": "env_access",
-        "severity": "high",
-        "pattern": "Generic API/secret keys",
-        "file": "SKILL.md",
-        "line_start": 132,
-        "line_end": 132,
-        "snippet": "- 调用失败:先确认 `SOCIALDATAX_API_KEY` 已配置;如果是 `insufficient_balance` 或“积分不足”,按上述官方充值链接说明完成充值后,按上述恢复规则继续,不"
-      },
-      {
-        "id": "blocker:SKILL.md:38:system-reconnaissance",
+        "id": "blocker:SKILL.md:44:system-reconnaissance",
         "category": "blocker",
         "severity": "low",
         "pattern": "System reconnaissance",
         "file": "SKILL.md",
-        "line_start": 38,
-        "line_end": 38,
+        "line_start": 44,
+        "line_end": 44,
         "snippet": "--note-id \"<note_id>\" --pretty --source-client socialdatax-skills \\"
       },
       {
-        "id": "blocker:SKILL.md:62:system-reconnaissance",
+        "id": "blocker:SKILL.md:68:system-reconnaissance",
         "category": "blocker",
         "severity": "low",
         "pattern": "System reconnaissance",
         "file": "SKILL.md",
-        "line_start": 62,
-        "line_end": 62,
+        "line_start": 68,
+        "line_end": 68,
         "snippet": "- 条件必填:`--note-id <note_id>`:详情命令使用 ID 入口时必填;当用户提供完整 `note_id`,或需要打开某条样本详情时使用完整 `note_id`,不要只传前缀。"
       },
       {
@@ -849,10 +839,10 @@
         "snippet": "当用户给出小红书关键词、赛道、人群、产品方向、笔记链接或 note_id，想拆解爆款文案的标题钩子、开头方式、卖点表达、情绪词、内容结构、互动引导和可复用文案框..."
       },
       {
-        "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-7-31-bits-possible-b",
+        "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-7-48-bits-possible-b",
         "category": "obfuscation",
         "severity": "high",
-        "pattern": "[HEURISTIC] High file entropy (7.31 bits) - possible binary/encrypted content",
+        "pattern": "[HEURISTIC] High file entropy (7.48 bits) - possible binary/encrypted content",
         "file": "SKILL.md",
         "line_start": 1,
         "line_end": 1,
@@ -864,357 +854,448 @@
         "id": "external_commands:SKILL.md:9:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The backticks mark a source-generation command inside an HTML maintenance comment. No Ruby or shell command substitution occurs."
+        "reason": "The command appears in a generated-file comment for maintainers. It is not in the user workflow, and the generator is not included in the package."
       },
       {
         "id": "external_commands:SKILL.md:20:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The backticks format the note_id field in prose about supported inputs. They do not execute commands."
+        "reason": "The backticks format a note identifier in a list of supported inputs. The line does not ask the agent to run a command."
       },
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "SOCIALDATAX_API_KEY is an inline Markdown identifier in credential setup instructions, not shell substitution."
+        "reason": "The inline code names an environment variable, not a command or shell substitution."
       },
       {
-        "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "confirmed",
         "confidence": 0.99,
-        "reason": "Although the match is a Markdown fence, its commands run npx -y socialdatax-skills@latest. Unpinned remote code executes with local privileges and the configured credential.",
-        "severity": "medium"
+        "reason": "The skill directs the agent to run the status check through an unpinned npm package. Its reported output is limited, but the package still executes locally."
       },
       {
-        "id": "external_commands:SKILL.md:40:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 1,
-        "reason": "This location is a closing Markdown fence followed by prose and another fence. It contains no separate executable command."
-      },
-      {
-        "id": "external_commands:SKILL.md:44:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
         "verdict": "confirmed",
         "confidence": 0.99,
-        "reason": "The fenced example runs npx -y socialdatax-skills@latest for URL lookup. Automatic execution of a mutable package introduces supply-chain risk with local credential access.",
-        "severity": "medium"
+        "reason": "Setup asks the user to execute an unpinned npm package that receives the API key. Hidden input does not protect the key from that package."
       },
       {
-        "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 1,
-        "reason": "The match begins at a closing Markdown fence and ends in parameter documentation. No shell substitution or separate execution appears."
+        "confidence": 0.99,
+        "reason": "The inline values name a variable and describe credential source precedence. They are not shell execution syntax in this Markdown."
       },
       {
-        "id": "external_commands:SKILL.md:53:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.98,
+        "reason": "This step directs the agent to rerun the status command from line 26 in the live execution environment. That command runs the unpinned package again."
+      },
+      {
+        "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The fence opens the recommended search and ID lookup commands. Both run an unpinned npm package in the agent's environment."
+      },
+      {
+        "id": "external_commands:SKILL.md:46:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The backticks format keyword and sorting option syntax in a parameter list. No executable backtick expression exists."
+        "reason": "The matched line closes the first Bash block. The span contains only formatting and a heading before the next block."
+      },
+      {
+        "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The block tells the agent how to run the unpinned npm package for URL-based detail lookup. The external package executes with local process permissions."
       },
       {
         "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The text documents permitted sort-type values using inline Markdown. It does not execute those values."
-      },
-      {
-        "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 1,
-        "reason": "The note-type flag and default value are formatted as inline code. This is documentation, not command substitution."
-      },
-      {
-        "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 1,
-        "reason": "The line lists publication-time filter options and their default. Markdown backticks do not invoke a shell."
-      },
-      {
-        "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 1,
-        "reason": "The inline code names the pages option and pagination response field. No executable expression is present."
-      },
-      {
-        "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 1,
-        "reason": "The matched text describes result limits and date filtering with Markdown option names. It does not perform command execution."
+        "reason": "The match is a closing fence followed by parameter documentation. It contains no executable shell instructions."
       },
       {
         "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
         "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "This entry documents the keyword argument and how to select its value. The inline flag is not a command."
+      },
+      {
+        "id": "external_commands:SKILL.md:60:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
         "confidence": 1,
-        "reason": "Backticks identify since-days, publish_time, and pages in a coverage disclaimer. No shell or Ruby expression is executed."
+        "reason": "This line lists allowed sort values and the default. The backticks delimit inline documentation."
+      },
+      {
+        "id": "external_commands:SKILL.md:61:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 1,
+        "reason": "The match documents the image and video filter options. It does not invoke a shell."
       },
       {
         "id": "external_commands:SKILL.md:62:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The line explains the complete note identifier required for detail retrieval. Its backticks are Markdown formatting."
+        "reason": "The backticks format the publication time filter and its default. No command is present."
       },
       {
         "id": "external_commands:SKILL.md:63:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The URL option is a documented input parameter, not an executable backtick expression."
+        "reason": "This line documents a page limit and a pagination response field. Neither inline value executes code."
       },
       {
-        "id": "external_commands:SKILL.md:66:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:64:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "This line documents opaque pagination tokens and their unchanged reuse within the same query. The backticks only format identifiers."
+        "reason": "The match documents an item limit alongside the next filter. It is not a shell invocation."
       },
       {
-        "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:65:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The pretty flag and source options are documented as inline code. No command substitution appears."
+        "reason": "The line documents a date filter, a response field, and the page limit. These inline references are not shell substitutions."
       },
       {
         "id": "external_commands:SKILL.md:68:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The line describes fixed source attribution arguments and nearby response fields. It does not execute shell backticks."
+        "reason": "The line describes the full note ID required for detail lookup. It contains no executable invocation."
+      },
+      {
+        "id": "external_commands:SKILL.md:69:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "This span documents URL and pagination arguments. It does not execute the arguments shown in inline code."
       },
       {
         "id": "external_commands:SKILL.md:72:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The backticks format the platform, tool, arguments, and data response field names. These are not executable commands."
+        "reason": "The line describes passing an opaque pagination value to the same search. The backticks format the flag and field names."
       },
       {
-        "id": "external_commands:SKILL.md:80:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:73:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The output instructions format note_id within a sample-table description. They contain no shell substitution."
+        "reason": "The matched span describes output formatting and source tags as options. It includes no standalone command."
       },
       {
-        "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:74:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The text describes selecting a detail lookup or keyword sample and formats field names. No command execution occurs."
+        "reason": "The backticks wrap fixed source attribution flags. They do not enclose an executable command."
       },
       {
-        "id": "external_commands:SKILL.md:89:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The backticks mark URL and token field names, not shell substitution. The separate semantic finding addresses this line's disclosure policy."
+        "reason": "The inline spans list JSON response keys. They are not executable."
       },
       {
-        "id": "external_commands:SKILL.md:90:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:86:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The line requests complete note identifiers and uses inline Markdown. No executable command appears."
+        "reason": "The matched span describes report fields and analysis steps. The inline note identifier is data, not an instruction to run a shell."
       },
       {
-        "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:94:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The listed xhs_search_notes name is an MCP tool identifier formatted as inline code, not shell execution."
+        "reason": "The line selects an analysis workflow based on the type of user input. The inline note ID is not executed."
       },
       {
-        "id": "external_commands:SKILL.md:99:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:95:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The backticks format the MCP detail lookup tool name. There is no Ruby or shell invocation."
+        "reason": "The backticks identify URL, token, and note ID fields. The instruction to share tokenized URLs is a separate data-handling risk."
       },
       {
-        "id": "external_commands:SKILL.md:100:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:96:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The URL lookup tool name and subsequent parameter names are Markdown identifiers. They do not execute backtick expressions."
-      },
-      {
-        "id": "external_commands:SKILL.md:102:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 1,
-        "reason": "The prose maps supported search arguments to an MCP tool. Inline code formatting does not create shell execution."
+        "reason": "The line instructs the agent to copy a complete note identifier. It contains no shell command."
       },
       {
         "id": "external_commands:SKILL.md:104:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The line explains omitted first-page parameters using Markdown identifiers. It contains no executable backticks."
+        "reason": "The list names the MCP search and ID lookup tools. These names refer to structured tool calls, not shell commands."
       },
       {
         "id": "external_commands:SKILL.md:105:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The instruction describes passing a returned pagination token to the same query. Backticks delimit field names, not shell commands."
+        "reason": "The match lists MCP detail tools. The wrapping backticks mark their names as inline code."
       },
       {
-        "id": "external_commands:SKILL.md:107:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:106:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The line names the ID lookup tool and its input identifier. Both use Markdown code formatting without shell execution."
+        "reason": "The span names the MCP URL lookup tool and lists search inputs. It describes structured calls rather than process execution."
       },
       {
         "id": "external_commands:SKILL.md:108:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The location describes URL lookup and CLI versus MCP parameter naming. No executable backtick expression appears."
+        "reason": "The line defines arguments to the MCP search tool. No shell command is requested."
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The backticks distinguish valid CLI and MCP parameter spellings from unsupported spellings. They are documentation only."
+        "reason": "The line lists MCP pagination parameters to omit. The backticks mark parameter names."
+      },
+      {
+        "id": "external_commands:SKILL.md:111:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 1,
+        "reason": "The line maps a returned pagination token to the next structured MCP request. It does not invoke a shell."
+      },
+      {
+        "id": "external_commands:SKILL.md:113:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 1,
+        "reason": "This entry explains when to use the MCP lookup by note ID. The tool and field names are documentation."
       },
       {
         "id": "external_commands:SKILL.md:114:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The text names the runtime credential and response fields in prose. No Ruby or shell substitution is present."
+        "reason": "The span describes MCP lookup by URL and compares API parameter names. It does not ask the agent to run a shell command."
       },
       {
-        "id": "external_commands:SKILL.md:123:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:116:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The recovery instructions format partial-result fields and pagination limits as inline code. They do not execute shell backticks."
+        "reason": "The backticks distinguish CLI flags from structured MCP keys. The line is a parameter naming reference."
       },
       {
-        "id": "external_commands:SKILL.md:124:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 1,
-        "reason": "The text formats the credential name and balance error identifier in troubleshooting prose. No executable backtick expression exists."
+        "id": "external_commands:SKILL.md:128:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.97,
+        "reason": "CLI troubleshooting directs the agent to the status command defined on line 26. That path runs the unpinned npm package in the credential-bearing environment."
       },
       {
-        "id": "external_commands:SKILL.md:125:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The line describes insufficient_balance handling and a billing link. Backticks mark the error identifier rather than command execution."
+        "reason": "The backticks format partial-result fields and pagination limits. The line explains how to resume within those limits."
       },
       {
-        "id": "external_commands:SKILL.md:126:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:133:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The account troubleshooting instruction formats the environment variable name. It does not execute shell or Ruby code."
-      },
-      {
-        "id": "external_commands:SKILL.md:132:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 1,
-        "reason": "This FAQ entry formats a credential variable and API error code. The backticks are not executable expressions."
+        "reason": "The matched backticks mark an API error code in billing guidance. The billing link and retry advice are not shell substitution."
       },
       {
         "id": "network:SKILL.md:7:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The URL is a homepage value in declarative metadata. No network request or data transmission occurs in this entry."
+        "confidence": 1,
+        "reason": "The matched URL is a homepage in metadata, not a request destination used at runtime."
       },
       {
         "id": "network:SKILL.md:25:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The link directs users to the declared service's API-key management page. No secret is embedded in its query or transmitted by this prose."
+        "reason": "The URL directs users to the service's key management page. The documentation does not direct the agent to transmit a key to this link."
       },
       {
-        "id": "network:SKILL.md:125:hardcoded-url",
+        "id": "network:SKILL.md:133:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The hardcoded URL is the declared provider's billing page, shown after a balance error. No automatic payment or credential-bearing request is instructed."
+        "confidence": 0.99,
+        "reason": "The billing URL is displayed for user action when credit is insufficient. The skill does not instruct the agent to make a payment request."
       },
       {
         "id": "env_access:SKILL.md:7:generic-api-secret-keys",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Metadata declares the service-specific credential required for authentication. No secret value, unrelated environment enumeration, or exfiltration instruction is present."
+        "reason": "The metadata identifies a preferred environment variable by name. This line neither reads its value nor embeds a credential."
       },
       {
         "id": "env_access:SKILL.md:25:generic-api-secret-keys",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The setup text names the expected environment variable and provider portal. It does not request disclosure of the key in output."
+        "reason": "The setup prose names the expected variable and points users to key management. It does not read, print, or include a secret value."
       },
       {
-        "id": "env_access:SKILL.md:114:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Runtime use of SOCIALDATAX_API_KEY is disclosed authentication for the requested service. No instruction sends it elsewhere or prints it."
-      },
-      {
-        "id": "env_access:SKILL.md:124:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "Troubleshooting asks to check the configured service credential before one retry. No credential extraction or disclosure is specified."
-      },
-      {
-        "id": "env_access:SKILL.md:126:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The text checks that billing and credential accounts match and suggests replacing the local key. It does not ask to publish its value."
-      },
-      {
-        "id": "env_access:SKILL.md:132:generic-api-secret-keys",
-        "verdict": "false_positive",
+        "id": "env_access:SKILL.md:28:generic-api-secret-keys",
+        "verdict": "confirmed",
         "confidence": 0.99,
-        "reason": "The FAQ checks that the documented API credential is configured. No secret value or unauthorized environment access appears."
+        "reason": "The documented CLI reads the service key from the environment before checking local storage. The unpinned package can access the credential in that process."
       },
       {
-        "id": "blocker:SKILL.md:38:system-reconnaissance",
-        "verdict": "false_positive",
-        "confidence": 1,
-        "reason": "The --note-id option supplies an XHS content identifier to a detail lookup. It does not inspect operating-system identity or configuration."
+        "id": "sensitive:SKILL.md:27:credential-json-file",
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "Setup persists the key in a user credential file. Restricted permissions limit other users, but processes running as the same user can still access it."
       },
       {
-        "id": "blocker:SKILL.md:62:system-reconnaissance",
+        "id": "blocker:SKILL.md:44:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The line documents the full content identifier required by --note-id. No host enumeration or system reconnaissance occurs."
+        "reason": "The option passes a Xiaohongshu note identifier to a detail request. It does not query the operating system or enumerate local users."
+      },
+      {
+        "id": "blocker:SKILL.md:68:system-reconnaissance",
+        "verdict": "false_positive",
+        "confidence": 1,
+        "reason": "The parameter documentation explains that the full Xiaohongshu note ID is required. It does not gather host information."
       },
       {
         "id": "obfuscation:agents/openai.yaml:4:heuristic-very-high-entropy-string-5-85-bits-lik",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The complete line is readable Chinese and English describing skill invocation. No encoded payload, decoding step, or hidden executable content appears."
+        "reason": "The default prompt is readable Chinese text with platform names and a skill reference. No encoded payload is present in the string."
       },
       {
         "id": "obfuscation:SKILL.md:3:heuristic-very-high-entropy-string-5-92-bits-lik",
         "verdict": "false_positive",
         "confidence": 1,
-        "reason": "The description is ordinary Chinese prose about copy analysis and supported inputs. Its character diversity is not evidence of encryption."
+        "reason": "The frontmatter description is readable Chinese prose about copy analysis. It is not an encrypted or encoded payload."
       },
       {
-        "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-7-31-bits-possible-b",
+        "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-7-48-bits-possible-b",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The full file is readable UTF-8 Markdown with Chinese prose and visible CLI examples. No binary blob, encoded payload, or decoding logic appears."
+        "reason": "The file is readable Markdown with YAML metadata, Chinese prose, and CLI examples. No evidence of a binary or encrypted payload was found."
       }
     ],
     "semantic_findings": [
       {
-        "title": "Unconditional Disclosure of Token-Bearing Note URLs",
-        "description": "The instruction requires preserving 'xsec_token' in every display, storage, and forwarding context, and says '不要改写、截断、脱敏、重建' (do not rewrite, truncate, redact, or reconstruct). This removes privacy checks before sharing token-bearing links; no evidence establishes account-level access or token scope.",
+        "title": "Tokenized Note URL Exposure",
+        "description": "The skill requires full note URLs with xsec_token in answers, storage, and forwarding. This can expose access-related URL parameters beyond the original lookup.",
         "severity": "medium",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 89,
-            "line_end": 89
+            "line_start": 86,
+            "line_end": 86
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 95,
+            "line_end": 95
           }
         ],
-        "confidence": 0.92,
-        "confidence_reasoning": "The blanket forwarding and no-redaction requirement is explicit. The token's authorization scope is not documented, so the finding concerns unnecessary disclosure rather than proven account compromise."
+        "confidence": 0.94,
+        "confidence_reasoning": "The handling rule explicitly prohibits redaction and includes forwarding and storage. No evidence shows that the token alone grants access to private notes."
+      },
+      {
+        "title": "Untrusted Input in Shell Command Templates",
+        "description": "The preferred CLI workflow places user keywords and share text in shell command templates. Direct interpolation can allow the shell to interpret input as syntax.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 35,
+            "line_end": 41
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 50,
+            "line_end": 54
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 59,
+            "line_end": 59
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 69,
+            "line_end": 69
+          }
+        ],
+        "confidence": 0.83,
+        "confidence_reasoning": "The templates use double quotes but specify no shell-safe argument handling. Exploitability depends on how the host constructs the call; no vulnerable wrapper was found."
       }
     ],
     "critical_findings": [],
-    "high_findings": [],
+    "high_findings": [
+      {
+        "title": "Generic API/secret keys",
+        "description": "- CLI 每次调用都会读取该私有用户文件,不依赖客户端加载 Shell 配置,不需要改客户端或系统设置。非空 `SOCIALDATAX_API_KEY` 优先,既有旧兼容变量其次,最后读取文件;`s",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 28,
+            "line_end": 28
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "env_access",
+        "source_severity": "high",
+        "confidence": 0.99,
+        "confidence_reasoning": "The documented CLI reads the service key from the environment before checking local storage. The unpinned package can access the credential in that process."
+      },
+      {
+        "title": "Credential JSON file",
+        "description": "- 缺少 Key 时,请用户从上述官网获取,在自己打开的本地终端运行 `npx -y socialdatax-skills@latest auth login`,按隐藏输入提示填写。Key 保存到该终",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 27,
+            "line_end": 27
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.99,
+        "confidence_reasoning": "Setup persists the key in a user credential file. Restricted permissions limit other users, but processes running as the same user can still access it."
+      }
+    ],
     "medium_findings": [
       {
         "title": "Ruby/shell backtick execution",
-        "description": "```bash",
+        "description": "- 需要 API Key 的 CLI 调用,先在实际执行环境运行 `npx -y socialdatax-skills@latest auth status`;它不调用收费接口,只返回 `apiKey",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 31,
-            "line_end": 40
+            "line_start": 26,
+            "line_end": 26
           }
         ],
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
         "confidence": 0.99,
-        "confidence_reasoning": "Although the match is a Markdown fence, its commands run npx -y socialdatax-skills@latest. Unpinned remote code executes with local privileges and the configured credential."
+        "confidence_reasoning": "The skill directs the agent to run the status check through an unpinned npm package. Its reported output is limited, but the package still executes locally."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- 缺少 Key 时,请用户从上述官网获取,在自己打开的本地终端运行 `npx -y socialdatax-skills@latest auth login`,按隐藏输入提示填写。Key 保存到该终",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 27,
+            "line_end": 27
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "Setup asks the user to execute an unpinned npm package that receives the API key. Hidden input does not protect the key from that package."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- 用户完成录入后,在实际业务命令的同一执行环境重新运行 `auth status`。false 时停止业务调用,核对操作系统用户、主目录与文件访问权限;true 只说明凭证可读,鉴权与结果仍以原业务",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 29,
+            "line_end": 29
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.98,
+        "confidence_reasoning": "This step directs the agent to rerun the status command from line 26 in the live execution environment. That command runs the unpinned package again."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -1222,165 +1303,229 @@
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 44,
-            "line_end": 48
+            "line_start": 37,
+            "line_end": 46
           }
         ],
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
         "confidence": 0.99,
-        "confidence_reasoning": "The fenced example runs npx -y socialdatax-skills@latest for URL lookup. Automatic execution of a mutable package introduces supply-chain risk with local credential access."
+        "confidence_reasoning": "The fence opens the recommended search and ID lookup commands. Both run an unpinned npm package in the agent's environment."
       },
       {
-        "title": "Unconditional Disclosure of Token-Bearing Note URLs",
-        "description": "The instruction requires preserving 'xsec_token' in every display, storage, and forwarding context, and says '不要改写、截断、脱敏、重建' (do not rewrite, truncate, redact, or reconstruct). This removes privacy checks before sharing token-bearing links; no evidence establishes account-level access or token scope.",
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 89,
-            "line_end": 89
+            "line_start": 50,
+            "line_end": 54
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The block tells the agent how to run the unpinned npm package for URL-based detail lookup. The external package executes with local process permissions."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- 凭证来源排查:先确认本次调用使用 CLI 还是 MCP。CLI 在实际执行环境中用 `auth status` 确认环境或本地文件来源;MCP 检查当前连接实际使用的鉴权配置,不要求另设本地 CL",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 128,
+            "line_end": 131
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.97,
+        "confidence_reasoning": "CLI troubleshooting directs the agent to the status command defined on line 26. That path runs the unpinned npm package in the credential-bearing environment."
+      },
+      {
+        "title": "Tokenized Note URL Exposure",
+        "description": "The skill requires full note URLs with xsec_token in answers, storage, and forwarding. This can expose access-related URL parameters beyond the original lookup.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 86,
+            "line_end": 86
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 95,
+            "line_end": 95
           }
         ],
         "review_kind": "security",
         "source_category": "semantic",
         "source_severity": "medium",
-        "confidence": 0.92,
-        "confidence_reasoning": "The blanket forwarding and no-redaction requirement is explicit. The token's authorization scope is not documented, so the finding concerns unnecessary disclosure rather than proven account compromise."
+        "confidence": 0.94,
+        "confidence_reasoning": "The handling rule explicitly prohibits redaction and includes forwarding and storage. No evidence shows that the token alone grants access to private notes."
+      },
+      {
+        "title": "Untrusted Input in Shell Command Templates",
+        "description": "The preferred CLI workflow places user keywords and share text in shell command templates. Direct interpolation can allow the shell to interpret input as syntax.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 35,
+            "line_end": 41
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 50,
+            "line_end": 54
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 59,
+            "line_end": 59
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 69,
+            "line_end": 69
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.83,
+        "confidence_reasoning": "The templates use double quotes but specify no shell-safe argument handling. Exploitability depends on how the host constructs the call; no vulnerable wrapper was found."
       }
     ],
     "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 2,
-    "total_lines": 143,
+    "total_lines": 151,
     "audit_model": "codex",
-    "audited_at": "2026-11-02T11:48:07.252Z",
-    "agent_auto_install_policy": "allowed",
+    "audited_at": "2026-11-18T15:22:53.329Z",
+    "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Analyze XHS Copy and Extract Reusable Writing Frameworks",
-    "value_statement": "High-engagement XHS posts can be difficult to translate into practical writing lessons. This skill organizes retrieved examples into structured breakdowns and reusable copy frameworks.",
+    "user_title": "Analyze Xiaohongshu Copywriting Patterns",
+    "value_statement": "Popular Xiaohongshu posts can be hard to compare without a clear structure. This skill organizes visible copy and engagement data into reusable writing patterns.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "Xiaohongshu",
-      "XHS copywriting",
-      "RedNote content analysis",
+      "RedNote",
       "SocialDataX",
-      "title hooks",
-      "copywriting frameworks",
-      "social media research"
+      "copywriting analysis",
+      "headline hooks",
+      "content research"
     ],
     "actual_capabilities": [
-      "Search XHS posts by keyword through SocialDataX, with sorting, content-type filters, publication-time filters, and bounded pagination.",
-      "Retrieve individual post details from a full note identifier, note URL, short link, or share text.",
-      "Build sample tables containing available titles, authors, engagement metrics, publication times, links, and note identifiers.",
-      "Analyze visible title hooks, openings, selling points, emotional terms, content structures, and interaction prompts.",
-      "Produce three to five reusable copy structures and suggest narrower searches or additional detail lookups.",
-      "Mark unavailable fields and incomplete results instead of inventing post content."
+      "Search public Xiaohongshu notes by keyword or topic and filter by post type or publication time.",
+      "Retrieve a specific note using its link, share text, or full note ID.",
+      "Build a sample table with titles, authors, engagement metrics, and publication dates when available.",
+      "Identify visible title hooks, opening techniques, selling points, emotional language, and calls to action.",
+      "Map how the visible copy is organized and flag sections that are missing.",
+      "Suggest three to five reusable copywriting structures and recommend a next research step."
     ],
     "limitations": [
-      "Requires SocialDataX API access, a configured SOCIALDATAX_API_KEY, sufficient service balance, and either Node.js/npm or available MCP tools.",
-      "Results cover only retrieved samples; default keyword searches use two pages and at most 20 posts.",
-      "Analysis cannot reliably assess unavailable openings, hidden body text, comments, or complete platform trends.",
-      "Does not promise complete publishing drafts, cover designs, account diagnosis, posting, or guaranteed traffic."
+      "Live retrieval requires network access and authenticated SocialDataX CLI or MCP access. API usage may consume credits.",
+      "Search results cover a limited sample. Engagement counts do not prove that the copy caused the results.",
+      "The skill cannot analyze hidden text and does not retrieve comments or perform Xiaohongshu account actions.",
+      "It provides writing frameworks, not finished posts, cover designs, account diagnoses, or traffic guarantees."
     ],
     "use_cases": [
       {
-        "title": "Study Topic-Specific Writing Patterns",
-        "description": "Compare high-engagement posts in a focused topic and extract reusable title and opening structures.",
-        "target_user": "Independent XHS creators"
+        "title": "Plan a First Post",
+        "target_user": "Independent creator",
+        "description": "Study openings and calls to action in a small sample of public notes before outlining an original post."
       },
       {
-        "title": "Review Product Messaging",
-        "description": "Examine visible selling points, emotional language, and audience scenarios across relevant product posts.",
-        "target_user": "Brand content marketers"
+        "title": "Compare Product Messaging",
+        "target_user": "Brand copywriter",
+        "description": "Compare how posts present benefits and proof for similar products. Adapt the structure to claims your brand can support."
       },
       {
-        "title": "Prepare an Evidence-Based Editorial Brief",
-        "description": "Organize sampled posts into a sourced comparison, identify missing evidence, and propose follow-up searches.",
-        "target_user": "Agency content strategists"
+        "title": "Prepare an Editorial Brief",
+        "target_user": "Content strategist",
+        "description": "Compare engagement and writing patterns across a defined time window. Separate repeated observations from conclusions that need more evidence."
       }
     ],
     "prompt_templates": [
       {
-        "title": "Analyze One Post",
-        "prompt": "Analyze this XHS post: [note URL or full note ID]. Identify its title hook, visible opening, selling points, and structure. Mark missing text.",
-        "scenario": "Beginner: understand one example"
+        "title": "Review One Note",
+        "scenario": "Beginner: inspect a single public post.",
+        "prompt": "Analyze this public Xiaohongshu note: [note link]. Explain its title hook, opening, and call to action. Mark any text you cannot see."
       },
       {
-        "title": "Explore a Topic",
-        "prompt": "Search XHS for [keyword] using two pages and at most 20 posts. Compare hooks and openings, then suggest three reusable structures.",
-        "scenario": "Intermediate: compare a bounded sample"
+        "title": "Explore One Topic",
+        "scenario": "Basic: find common patterns for a specific audience.",
+        "prompt": "Search Xiaohongshu for [topic] for [audience]. Use at most two pages and 20 notes. List recurring title hooks and suggest three reusable structures."
       },
       {
-        "title": "Compare Audience Messaging",
-        "prompt": "Compare XHS posts about [product] for [audience]. Sort by saves and limit retrieval to 15 posts. Separate observed selling points from interpretations.",
-        "scenario": "Intermediate: research product communication"
+        "title": "Compare Two Note Types",
+        "scenario": "Intermediate: distinguish messaging patterns across formats.",
+        "prompt": "Compare public image and video notes for [keyword] from the past week. Report sample sizes and compare visible selling points and openings. Mark missing text."
       },
       {
-        "title": "Build a Research Brief",
-        "prompt": "Research [topic] using at most three pages and 30 image posts from the past week. Compare engagement signals and produce five frameworks. Document gaps.",
-        "scenario": "Advanced: combine filters, evidence review, and framework synthesis"
+        "title": "Test a Pattern Across Samples",
+        "scenario": "Advanced: check whether an observation depends on sorting.",
+        "prompt": "Compare recent notes with highly liked notes for [keyword] using the same date range and post type. Show sample sizes, recurring structures, and limits on the conclusions."
       }
     ],
     "output_examples": [
       {
-        "input": "Illustrative supplied title: Three lunch ideas for busy office workers. No body text or metrics supplied.",
+        "input": "Illustrative request: Review a public note titled Three Lunches I Prepare on Sunday.",
         "output": [
-          "Title hook: a numbered list combines a practical benefit with a specific audience.",
-          "Opening and structure: unavailable because the body text was not supplied.",
-          "Reusable framework: [Number] [ideas] for [audience] facing [constraint].",
-          "Next step: retrieve the post details before assessing its opening or engagement."
+          "Title hook: A specific number and a Sunday routine make the topic concrete.",
+          "Opening: Not available in the returned text, so the opening technique cannot be verified.",
+          "Reusable structure: Name a recurring task, specify the number of options, and state when you prepare them."
         ]
       },
       {
-        "input": "Illustrative supplied title: I stopped buying five cleaning products. Supplied opening: My small apartment needed less clutter.",
+        "input": "Illustrative request: Compare writing patterns in a sample of public notes about compact desks.",
         "output": [
-          "Title hook: a personal change and a concrete number create curiosity.",
-          "Opening: the small-apartment scenario connects the claim to a visible constraint.",
-          "Selling point: reduced clutter is explicit; savings and performance are not established.",
-          "Reusable framework: I changed [habit] because [specific constraint].",
-          "Missing evidence: full body text, author, publication time, and engagement metrics."
+          "Sample observation: Three of six notes frame the product around limited room space.",
+          "Selling point: Visible descriptions emphasize usable surface area and convenient storage.",
+          "Next step: Compare with a recent sample to see whether the same pattern appears outside the highly liked results."
         ]
       }
     ],
     "best_practices": [
-      "Start with a focused keyword or full note identifier, and set explicit page and item limits.",
-      "Separate visible evidence from interpretation, and mark unavailable text or incomplete retrieval.",
-      "Review package execution before granting access, and approve any disclosure of token-bearing links in shared reports."
+      "Start with one focused keyword or public note, then define the sample size before expanding the search.",
+      "Separate visible evidence from interpretation and mark gaps when the full note text is unavailable.",
+      "Review reports for tokenized links and use note IDs instead when sharing outside the original audience."
     ],
     "anti_patterns": [
-      "Treating a small, engagement-sorted sample as complete platform coverage or proof of causal success.",
-      "Inventing missing openings, metrics, comments, or body text to complete the report.",
-      "Executing unreviewed package updates or forwarding token-bearing URLs without considering access and privacy."
+      "Treating a small sample of highly liked notes as representative of all Xiaohongshu posts.",
+      "Copying a creator's exact phrasing instead of adapting the underlying structure.",
+      "Pasting API keys into chat or sharing full tokenized links in public documents."
     ],
     "faq": [
       {
-        "question": "What inputs can I provide?",
-        "answer": "Provide a keyword, niche, audience, product direction, note URL, share text, or complete note identifier."
+        "question": "What inputs can I use?",
+        "answer": "Start with a topic, keyword, audience, product direction, public note link, or full note ID."
       },
       {
-        "question": "What setup does retrieval require?",
-        "answer": "Configure SOCIALDATAX_API_KEY and sufficient SocialDataX balance. Use Node.js/npm for the CLI, or use the corresponding available MCP tools."
+        "question": "Do I need a SocialDataX account?",
+        "answer": "Live retrieval needs an authenticated SocialDataX connection. Use a configured MCP connection or a CLI credential stored outside the chat."
       },
       {
-        "question": "How many posts are searched by default?",
-        "answer": "Keyword searches default to two pages and at most 20 high-engagement samples. Filters and retrieval limits affect coverage."
+        "question": "How many notes are searched by default?",
+        "answer": "For a keyword search, the default is two pages and up to 20 notes, sorted by likes unless you request another order."
       },
       {
-        "question": "Does it read comments or modify my account?",
-        "answer": "The documented workflow analyzes visible post content without reading comments, logging in, posting, liking, or modifying accounts."
+        "question": "What happens when note text is missing?",
+        "answer": "The report marks missing fields and only analyzes visible text. It does not infer openings or structure from unseen copy."
       },
       {
-        "question": "Can it guarantee a viral post?",
-        "answer": "No. It extracts patterns from retrieved examples and suggests frameworks, but does not guarantee traffic or a complete publishing draft."
+        "question": "Does this skill publish posts or read comments?",
+        "answer": "No. It analyzes visible note copy without retrieving comments, publishing posts, or changing Xiaohongshu account data."
       },
       {
-        "question": "What happens when retrieval fails?",
-        "answer": "Non-balance errors allow one retry after checks. Balance errors stop retries; partial results remain marked incomplete and resume only with valid pagination."
+        "question": "Does it predict whether my post will perform well?",
+        "answer": "No. It identifies patterns in the current sample and suggests structures to test. It does not predict traffic or engagement."
       }
     ]
   },
@@ -1402,7 +1547,7 @@
       "name": "SKILL.md",
       "type": "file",
       "path": "SKILL.md",
-      "lines": 135
+      "lines": 143
     }
   ]
 }

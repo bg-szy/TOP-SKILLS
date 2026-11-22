@@ -1,15 +1,15 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-10-29T10:42:28.952Z",
+    "generated_at": "2026-11-18T15:48:15.265Z",
     "slug": "devinchen2014-socialdatax-media-save-organizer",
-    "source_url": "https://github.com/devinchen2014/socialdatax-skills/tree/c14b6adea4ba2b551557115cdfffde4c17375cbf/modelscope-skills/socialdatax-media-save-organizer",
-    "source_ref": "c14b6adea4ba2b551557115cdfffde4c17375cbf",
+    "source_url": "https://github.com/devinchen2014/socialdatax-skills/tree/bfe68d5567702709d07b820222e10884268baa62/modelscope-skills/socialdatax-media-save-organizer",
+    "source_ref": "bfe68d5567702709d07b820222e10884268baa62",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "624b523250344a6fd2a33a5634142aedffdb903d169bfbcd2ea52a0338356b31",
-    "tree_hash": "d55dceab1815606b92d511d3345401e5a2602b99bc8c1a5ce80f81c7e02205ab",
+    "content_hash": "df8c32d27ba73b515e714bea328d2a4fc7541b7ff4e9d49fa7fc1d3bb23e2fd3",
+    "tree_hash": "a54bf4d5caf19c28a3b15b7d30de62427e2d79c453f7d216734dd85810093c92",
     "provenance": {
       "model_effective": "codex",
       "fallback_chain": [
@@ -24,24 +24,22 @@
     "upstream_version_normalized": null,
     "upstream_version_source": "none",
     "upstream_version_status": "missing",
-    "upstream_commit_sha": "c14b6adea4ba2b551557115cdfffde4c17375cbf",
-    "previous_tree_hash": "25dd5315c785ee73cb3d46fa19ff7b4dd53391e4ae338d84f4f04e9d7ee6e5fe",
-    "previous_source_ref": "54f15b1bb17abfe6c5e700a4ccce616601a75196"
+    "upstream_commit_sha": "bfe68d5567702709d07b820222e10884268baa62",
+    "previous_tree_hash": "d55dceab1815606b92d511d3345401e5a2602b99bc8c1a5ce80f81c7e02205ab",
+    "previous_source_ref": "c14b6adea4ba2b551557115cdfffde4c17375cbf"
   },
   "skill": {
     "name": "socialdatax-media-save-organizer",
-    "description": "Save images, videos, or audio from supported social media links using SocialDataX commands, with source records and download status.",
-    "summary": "Organize requested social media downloads into local folders with source links, file paths, and failure reports.",
+    "description": "Use SocialDataX to save supported social media images, video, or audio to a directory you choose. Track source links, local paths, and download results.",
+    "summary": "Save media from supported social links and record where each file came from.",
     "icon": "📦",
     "author": "devinchen2014",
-    "license": "MIT",
     "category": "productivity",
     "tags": [
-      "social-media",
-      "media-downloads",
-      "file-organization",
-      "socialdatax",
-      "source-tracking"
+      "social media",
+      "media downloads",
+      "file organization",
+      "SocialDataX"
     ],
     "supported_tools": [
       "claude",
@@ -55,15 +53,35 @@
     ]
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "high",
     "is_blocked": false,
-    "safe_to_publish": true,
+    "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "Thirty-six alerts are false positives involving Markdown, Chinese text, service links, or documented credential configuration. Two command locations execute an unpinned npm package without an installation prompt, creating supply chain exposure. No evidence found of malicious intent, credential exfiltration, or prompt injection in the reviewed files; external package behavior was not verified.",
+    "summary": "Most static alerts reflect Markdown formatting, ordinary Chinese prose, or configuration references. The workflow directs agents and users to run an unpinned CLI that can access credentials, and it leaves input handling and link redaction unspecified. No evidence of prompt injection or intentional credential exfiltration was found in the reviewed source.",
     "remediation": [
       {
-        "issue": "SKILL.md executes socialdatax-skills@latest through npx -y, allowing the resolved package and its dependencies to change between runs.",
-        "suggestion": "Use a reviewed, exact package version with locked dependencies and integrity checks. Request approval before first execution and restrict accessible credentials and filesystem permissions.",
+        "issue": "Authentication and media commands run a mutable npm release with automatic confirmation.",
+        "suggestion": "Replace all latest invocations with a reviewed, integrity-verified release. Require explicit approval before first installation or execution, and run it with limited privileges.",
+        "severity": "high"
+      },
+      {
+        "issue": "The CLI can access a persistent credential and inherit environment secrets, even for operations that do not require authentication.",
+        "suggestion": "Use platform-managed secrets or an OS credential store. Pass only the SocialDataX credential to authenticated operations and isolate direct downloads from credential files and environment secrets.",
+        "severity": "high"
+      },
+      {
+        "issue": "Shell examples do not enforce separation between command syntax and untrusted input.",
+        "suggestion": "Invoke the reviewed executable with separate arguments and no shell interpolation. Restrict writes to the approved output directory.",
+        "severity": "high"
+      },
+      {
+        "issue": "The direct-download workflow does not specify how to restrict outbound destinations.",
+        "suggestion": "Require approved public HTTPS media hosts. Verify destinations after DNS resolution and on each redirect, and deny access to private or local addresses.",
+        "severity": "medium"
+      },
+      {
+        "issue": "Reports may reproduce temporary access tokens from source or media links.",
+        "suggestion": "Redact tokens and signatures from chat, logs, and manifests. Prefer stable public source links or content IDs in reports.",
         "severity": "medium"
       }
     ],
@@ -83,43 +101,48 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 31,
-            "line_end": 59
+            "line_start": 26,
+            "line_end": 26
           },
           {
             "file": "SKILL.md",
-            "line_start": 59,
-            "line_end": 67
+            "line_start": 27,
+            "line_end": 27
           },
           {
             "file": "SKILL.md",
-            "line_start": 67,
-            "line_end": 67
+            "line_start": 28,
+            "line_end": 28
           },
           {
             "file": "SKILL.md",
-            "line_start": 68,
-            "line_end": 76
+            "line_start": 29,
+            "line_end": 29
           },
           {
             "file": "SKILL.md",
-            "line_start": 76,
-            "line_end": 78
+            "line_start": 37,
+            "line_end": 65
           },
           {
             "file": "SKILL.md",
-            "line_start": 78,
-            "line_end": 78
+            "line_start": 65,
+            "line_end": 73
           },
           {
             "file": "SKILL.md",
-            "line_start": 80,
-            "line_end": 80
+            "line_start": 73,
+            "line_end": 73
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 74,
+            "line_end": 82
           },
           {
             "file": "SKILL.md",
             "line_start": 82,
-            "line_end": 82
+            "line_end": 84
           },
           {
             "file": "SKILL.md",
@@ -139,72 +162,87 @@
           {
             "file": "SKILL.md",
             "line_start": 90,
-            "line_end": 101
+            "line_end": 90
           },
           {
             "file": "SKILL.md",
-            "line_start": 101,
-            "line_end": 104
+            "line_start": 92,
+            "line_end": 92
           },
           {
             "file": "SKILL.md",
-            "line_start": 104,
-            "line_end": 104
+            "line_start": 94,
+            "line_end": 94
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 96,
+            "line_end": 107
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 107,
+            "line_end": 110
           },
           {
             "file": "SKILL.md",
             "line_start": 110,
-            "line_end": 111
+            "line_end": 110
           },
           {
             "file": "SKILL.md",
-            "line_start": 111,
-            "line_end": 112
+            "line_start": 116,
+            "line_end": 117
           },
           {
             "file": "SKILL.md",
-            "line_start": 112,
-            "line_end": 113
+            "line_start": 117,
+            "line_end": 118
           },
           {
             "file": "SKILL.md",
-            "line_start": 113,
-            "line_end": 114
+            "line_start": 118,
+            "line_end": 119
           },
           {
             "file": "SKILL.md",
-            "line_start": 114,
-            "line_end": 115
+            "line_start": 119,
+            "line_end": 120
           },
           {
             "file": "SKILL.md",
-            "line_start": 115,
-            "line_end": 128
+            "line_start": 120,
+            "line_end": 121
           },
           {
             "file": "SKILL.md",
-            "line_start": 128,
-            "line_end": 129
+            "line_start": 121,
+            "line_end": 133
           },
           {
             "file": "SKILL.md",
-            "line_start": 129,
-            "line_end": 130
+            "line_start": 133,
+            "line_end": 136
           },
           {
             "file": "SKILL.md",
-            "line_start": 130,
-            "line_end": 131
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 131,
+            "line_start": 136,
             "line_end": 137
           },
           {
             "file": "SKILL.md",
             "line_start": 137,
-            "line_end": 137
+            "line_end": 138
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 138,
+            "line_end": 145
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 145,
+            "line_end": 145
           }
         ]
       },
@@ -223,8 +261,8 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 130,
-            "line_end": 130
+            "line_start": 138,
+            "line_end": 138
           }
         ]
       },
@@ -243,23 +281,23 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 76,
-            "line_end": 76
+            "line_start": 28,
+            "line_end": 28
           },
           {
             "file": "SKILL.md",
-            "line_start": 129,
-            "line_end": 129
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 131,
-            "line_end": 131
+            "line_start": 82,
+            "line_end": 82
           },
           {
             "file": "SKILL.md",
             "line_start": 137,
             "line_end": 137
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 145,
+            "line_end": 145
           }
         ]
       }
@@ -286,74 +324,84 @@
         "snippet": "获取或管理 API Key:访问 <https://socialdatax.com/ai?from=modelscope>,按官网的 API Key 申请/管理入口操作。环境变量名固定使用 `SOCI"
       },
       {
-        "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 31,
-        "line_end": 59,
+        "line_start": 26,
+        "line_end": 26,
+        "snippet": "- 需要 API Key 的 CLI 调用,先在实际执行环境运行 `npx -y socialdatax-skills@latest auth status`;它不调用收费接口,只返回 `apiKey"
+      },
+      {
+        "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 27,
+        "line_end": 27,
+        "snippet": "- 缺少 Key 时,请用户从上述官网获取,在自己打开的本地终端运行 `npx -y socialdatax-skills@latest auth login`,按隐藏输入提示填写。Key 保存到该终"
+      },
+      {
+        "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 28,
+        "line_end": 28,
+        "snippet": "- CLI 每次调用都会读取该私有用户文件,不依赖客户端加载 Shell 配置,不需要改客户端或系统设置。非空 `SOCIALDATAX_API_KEY` 优先,既有旧兼容变量其次,最后读取文件;`s"
+      },
+      {
+        "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 29,
+        "line_end": 29,
+        "snippet": "- 用户完成录入后,在实际业务命令的同一执行环境重新运行 `auth status`。false 时停止业务调用,核对操作系统用户、主目录与文件访问权限;true 只说明凭证可读,鉴权与结果仍以原业务"
+      },
+      {
+        "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 37,
+        "line_end": 65,
         "snippet": "```bash"
       },
       {
-        "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:65:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 59,
-        "line_end": 67,
+        "line_start": 65,
+        "line_end": 73,
         "snippet": "```"
       },
       {
-        "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:73:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 67,
-        "line_end": 67,
+        "line_start": 73,
+        "line_end": 73,
         "snippet": "- 说明:本地保存使用 `--output-dir \"<directory>\"`;不要将内容页面 URL 当成 `download-media --url` 的媒体直链。"
       },
       {
-        "id": "external_commands:SKILL.md:68:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:74:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 68,
-        "line_end": 76,
+        "line_start": 74,
+        "line_end": 82,
         "snippet": "- 可选:`--source-client socialdatax-skills --source-platform modelscope --source-skill socialdatax-med"
-      },
-      {
-        "id": "external_commands:SKILL.md:76:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 76,
-        "line_end": 78,
-        "snippet": "仅给定媒体直链时,本地 `download-media` 不需要 API Key;需要在线解析内容详情或 Bilibili 下载链接时,使用用户配置的 SOCIALDATAX_API_KEY。执行 C"
-      },
-      {
-        "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 78,
-        "line_end": 78,
-        "snippet": "将以下本地保存子命令接在 `npx -y socialdatax-skills@latest` 后执行;纯本地 `download-media` 不接受 `--source-client`、`--so"
-      },
-      {
-        "id": "external_commands:SKILL.md:80:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 80,
-        "line_end": 80,
-        "snippet": "小红书:`xhs download-media --url \"<media_url>\" --output-dir \"<directory>\" --pretty`;从详情的 `image_items[]"
       },
       {
         "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
@@ -362,8 +410,8 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 82,
-        "line_end": 82,
-        "snippet": "抖音:`douyin download-media --url \"<media_url>\" --output-dir \"<directory>\" --pretty`;从 `images[].url`、"
+        "line_end": 84,
+        "snippet": "仅给定媒体直链时,本地 `download-media` 不需要 API Key;需要在线解析内容详情或 Bilibili 下载链接时,使用用户配置的 SOCIALDATAX_API_KEY。执行 C"
       },
       {
         "id": "external_commands:SKILL.md:84:ruby-shell-backtick-execution",
@@ -373,7 +421,7 @@
         "file": "SKILL.md",
         "line_start": 84,
         "line_end": 84,
-        "snippet": "快手:`kuaishou download-media --url \"<media_url>\" --output-dir \"<directory>\" --pretty`;使用 `images[].ur"
+        "snippet": "将以下本地保存子命令接在 `npx -y socialdatax-skills@latest` 后执行;纯本地 `download-media` 不接受 `--source-client`、`--so"
       },
       {
         "id": "external_commands:SKILL.md:86:ruby-shell-backtick-execution",
@@ -383,7 +431,7 @@
         "file": "SKILL.md",
         "line_start": 86,
         "line_end": 86,
-        "snippet": "微博:`weibo download-media --url \"<media_url>\" --output-dir \"<directory>\" --pretty`;使用 `image_urls[]` "
+        "snippet": "小红书:`xhs download-media --url \"<media_url>\" --output-dir \"<directory>\" --pretty`;从详情的 `image_items[]"
       },
       {
         "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
@@ -393,7 +441,7 @@
         "file": "SKILL.md",
         "line_start": 88,
         "line_end": 88,
-        "snippet": "X / Twitter:`x download-media --url \"<media_url>\" --output-dir \"<directory>\" --pretty`;使用 `media_ite"
+        "snippet": "抖音:`douyin download-media --url \"<media_url>\" --output-dir \"<directory>\" --pretty`;从 `images[].url`、"
       },
       {
         "id": "external_commands:SKILL.md:90:ruby-shell-backtick-execution",
@@ -402,28 +450,48 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 90,
-        "line_end": 101,
+        "line_end": 90,
+        "snippet": "快手:`kuaishou download-media --url \"<media_url>\" --output-dir \"<directory>\" --pretty`;使用 `images[].ur"
+      },
+      {
+        "id": "external_commands:SKILL.md:92:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 92,
+        "line_end": 92,
+        "snippet": "微博:`weibo download-media --url \"<media_url>\" --output-dir \"<directory>\" --pretty`;使用 `image_urls[]` "
+      },
+      {
+        "id": "external_commands:SKILL.md:94:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 94,
+        "line_end": 94,
+        "snippet": "X / Twitter:`x download-media --url \"<media_url>\" --output-dir \"<directory>\" --pretty`;使用 `media_ite"
+      },
+      {
+        "id": "external_commands:SKILL.md:96:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 96,
+        "line_end": 107,
         "snippet": "Bilibili 使用本页 `bilibili download` 视频链接命令;不要把文章或动态链接当作视频下载。其 MCP 工具只提供下载链接,本地文件保存与合并由 CLI 执行。"
       },
       {
-        "id": "external_commands:SKILL.md:101:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:107:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 101,
-        "line_end": 104,
+        "line_start": 107,
+        "line_end": 110,
         "snippet": "结合命令结果和实际文件确认保存情况;若返回 `skipped_existing`,只有已有来源清单确认是同一素材时才记为已存在,否则另选空子目录保存。不要将跳过当作新下载成功或覆盖原文件;不编造文件名"
-      },
-      {
-        "id": "external_commands:SKILL.md:104:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 104,
-        "line_end": 104,
-        "snippet": "对于 XHS `note_id`,要原样复制返回的完整 `note_id`;不要只传或只展示前缀。"
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
@@ -432,98 +500,88 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 110,
-        "line_end": 111,
+        "line_end": 110,
+        "snippet": "对于 XHS `note_id`,要原样复制返回的完整 `note_id`;不要只传或只展示前缀。"
+      },
+      {
+        "id": "external_commands:SKILL.md:116:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 116,
+        "line_end": 117,
         "snippet": "- `xhs_get_note_detail_by_note_url`"
       },
       {
-        "id": "external_commands:SKILL.md:111:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:117:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 111,
-        "line_end": 112,
+        "line_start": 117,
+        "line_end": 118,
         "snippet": "- `douyin_get_video_detail_by_url`"
       },
       {
-        "id": "external_commands:SKILL.md:112:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:118:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 112,
-        "line_end": 113,
+        "line_start": 118,
+        "line_end": 119,
         "snippet": "- `kuaishou_get_video_detail_by_url`"
       },
       {
-        "id": "external_commands:SKILL.md:113:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 113,
-        "line_end": 114,
+        "line_start": 119,
+        "line_end": 120,
         "snippet": "- `weibo_get_post_detail_by_post_url`"
       },
       {
-        "id": "external_commands:SKILL.md:114:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:120:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 114,
-        "line_end": 115,
+        "line_start": 120,
+        "line_end": 121,
         "snippet": "- `x_get_post_detail_by_post_url`"
       },
       {
-        "id": "external_commands:SKILL.md:115:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:121:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 115,
-        "line_end": 128,
+        "line_start": 121,
+        "line_end": 133,
         "snippet": "- `bilibili_get_video_download_links`"
       },
       {
-        "id": "external_commands:SKILL.md:128:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:133:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 128,
-        "line_end": 129,
-        "snippet": "- 本地 `download-media` 失败:不需要 API Key;保留错误信息,检查媒体直链、网络或代理、输出目录及写入权限。"
+        "line_start": 133,
+        "line_end": 136,
+        "snippet": "- 凭证来源排查:先确认本次调用使用 CLI 还是 MCP。CLI 在实际执行环境中用 `auth status` 确认环境或本地文件来源;MCP 检查当前连接实际使用的鉴权配置,不要求另设本地 CL"
       },
       {
-        "id": "external_commands:SKILL.md:129:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:136:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 129,
-        "line_end": 130,
-        "snippet": "- 在线详情或 Bilibili 下载链接调用失败:检查 `SOCIALDATAX_API_KEY`、参数和内容链接;非余额不足的网络或 API 异常可原样重试一次。"
-      },
-      {
-        "id": "external_commands:SKILL.md:130:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 130,
-        "line_end": 131,
-        "snippet": "- 如果返回 `insufficient_balance` 或“积分不足”:不要重复重试;展示错误中的官方充值链接(https://socialdatax.com/dashboard/billing,"
-      },
-      {
-        "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 131,
+        "line_start": 136,
         "line_end": 137,
-        "snippet": "- 如果用户已经充值但仍提示余额不足:确认当前环境变量 `SOCIALDATAX_API_KEY` 是否来自刚充值的同一个账号;必要时重新复制官网后台的 API Key。"
+        "snippet": "- 本地 `download-media` 失败:不需要 API Key;保留错误信息,检查媒体直链、网络或代理、输出目录及写入权限。"
       },
       {
         "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
@@ -532,7 +590,27 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 137,
-        "line_end": 137,
+        "line_end": 138,
+        "snippet": "- 在线详情或 Bilibili 下载链接调用失败:检查 `SOCIALDATAX_API_KEY`、参数和内容链接;非余额不足的网络或 API 异常可原样重试一次。"
+      },
+      {
+        "id": "external_commands:SKILL.md:138:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 138,
+        "line_end": 145,
+        "snippet": "- 如果返回 `insufficient_balance` 或“积分不足”:不要重复重试;展示错误中的官方充值链接(https://socialdatax.com/dashboard/billing,"
+      },
+      {
+        "id": "external_commands:SKILL.md:145:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 145,
+        "line_end": 145,
         "snippet": "- 本地 `download-media` 失败:不需要 API Key,检查媒体直链、网络或代理及输出目录权限。在线详情或 Bilibili 下载链接调用才检查 `SOCIALDATAX_API_K"
       },
       {
@@ -556,13 +634,13 @@
         "snippet": "获取或管理 API Key:访问 <https://socialdatax.com/ai?from=modelscope>,按官网的 API Key 申请/管理入口操作。环境变量名固定使用 `SOCI"
       },
       {
-        "id": "network:SKILL.md:130:hardcoded-url",
+        "id": "network:SKILL.md:138:hardcoded-url",
         "category": "network",
         "severity": "low",
         "pattern": "Hardcoded URL",
         "file": "SKILL.md",
-        "line_start": 130,
-        "line_end": 130,
+        "line_start": 138,
+        "line_end": 138,
         "snippet": "- 如果返回 `insufficient_balance` 或“积分不足”:不要重复重试;展示错误中的官方充值链接(https://socialdatax.com/dashboard/billing,"
       },
       {
@@ -586,34 +664,24 @@
         "snippet": "获取或管理 API Key:访问 <https://socialdatax.com/ai?from=modelscope>,按官网的 API Key 申请/管理入口操作。环境变量名固定使用 `SOCI"
       },
       {
-        "id": "env_access:SKILL.md:76:generic-api-secret-keys",
+        "id": "env_access:SKILL.md:28:generic-api-secret-keys",
         "category": "env_access",
         "severity": "high",
         "pattern": "Generic API/secret keys",
         "file": "SKILL.md",
-        "line_start": 76,
-        "line_end": 76,
+        "line_start": 28,
+        "line_end": 28,
+        "snippet": "- CLI 每次调用都会读取该私有用户文件,不依赖客户端加载 Shell 配置,不需要改客户端或系统设置。非空 `SOCIALDATAX_API_KEY` 优先,既有旧兼容变量其次,最后读取文件;`s"
+      },
+      {
+        "id": "env_access:SKILL.md:82:generic-api-secret-keys",
+        "category": "env_access",
+        "severity": "high",
+        "pattern": "Generic API/secret keys",
+        "file": "SKILL.md",
+        "line_start": 82,
+        "line_end": 82,
         "snippet": "仅给定媒体直链时,本地 `download-media` 不需要 API Key;需要在线解析内容详情或 Bilibili 下载链接时,使用用户配置的 SOCIALDATAX_API_KEY。执行 C"
-      },
-      {
-        "id": "env_access:SKILL.md:129:generic-api-secret-keys",
-        "category": "env_access",
-        "severity": "high",
-        "pattern": "Generic API/secret keys",
-        "file": "SKILL.md",
-        "line_start": 129,
-        "line_end": 129,
-        "snippet": "- 在线详情或 Bilibili 下载链接调用失败:检查 `SOCIALDATAX_API_KEY`、参数和内容链接;非余额不足的网络或 API 异常可原样重试一次。"
-      },
-      {
-        "id": "env_access:SKILL.md:131:generic-api-secret-keys",
-        "category": "env_access",
-        "severity": "high",
-        "pattern": "Generic API/secret keys",
-        "file": "SKILL.md",
-        "line_start": 131,
-        "line_end": 131,
-        "snippet": "- 如果用户已经充值但仍提示余额不足:确认当前环境变量 `SOCIALDATAX_API_KEY` 是否来自刚充值的同一个账号;必要时重新复制官网后台的 API Key。"
       },
       {
         "id": "env_access:SKILL.md:137:generic-api-secret-keys",
@@ -623,7 +691,27 @@
         "file": "SKILL.md",
         "line_start": 137,
         "line_end": 137,
+        "snippet": "- 在线详情或 Bilibili 下载链接调用失败:检查 `SOCIALDATAX_API_KEY`、参数和内容链接;非余额不足的网络或 API 异常可原样重试一次。"
+      },
+      {
+        "id": "env_access:SKILL.md:145:generic-api-secret-keys",
+        "category": "env_access",
+        "severity": "high",
+        "pattern": "Generic API/secret keys",
+        "file": "SKILL.md",
+        "line_start": 145,
+        "line_end": 145,
         "snippet": "- 本地 `download-media` 失败:不需要 API Key,检查媒体直链、网络或代理及输出目录权限。在线详情或 Bilibili 下载链接调用才检查 `SOCIALDATAX_API_K"
+      },
+      {
+        "id": "sensitive:SKILL.md:27:credential-json-file",
+        "category": "sensitive",
+        "severity": "high",
+        "pattern": "Credential JSON file",
+        "file": "SKILL.md",
+        "line_start": 27,
+        "line_end": 27,
+        "snippet": "- 缺少 Key 时,请用户从上述官网获取,在自己打开的本地终端运行 `npx -y socialdatax-skills@latest auth login`,按隐藏输入提示填写。Key 保存到该终"
       },
       {
         "id": "obfuscation:SKILL.md:3:heuristic-very-high-entropy-string-6-10-bits-lik",
@@ -636,10 +724,10 @@
         "snippet": "用户提供社媒内容链接或媒体直链和输出目录时，保存支持平台的图片、视频或音频，并整理来源链接、本地文件路径及成功失败清单。支持小红书、抖音、快手、微博、X / T..."
       },
       {
-        "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-6-85-bits-possible-b",
+        "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-7-09-bits-possible-b",
         "category": "obfuscation",
         "severity": "high",
-        "pattern": "[HEURISTIC] High file entropy (6.85 bits) - possible binary/encrypted content",
+        "pattern": "[HEURISTIC] High file entropy (7.09 bits) - possible binary/encrypted content",
         "file": "SKILL.md",
         "line_start": 1,
         "line_end": 1,
@@ -650,253 +738,436 @@
       {
         "id": "external_commands:SKILL.md:9:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The backticks format a generator command inside an HTML maintenance comment. They do not perform Ruby or shell command substitution."
+        "confidence": 0.98,
+        "reason": "This HTML comment documents how maintainers regenerate the file. It is not a runtime step and Markdown backticks do not execute it."
       },
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks mark the documented SOCIALDATAX_API_KEY variable name. This line contains setup guidance, not executable shell substitution."
+        "reason": "The backticks format the API key variable name. They neither invoke a shell nor expand the variable."
       },
       {
-        "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.97,
-        "reason": "The fenced workflow executes npx -y socialdatax-skills@latest, resolving a mutable package without an installation prompt. Compromised releases could execute with local permissions and credentials.",
-        "severity": "medium"
+        "confidence": 0.98,
+        "reason": "The prose instructs the agent to run an unpinned npm package with automatic confirmation. A status-only subcommand still executes the resolved package."
       },
       {
-        "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "Line 59 closes a Markdown code fence. The following argument documentation does not execute commands or perform shell substitution."
-      },
-      {
-        "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "Inline backticks describe output directory and media URL arguments. The prose warns against confusing content pages with downloadable media."
-      },
-      {
-        "id": "external_commands:SKILL.md:68:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "These backticks format fixed source attribution flags. The surrounding workflow instructions contain no Ruby or shell substitution."
-      },
-      {
-        "id": "external_commands:SKILL.md:76:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The line distinguishes keyless direct downloads from authenticated lookups and names required dependencies. Inline download-media formatting does not execute a command."
-      },
-      {
-        "id": "external_commands:SKILL.md:78:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.97,
-        "reason": "This instruction explicitly executes download subcommands through npx -y socialdatax-skills@latest. Unpinned package resolution can run changed third-party code with local user permissions.",
-        "severity": "medium"
+        "confidence": 0.99,
+        "reason": "The instruction asks the user to run an unpinned package and enter a live key. Hidden input does not protect the key from that package."
       },
       {
-        "id": "external_commands:SKILL.md:80:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The inline spans identify a variable and a status value used to explain credential precedence. Neither span is a command."
+      },
+      {
+        "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.97,
+        "reason": "The inline span names the status subcommand without shell substitution. The underlying unpinned invocation is covered by the verdict for line 26."
+      },
+      {
+        "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The Bash fence is formatting, but it encloses commands the skill directs agents to execute. Each runs the mutable latest npm release with automatic confirmation."
+      },
+      {
+        "id": "external_commands:SKILL.md:65:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "This is the closing fence for the Bash examples. It introduces no additional execution beyond the block adjudicated at line 37."
+      },
+      {
+        "id": "external_commands:SKILL.md:73:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.98,
-        "reason": "The backticks format the XHS download subcommand and response field names. No shell substitution is present; mutable package execution is addressed separately."
+        "reason": "The highlighted fragments explain an output option and distinguish content pages from media URLs. They do not form an executable instruction at this location."
+      },
+      {
+        "id": "external_commands:SKILL.md:74:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.98,
+        "reason": "The backticks delimit fixed attribution arguments. They contain no command substitution or additional executable."
       },
       {
         "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.98,
-        "reason": "The backticks format a Douyin download example and media fields. No shell substitution is present; mutable package execution is addressed separately."
+        "reason": "The inline subcommand name describes which operation needs a credential. The line lists dependencies but does not ask the shell to run the span."
       },
       {
         "id": "external_commands:SKILL.md:84:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The backticks format a Kuaishou download example and media fields. No shell substitution is present; mutable package execution is addressed separately."
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The skill explicitly tells the agent to execute this npm prefix even for direct downloads. Automatic confirmation allows code execution without a pinned release."
       },
       {
         "id": "external_commands:SKILL.md:86:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The backticks format a Weibo download example and response fields. No shell substitution is present; mutable package execution is addressed separately."
+        "verdict": "confirmed",
+        "confidence": 0.97,
+        "reason": "This Xiaohongshu download is an actionable command template, not shell substitution. The instructions pair it with the unpinned package and media URLs returned by the service."
       },
       {
         "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The backticks format an X download example, response fields, and an optional proxy flag. No shell substitution or unrelated command is shown."
+        "verdict": "confirmed",
+        "confidence": 0.97,
+        "reason": "The agent is directed to run this Douyin template through the unpinned npm package. Returned media URLs become arguments to that process."
       },
       {
         "id": "external_commands:SKILL.md:90:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "Inline backticks name the Bilibili command and existing-file status in explanatory prose. They do not execute commands."
+        "verdict": "confirmed",
+        "confidence": 0.97,
+        "reason": "This Kuaishou template invokes the unpinned CLI under the stated workflow. It passes media URLs and a local write destination to that process."
       },
       {
-        "id": "external_commands:SKILL.md:101:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The prose explains skipped_existing handling and source verification. Its backticks are Markdown formatting, and the instructions explicitly discourage overwrites and invented results."
+        "id": "external_commands:SKILL.md:92:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.97,
+        "reason": "This Weibo template tells the agent how to execute the unpinned downloader with a returned image or video URL and a local output path."
       },
       {
-        "id": "external_commands:SKILL.md:104:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:94:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.97,
+        "reason": "This X download template is run through the unpinned npm package. It gives that process a remote media URL and a writable destination."
+      },
+      {
+        "id": "external_commands:SKILL.md:96:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.97,
+        "reason": "The inline text refers to the Bilibili workflow and distinguishes MCP from local saving. The executable example is already covered at line 37."
+      },
+      {
+        "id": "external_commands:SKILL.md:107:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks identify the XHS note_id field. The instruction preserves complete identifiers and contains no executable shell content."
+        "reason": "The backticks identify an existing-file status. The instructions explain how to verify a result without overwriting the file."
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "This is a Markdown list of MCP tool identifiers, beginning with xhs_get_note_detail_by_note_url. Tool names are not shell backtick execution."
+        "reason": "The inline spans identify a response field. They instruct the agent to preserve the full identifier, not execute it."
       },
       {
-        "id": "external_commands:SKILL.md:111:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:116:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The matched span lists Douyin and Kuaishou MCP tool identifiers. The backticks are documentation formatting, not executable commands."
+        "reason": "This is the name of a Xiaohongshu MCP detail tool. It is not a shell command or substitution."
       },
       {
-        "id": "external_commands:SKILL.md:112:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:117:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The matched span lists Kuaishou and Weibo MCP tool identifiers. The backticks are documentation formatting, not executable commands."
+        "reason": "This is the name of a Douyin MCP detail tool. The backticks only format the identifier."
       },
       {
-        "id": "external_commands:SKILL.md:113:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:118:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The matched span lists Weibo and X MCP tool identifiers. The backticks are documentation formatting, not executable commands."
+        "reason": "This line lists a Kuaishou MCP detail tool, not an instruction to run a process in a shell."
       },
       {
-        "id": "external_commands:SKILL.md:114:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The matched span lists X and Bilibili MCP tool identifiers. The backticks are documentation formatting, not executable commands."
+        "reason": "The inline identifier names a Weibo MCP detail tool. It contains no shell command."
       },
       {
-        "id": "external_commands:SKILL.md:115:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:120:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The span begins with a Bilibili MCP tool name and continues through safety and troubleshooting prose. No shell command substitution appears."
+        "reason": "This line names an X MCP post detail tool. The Markdown span is not executed by a shell."
       },
       {
-        "id": "external_commands:SKILL.md:128:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:121:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Inline backticks label download-media and the API variable in troubleshooting guidance. No executable command or shell substitution appears."
+        "reason": "The listed Bilibili MCP tool returns video download links. Its identifier is not a shell invocation."
       },
       {
-        "id": "external_commands:SKILL.md:129:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:133:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The text describes credential checks and a bounded retry. Backticks format identifiers and status values rather than executing commands."
+        "confidence": 0.97,
+        "reason": "The inline status subcommand refers back to the existing credential check at line 26. It adds no separate shell execution mechanism."
       },
       {
-        "id": "external_commands:SKILL.md:130:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:136:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The text documents insufficient_balance handling and account configuration. Backticks identify a status and variable, with no shell execution."
-      },
-      {
-        "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The span contains account troubleshooting and FAQ text. Its backticks identify configuration names, not Ruby or shell expressions."
+        "reason": "The subcommand name labels a troubleshooting case. The line calls for checking the link, network, and write permissions."
       },
       {
         "id": "external_commands:SKILL.md:137:ruby-shell-backtick-execution",
         "verdict": "false_positive",
+        "confidence": 0.98,
+        "reason": "The backticks format a credential variable name. The separate instruction to retry an existing request once does not make this span executable."
+      },
+      {
+        "id": "external_commands:SKILL.md:138:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The FAQ formats download-media and SOCIALDATAX_API_KEY as identifiers. It contains no executable shell substitution."
+        "reason": "The inline text denotes the insufficient-balance error. It is a condition for stopping retries, not a shell instruction."
+      },
+      {
+        "id": "external_commands:SKILL.md:145:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The FAQ formats a subcommand and a credential variable name. Neither is evaluated as shell syntax."
       },
       {
         "id": "network:SKILL.md:7:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The URL is a declarative homepage on the documented SocialDataX domain. This metadata does not transmit user data or credentials."
+        "reason": "The URL is a homepage value in front matter. The metadata does not direct a request or transmit data to it."
       },
       {
         "id": "network:SKILL.md:25:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.98,
-        "reason": "The link directs users to the documented provider for API key management. It contains no credential value or data exfiltration payload."
+        "reason": "The link directs users to the stated provider domain for key management. The instruction does not put a key in the URL or send one elsewhere."
       },
       {
-        "id": "network:SKILL.md:130:hardcoded-url",
+        "id": "network:SKILL.md:138:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.98,
-        "reason": "The URL is the documented provider billing page, displayed after insufficient balance. The text does not authorize automatic payments or send credentials."
+        "reason": "The hardcoded URL is a provider billing page shown to the user. This line does not instruct the agent to make a payment or submit credentials."
       },
       {
         "id": "env_access:SKILL.md:7:generic-api-secret-keys",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Metadata names SOCIALDATAX_API_KEY as the primary credential variable. No secret value, environment dump, or unrelated credential access is present."
+        "reason": "The front matter declares the expected environment variable by name. It does not read or contain its value."
       },
       {
         "id": "env_access:SKILL.md:25:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The line documents the provider-specific environment variable and account setup. It does not expose a key or request unrelated secrets."
+        "confidence": 0.98,
+        "reason": "The text identifies the provider's configuration variable. It does not request disclosure or access its value here."
       },
       {
-        "id": "env_access:SKILL.md:76:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The workflow uses the configured provider key only for online lookups and explicitly excludes direct downloads. No unrelated credential collection is instructed."
-      },
-      {
-        "id": "env_access:SKILL.md:129:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "Troubleshooting checks the configured service key when authenticated calls fail. It does not instruct printing, exporting, or persisting the secret."
-      },
-      {
-        "id": "env_access:SKILL.md:131:generic-api-secret-keys",
-        "verdict": "false_positive",
+        "id": "env_access:SKILL.md:28:generic-api-secret-keys",
+        "verdict": "confirmed",
         "confidence": 0.96,
-        "reason": "The instruction checks whether billing and the configured key belong to the same account. It requests no disclosure to an unrelated destination."
+        "reason": "The workflow explicitly gives the CLI access to a live key from the environment or a user file. The CLI is not version-pinned."
+      },
+      {
+        "id": "env_access:SKILL.md:82:generic-api-secret-keys",
+        "verdict": "confirmed",
+        "confidence": 0.96,
+        "reason": "The online lookup workflow relies on a configured key available to the unpinned CLI. Authentication is expected, but it exposes the secret to mutable executable code."
       },
       {
         "id": "env_access:SKILL.md:137:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The FAQ restricts credential checks to authenticated lookups and distinguishes keyless direct downloads. It contains no secret value or exfiltration instruction."
+        "confidence": 0.95,
+        "reason": "This troubleshooting note references the variable after an online error. The surrounding instructions prohibit printing the key and keep changes with the user."
+      },
+      {
+        "id": "env_access:SKILL.md:145:generic-api-secret-keys",
+        "verdict": "false_positive",
+        "confidence": 0.97,
+        "reason": "The FAQ distinguishes authenticated lookups from direct downloads. It names a configuration variable without exposing its value."
+      },
+      {
+        "id": "sensitive:SKILL.md:27:credential-json-file",
+        "verdict": "confirmed",
+        "confidence": 0.95,
+        "reason": "Login saves a live credential to a persistent JSON file. The stated permissions limit other users, but the unpinned CLI runs under the same account."
       },
       {
         "id": "obfuscation:SKILL.md:3:heuristic-very-high-entropy-string-6-10-bits-lik",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 3 is a readable Chinese description of media downloads and supported platforms. Its multilingual text is not an encoded payload."
+        "reason": "The line is readable Chinese prose describing the supported platforms and output. It contains no encoded payload."
       },
       {
-        "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-6-85-bits-possible-b",
+        "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-7-09-bits-possible-b",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The reviewed file contains readable Chinese Markdown, YAML metadata, and CLI examples. No decoder, encrypted blob, or binary payload was found."
+        "reason": "The file is readable Markdown with Chinese prose, front matter, and command examples. No binary or encrypted payload was found."
       }
     ],
-    "semantic_findings": [],
+    "semantic_findings": [
+      {
+        "title": "Untrusted inputs in shell command templates",
+        "description": "The workflow puts share text, media URLs, and output paths into shell examples. Direct substitution could change command behavior if the agent constructs a shell string.",
+        "severity": "high",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 35,
+            "line_end": 65
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 78,
+            "line_end": 94
+          }
+        ],
+        "confidence": 0.91,
+        "confidence_reasoning": "The placeholders and shell-based workflow are explicit, and the skill does not require separate arguments. Actual behavior depends on how the agent invokes the CLI."
+      },
+      {
+        "title": "Download destination checks are unspecified",
+        "description": "The workflow directs a local process to fetch supplied or returned media URLs. It does not specify host, address, or redirect checks for those requests.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 19,
+            "line_end": 20
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 78,
+            "line_end": 94
+          }
+        ],
+        "confidence": 0.82,
+        "confidence_reasoning": "The instructions define supported platforms but omit destination checks. No evidence shows whether the external CLI blocks requests to local or private addresses."
+      },
+      {
+        "title": "Reports can disclose signed media links",
+        "description": "The skill asks for complete source and media URLs in its reporting workflow. Those URLs can contain temporary access tokens that readers could reuse while valid.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 104,
+            "line_end": 109
+          }
+        ],
+        "confidence": 0.88,
+        "confidence_reasoning": "The instruction explicitly forbids rewriting returned links and gives no exception for sensitive query parameters. No signed URL was observed in the reviewed files."
+      }
+    ],
     "critical_findings": [],
-    "high_findings": [],
+    "high_findings": [
+      {
+        "title": "Generic API/secret keys",
+        "description": "- CLI 每次调用都会读取该私有用户文件,不依赖客户端加载 Shell 配置,不需要改客户端或系统设置。非空 `SOCIALDATAX_API_KEY` 优先,既有旧兼容变量其次,最后读取文件;`s",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 28,
+            "line_end": 28
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "env_access",
+        "source_severity": "high",
+        "confidence": 0.96,
+        "confidence_reasoning": "The workflow explicitly gives the CLI access to a live key from the environment or a user file. The CLI is not version-pinned."
+      },
+      {
+        "title": "Generic API/secret keys",
+        "description": "仅给定媒体直链时,本地 `download-media` 不需要 API Key;需要在线解析内容详情或 Bilibili 下载链接时,使用用户配置的 SOCIALDATAX_API_KEY。执行 C",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 82,
+            "line_end": 82
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "env_access",
+        "source_severity": "high",
+        "confidence": 0.96,
+        "confidence_reasoning": "The online lookup workflow relies on a configured key available to the unpinned CLI. Authentication is expected, but it exposes the secret to mutable executable code."
+      },
+      {
+        "title": "Credential JSON file",
+        "description": "- 缺少 Key 时,请用户从上述官网获取,在自己打开的本地终端运行 `npx -y socialdatax-skills@latest auth login`,按隐藏输入提示填写。Key 保存到该终",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 27,
+            "line_end": 27
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.95,
+        "confidence_reasoning": "Login saves a live credential to a persistent JSON file. The stated permissions limit other users, but the unpinned CLI runs under the same account."
+      },
+      {
+        "title": "Untrusted inputs in shell command templates",
+        "description": "The workflow puts share text, media URLs, and output paths into shell examples. Direct substitution could change command behavior if the agent constructs a shell string.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 35,
+            "line_end": 65
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 78,
+            "line_end": 94
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "high",
+        "confidence": 0.91,
+        "confidence_reasoning": "The placeholders and shell-based workflow are explicit, and the skill does not require separate arguments. Actual behavior depends on how the agent invokes the CLI."
+      }
+    ],
     "medium_findings": [
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- 需要 API Key 的 CLI 调用,先在实际执行环境运行 `npx -y socialdatax-skills@latest auth status`;它不调用收费接口,只返回 `apiKey",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 26,
+            "line_end": 26
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.98,
+        "confidence_reasoning": "The prose instructs the agent to run an unpinned npm package with automatic confirmation. A status-only subcommand still executes the resolved package."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- 缺少 Key 时,请用户从上述官网获取,在自己打开的本地终端运行 `npx -y socialdatax-skills@latest auth login`,按隐藏输入提示填写。Key 保存到该终",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 27,
+            "line_end": 27
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The instruction asks the user to run an unpinned package and enter a live key. Hidden input does not protect the key from that package."
+      },
       {
         "title": "Ruby/shell backtick execution",
         "description": "```bash",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 31,
-            "line_end": 59
+            "line_start": 37,
+            "line_end": 65
           }
         ],
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
-        "confidence": 0.97,
-        "confidence_reasoning": "The fenced workflow executes npx -y socialdatax-skills@latest, resolving a mutable package without an installation prompt. Compromised releases could execute with local permissions and credentials."
+        "confidence": 0.99,
+        "confidence_reasoning": "The Bash fence is formatting, but it encloses commands the skill directs agents to execute. Each runs the mutable latest npm release with automatic confirmation."
       },
       {
         "title": "Ruby/shell backtick execution",
@@ -904,154 +1175,256 @@
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 78,
-            "line_end": 78
+            "line_start": 84,
+            "line_end": 84
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The skill explicitly tells the agent to execute this npm prefix even for direct downloads. Automatic confirmation allows code execution without a pinned release."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "小红书:`xhs download-media --url \"<media_url>\" --output-dir \"<directory>\" --pretty`;从详情的 `image_items[]",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 86,
+            "line_end": 86
           }
         ],
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
         "confidence": 0.97,
-        "confidence_reasoning": "This instruction explicitly executes download subcommands through npx -y socialdatax-skills@latest. Unpinned package resolution can run changed third-party code with local user permissions."
+        "confidence_reasoning": "This Xiaohongshu download is an actionable command template, not shell substitution. The instructions pair it with the unpinned package and media URLs returned by the service."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "抖音:`douyin download-media --url \"<media_url>\" --output-dir \"<directory>\" --pretty`;从 `images[].url`、",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 88,
+            "line_end": 88
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.97,
+        "confidence_reasoning": "The agent is directed to run this Douyin template through the unpinned npm package. Returned media URLs become arguments to that process."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "快手:`kuaishou download-media --url \"<media_url>\" --output-dir \"<directory>\" --pretty`;使用 `images[].ur",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 90,
+            "line_end": 90
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.97,
+        "confidence_reasoning": "This Kuaishou template invokes the unpinned CLI under the stated workflow. It passes media URLs and a local write destination to that process."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "微博:`weibo download-media --url \"<media_url>\" --output-dir \"<directory>\" --pretty`;使用 `image_urls[]` ",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 92,
+            "line_end": 92
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.97,
+        "confidence_reasoning": "This Weibo template tells the agent how to execute the unpinned downloader with a returned image or video URL and a local output path."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "X / Twitter:`x download-media --url \"<media_url>\" --output-dir \"<directory>\" --pretty`;使用 `media_ite",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 94,
+            "line_end": 94
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.97,
+        "confidence_reasoning": "This X download template is run through the unpinned npm package. It gives that process a remote media URL and a writable destination."
+      },
+      {
+        "title": "Download destination checks are unspecified",
+        "description": "The workflow directs a local process to fetch supplied or returned media URLs. It does not specify host, address, or redirect checks for those requests.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 19,
+            "line_end": 20
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 78,
+            "line_end": 94
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.82,
+        "confidence_reasoning": "The instructions define supported platforms but omit destination checks. No evidence shows whether the external CLI blocks requests to local or private addresses."
+      },
+      {
+        "title": "Reports can disclose signed media links",
+        "description": "The skill asks for complete source and media URLs in its reporting workflow. Those URLs can contain temporary access tokens that readers could reuse while valid.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 104,
+            "line_end": 109
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.88,
+        "confidence_reasoning": "The instruction explicitly forbids rewriting returned links and gives no exception for sensitive query parameters. No signed URL was observed in the reviewed files."
       }
     ],
     "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 2,
-    "total_lines": 148,
+    "total_lines": 156,
     "audit_model": "codex",
-    "audited_at": "2026-10-29T10:42:28.952Z",
-    "agent_auto_install_policy": "allowed",
+    "audited_at": "2026-11-18T15:48:15.265Z",
+    "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Save and Organize Social Media Files",
-    "value_statement": "Social media downloads are difficult to track when source links, local files, and failed items become separated. This skill guides SocialDataX downloads and organizes files with source records and explicit results.",
+    "value_statement": "It is easy to lose track of which posts supplied downloaded media. Save files from supported links and record each source, local path, and outcome.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "SocialDataX",
-      "social media downloads",
-      "media organization",
+      "social media downloader",
+      "media archive",
       "source tracking",
-      "Bilibili downloads",
-      "Xiaohongshu media",
-      "download reports"
+      "Bilibili video",
+      "social media assets"
     ],
     "actual_capabilities": [
-      "Guides media saving from Xiaohongshu, Douyin, Kuaishou, Weibo, X / Twitter, and Bilibili using existing SocialDataX commands.",
-      "Distinguishes content pages from direct media URLs and selects relevant media fields from platform detail responses.",
-      "Places distinct materials in separate empty subdirectories within the requested output directory.",
-      "Deduplicates repeated media URLs while retaining their source references.",
-      "Records platform, available content identifiers, source links, local paths, media types, download status, and failure reasons.",
-      "Verifies reported download results against actual files and checks source records before accepting skipped existing files."
+      "Resolve links from supported social platforms through SocialDataX detail lookups.",
+      "Save available images, video, or audio from supported media links into a chosen local directory.",
+      "Use the CLI to save Bilibili videos and merge audio and video when needed.",
+      "Download each distinct media URL once while recording all of its source posts.",
+      "Verify saved files and report source links, local paths, existing files, and failures."
     ],
     "limitations": [
-      "Requires external SocialDataX tooling and Node.js/npm; the documented commands execute the latest package version rather than a pinned release.",
-      "Online detail lookups and Bilibili download link requests require SOCIALDATAX_API_KEY and may require provider credits.",
-      "Bilibili media merging requires ffmpeg; its MCP tool returns download links rather than saving or merging files.",
-      "Supports only the documented platforms and available media; network restrictions, unavailable content, or missing media can prevent downloads."
+      "Supports Xiaohongshu, Douyin, Kuaishou, Weibo, X, and Bilibili, not arbitrary websites.",
+      "Online lookups require configured SocialDataX authentication and may use account credits.",
+      "The CLI requires Node.js and npm. Merging Bilibili streams requires ffmpeg.",
+      "Bilibili support is for video links, not articles or feed posts. Its MCP tool returns links but does not save files."
     ],
     "use_cases": [
       {
-        "title": "Collect Approved Campaign Assets",
-        "description": "Save media from an explicit campaign link list and retain source references for each downloaded file.",
+        "title": "Archive campaign media",
+        "description": "Save selected campaign assets and record which post supplied each file.",
         "target_user": "Social media managers"
       },
       {
-        "title": "Track Research Materials",
-        "description": "Organize media from selected research posts, preserve complete identifiers, and record unavailable materials without inventing results.",
-        "target_user": "Content researchers"
+        "title": "Collect media for a production",
+        "description": "Save approved clips and images to a project directory, and list any assets that could not be downloaded.",
+        "target_user": "Video editors"
       },
       {
-        "title": "Prepare Editing Materials",
-        "description": "Collect requested images, videos, or audio into separate folders and identify missing files before editing begins.",
-        "target_user": "Video editors"
+        "title": "Maintain a research archive",
+        "description": "Track media from multiple posts, keep all source references, and avoid downloading the same URL twice.",
+        "target_user": "Media researchers"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Save One Media File",
-        "prompt": "Save this direct media URL: [media URL]. Use [output directory] and report the verified local path or actual failure reason.",
-        "scenario": "Beginner: one direct media download"
+        "title": "Save one image",
+        "scenario": "A supported direct media link is already available.",
+        "prompt": "Use my approved SocialDataX CLI to save this image from [direct link] to [folder]. Confirm the file exists and report its path."
       },
       {
-        "title": "Extract Media From a Post",
-        "prompt": "Save the requested [media type] from [supported post URL] into [output directory]. Keep complete source links and exclude unrequested covers or music.",
-        "scenario": "Basic: resolve a supported content page"
+        "title": "Save media from one post",
+        "scenario": "A supported post link needs an online lookup.",
+        "prompt": "Use my approved SocialDataX setup to check [post link]. Save only its video to [folder] and report the source and verified path."
       },
       {
-        "title": "Organize Multiple Sources",
-        "prompt": "Process only these links: [link list]. Save distinct materials under [output directory], deduplicate repeated media URLs, and report successes, failures, and source references.",
-        "scenario": "Intermediate: organize a defined batch"
+        "title": "Organize a batch of assets",
+        "scenario": "A list contains posts that may point to the same media.",
+        "prompt": "Process only [link list] with my approved setup. Save each distinct media URL once under [folder]. List every source and any failures."
       },
       {
-        "title": "Resume an Existing Collection",
-        "prompt": "Resume this collection using [source manifest] and [link list] in [output directory]. Verify existing file mappings, preserve completed files, and report unresolved items.",
-        "scenario": "Advanced: resume with source verification"
+        "title": "Resume an existing archive",
+        "scenario": "An earlier batch has a source list and a mix of completed and failed downloads.",
+        "prompt": "Compare [link list] with [existing source list] before downloading. Use my approved setup for missing media only. Update the list in [folder] and redact access tokens."
       }
     ],
     "output_examples": [
       {
-        "input": "Save two supplied direct media links, including one duplicate, into the selected folder.",
-        "output": [
-          "Illustrative result: one unique file saved and verified in the selected output directory.",
-          "The repeated media URL was downloaded once, with both source references retained.",
-          "The source list includes the actual returned local path, media type, and verified status."
-        ]
+        "input": "Save the video from a supplied Douyin post to Campaign Media using the approved setup.",
+        "output": "Saved and verified one video from the supplied Douyin post at Campaign Media/material-001/clip.mp4."
       },
       {
-        "input": "Resume a collection where one existing file is verified and another media link is unavailable.",
+        "input": "Resume a batch containing two Weibo posts that share one image and one unavailable X clip.",
         "output": [
-          "Illustrative result: the verified existing file is retained and marked as already present.",
-          "The unavailable item remains in the source list with its actual download error.",
-          "No successful download or local path is claimed for the failed item."
-        ]
-      },
-      {
-        "input": "Resolve a supplied post when the provider reports insufficient balance.",
-        "output": [
-          "Illustrative result: the lookup stops without repeated retries.",
-          "The provider billing link is shown, and previously saved files remain unchanged.",
-          "The failed lookup can resume after the account balance is restored."
+          "The shared Weibo image was already present and matched the source list. Both posts remain listed as sources.",
+          "The X clip could not be downloaded because its media link had expired. No file path was recorded."
         ]
       }
     ],
     "best_practices": [
-      "Provide an explicit link list and output directory, and authorize only the requested media and necessary dependency changes.",
-      "Review the external package before execution and prefer an approved pinned version in a restricted environment.",
-      "Verify downloaded files and source mappings, preserve complete links, and keep API keys out of generated files."
+      "Use a reviewed, pinned SocialDataX CLI and approve any new installation explicitly.",
+      "Provide only links you are allowed to archive, and choose a dedicated local output directory.",
+      "Verify files before marking them saved, and remove access tokens from shared reports."
     ],
     "anti_patterns": [
-      "Do not treat a content page URL as a direct media URL or assume every platform response contains a video.",
-      "Do not count a submitted command or an unverified skipped_existing status as a successful new download.",
-      "Do not download extra assets, overwrite unrelated files, or expand beyond the supplied links and authorized directories."
+      "Do not paste API keys into chat, command arguments, logs, or source lists.",
+      "Do not pass a post page to a command that expects a direct media link.",
+      "Do not treat a skipped or failed download as a newly saved file."
     ],
     "faq": [
       {
         "question": "Which platforms are supported?",
-        "answer": "The instructions cover Xiaohongshu, Douyin, Kuaishou, Weibo, X / Twitter, and Bilibili. They do not promise support for other sites."
+        "answer": "The workflow supports Xiaohongshu, Douyin, Kuaishou, Weibo, X, and Bilibili video links."
       },
       {
-        "question": "Do direct media downloads require an API key?",
-        "answer": "Direct download-media operations do not require a key. Online detail lookups and Bilibili download link requests use SOCIALDATAX_API_KEY."
+        "question": "Do I need a SocialDataX API key?",
+        "answer": "Supported direct media downloads do not require a key. Online post lookups and Bilibili video link retrieval need an authenticated setup."
       },
       {
-        "question": "What software must be available?",
-        "answer": "CLI execution requires Node.js/npm and external SocialDataX tooling. Bilibili merging also requires ffmpeg. The documented npm commands use an unpinned latest version."
+        "question": "What do I need to run the CLI?",
+        "answer": "Use a reviewed, pinned SocialDataX release with Node.js and npm. Install ffmpeg if you need to merge Bilibili streams."
       },
       {
-        "question": "How are existing files and duplicate links handled?",
-        "answer": "Repeated media URLs are saved once. Existing files count as matching only when source records confirm their identity; otherwise, a new empty subdirectory is used."
+        "question": "Can MCP save the files for me?",
+        "answer": "The documented MCP tools return post details or download links. The CLI performs local saving and Bilibili stream merging."
       },
       {
-        "question": "Can the skill post content or access browser sessions?",
-        "answer": "The instructions exclude posting, likes, comments, account operations, and browser login data access. They permit requested local downloads and source records."
+        "question": "Will it overwrite my files?",
+        "answer": "The workflow uses separate folders and checks existing files against the source list. It does not treat a skipped file as a new download."
       },
       {
-        "question": "What happens when downloads fail or credits run out?",
-        "answer": "Successful files are retained and failures are listed with actual reasons. Insufficient balance stops repeated retries and directs the user to provider billing."
+        "question": "What happens when a download fails?",
+        "answer": "The workflow keeps successful files and lists failed items with the reasons available. It does not invent saved paths."
       }
     ]
   },
@@ -1073,7 +1446,7 @@
       "name": "SKILL.md",
       "type": "file",
       "path": "SKILL.md",
-      "lines": 140
+      "lines": 148
     }
   ]
 }

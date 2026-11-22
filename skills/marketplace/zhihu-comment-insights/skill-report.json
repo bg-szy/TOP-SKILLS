@@ -1,15 +1,15 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-11-02T12:06:15.791Z",
+    "generated_at": "2026-11-18T15:41:25.656Z",
     "slug": "devinchen2014-zhihu-comment-insights",
-    "source_url": "https://github.com/devinchen2014/socialdatax-skills/tree/c14b6adea4ba2b551557115cdfffde4c17375cbf/modelscope-skills/zhihu-comment-insights",
-    "source_ref": "c14b6adea4ba2b551557115cdfffde4c17375cbf",
+    "source_url": "https://github.com/devinchen2014/socialdatax-skills/tree/bfe68d5567702709d07b820222e10884268baa62/modelscope-skills/zhihu-comment-insights",
+    "source_ref": "bfe68d5567702709d07b820222e10884268baa62",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "8924055d5d5b5e9f57e2900ecb3e760d28eba3f2777c0f612e24a733505688a1",
-    "tree_hash": "5e228f6a1c0d5c46f6871ffaf2edc117e2e43e48492d82d30a7fa4d3538ae943",
+    "content_hash": "f17e8c4b351f436331c5ea76f29cd459c936c9daeb9f89ed8d9e41d6eda19b1b",
+    "tree_hash": "daddcf247bf72ee5e48523ac7cc0c7df78ad3f03a19c8c60e23755b35a64fce0",
     "provenance": {
       "model_effective": "codex",
       "fallback_chain": [
@@ -24,22 +24,23 @@
     "upstream_version_normalized": null,
     "upstream_version_source": "none",
     "upstream_version_status": "missing",
-    "upstream_commit_sha": "c14b6adea4ba2b551557115cdfffde4c17375cbf"
+    "upstream_commit_sha": "bfe68d5567702709d07b820222e10884268baa62",
+    "previous_tree_hash": "5e228f6a1c0d5c46f6871ffaf2edc117e2e43e48492d82d30a7fa4d3538ae943",
+    "previous_source_ref": "c14b6adea4ba2b551557115cdfffde4c17375cbf"
   },
   "skill": {
     "name": "zhihu-comment-insights",
-    "description": "当用户需要做知乎评论分析、知乎评论洞察、知乎用户反馈分析、知乎需求挖掘、痛点总结、购买顾虑整理、FAQ 提炼、口碑分析、评论回复观察或内容讨论复盘时使用。基于用户提供的知乎内容链接下的评论结果，面向内容运营、产品调研、品牌调研和创作者。",
-    "summary": "Analyze retrieved Zhihu comments and replies to identify pain points, purchase concerns, unmet needs, and practical recommendations.",
+    "description": "Retrieve available Zhihu comments and replies through SocialDataX. Analyze them for recurring themes, user needs, purchase concerns, and FAQ ideas.",
+    "summary": "Turn comments on a Zhihu link into findings supported by the retrieved discussion.",
     "icon": "📦",
     "author": "devinchen2014",
-    "license": "MIT",
     "category": "research",
     "tags": [
-      "zhihu",
-      "comment-analysis",
-      "user-feedback",
-      "product-research",
-      "socialdatax"
+      "Zhihu",
+      "comment analysis",
+      "user research",
+      "customer feedback",
+      "SocialDataX"
     ],
     "supported_tools": [
       "claude",
@@ -53,15 +54,35 @@
     ]
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "high",
     "is_blocked": false,
-    "safe_to_publish": true,
+    "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "One finding is confirmed: the CLI example automatically executes an unpinned external npm package with access to the configured API key. The other 35 findings concern Markdown notation, documented authentication, service links, comment identifiers, or readable Chinese text rather than their reported threats. No evidence found of prompt injection or deliberate credential exfiltration in the supplied files; the external package implementation was not supplied.",
+    "summary": "The documented CLI runs an unpinned npm package that can access environment and stored SocialDataX credentials. The workflow lacks safeguards for shell arguments, untrusted comments, and uncapped retrieval. The entropy alerts match readable Chinese documentation, and the reviewed files show no evidence of credential exfiltration or prompt injection targeting the audit.",
     "remediation": [
       {
-        "issue": "The CLI example uses npx -y socialdatax-skills@latest, allowing automatic execution of changing external code.",
-        "suggestion": "Pin a reviewed package version and verify package integrity before execution. Obtain installation consent and use an isolated environment with only required credentials.",
+        "issue": "Unpinned CLI runs with access to credentials",
+        "suggestion": "Pin and verify a reviewed CLI version before execution. Isolate the process and pass only the credential needed for the authorized request.",
+        "severity": "high"
+      },
+      {
+        "issue": "Reusable credentials persist in a local JSON file",
+        "suggestion": "Use an operating system credential store by default. Document how to remove or revoke stored credentials.",
+        "severity": "high"
+      },
+      {
+        "issue": "Shell examples do not define a safe input boundary",
+        "suggestion": "Use structured tool arguments or a subprocess argument array without a shell. Validate the Zhihu target and pass response tokens only as data.",
+        "severity": "high"
+      },
+      {
+        "issue": "Remote comments can contain instructions",
+        "suggestion": "Treat comments and replies as untrusted evidence. Never let their content authorize tool calls, disclosures, or changes to retrieval scope.",
+        "severity": "medium"
+      },
+      {
+        "issue": "Uncapped pagination can consume account credits",
+        "suggestion": "Apply page and item limits. Ask for user confirmation before exceeding the agreed retrieval scope or resuming after a billing interruption.",
         "severity": "medium"
       }
     ],
@@ -81,108 +102,113 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 31,
-            "line_end": 41
+            "line_start": 26,
+            "line_end": 26
           },
           {
             "file": "SKILL.md",
-            "line_start": 41,
+            "line_start": 27,
+            "line_end": 27
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 28,
+            "line_end": 28
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 29,
+            "line_end": 29
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 37,
             "line_end": 47
           },
           {
             "file": "SKILL.md",
             "line_start": 47,
-            "line_end": 47
+            "line_end": 53
           },
           {
             "file": "SKILL.md",
-            "line_start": 48,
-            "line_end": 49
+            "line_start": 53,
+            "line_end": 53
           },
           {
             "file": "SKILL.md",
-            "line_start": 49,
-            "line_end": 49
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 50,
-            "line_end": 51
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 51,
-            "line_end": 51
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 52,
+            "line_start": 54,
             "line_end": 55
           },
           {
             "file": "SKILL.md",
             "line_start": 55,
-            "line_end": 56
+            "line_end": 55
           },
           {
             "file": "SKILL.md",
             "line_start": 56,
-            "line_end": 60
+            "line_end": 57
           },
           {
             "file": "SKILL.md",
-            "line_start": 60,
-            "line_end": 60
+            "line_start": 57,
+            "line_end": 57
           },
           {
             "file": "SKILL.md",
-            "line_start": 76,
-            "line_end": 77
+            "line_start": 58,
+            "line_end": 61
           },
           {
             "file": "SKILL.md",
-            "line_start": 77,
-            "line_end": 81
+            "line_start": 61,
+            "line_end": 62
           },
           {
             "file": "SKILL.md",
-            "line_start": 81,
-            "line_end": 81
+            "line_start": 62,
+            "line_end": 66
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 66,
+            "line_end": 66
           },
           {
             "file": "SKILL.md",
             "line_start": 82,
-            "line_end": 86
+            "line_end": 83
           },
           {
             "file": "SKILL.md",
-            "line_start": 86,
-            "line_end": 95
+            "line_start": 83,
+            "line_end": 87
           },
           {
             "file": "SKILL.md",
-            "line_start": 95,
-            "line_end": 95
+            "line_start": 87,
+            "line_end": 87
           },
           {
             "file": "SKILL.md",
-            "line_start": 96,
-            "line_end": 97
+            "line_start": 88,
+            "line_end": 100
           },
           {
             "file": "SKILL.md",
-            "line_start": 97,
-            "line_end": 98
+            "line_start": 100,
+            "line_end": 103
           },
           {
             "file": "SKILL.md",
-            "line_start": 98,
-            "line_end": 104
+            "line_start": 103,
+            "line_end": 103
           },
           {
             "file": "SKILL.md",
-            "line_start": 104,
-            "line_end": 104
+            "line_start": 105,
+            "line_end": 112
           }
         ]
       },
@@ -201,8 +227,8 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 97,
-            "line_end": 97
+            "line_start": 105,
+            "line_end": 105
           }
         ]
       },
@@ -221,23 +247,8 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 86,
-            "line_end": 86
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 96,
-            "line_end": 96
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 98,
-            "line_end": 98
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 104,
-            "line_end": 104
+            "line_start": 28,
+            "line_end": 28
           }
         ]
       }
@@ -264,24 +275,54 @@
         "snippet": "获取或管理 API Key:访问 <https://socialdatax.com/ai?from=modelscope>,按官网的 API Key 申请/管理入口操作。环境变量名固定使用 `SOCI"
       },
       {
-        "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 31,
-        "line_end": 41,
-        "snippet": "```bash"
+        "line_start": 26,
+        "line_end": 26,
+        "snippet": "- 需要 API Key 的 CLI 调用,先在实际执行环境运行 `npx -y socialdatax-skills@latest auth status`;它不调用收费接口,只返回 `apiKey"
       },
       {
-        "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 41,
+        "line_start": 27,
+        "line_end": 27,
+        "snippet": "- 缺少 Key 时,请用户从上述官网获取,在自己打开的本地终端运行 `npx -y socialdatax-skills@latest auth login`,按隐藏输入提示填写。Key 保存到该终"
+      },
+      {
+        "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 28,
+        "line_end": 28,
+        "snippet": "- CLI 每次调用都会读取该私有用户文件,不依赖客户端加载 Shell 配置,不需要改客户端或系统设置。非空 `SOCIALDATAX_API_KEY` 优先,既有旧兼容变量其次,最后读取文件;`s"
+      },
+      {
+        "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 29,
+        "line_end": 29,
+        "snippet": "- 用户完成录入后,在实际业务命令的同一执行环境重新运行 `auth status`。false 时停止业务调用,核对操作系统用户、主目录与文件访问权限;true 只说明凭证可读,鉴权与结果仍以原业务"
+      },
+      {
+        "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 37,
         "line_end": 47,
-        "snippet": "```"
+        "snippet": "```bash"
       },
       {
         "id": "external_commands:SKILL.md:47:ruby-shell-backtick-execution",
@@ -290,58 +331,28 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 47,
-        "line_end": 47,
+        "line_end": 53,
+        "snippet": "```"
+      },
+      {
+        "id": "external_commands:SKILL.md:53:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 53,
+        "line_end": 53,
         "snippet": "- 可选:`--page-token <next_page_token>`:这是不透明的分页 token;在同一条内容或评论链路下,必须把完整返回的 `next_page_token` 原样传回,不能"
       },
       {
-        "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 48,
-        "line_end": 49,
-        "snippet": "- 可选:`--pages <n>`:获取并合并 N 页一级评论或回复。"
-      },
-      {
-        "id": "external_commands:SKILL.md:49:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 49,
-        "line_end": 49,
-        "snippet": "- 可选:`--all`:持续获取一级评论或回复,直到 `next_page_token` 为空;默认没有条数或页数上限。"
-      },
-      {
-        "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 50,
-        "line_end": 51,
-        "snippet": "- 可选:`--max-items <n>`:收集到 N 条一级评论或回复后停止。"
-      },
-      {
-        "id": "external_commands:SKILL.md:51:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 51,
-        "line_end": 51,
-        "snippet": "- 说明:知乎 `--content-url <zhihu_content_url_or_share_text>`:用于一级评论和回复;继续取回复时还需要 `--comment-id <comment"
-      },
-      {
-        "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 52,
+        "line_start": 54,
         "line_end": 55,
-        "snippet": "- 说明:知乎评论 `--sort-type <default|time_descending>`:可选一级评论排序参数;不传就使用默认排序。"
+        "snippet": "- 可选:`--pages <n>`:获取并合并 N 页一级评论或回复。"
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
@@ -350,8 +361,8 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 55,
-        "line_end": 56,
-        "snippet": "- 可选:`--pretty`:只影响输出格式,不改变实际请求结果。"
+        "line_end": 55,
+        "snippet": "- 可选:`--all`:持续获取一级评论或回复,直到 `next_page_token` 为空;默认没有条数或页数上限。"
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
@@ -360,48 +371,58 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 56,
-        "line_end": 60,
+        "line_end": 57,
+        "snippet": "- 可选:`--max-items <n>`:收集到 N 条一级评论或回复后停止。"
+      },
+      {
+        "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 57,
+        "line_end": 57,
+        "snippet": "- 说明:知乎 `--content-url <zhihu_content_url_or_share_text>`:用于一级评论和回复;继续取回复时还需要 `--comment-id <comment"
+      },
+      {
+        "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 58,
+        "line_end": 61,
+        "snippet": "- 说明:知乎评论 `--sort-type <default|time_descending>`:可选一级评论排序参数;不传就使用默认排序。"
+      },
+      {
+        "id": "external_commands:SKILL.md:61:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 61,
+        "line_end": 62,
+        "snippet": "- 可选:`--pretty`:只影响输出格式,不改变实际请求结果。"
+      },
+      {
+        "id": "external_commands:SKILL.md:62:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 62,
+        "line_end": 66,
         "snippet": "- 可选:`--source-client socialdatax-skills --source-platform modelscope --source-skill zhihu-comment-i"
       },
       {
-        "id": "external_commands:SKILL.md:60:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:66:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 60,
-        "line_end": 60,
+        "line_start": 66,
+        "line_end": 66,
         "snippet": "命令返回 JSON,包含 `platform`、`tool`、`arguments` 和 `data`。多页结果会把一级评论合并到 `data.items`,并补充 `page_count`、`ite"
-      },
-      {
-        "id": "external_commands:SKILL.md:76:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 76,
-        "line_end": 77,
-        "snippet": "- `zhihu_get_content_comments_by_url`"
-      },
-      {
-        "id": "external_commands:SKILL.md:77:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 77,
-        "line_end": 81,
-        "snippet": "- `zhihu_get_comment_replies_by_url`"
-      },
-      {
-        "id": "external_commands:SKILL.md:81:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 81,
-        "line_end": 81,
-        "snippet": "- `zhihu_get_content_comments_by_url`:用于知乎回答、文章或视频 URL;可选 `sort_type` 支持 `default` 或 `time_descendin"
       },
       {
         "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
@@ -410,68 +431,68 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 82,
-        "line_end": 86,
+        "line_end": 83,
+        "snippet": "- `zhihu_get_content_comments_by_url`"
+      },
+      {
+        "id": "external_commands:SKILL.md:83:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 83,
+        "line_end": 87,
+        "snippet": "- `zhihu_get_comment_replies_by_url`"
+      },
+      {
+        "id": "external_commands:SKILL.md:87:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 87,
+        "line_end": 87,
+        "snippet": "- `zhihu_get_content_comments_by_url`:用于知乎回答、文章或视频 URL;可选 `sort_type` 支持 `default` 或 `time_descendin"
+      },
+      {
+        "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 88,
+        "line_end": 100,
         "snippet": "- `zhihu_get_comment_replies_by_url`:已知知乎内容 URL 和一级评论 ID 时使用。"
       },
       {
-        "id": "external_commands:SKILL.md:86:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:100:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 86,
-        "line_end": 95,
-        "snippet": "这是只读 skill。运行时使用用户环境变量中的 `SOCIALDATAX_API_KEY`;生成的 Skill 文件不包含 API Key。不会读取本地浏览器数据,也不会执行登录、发帖、点赞、评论或"
+        "line_start": 100,
+        "line_end": 103,
+        "snippet": "- 凭证来源排查:先确认本次调用使用 CLI 还是 MCP。CLI 在实际执行环境中用 `auth status` 确认环境或本地文件来源;MCP 检查当前连接实际使用的鉴权配置,不要求另设本地 CL"
       },
       {
-        "id": "external_commands:SKILL.md:95:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:103:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 95,
-        "line_end": 95,
+        "line_start": 103,
+        "line_end": 103,
         "snippet": "- CLI 退出码为 1 且输出 `partial: true` 时,保留 `data.items` 和错误,明确结果不完整。此时按以下续页规则恢复,不适用原命令重跑建议;错误解决后(包括充值后),仅"
       },
       {
-        "id": "external_commands:SKILL.md:96:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:105:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 96,
-        "line_end": 97,
-        "snippet": "- 非余额不足的网络或 API 异常:保留错误信息,检查 `SOCIALDATAX_API_KEY`、参数和链接格式后原样重试一次。"
-      },
-      {
-        "id": "external_commands:SKILL.md:97:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 97,
-        "line_end": 98,
+        "line_start": 105,
+        "line_end": 112,
         "snippet": "- 如果返回 `insufficient_balance` 或“积分不足”:不要重复重试;展示错误中的官方充值链接(https://socialdatax.com/dashboard/billing,"
-      },
-      {
-        "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 98,
-        "line_end": 104,
-        "snippet": "- 如果用户已经充值但仍提示余额不足:确认当前环境变量 `SOCIALDATAX_API_KEY` 是否来自刚充值的同一个账号;必要时重新复制官网后台的 API Key。"
-      },
-      {
-        "id": "external_commands:SKILL.md:104:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 104,
-        "line_end": 104,
-        "snippet": "- 调用失败:先确认 `SOCIALDATAX_API_KEY` 已配置;如果是 `insufficient_balance` 或“积分不足”,按上述官方充值链接说明完成充值后,按上述恢复规则继续,不"
       },
       {
         "id": "network:SKILL.md:7:hardcoded-url",
@@ -481,7 +502,7 @@
         "file": "SKILL.md",
         "line_start": 7,
         "line_end": 7,
-        "snippet": "metadata: {\"openclaw\":{\"requires\":{\"env\":[\"SOCIALDATAX_API_KEY\"],\"bins\":[\"node\",\"npm\"]},\"primaryEnv\""
+        "snippet": "metadata: {\"openclaw\":{\"requires\":{\"env\":[],\"bins\":[]},\"primaryEnv\":\"SOCIALDATAX_API_KEY\",\"install\":"
       },
       {
         "id": "network:SKILL.md:25:hardcoded-url",
@@ -494,13 +515,13 @@
         "snippet": "获取或管理 API Key:访问 <https://socialdatax.com/ai?from=modelscope>,按官网的 API Key 申请/管理入口操作。环境变量名固定使用 `SOCI"
       },
       {
-        "id": "network:SKILL.md:97:hardcoded-url",
+        "id": "network:SKILL.md:105:hardcoded-url",
         "category": "network",
         "severity": "low",
         "pattern": "Hardcoded URL",
         "file": "SKILL.md",
-        "line_start": 97,
-        "line_end": 97,
+        "line_start": 105,
+        "line_end": 105,
         "snippet": "- 如果返回 `insufficient_balance` 或“积分不足”:不要重复重试;展示错误中的官方充值链接(https://socialdatax.com/dashboard/billing,"
       },
       {
@@ -511,7 +532,7 @@
         "file": "SKILL.md",
         "line_start": 7,
         "line_end": 7,
-        "snippet": "metadata: {\"openclaw\":{\"requires\":{\"env\":[\"SOCIALDATAX_API_KEY\"],\"bins\":[\"node\",\"npm\"]},\"primaryEnv\""
+        "snippet": "metadata: {\"openclaw\":{\"requires\":{\"env\":[],\"bins\":[]},\"primaryEnv\":\"SOCIALDATAX_API_KEY\",\"install\":"
       },
       {
         "id": "env_access:SKILL.md:25:generic-api-secret-keys",
@@ -524,63 +545,43 @@
         "snippet": "获取或管理 API Key:访问 <https://socialdatax.com/ai?from=modelscope>,按官网的 API Key 申请/管理入口操作。环境变量名固定使用 `SOCI"
       },
       {
-        "id": "env_access:SKILL.md:86:generic-api-secret-keys",
+        "id": "env_access:SKILL.md:28:generic-api-secret-keys",
         "category": "env_access",
         "severity": "high",
         "pattern": "Generic API/secret keys",
         "file": "SKILL.md",
-        "line_start": 86,
-        "line_end": 86,
-        "snippet": "这是只读 skill。运行时使用用户环境变量中的 `SOCIALDATAX_API_KEY`;生成的 Skill 文件不包含 API Key。不会读取本地浏览器数据,也不会执行登录、发帖、点赞、评论或"
+        "line_start": 28,
+        "line_end": 28,
+        "snippet": "- CLI 每次调用都会读取该私有用户文件,不依赖客户端加载 Shell 配置,不需要改客户端或系统设置。非空 `SOCIALDATAX_API_KEY` 优先,既有旧兼容变量其次,最后读取文件;`s"
       },
       {
-        "id": "env_access:SKILL.md:96:generic-api-secret-keys",
-        "category": "env_access",
+        "id": "sensitive:SKILL.md:27:credential-json-file",
+        "category": "sensitive",
         "severity": "high",
-        "pattern": "Generic API/secret keys",
+        "pattern": "Credential JSON file",
         "file": "SKILL.md",
-        "line_start": 96,
-        "line_end": 96,
-        "snippet": "- 非余额不足的网络或 API 异常:保留错误信息,检查 `SOCIALDATAX_API_KEY`、参数和链接格式后原样重试一次。"
+        "line_start": 27,
+        "line_end": 27,
+        "snippet": "- 缺少 Key 时,请用户从上述官网获取,在自己打开的本地终端运行 `npx -y socialdatax-skills@latest auth login`,按隐藏输入提示填写。Key 保存到该终"
       },
       {
-        "id": "env_access:SKILL.md:98:generic-api-secret-keys",
-        "category": "env_access",
-        "severity": "high",
-        "pattern": "Generic API/secret keys",
-        "file": "SKILL.md",
-        "line_start": 98,
-        "line_end": 98,
-        "snippet": "- 如果用户已经充值但仍提示余额不足:确认当前环境变量 `SOCIALDATAX_API_KEY` 是否来自刚充值的同一个账号;必要时重新复制官网后台的 API Key。"
-      },
-      {
-        "id": "env_access:SKILL.md:104:generic-api-secret-keys",
-        "category": "env_access",
-        "severity": "high",
-        "pattern": "Generic API/secret keys",
-        "file": "SKILL.md",
-        "line_start": 104,
-        "line_end": 104,
-        "snippet": "- 调用失败:先确认 `SOCIALDATAX_API_KEY` 已配置;如果是 `insufficient_balance` 或“积分不足”,按上述官方充值链接说明完成充值后,按上述恢复规则继续,不"
-      },
-      {
-        "id": "blocker:SKILL.md:38:system-reconnaissance",
+        "id": "blocker:SKILL.md:44:system-reconnaissance",
         "category": "blocker",
         "severity": "low",
         "pattern": "System reconnaissance",
         "file": "SKILL.md",
-        "line_start": 38,
-        "line_end": 38,
+        "line_start": 44,
+        "line_end": 44,
         "snippet": "--content-url \"<zhihu_content_url_or_share_text>\" --comment-id \"<comment_id>\" \\"
       },
       {
-        "id": "blocker:SKILL.md:51:system-reconnaissance",
+        "id": "blocker:SKILL.md:57:system-reconnaissance",
         "category": "blocker",
         "severity": "low",
         "pattern": "System reconnaissance",
         "file": "SKILL.md",
-        "line_start": 51,
-        "line_end": 51,
+        "line_start": 57,
+        "line_end": 57,
         "snippet": "- 说明:知乎 `--content-url <zhihu_content_url_or_share_text>`:用于一级评论和回复;继续取回复时还需要 `--comment-id <comment"
       },
       {
@@ -594,10 +595,10 @@
         "snippet": "当用户需要做知乎评论分析、知乎评论洞察、知乎用户反馈分析、知乎需求挖掘、痛点总结、购买顾虑整理、FAQ 提炼、口碑分析、评论回复观察或内容讨论复盘时使用。基于用..."
       },
       {
-        "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-7-28-bits-possible-b",
+        "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-7-48-bits-possible-b",
         "category": "obfuscation",
         "severity": "high",
-        "pattern": "[HEURISTIC] High file entropy (7.28 bits) - possible binary/encrypted content",
+        "pattern": "[HEURISTIC] High file entropy (7.48 bits) - possible binary/encrypted content",
         "file": "SKILL.md",
         "line_start": 1,
         "line_end": 1,
@@ -609,372 +610,571 @@
         "id": "external_commands:SKILL.md:9:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The backticks mark a generator command inside a Markdown source-maintenance comment. No Ruby or shell command substitution occurs here."
+        "reason": "The HTML comment identifies a maintainer generation command. It does not tell the agent to run it during comment retrieval."
       },
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format the documented environment variable name SOCIALDATAX_API_KEY. This line contains no shell execution."
+        "reason": "The backticks format an environment variable name, not a shell command."
       },
       {
-        "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "confirmed",
-        "confidence": 0.97,
-        "reason": "Although the backticks are a Markdown fence, the enclosed commands explicitly run npx -y socialdatax-skills@latest. Unpinned external code executes with local permissions and access to the configured API key, creating supply-chain exposure.",
-        "severity": "medium"
+        "confidence": 0.99,
+        "reason": "The skill directs the agent to run an unpinned npm package with automatic confirmation. Even a status check gives that package access to the execution environment."
       },
       {
-        "id": "external_commands:SKILL.md:41:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The user is told to run an unpinned npm package and enter a secret into its prompt. Hidden input does not protect the secret from the package."
+      },
+      {
+        "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "This is the closing Markdown fence followed by argument documentation, not command substitution. The actual external execution risk is retained under the opening example finding."
+        "reason": "The backticked text identifies the environment variable and the status source value. Neither is an executable command."
+      },
+      {
+        "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.97,
+        "reason": "The prose directs the agent to rerun the status command from line 26 after setup. The unpinned package then runs where the newly configured credential is available."
+      },
+      {
+        "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The fence is Markdown, but lines 38 through 46 give the agent two shell commands that run the unpinned npm package with automatic confirmation."
       },
       {
         "id": "external_commands:SKILL.md:47:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Inline backticks mark the pagination option and returned token field. Passing an opaque token unchanged within the same query is normal pagination, not shell execution."
+        "reason": "This fence closes the command examples. The following lines document inputs and pagination rather than introducing another executable command."
       },
       {
-        "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:53:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The backticks format documented page-count and collection options. They do not evaluate commands."
+        "confidence": 0.98,
+        "reason": "The backticks format a pagination option and response field. The text describes reusing a cursor within the same query, not executing it."
       },
       {
-        "id": "external_commands:SKILL.md:49:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line documents the optional --all flag and a pagination field using Markdown. It does not contain backtick execution."
-      },
-      {
-        "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "Inline code spans label item limits and content identifiers. These are argument descriptions, not executable substitutions."
-      },
-      {
-        "id": "external_commands:SKILL.md:51:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The backticks delimit the content URL and comment ID option names. No host command is executed by this prose."
-      },
-      {
-        "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The cited text describes sort modes and output formatting options. Its backticks are ordinary Markdown notation."
+        "reason": "The text documents a page count argument and does not contain a standalone shell command."
       },
       {
         "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The inline spans describe pretty printing and source attribution flags. No shell substitution or execution appears."
+        "reason": "The backticks mark an optional pagination flag, not a shell command. The separate credit risk from uncapped retrieval is addressed in the semantic findings."
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format fixed source-attribution arguments and returned data fields. This documentation does not execute them."
+        "reason": "The text documents an item limit argument. It does not introduce another executable command."
       },
       {
-        "id": "external_commands:SKILL.md:60:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line lists response field names inside Markdown code spans. These are data labels, not executable expressions."
+        "reason": "The inline code labels the input arguments for locating Zhihu comments and replies. The line is parameter documentation."
       },
       {
-        "id": "external_commands:SKILL.md:76:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The backticks format names of read-only Zhihu MCP tools. Listing tool identifiers is not shell execution."
+        "reason": "The vertical bar separates documented sort options. It is not a shell pipeline."
       },
       {
-        "id": "external_commands:SKILL.md:77:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:61:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The cited span lists a reply-retrieval tool and describes tool selection. The backticks are Markdown, not executable syntax."
+        "reason": "The marked text is an output formatting flag. It is not an executable command."
       },
       {
-        "id": "external_commands:SKILL.md:81:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:62:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.98,
+        "reason": "The snippet lists fixed source labels passed as CLI arguments. It does not name an executable or evaluate user input."
+      },
+      {
+        "id": "external_commands:SKILL.md:66:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Inline code spans identify a comment-retrieval tool and supported sort values. No command substitution occurs."
+        "reason": "The line documents response fields and a platform-dependent option. The inline code does not execute."
       },
       {
         "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The cited text describes a reply tool and its required identifiers. Backticks elsewhere in the span format the credential variable, not shell code."
+        "reason": "The list item names an MCP tool for retrieving top-level comments. It is not a shell invocation."
       },
       {
-        "id": "external_commands:SKILL.md:86:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:83:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format the authentication variable and partial-result fields within safety and recovery guidance. They do not execute commands."
+        "reason": "The list item names an MCP tool for retrieving replies. The Markdown backticks do not invoke it."
       },
       {
-        "id": "external_commands:SKILL.md:95:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:87:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The inline spans identify partial-result fields, pagination tokens, and collection limits. The instructions preserve progress and limits rather than evaluating shell content."
+        "reason": "The marked text names a configured MCP tool and describes supported sort values. It does not instruct the agent to invoke a shell."
       },
       {
-        "id": "external_commands:SKILL.md:96:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:88:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks mark the credential variable and an insufficient-balance error code. This troubleshooting prose contains no shell substitution."
+        "reason": "The line identifies an MCP reply tool and the arguments needed to select a discussion. No shell command is present."
       },
       {
-        "id": "external_commands:SKILL.md:97:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The code spans label a balance error and authentication variable. The text describes billing recovery, not backtick execution."
+        "id": "external_commands:SKILL.md:100:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.96,
+        "reason": "CLI troubleshooting directs the agent to the same status invocation documented on line 26. The instruction not to print secrets does not constrain the unpinned package."
       },
       {
-        "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:103:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The cited guidance discusses account-key alignment and failed-call recovery. Its backticks format identifiers and do not invoke commands."
+        "confidence": 0.98,
+        "reason": "The backticks mark response fields and pagination flags in recovery instructions. The finding does not identify a distinct shell command."
       },
       {
-        "id": "external_commands:SKILL.md:104:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:105:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The backticks mark a configuration variable and balance error code in an FAQ answer. No executable substitution is present."
+        "reason": "The inline code names a billing error. The line tells the agent to display a billing link, not to execute a shell command."
       },
       {
         "id": "network:SKILL.md:7:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is a homepage entry for the declared SocialDataX provider. This metadata contains no request or transfer of secrets."
+        "confidence": 0.99,
+        "reason": "The URL is the provider homepage in metadata. This value does not itself send data or make a network request."
       },
       {
         "id": "network:SKILL.md:25:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.98,
-        "reason": "The link directs users to the declared provider for API key management. No credential-bearing request or unrelated destination appears."
+        "reason": "The link directs users to the declared provider for key management. The URL contains no credential, and this line does not send one."
       },
       {
-        "id": "network:SKILL.md:97:hardcoded-url",
+        "id": "network:SKILL.md:105:hardcoded-url",
         "verdict": "false_positive",
         "confidence": 0.97,
-        "reason": "The hardcoded URL is the declared provider's billing page, displayed only after insufficient-balance errors. It does not transmit credentials or initiate payment."
+        "reason": "The hardcoded URL is the declared provider billing page. The line calls for displaying it on a balance error, not sending credentials or making a payment."
       },
       {
         "id": "env_access:SKILL.md:7:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The metadata declares the required API key variable without embedding a secret value. This is expected service configuration, not credential theft."
+        "confidence": 0.98,
+        "reason": "The metadata declares the service credential variable by name. It contains no key value or instruction to enumerate environment variables."
       },
       {
         "id": "env_access:SKILL.md:25:generic-api-secret-keys",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line names the authentication variable and explains obtaining a key from the provider. It does not expose or forward an actual key."
+        "reason": "The setup paragraph documents the variable name. It does not read its value or ask the user to disclose it."
       },
       {
-        "id": "env_access:SKILL.md:86:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The skill explicitly documents use of the user's configured key for its declared service. No evidence found here of unrelated credential collection or disclosure."
-      },
-      {
-        "id": "env_access:SKILL.md:96:generic-api-secret-keys",
-        "verdict": "false_positive",
+        "id": "env_access:SKILL.md:28:generic-api-secret-keys",
+        "verdict": "confirmed",
         "confidence": 0.98,
-        "reason": "The line recommends checking configured authentication after an API failure. It does not instruct printing, logging, or transmitting the key elsewhere."
+        "reason": "The CLI is documented to prefer an environment credential over the local file. The unpinned package runs with access to that value and any inherited environment secrets."
       },
       {
-        "id": "env_access:SKILL.md:98:generic-api-secret-keys",
-        "verdict": "false_positive",
+        "id": "sensitive:SKILL.md:27:credential-json-file",
+        "verdict": "confirmed",
         "confidence": 0.97,
-        "reason": "The guidance checks whether the configured key belongs to the funded service account. It does not request disclosure to another party."
+        "reason": "The login workflow stores a reusable key in a JSON file. Owner-only permissions do not isolate it from unreviewed code running as that user."
       },
       {
-        "id": "env_access:SKILL.md:104:generic-api-secret-keys",
+        "id": "blocker:SKILL.md:44:system-reconnaissance",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "This FAQ checks whether the required variable is configured and discourages repeated failed calls. It contains no embedded secret or exfiltration instruction."
+        "reason": "The comment ID selects a Zhihu reply thread. It does not inspect local accounts, services, or host configuration."
       },
       {
-        "id": "blocker:SKILL.md:38:system-reconnaissance",
+        "id": "blocker:SKILL.md:57:system-reconnaissance",
         "verdict": "false_positive",
-        "confidence": 1,
-        "reason": "The --comment-id argument identifies a Zhihu comment for reply retrieval. It is not a host identity command or system reconnaissance."
-      },
-      {
-        "id": "blocker:SKILL.md:51:system-reconnaissance",
-        "verdict": "false_positive",
-        "confidence": 1,
-        "reason": "The prose documents a content URL and comment ID required for replies. No system inspection command is present."
+        "confidence": 0.99,
+        "reason": "The line documents content and comment identifiers used by the Zhihu query. They are not system discovery parameters."
       },
       {
         "id": "obfuscation:SKILL.md:3:heuristic-very-high-entropy-string-5-80-bits-lik",
         "verdict": "false_positive",
-        "confidence": 1,
-        "reason": "The flagged string is readable Chinese describing comment analysis use cases. It is neither an encoded payload nor encrypted instructions."
+        "confidence": 0.99,
+        "reason": "The flagged frontmatter string is a readable Chinese description of the skill and its use cases. It is not an encoded payload."
       },
       {
-        "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-7-28-bits-possible-b",
+        "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-7-48-bits-possible-b",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The complete file is readable UTF-8 Chinese Markdown with metadata and CLI examples. No evidence found of binary content, payload decoding, or encrypted execution."
+        "confidence": 0.98,
+        "reason": "The file is readable Chinese Markdown with frontmatter and visible command examples. No evidence of binary or encrypted content was found."
       }
     ],
-    "semantic_findings": [],
-    "critical_findings": [],
-    "high_findings": [],
-    "medium_findings": [
+    "semantic_findings": [
       {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
+        "title": "Untrusted values in shell examples",
+        "description": "The CLI workflow places user-supplied share text into shell examples and reuses remote pagination tokens. Direct substitution can let those values alter shell execution.",
+        "severity": "high",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 31,
-            "line_end": 41
+            "line_start": 35,
+            "line_end": 46
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 51,
+            "line_end": 53
+          }
+        ],
+        "confidence": 0.88,
+        "confidence_reasoning": "The examples use shell strings and the prose does not require structured argument passing. Actual exposure depends on how the host builds the command."
+      },
+      {
+        "title": "Remote comments are not isolated from agent instructions",
+        "description": "The output guidance asks the agent to quote and analyze remote comments. It does not tell the agent to ignore instructions embedded in those comments.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 68,
+            "line_end": 76
+          }
+        ],
+        "confidence": 0.86,
+        "confidence_reasoning": "The workflow puts third-party text in the model context without an explicit trust boundary. No malicious comment or resulting action was observed."
+      },
+      {
+        "title": "Uncapped retrieval can consume account credits",
+        "description": "The CLI offers retrieval without a page or item cap. Large discussions can consume paid credits without any documented cost check or confirmation for uncapped requests.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 53,
+            "line_end": 56
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 103,
+            "line_end": 106
+          }
+        ],
+        "confidence": 0.91,
+        "confidence_reasoning": "The unbounded option and balance errors are explicit. The workflow starts with one page and preserves any limits already set, so the risk applies to uncapped requests."
+      }
+    ],
+    "critical_findings": [],
+    "high_findings": [
+      {
+        "title": "Generic API/secret keys",
+        "description": "- CLI 每次调用都会读取该私有用户文件,不依赖客户端加载 Shell 配置,不需要改客户端或系统设置。非空 `SOCIALDATAX_API_KEY` 优先,既有旧兼容变量其次,最后读取文件;`s",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 28,
+            "line_end": 28
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "env_access",
+        "source_severity": "high",
+        "confidence": 0.98,
+        "confidence_reasoning": "The CLI is documented to prefer an environment credential over the local file. The unpinned package runs with access to that value and any inherited environment secrets."
+      },
+      {
+        "title": "Credential JSON file",
+        "description": "- 缺少 Key 时,请用户从上述官网获取,在自己打开的本地终端运行 `npx -y socialdatax-skills@latest auth login`,按隐藏输入提示填写。Key 保存到该终",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 27,
+            "line_end": 27
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.97,
+        "confidence_reasoning": "The login workflow stores a reusable key in a JSON file. Owner-only permissions do not isolate it from unreviewed code running as that user."
+      },
+      {
+        "title": "Untrusted values in shell examples",
+        "description": "The CLI workflow places user-supplied share text into shell examples and reuses remote pagination tokens. Direct substitution can let those values alter shell execution.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 35,
+            "line_end": 46
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 51,
+            "line_end": 53
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "high",
+        "confidence": 0.88,
+        "confidence_reasoning": "The examples use shell strings and the prose does not require structured argument passing. Actual exposure depends on how the host builds the command."
+      }
+    ],
+    "medium_findings": [
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- 需要 API Key 的 CLI 调用,先在实际执行环境运行 `npx -y socialdatax-skills@latest auth status`;它不调用收费接口,只返回 `apiKey",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 26,
+            "line_end": 26
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The skill directs the agent to run an unpinned npm package with automatic confirmation. Even a status check gives that package access to the execution environment."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- 缺少 Key 时,请用户从上述官网获取,在自己打开的本地终端运行 `npx -y socialdatax-skills@latest auth login`,按隐藏输入提示填写。Key 保存到该终",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 27,
+            "line_end": 27
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The user is told to run an unpinned npm package and enter a secret into its prompt. Hidden input does not protect the secret from the package."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- 用户完成录入后,在实际业务命令的同一执行环境重新运行 `auth status`。false 时停止业务调用,核对操作系统用户、主目录与文件访问权限;true 只说明凭证可读,鉴权与结果仍以原业务",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 29,
+            "line_end": 29
           }
         ],
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
         "confidence": 0.97,
-        "confidence_reasoning": "Although the backticks are a Markdown fence, the enclosed commands explicitly run npx -y socialdatax-skills@latest. Unpinned external code executes with local permissions and access to the configured API key, creating supply-chain exposure."
+        "confidence_reasoning": "The prose directs the agent to rerun the status command from line 26 after setup. The unpinned package then runs where the newly configured credential is available."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 37,
+            "line_end": 47
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The fence is Markdown, but lines 38 through 46 give the agent two shell commands that run the unpinned npm package with automatic confirmation."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- 凭证来源排查:先确认本次调用使用 CLI 还是 MCP。CLI 在实际执行环境中用 `auth status` 确认环境或本地文件来源;MCP 检查当前连接实际使用的鉴权配置,不要求另设本地 CL",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 100,
+            "line_end": 103
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.96,
+        "confidence_reasoning": "CLI troubleshooting directs the agent to the same status invocation documented on line 26. The instruction not to print secrets does not constrain the unpinned package."
+      },
+      {
+        "title": "Remote comments are not isolated from agent instructions",
+        "description": "The output guidance asks the agent to quote and analyze remote comments. It does not tell the agent to ignore instructions embedded in those comments.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 68,
+            "line_end": 76
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.86,
+        "confidence_reasoning": "The workflow puts third-party text in the model context without an explicit trust boundary. No malicious comment or resulting action was observed."
+      },
+      {
+        "title": "Uncapped retrieval can consume account credits",
+        "description": "The CLI offers retrieval without a page or item cap. Large discussions can consume paid credits without any documented cost check or confirmation for uncapped requests.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 53,
+            "line_end": 56
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 103,
+            "line_end": 106
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.91,
+        "confidence_reasoning": "The unbounded option and balance errors are explicit. The workflow starts with one page and preserves any limits already set, so the risk applies to uncapped requests."
       }
     ],
     "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 2,
-    "total_lines": 115,
+    "total_lines": 123,
     "audit_model": "codex",
-    "audited_at": "2026-11-02T12:06:15.791Z",
-    "agent_auto_install_policy": "allowed",
+    "audited_at": "2026-11-18T15:41:25.656Z",
+    "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Analyze Zhihu Comments for User Insights",
-    "value_statement": "Zhihu discussions can contain scattered feedback that is difficult to compare. This skill organizes retrieved comments and replies into themes, concerns, needs, and actionable recommendations.",
+    "user_title": "Analyze Zhihu Comments and Replies",
+    "value_statement": "Long Zhihu discussions can make recurring questions and concerns hard to find. This skill groups retrieved comments into themes and separates quoted evidence from recommendations.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "Zhihu comment analysis",
-      "user feedback",
-      "customer pain points",
-      "product research",
       "SocialDataX",
-      "FAQ extraction",
-      "comment replies"
+      "customer feedback analysis",
+      "product research",
+      "purchase concerns",
+      "FAQ discovery"
     ],
     "actual_capabilities": [
-      "Retrieve comments from a supplied Zhihu answer, article, or video URL through the documented SocialDataX CLI or available MCP tools.",
-      "Retrieve replies using the content URL and a known parent comment ID.",
-      "Collect multiple pages using continuation tokens, page limits, or item limits.",
-      "Organize returned comments into themes, pain points, purchase concerns, unmet needs, and FAQ candidates.",
-      "Separate visible comment evidence from interpretation and report the sample coverage.",
-      "Preserve partial results and resume pagination while retaining the original collection limits."
+      "Retrieve top-level comments for a Zhihu answer, article, or video link through SocialDataX.",
+      "Fetch replies to a selected top-level comment when its ID and the content link are available.",
+      "Choose the default or newest-first order for top-level comments.",
+      "Use CLI pagination to merge pages and limit retrieval by pages or items.",
+      "Group feedback into themes, pain points, purchase concerns, unmet needs, and FAQ ideas.",
+      "Report what was retrieved and keep visible comment quotes separate from interpretation."
     ],
     "limitations": [
-      "Requires a configured SOCIALDATAX_API_KEY, service access, and sufficient account balance.",
-      "CLI use requires Node.js, npm, network access, and an external package that is not bundled with these skill files.",
-      "Findings cover only returned comments and replies, not all Zhihu users or the entire platform.",
-      "The documented workflow does not log in, publish content, like posts, submit comments, or modify accounts."
+      "Retrieval requires an authenticated SocialDataX MCP connection or Node.js, npm, and SocialDataX credentials for the CLI.",
+      "Requests can use SocialDataX credits, and the provider may return partial results.",
+      "The analysis covers returned comments and replies only. It cannot represent all Zhihu users.",
+      "The workflow does not post comments, change Zhihu accounts, or access local browser data."
     ],
     "use_cases": [
       {
-        "title": "Identify Product Improvement Leads",
-        "description": "Group recurring complaints and unmet needs from a supplied discussion, with visible evidence and practical follow-up questions.",
-        "target_user": "Product researchers"
+        "title": "Plan follow-up content",
+        "description": "Review comments on a recent article and prioritize questions that a follow-up article could answer.",
+        "target_user": "Content creator"
       },
       {
-        "title": "Plan Follow-Up Content",
-        "description": "Extract recurring audience questions and discussion themes to guide future topics and FAQ updates.",
-        "target_user": "Content creators"
+        "title": "Identify unmet product needs",
+        "description": "Group product feedback by pain point and use sampled replies to find details for later interviews.",
+        "target_user": "Product researcher"
       },
       {
-        "title": "Review Purchase Concerns",
-        "description": "Summarize purchase objections and service expectations from returned comments without treating the sample as representative market research.",
-        "target_user": "Brand analysts"
+        "title": "Draft support FAQ topics",
+        "description": "Find recurring purchase concerns and identify questions that need verified answers before publication.",
+        "target_user": "Customer support lead"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Summarize One Discussion",
-        "prompt": "Analyze the first page of comments for [Zhihu content URL]. Summarize themes and questions, quote visible evidence, and state the sample limits.",
-        "scenario": "Beginner: review one supplied discussion."
+        "title": "Summarize the first page",
+        "prompt": "Read the first page of comments on [Zhihu link]. List the main themes and mark the findings as a first-page sample.",
+        "scenario": "Get a quick overview of one discussion."
       },
       {
-        "title": "Extract Pain Points and FAQ",
-        "prompt": "Review up to two comment pages for [Zhihu content URL]. Group pain points and purchase concerns, then propose FAQ answers. Separate evidence from interpretation.",
-        "scenario": "Intermediate: turn a bounded sample into structured feedback."
+        "title": "Find buying concerns",
+        "prompt": "Read the first page for [Zhihu link] in newest-first order. Group purchase concerns and quote one visible comment per theme when available.",
+        "scenario": "Review recent feedback on a product."
       },
       {
-        "title": "Examine a Reply Thread",
-        "prompt": "Retrieve up to 50 replies for [comment ID] under [Zhihu content URL]. Explain recurring disagreements and unmet needs. Use only visible quotes.",
-        "scenario": "Advanced: investigate a specific parent comment."
+        "title": "Review selected reply threads",
+        "prompt": "Fetch one page of replies for each top-level comment ID I provide for [Zhihu link]. Separate new questions from points repeated across the threads.",
+        "scenario": "Explore a defined set of discussions in more detail."
       },
       {
-        "title": "Build a Bounded Research Brief",
-        "prompt": "For [Zhihu content URL], collect at most three pages and 150 comments. Investigate [research question] and retrieve at most 20 replies per selected thread. Report themes, evidence, coverage, and next actions. Preserve partial results and request approval before expanding limits.",
-        "scenario": "Expert: conduct a controlled research workflow."
+        "title": "Build a product research brief",
+        "prompt": "Using the configured SocialDataX CLI, retrieve at most two pages of top-level comments on [Zhihu link]. Report coverage and gaps. Separate quoted evidence, research hypotheses, and proposed follow-up questions.",
+        "scenario": "Prepare a bounded review for product discovery."
       }
     ],
     "output_examples": [
       {
-        "input": "Illustrative request: summarize a first-page sample about a software subscription.",
+        "input": "Identify purchase concerns in the first page of comments on a Zhihu review.",
         "output": [
-          "Illustrative result, not live retrieval: the sample contains questions about trial restrictions and cancellation.",
-          "Purchase concern: uncertainty about recurring charges. Validate this interpretation against the returned comment text.",
-          "Suggested action: clarify cancellation terms and trial limits in the FAQ.",
-          "Coverage: first-page sample only; no claim about all Zhihu users."
+          "Scope: First page of top-level comments. Replies were not retrieved.",
+          "Concern: Buyers asked whether replacement parts are available outside major cities.",
+          "Suggested action: Verify regional availability before adding a support claim to the FAQ."
         ]
       },
       {
-        "input": "Illustrative request: review a reply thread about a product setup problem.",
+        "input": "Review replies to a selected comment about setup.",
         "output": [
-          "Illustrative result, not live retrieval: replies discuss confusing setup steps.",
-          "Possible unmet need: clearer onboarding guidance.",
-          "Suggested action: test a revised setup checklist with affected users.",
-          "Coverage: one selected thread; evidence and interpretation remain separate."
+          "Scope: One page of replies in the selected thread.",
+          "Illustrative evidence: \"I could not find the setup guide after opening the box.\"",
+          "Interpretation: This reply suggests the guide may be hard to find. It does not show how common the problem is.",
+          "Suggested action: Test whether new users can find the guide without help."
         ]
       }
     ],
     "best_practices": [
-      "Use a reviewed, pinned CLI package version and configure the API key without sharing its value in prompts or reports.",
-      "Start with one page, set collection limits, and request approval before expanding retrieval or spending.",
-      "Quote only returned comments, separate evidence from interpretation, and state coverage and partial-result limits."
+      "Start with one page or an explicit limit. Expand only when the initial sample does not answer the question.",
+      "State the input link, sort order, and scope of any replies before presenting conclusions.",
+      "Quote only visible comments. Separate evidence from interpretation and omit unnecessary personal details."
     ],
     "anti_patterns": [
-      "Treating a limited comment sample as representative of the entire Zhihu platform.",
-      "Inventing quotes, feedback counts, or purchase intent that the returned comments do not support.",
-      "Using unlimited collection or restarting partial retrieval without checking limits, progress, and potential service charges."
+      "Treating one discussion or a partial response as representative of all Zhihu users.",
+      "Pasting SocialDataX keys into chat, prompts, logs, or screenshots.",
+      "Using uncapped retrieval when a bounded sample can answer the question."
     ],
     "faq": [
       {
-        "question": "What input does this skill need?",
-        "answer": "Provide a supported Zhihu content URL or share text. Reply retrieval also requires a parent comment ID."
+        "question": "Which Zhihu links are supported?",
+        "answer": "Start with an answer, article, or video link. The CLI also accepts supported short links or share text."
       },
       {
-        "question": "What must I configure before retrieval?",
-        "answer": "Configure SOCIALDATAX_API_KEY and ensure service access and sufficient balance. CLI use also requires Node.js, npm, and network access."
+        "question": "How does the skill connect to SocialDataX?",
+        "answer": "It uses the SocialDataX CLI or an existing authenticated MCP connection. Keep credentials out of chat."
       },
       {
-        "question": "Can it analyze replies as well as comments?",
-        "answer": "Yes. The documented reply command and MCP tool use a content URL and parent comment ID."
+        "question": "Can I retrieve replies?",
+        "answer": "Yes. Reply retrieval requires the original content link and the ID of the top-level comment."
       },
       {
-        "question": "Does the report represent all Zhihu users?",
-        "answer": "No. Conclusions apply only to the comments and replies returned for the supplied content and collection limits."
+        "question": "Can I change the comment order?",
+        "answer": "Top-level comments support default or newest-first order. The service uses its default order unless you request otherwise."
       },
       {
-        "question": "Can this skill post or change my account?",
-        "answer": "The documented workflow is read-only and excludes posting or account changes. The supplied files do not include the external CLI implementation."
+        "question": "What happens if retrieval stops early?",
+        "answer": "The skill reports partial coverage and keeps the returned items. It can resume with the returned cursor after the error is resolved."
       },
       {
-        "question": "How should incomplete retrieval be handled?",
-        "answer": "Preserve returned items and report incomplete coverage. Resume only with a valid continuation token, retaining the original page and item limits."
+        "question": "Can this skill post or modify comments?",
+        "answer": "No. It retrieves and analyzes discussion data without posting comments or changing a Zhihu account."
       }
     ]
   },
@@ -996,7 +1196,7 @@
       "name": "SKILL.md",
       "type": "file",
       "path": "SKILL.md",
-      "lines": 107
+      "lines": 115
     }
   ]
 }

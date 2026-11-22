@@ -1,15 +1,15 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-11-02T11:56:32.826Z",
+    "generated_at": "2026-11-18T15:24:11.854Z",
     "slug": "devinchen2014-douyin-content-research",
-    "source_url": "https://github.com/devinchen2014/socialdatax-skills/tree/c14b6adea4ba2b551557115cdfffde4c17375cbf/modelscope-skills/douyin-content-research",
-    "source_ref": "c14b6adea4ba2b551557115cdfffde4c17375cbf",
+    "source_url": "https://github.com/devinchen2014/socialdatax-skills/tree/bfe68d5567702709d07b820222e10884268baa62/modelscope-skills/douyin-content-research",
+    "source_ref": "bfe68d5567702709d07b820222e10884268baa62",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
-    "content_hash": "5e4ac7726f24c8dcd0868f81fccd0e5129f534bb7e4421ca34bd5d0642a5f803",
-    "tree_hash": "d9ca2d91e7cef0e7b3effb4de15abb8781473904ba1c72673c4be9f995cc04ad",
+    "content_hash": "e2d25a5937d8e7634c6837b3b6a44432ae9075ebf465cfedd9e973bf51c02e2f",
+    "tree_hash": "44441c08f5e0509254d9760200bc6aa677bf15a3fd7a7d4c4d791e88ce75b145",
     "provenance": {
       "model_effective": "codex",
       "fallback_chain": [
@@ -24,22 +24,23 @@
     "upstream_version_normalized": null,
     "upstream_version_source": "none",
     "upstream_version_status": "missing",
-    "upstream_commit_sha": "c14b6adea4ba2b551557115cdfffde4c17375cbf"
+    "upstream_commit_sha": "bfe68d5567702709d07b820222e10884268baa62",
+    "previous_tree_hash": "d9ca2d91e7cef0e7b3effb4de15abb8781473904ba1c72673c4be9f995cc04ad",
+    "previous_source_ref": "c14b6adea4ba2b551557115cdfffde4c17375cbf"
   },
   "skill": {
     "name": "douyin-content-research",
-    "description": "Research Douyin topics, current rankings, and competitor content through SocialDataX keyword search and hot-search tools.",
-    "summary": "Turn Douyin rankings and filtered content samples into traceable research notes.",
+    "description": "Research Douyin trends and compare keyword search results with SocialDataX. Summarize relevant posts, their sources, and ideas for follow-up.",
+    "summary": "Turn Douyin hot-search rankings and filtered post samples into a content research brief.",
     "icon": "📦",
     "author": "devinchen2014",
-    "license": "MIT",
     "category": "research",
     "tags": [
-      "douyin",
-      "content-research",
-      "socialdatax",
-      "trend-analysis",
-      "competitor-research"
+      "Douyin",
+      "content research",
+      "trend analysis",
+      "social media",
+      "SocialDataX"
     ],
     "supported_tools": [
       "claude",
@@ -53,15 +54,35 @@
     ]
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "high",
     "is_blocked": false,
-    "safe_to_publish": true,
+    "safe_to_publish": false,
     "analysis_status": "ok",
-    "summary": "One finding confirms execution of an unpinned npm package with the service API key available, creating a supply-chain exposure. The remaining 62 findings concern Markdown syntax, intended authentication, service links, or readable Chinese text rather than demonstrated threats. No evidence found of prompt injection or intentional credential exfiltration; the external package implementation was not included for review.",
+    "summary": "Most backtick matches are Markdown, and the Chinese text does not appear obfuscated. The CLI executes an unpinned npm package that can access configured credentials and local files. Shell argument handling, external content, and billing links need safeguards, but no exfiltration or embedded prompt injection was found.",
     "remediation": [
       {
-        "issue": "The direct CLI examples execute socialdatax-skills@latest through npx -y with access to the service credential.",
-        "suggestion": "Pin a reviewed package version and integrity through a lockfile; obtain execution approval and isolate the runtime from unrelated credentials.",
+        "issue": "The CLI runs a mutable npm release in the same environment that holds credentials.",
+        "suggestion": "Use a reviewed, exact package version and verify its integrity before execution. Require consent before installing it and give it only the credential and permissions it needs.",
+        "severity": "high"
+      },
+      {
+        "issue": "The documented CLI search does not specify how to pass untrusted values without shell interpretation.",
+        "suggestion": "Pass keywords and pagination cursors as separate process arguments without invoking a shell. Use a vetted MCP connection when the client cannot pass arguments safely.",
+        "severity": "high"
+      },
+      {
+        "issue": "The CLI can read credentials from the environment or a persistent user file.",
+        "suggestion": "Use a narrow-scope service credential from an OS keyring or managed secret store where available. Keep diagnostics limited to credential availability and source.",
+        "severity": "high"
+      },
+      {
+        "issue": "Returned post text and links are not explicitly marked as untrusted.",
+        "suggestion": "Treat returned titles, descriptions, and links as data only. Do not execute instructions from results or follow returned links without separate user approval.",
+        "severity": "medium"
+      },
+      {
+        "issue": "The billing workflow may surface a URL supplied in an error response.",
+        "suggestion": "Use the fixed SocialDataX billing URL rather than a URL returned in an error. Leave payment decisions and navigation to the user.",
         "severity": "medium"
       }
     ],
@@ -86,52 +107,52 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 31,
-            "line_end": 39
+            "line_start": 26,
+            "line_end": 26
           },
           {
             "file": "SKILL.md",
-            "line_start": 39,
-            "line_end": 44
+            "line_start": 27,
+            "line_end": 27
           },
           {
             "file": "SKILL.md",
-            "line_start": 44,
-            "line_end": 47
+            "line_start": 28,
+            "line_end": 28
           },
           {
             "file": "SKILL.md",
-            "line_start": 47,
-            "line_end": 47
+            "line_start": 29,
+            "line_end": 29
           },
           {
             "file": "SKILL.md",
-            "line_start": 48,
-            "line_end": 49
+            "line_start": 37,
+            "line_end": 45
           },
           {
             "file": "SKILL.md",
-            "line_start": 49,
+            "line_start": 45,
             "line_end": 50
           },
           {
             "file": "SKILL.md",
             "line_start": 50,
-            "line_end": 51
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 51,
-            "line_end": 52
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 52,
-            "line_end": 52
+            "line_end": 53
           },
           {
             "file": "SKILL.md",
             "line_start": 53,
+            "line_end": 53
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 54,
+            "line_end": 55
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 55,
             "line_end": 56
           },
           {
@@ -142,17 +163,17 @@
           {
             "file": "SKILL.md",
             "line_start": 57,
-            "line_end": 57
+            "line_end": 58
           },
           {
             "file": "SKILL.md",
             "line_start": 58,
-            "line_end": 60
+            "line_end": 58
           },
           {
             "file": "SKILL.md",
-            "line_start": 60,
-            "line_end": 60
+            "line_start": 59,
+            "line_end": 62
           },
           {
             "file": "SKILL.md",
@@ -162,17 +183,17 @@
           {
             "file": "SKILL.md",
             "line_start": 63,
-            "line_end": 64
+            "line_end": 63
           },
           {
             "file": "SKILL.md",
             "line_start": 64,
-            "line_end": 67
+            "line_end": 66
           },
           {
             "file": "SKILL.md",
-            "line_start": 67,
-            "line_end": 68
+            "line_start": 66,
+            "line_end": 66
           },
           {
             "file": "SKILL.md",
@@ -222,42 +243,42 @@
           {
             "file": "SKILL.md",
             "line_start": 81,
-            "line_end": 83
+            "line_end": 82
           },
           {
             "file": "SKILL.md",
-            "line_start": 83,
-            "line_end": 83
+            "line_start": 82,
+            "line_end": 85
           },
           {
             "file": "SKILL.md",
-            "line_start": 91,
-            "line_end": 92
+            "line_start": 85,
+            "line_end": 86
           },
           {
             "file": "SKILL.md",
-            "line_start": 92,
-            "line_end": 92
+            "line_start": 86,
+            "line_end": 87
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 87,
+            "line_end": 89
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 89,
+            "line_end": 89
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 97,
+            "line_end": 98
           },
           {
             "file": "SKILL.md",
             "line_start": 98,
-            "line_end": 99
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 99,
-            "line_end": 101
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 101,
-            "line_end": 103
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 103,
-            "line_end": 104
+            "line_end": 98
           },
           {
             "file": "SKILL.md",
@@ -267,32 +288,27 @@
           {
             "file": "SKILL.md",
             "line_start": 105,
-            "line_end": 105
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 106,
-            "line_end": 106
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 107,
             "line_end": 107
           },
           {
             "file": "SKILL.md",
-            "line_start": 108,
-            "line_end": 108
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 109,
+            "line_start": 107,
             "line_end": 109
           },
           {
             "file": "SKILL.md",
-            "line_start": 110,
+            "line_start": 109,
             "line_end": 110
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 110,
+            "line_end": 111
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 111,
+            "line_end": 111
           },
           {
             "file": "SKILL.md",
@@ -302,22 +318,27 @@
           {
             "file": "SKILL.md",
             "line_start": 113,
-            "line_end": 117
+            "line_end": 113
           },
           {
             "file": "SKILL.md",
-            "line_start": 117,
-            "line_end": 126
+            "line_start": 114,
+            "line_end": 114
           },
           {
             "file": "SKILL.md",
-            "line_start": 126,
-            "line_end": 126
+            "line_start": 115,
+            "line_end": 115
           },
           {
             "file": "SKILL.md",
-            "line_start": 127,
-            "line_end": 128
+            "line_start": 116,
+            "line_end": 116
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 118,
+            "line_end": 118
           }
         ]
       },
@@ -336,8 +357,8 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 128,
-            "line_end": 128
+            "line_start": 136,
+            "line_end": 136
           }
         ]
       },
@@ -356,23 +377,8 @@
           },
           {
             "file": "SKILL.md",
-            "line_start": 117,
-            "line_end": 117
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 127,
-            "line_end": 127
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 129,
-            "line_end": 129
-          },
-          {
-            "file": "SKILL.md",
-            "line_start": 135,
-            "line_end": 135
+            "line_start": 28,
+            "line_end": 28
           }
         ]
       }
@@ -409,64 +415,64 @@
         "snippet": "获取或管理 API Key:访问 <https://socialdatax.com/ai?from=modelscope>,按官网的 API Key 申请/管理入口操作。环境变量名固定使用 `SOCI"
       },
       {
-        "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 31,
-        "line_end": 39,
+        "line_start": 26,
+        "line_end": 26,
+        "snippet": "- 需要 API Key 的 CLI 调用,先在实际执行环境运行 `npx -y socialdatax-skills@latest auth status`;它不调用收费接口,只返回 `apiKey"
+      },
+      {
+        "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 27,
+        "line_end": 27,
+        "snippet": "- 缺少 Key 时,请用户从上述官网获取,在自己打开的本地终端运行 `npx -y socialdatax-skills@latest auth login`,按隐藏输入提示填写。Key 保存到该终"
+      },
+      {
+        "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 28,
+        "line_end": 28,
+        "snippet": "- CLI 每次调用都会读取该私有用户文件,不依赖客户端加载 Shell 配置,不需要改客户端或系统设置。非空 `SOCIALDATAX_API_KEY` 优先,既有旧兼容变量其次,最后读取文件;`s"
+      },
+      {
+        "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 29,
+        "line_end": 29,
+        "snippet": "- 用户完成录入后,在实际业务命令的同一执行环境重新运行 `auth status`。false 时停止业务调用,核对操作系统用户、主目录与文件访问权限;true 只说明凭证可读,鉴权与结果仍以原业务"
+      },
+      {
+        "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 37,
+        "line_end": 45,
         "snippet": "```bash"
       },
       {
-        "id": "external_commands:SKILL.md:39:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 39,
-        "line_end": 44,
-        "snippet": "```"
-      },
-      {
-        "id": "external_commands:SKILL.md:44:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 44,
-        "line_end": 47,
-        "snippet": "- 说明:Douyin `hot-search`:无必填参数。"
-      },
-      {
-        "id": "external_commands:SKILL.md:47:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 47,
-        "line_end": 47,
-        "snippet": "- 说明:Douyin `search --keyword <text>`:使用 `douyin search` 时必填;使用用户真实意图,去掉多余空格,并保持关键词聚焦。"
-      },
-      {
-        "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 48,
-        "line_end": 49,
-        "snippet": "- 说明:Douyin `--sort-type <general|time_descending|like_count_descending>`:可选排序参数;不传就使用默认排序。"
-      },
-      {
-        "id": "external_commands:SKILL.md:49:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 49,
+        "line_start": 45,
         "line_end": 50,
-        "snippet": "- 说明:Douyin `--publish-time-range <all|day|week|half_year>`:可选发布时间筛选;不传表示不限制发布时间。"
+        "snippet": "```"
       },
       {
         "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
@@ -475,28 +481,8 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 50,
-        "line_end": 51,
-        "snippet": "- 说明:Douyin `--duration-range <all|under_1_minute|one_to_five_minutes|over_5_minutes>`:可选时长筛选;不传表示不限"
-      },
-      {
-        "id": "external_commands:SKILL.md:51:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 51,
-        "line_end": 52,
-        "snippet": "- 说明:Douyin `--content-type <all|video|image>`:可选内容类型筛选;不传表示包含全部内容类型。"
-      },
-      {
-        "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 52,
-        "line_end": 52,
-        "snippet": "- 说明:Douyin `--pages <n>`:从当前起点继续获取并合并 N 页搜索结果;如果返回了 `next_page_token`,可继续续页。"
+        "line_end": 53,
+        "snippet": "- 说明:Douyin `hot-search`:无必填参数。"
       },
       {
         "id": "external_commands:SKILL.md:53:ruby-shell-backtick-execution",
@@ -505,8 +491,28 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 53,
+        "line_end": 53,
+        "snippet": "- 说明:Douyin `search --keyword <text>`:使用 `douyin search` 时必填;使用用户真实意图,去掉多余空格,并保持关键词聚焦。"
+      },
+      {
+        "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 54,
+        "line_end": 55,
+        "snippet": "- 说明:Douyin `--sort-type <general|time_descending|like_count_descending>`:可选排序参数;不传就使用默认排序。"
+      },
+      {
+        "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 55,
         "line_end": 56,
-        "snippet": "- 可选:`--max-items <n>`:收集到 N 条搜索结果后停止。"
+        "snippet": "- 说明:Douyin `--publish-time-range <all|day|week|half_year>`:可选发布时间筛选;不传表示不限制发布时间。"
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
@@ -516,7 +522,7 @@
         "file": "SKILL.md",
         "line_start": 56,
         "line_end": 57,
-        "snippet": "- 可选:`--pretty`:只影响输出格式,不改变实际请求结果。"
+        "snippet": "- 说明:Douyin `--duration-range <all|under_1_minute|one_to_five_minutes|over_5_minutes>`:可选时长筛选;不传表示不限"
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
@@ -525,8 +531,8 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 57,
-        "line_end": 57,
-        "snippet": "- 说明:Douyin `--page-token <next_page_token>`:这是不透明的分页 token;第一页不要传。继续同一条搜索链路时,只能原样传回完整返回的 `next_page"
+        "line_end": 58,
+        "snippet": "- 说明:Douyin `--content-type <all|video|image>`:可选内容类型筛选;不传表示包含全部内容类型。"
       },
       {
         "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
@@ -535,18 +541,18 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 58,
-        "line_end": 60,
-        "snippet": "- 可选:`--source-client socialdatax-skills --source-platform modelscope --source-skill douyin-content-"
+        "line_end": 58,
+        "snippet": "- 说明:Douyin `--pages <n>`:从当前起点继续获取并合并 N 页搜索结果;如果返回了 `next_page_token`,可继续续页。"
       },
       {
-        "id": "external_commands:SKILL.md:60:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 60,
-        "line_end": 60,
-        "snippet": "如果用户要看当前抖音热榜,使用 `douyin hot-search`;这个命令不需要 `--keyword`。"
+        "line_start": 59,
+        "line_end": 62,
+        "snippet": "- 可选:`--max-items <n>`:收集到 N 条搜索结果后停止。"
       },
       {
         "id": "external_commands:SKILL.md:62:ruby-shell-backtick-execution",
@@ -556,7 +562,7 @@
         "file": "SKILL.md",
         "line_start": 62,
         "line_end": 63,
-        "snippet": "- `general`:默认排序。"
+        "snippet": "- 可选:`--pretty`:只影响输出格式,不改变实际请求结果。"
       },
       {
         "id": "external_commands:SKILL.md:63:ruby-shell-backtick-execution",
@@ -565,8 +571,8 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 63,
-        "line_end": 64,
-        "snippet": "- `time_descending`:按发布时间从新到旧。"
+        "line_end": 63,
+        "snippet": "- 说明:Douyin `--page-token <next_page_token>`:这是不透明的分页 token;第一页不要传。继续同一条搜索链路时,只能原样传回完整返回的 `next_page"
       },
       {
         "id": "external_commands:SKILL.md:64:ruby-shell-backtick-execution",
@@ -575,18 +581,18 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 64,
-        "line_end": 67,
-        "snippet": "- `like_count_descending`:按点赞数从高到低。"
+        "line_end": 66,
+        "snippet": "- 可选:`--source-client socialdatax-skills --source-platform modelscope --source-skill douyin-content-"
       },
       {
-        "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:66:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 67,
-        "line_end": 68,
-        "snippet": "- `all`:不限制发布时间。"
+        "line_start": 66,
+        "line_end": 66,
+        "snippet": "如果用户要看当前抖音热榜,使用 `douyin hot-search`;这个命令不需要 `--keyword`。"
       },
       {
         "id": "external_commands:SKILL.md:68:ruby-shell-backtick-execution",
@@ -596,7 +602,7 @@
         "file": "SKILL.md",
         "line_start": 68,
         "line_end": 69,
-        "snippet": "- `day`:一天内发布。"
+        "snippet": "- `general`:默认排序。"
       },
       {
         "id": "external_commands:SKILL.md:69:ruby-shell-backtick-execution",
@@ -606,7 +612,7 @@
         "file": "SKILL.md",
         "line_start": 69,
         "line_end": 70,
-        "snippet": "- `week`:一周内发布。"
+        "snippet": "- `time_descending`:按发布时间从新到旧。"
       },
       {
         "id": "external_commands:SKILL.md:70:ruby-shell-backtick-execution",
@@ -616,7 +622,7 @@
         "file": "SKILL.md",
         "line_start": 70,
         "line_end": 73,
-        "snippet": "- `half_year`:半年内发布。"
+        "snippet": "- `like_count_descending`:按点赞数从高到低。"
       },
       {
         "id": "external_commands:SKILL.md:73:ruby-shell-backtick-execution",
@@ -626,7 +632,7 @@
         "file": "SKILL.md",
         "line_start": 73,
         "line_end": 74,
-        "snippet": "- `all`:不限制时长。"
+        "snippet": "- `all`:不限制发布时间。"
       },
       {
         "id": "external_commands:SKILL.md:74:ruby-shell-backtick-execution",
@@ -636,7 +642,7 @@
         "file": "SKILL.md",
         "line_start": 74,
         "line_end": 75,
-        "snippet": "- `under_1_minute`:1 分钟以内。"
+        "snippet": "- `day`:一天内发布。"
       },
       {
         "id": "external_commands:SKILL.md:75:ruby-shell-backtick-execution",
@@ -646,7 +652,7 @@
         "file": "SKILL.md",
         "line_start": 75,
         "line_end": 76,
-        "snippet": "- `one_to_five_minutes`:1 到 5 分钟。"
+        "snippet": "- `week`:一周内发布。"
       },
       {
         "id": "external_commands:SKILL.md:76:ruby-shell-backtick-execution",
@@ -656,7 +662,7 @@
         "file": "SKILL.md",
         "line_start": 76,
         "line_end": 79,
-        "snippet": "- `over_5_minutes`:5 分钟以上。"
+        "snippet": "- `half_year`:半年内发布。"
       },
       {
         "id": "external_commands:SKILL.md:79:ruby-shell-backtick-execution",
@@ -666,7 +672,7 @@
         "file": "SKILL.md",
         "line_start": 79,
         "line_end": 80,
-        "snippet": "- `all`:全部内容类型。"
+        "snippet": "- `all`:不限制时长。"
       },
       {
         "id": "external_commands:SKILL.md:80:ruby-shell-backtick-execution",
@@ -676,7 +682,7 @@
         "file": "SKILL.md",
         "line_start": 80,
         "line_end": 81,
-        "snippet": "- `video`:视频作品。"
+        "snippet": "- `under_1_minute`:1 分钟以内。"
       },
       {
         "id": "external_commands:SKILL.md:81:ruby-shell-backtick-execution",
@@ -685,38 +691,68 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 81,
-        "line_end": 83,
+        "line_end": 82,
+        "snippet": "- `one_to_five_minutes`:1 到 5 分钟。"
+      },
+      {
+        "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 82,
+        "line_end": 85,
+        "snippet": "- `over_5_minutes`:5 分钟以上。"
+      },
+      {
+        "id": "external_commands:SKILL.md:85:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 85,
+        "line_end": 86,
+        "snippet": "- `all`:全部内容类型。"
+      },
+      {
+        "id": "external_commands:SKILL.md:86:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 86,
+        "line_end": 87,
+        "snippet": "- `video`:视频作品。"
+      },
+      {
+        "id": "external_commands:SKILL.md:87:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 87,
+        "line_end": 89,
         "snippet": "- `image`:图文内容。"
       },
       {
-        "id": "external_commands:SKILL.md:83:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:89:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 83,
-        "line_end": 83,
+        "line_start": 89,
+        "line_end": 89,
         "snippet": "命令返回 JSON,包含 `platform`、`tool`、`arguments` 和 `data`。搜索支持 `--pages` 和 `--max-items`,但不支持 `--all`,因为搜索"
       },
       {
-        "id": "external_commands:SKILL.md:91:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:97:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 91,
-        "line_end": 92,
+        "line_start": 97,
+        "line_end": 98,
         "snippet": "抖音搜索结果需要可追溯时,保留 `content_type`。"
-      },
-      {
-        "id": "external_commands:SKILL.md:92:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 92,
-        "line_end": 92,
-        "snippet": "抖音图文搜索结果中,使用返回的 `images`;当 `video.media_type=\"audio\"` 时,把它当作音频播放资源,不要当作视频作品。"
       },
       {
         "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
@@ -725,38 +761,8 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 98,
-        "line_end": 99,
-        "snippet": "- `douyin_get_hot_search_list`"
-      },
-      {
-        "id": "external_commands:SKILL.md:99:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 99,
-        "line_end": 101,
-        "snippet": "- `douyin_search_videos`"
-      },
-      {
-        "id": "external_commands:SKILL.md:101:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 101,
-        "line_end": 103,
-        "snippet": "如果当前 Agent 已可直接调用 MCP 工具,调用 `douyin_get_hot_search_list` 时不要传关键词参数。"
-      },
-      {
-        "id": "external_commands:SKILL.md:103:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 103,
-        "line_end": 104,
-        "snippet": "抖音 MCP 调用 `douyin_search_videos`:"
+        "line_end": 98,
+        "snippet": "抖音图文搜索结果中,使用返回的 `images`;当 `video.media_type=\"audio\"` 时,把它当作音频播放资源,不要当作视频作品。"
       },
       {
         "id": "external_commands:SKILL.md:104:ruby-shell-backtick-execution",
@@ -766,7 +772,7 @@
         "file": "SKILL.md",
         "line_start": 104,
         "line_end": 105,
-        "snippet": "- `keyword`:必填搜索词或主题;使用用户真实意图,并去掉多余空格。"
+        "snippet": "- `douyin_get_hot_search_list`"
       },
       {
         "id": "external_commands:SKILL.md:105:ruby-shell-backtick-execution",
@@ -775,18 +781,8 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 105,
-        "line_end": 105,
-        "snippet": "- `page_token`:可选的不透明分页 token。继续同一条搜索链路时,只能原样传回完整返回的 `next_page_token`,不能截断、改写、脱敏、重建,或用省略号替换中间内容。"
-      },
-      {
-        "id": "external_commands:SKILL.md:106:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 106,
-        "line_end": 106,
-        "snippet": "调用 `douyin_search_videos` 时不要传 `page`;第一页也不要传 `page_token`。"
+        "line_end": 107,
+        "snippet": "- `douyin_search_videos`"
       },
       {
         "id": "external_commands:SKILL.md:107:ruby-shell-backtick-execution",
@@ -795,18 +791,8 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 107,
-        "line_end": 107,
-        "snippet": "- `sort_type`:可选排序参数,可选值为 `general`, `time_descending`, `like_count_descending`;不传就使用默认排序。"
-      },
-      {
-        "id": "external_commands:SKILL.md:108:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 108,
-        "line_end": 108,
-        "snippet": "- `publish_time_range`:可选发布时间筛选,可选值为 `all`、`day`、`week`、`half_year`;不传表示不限制发布时间。"
+        "line_end": 109,
+        "snippet": "如果当前 Agent 已可直接调用 MCP 工具,调用 `douyin_get_hot_search_list` 时不要传关键词参数。"
       },
       {
         "id": "external_commands:SKILL.md:109:ruby-shell-backtick-execution",
@@ -815,8 +801,8 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 109,
-        "line_end": 109,
-        "snippet": "- `duration_range`:可选时长筛选,可选值为 `all`, `under_1_minute`, `one_to_five_minutes`, `over_5_minutes`;不传表示"
+        "line_end": 110,
+        "snippet": "抖音 MCP 调用 `douyin_search_videos`:"
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
@@ -825,8 +811,18 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 110,
-        "line_end": 110,
-        "snippet": "- `content_type`:可选内容类型筛选,可选值为 `all`, `video`, `image`;不传表示包含全部内容类型。"
+        "line_end": 111,
+        "snippet": "- `keyword`:必填搜索词或主题;使用用户真实意图,并去掉多余空格。"
+      },
+      {
+        "id": "external_commands:SKILL.md:111:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 111,
+        "line_end": 111,
+        "snippet": "- `page_token`:可选的不透明分页 token。继续同一条搜索链路时,只能原样传回完整返回的 `next_page_token`,不能截断、改写、脱敏、重建,或用省略号替换中间内容。"
       },
       {
         "id": "external_commands:SKILL.md:112:ruby-shell-backtick-execution",
@@ -836,7 +832,7 @@
         "file": "SKILL.md",
         "line_start": 112,
         "line_end": 112,
-        "snippet": "抖音只有在 `next_page_token` 非空时才继续翻页;同一个关键词和筛选条件链路下,把完整返回的 `next_page_token` 原样作为 `page_token` 传回。"
+        "snippet": "调用 `douyin_search_videos` 时不要传 `page`;第一页也不要传 `page_token`。"
       },
       {
         "id": "external_commands:SKILL.md:113:ruby-shell-backtick-execution",
@@ -845,68 +841,88 @@
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
         "line_start": 113,
-        "line_end": 117,
+        "line_end": 113,
+        "snippet": "- `sort_type`:可选排序参数,可选值为 `general`, `time_descending`, `like_count_descending`;不传就使用默认排序。"
+      },
+      {
+        "id": "external_commands:SKILL.md:114:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 114,
+        "line_end": 114,
+        "snippet": "- `publish_time_range`:可选发布时间筛选,可选值为 `all`、`day`、`week`、`half_year`;不传表示不限制发布时间。"
+      },
+      {
+        "id": "external_commands:SKILL.md:115:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 115,
+        "line_end": 115,
+        "snippet": "- `duration_range`:可选时长筛选,可选值为 `all`, `under_1_minute`, `one_to_five_minutes`, `over_5_minutes`;不传表示"
+      },
+      {
+        "id": "external_commands:SKILL.md:116:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 116,
+        "line_end": 116,
+        "snippet": "- `content_type`:可选内容类型筛选,可选值为 `all`, `video`, `image`;不传表示包含全部内容类型。"
+      },
+      {
+        "id": "external_commands:SKILL.md:118:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 118,
+        "line_end": 118,
+        "snippet": "抖音只有在 `next_page_token` 非空时才继续翻页;同一个关键词和筛选条件链路下,把完整返回的 `next_page_token` 原样作为 `page_token` 传回。"
+      },
+      {
+        "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
+        "category": "external_commands",
+        "severity": "medium",
+        "pattern": "Ruby/shell backtick execution",
+        "file": "SKILL.md",
+        "line_start": 119,
+        "line_end": 131,
         "snippet": "不要只因为某一页 `items` 为空就判断没有更多结果。"
       },
       {
-        "id": "external_commands:SKILL.md:117:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 117,
-        "line_end": 126,
-        "snippet": "这是只读 skill。运行时使用用户环境变量中的 `SOCIALDATAX_API_KEY`;生成的 Skill 文件不包含 API Key。不会读取本地浏览器数据,也不会执行登录、发帖、点赞、评论或"
+        "line_start": 131,
+        "line_end": 134,
+        "snippet": "- 凭证来源排查:先确认本次调用使用 CLI 还是 MCP。CLI 在实际执行环境中用 `auth status` 确认环境或本地文件来源;MCP 检查当前连接实际使用的鉴权配置,不要求另设本地 CL"
       },
       {
-        "id": "external_commands:SKILL.md:126:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:134:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 126,
-        "line_end": 126,
+        "line_start": 134,
+        "line_end": 134,
         "snippet": "- CLI 退出码为 1 且输出 `partial: true` 时,保留 `data.items` 和错误,明确结果不完整。此时按以下续页规则恢复,不适用原命令重跑建议;错误解决后(包括充值后),仅"
       },
       {
-        "id": "external_commands:SKILL.md:127:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:136:ruby-shell-backtick-execution",
         "category": "external_commands",
         "severity": "medium",
         "pattern": "Ruby/shell backtick execution",
         "file": "SKILL.md",
-        "line_start": 127,
-        "line_end": 128,
-        "snippet": "- 非余额不足的网络或 API 异常:保留错误信息,检查 `SOCIALDATAX_API_KEY`、参数和链接格式后原样重试一次。"
-      },
-      {
-        "id": "external_commands:SKILL.md:128:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 128,
-        "line_end": 129,
+        "line_start": 136,
+        "line_end": 143,
         "snippet": "- 如果返回 `insufficient_balance` 或“积分不足”:不要重复重试;展示错误中的官方充值链接(https://socialdatax.com/dashboard/billing,"
-      },
-      {
-        "id": "external_commands:SKILL.md:129:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 129,
-        "line_end": 135,
-        "snippet": "- 如果用户已经充值但仍提示余额不足:确认当前环境变量 `SOCIALDATAX_API_KEY` 是否来自刚充值的同一个账号;必要时重新复制官网后台的 API Key。"
-      },
-      {
-        "id": "external_commands:SKILL.md:135:ruby-shell-backtick-execution",
-        "category": "external_commands",
-        "severity": "medium",
-        "pattern": "Ruby/shell backtick execution",
-        "file": "SKILL.md",
-        "line_start": 135,
-        "line_end": 135,
-        "snippet": "- 调用失败:先确认 `SOCIALDATAX_API_KEY` 已配置;如果是 `insufficient_balance` 或“积分不足”,按上述官方充值链接说明完成充值后,按上述恢复规则继续,不"
       },
       {
         "id": "network:SKILL.md:7:hardcoded-url",
@@ -916,7 +932,7 @@
         "file": "SKILL.md",
         "line_start": 7,
         "line_end": 7,
-        "snippet": "metadata: {\"openclaw\":{\"requires\":{\"env\":[\"SOCIALDATAX_API_KEY\"],\"bins\":[\"node\",\"npm\"]},\"primaryEnv\""
+        "snippet": "metadata: {\"openclaw\":{\"requires\":{\"env\":[],\"bins\":[]},\"primaryEnv\":\"SOCIALDATAX_API_KEY\",\"install\":"
       },
       {
         "id": "network:SKILL.md:25:hardcoded-url",
@@ -929,13 +945,13 @@
         "snippet": "获取或管理 API Key:访问 <https://socialdatax.com/ai?from=modelscope>,按官网的 API Key 申请/管理入口操作。环境变量名固定使用 `SOCI"
       },
       {
-        "id": "network:SKILL.md:128:hardcoded-url",
+        "id": "network:SKILL.md:136:hardcoded-url",
         "category": "network",
         "severity": "low",
         "pattern": "Hardcoded URL",
         "file": "SKILL.md",
-        "line_start": 128,
-        "line_end": 128,
+        "line_start": 136,
+        "line_end": 136,
         "snippet": "- 如果返回 `insufficient_balance` 或“积分不足”:不要重复重试;展示错误中的官方充值链接(https://socialdatax.com/dashboard/billing,"
       },
       {
@@ -946,7 +962,7 @@
         "file": "SKILL.md",
         "line_start": 7,
         "line_end": 7,
-        "snippet": "metadata: {\"openclaw\":{\"requires\":{\"env\":[\"SOCIALDATAX_API_KEY\"],\"bins\":[\"node\",\"npm\"]},\"primaryEnv\""
+        "snippet": "metadata: {\"openclaw\":{\"requires\":{\"env\":[],\"bins\":[]},\"primaryEnv\":\"SOCIALDATAX_API_KEY\",\"install\":"
       },
       {
         "id": "env_access:SKILL.md:25:generic-api-secret-keys",
@@ -959,50 +975,30 @@
         "snippet": "获取或管理 API Key:访问 <https://socialdatax.com/ai?from=modelscope>,按官网的 API Key 申请/管理入口操作。环境变量名固定使用 `SOCI"
       },
       {
-        "id": "env_access:SKILL.md:117:generic-api-secret-keys",
+        "id": "env_access:SKILL.md:28:generic-api-secret-keys",
         "category": "env_access",
         "severity": "high",
         "pattern": "Generic API/secret keys",
         "file": "SKILL.md",
-        "line_start": 117,
-        "line_end": 117,
-        "snippet": "这是只读 skill。运行时使用用户环境变量中的 `SOCIALDATAX_API_KEY`;生成的 Skill 文件不包含 API Key。不会读取本地浏览器数据,也不会执行登录、发帖、点赞、评论或"
+        "line_start": 28,
+        "line_end": 28,
+        "snippet": "- CLI 每次调用都会读取该私有用户文件,不依赖客户端加载 Shell 配置,不需要改客户端或系统设置。非空 `SOCIALDATAX_API_KEY` 优先,既有旧兼容变量其次,最后读取文件;`s"
       },
       {
-        "id": "env_access:SKILL.md:127:generic-api-secret-keys",
-        "category": "env_access",
+        "id": "sensitive:SKILL.md:27:credential-json-file",
+        "category": "sensitive",
         "severity": "high",
-        "pattern": "Generic API/secret keys",
+        "pattern": "Credential JSON file",
         "file": "SKILL.md",
-        "line_start": 127,
-        "line_end": 127,
-        "snippet": "- 非余额不足的网络或 API 异常:保留错误信息,检查 `SOCIALDATAX_API_KEY`、参数和链接格式后原样重试一次。"
+        "line_start": 27,
+        "line_end": 27,
+        "snippet": "- 缺少 Key 时,请用户从上述官网获取,在自己打开的本地终端运行 `npx -y socialdatax-skills@latest auth login`,按隐藏输入提示填写。Key 保存到该终"
       },
       {
-        "id": "env_access:SKILL.md:129:generic-api-secret-keys",
-        "category": "env_access",
-        "severity": "high",
-        "pattern": "Generic API/secret keys",
-        "file": "SKILL.md",
-        "line_start": 129,
-        "line_end": 129,
-        "snippet": "- 如果用户已经充值但仍提示余额不足:确认当前环境变量 `SOCIALDATAX_API_KEY` 是否来自刚充值的同一个账号;必要时重新复制官网后台的 API Key。"
-      },
-      {
-        "id": "env_access:SKILL.md:135:generic-api-secret-keys",
-        "category": "env_access",
-        "severity": "high",
-        "pattern": "Generic API/secret keys",
-        "file": "SKILL.md",
-        "line_start": 135,
-        "line_end": 135,
-        "snippet": "- 调用失败:先确认 `SOCIALDATAX_API_KEY` 已配置;如果是 `insufficient_balance` 或“积分不足”,按上述官方充值链接说明完成充值后,按上述恢复规则继续,不"
-      },
-      {
-        "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-7-14-bits-possible-b",
+        "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-7-36-bits-possible-b",
         "category": "obfuscation",
         "severity": "high",
-        "pattern": "[HEURISTIC] High file entropy (7.14 bits) - possible binary/encrypted content",
+        "pattern": "[HEURISTIC] High file entropy (7.36 bits) - possible binary/encrypted content",
         "file": "SKILL.md",
         "line_start": 1,
         "line_end": 1,
@@ -1013,536 +1009,744 @@
       {
         "id": "external_commands:SKILL.md:9:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "Backticks mark a generator command inside a Markdown comment, not shell substitution. No execution occurs at this location."
+        "confidence": 0.98,
+        "reason": "The inline command is a maintainer note in a generator comment. It is not part of the skill's runtime workflow."
       },
       {
         "id": "external_commands:SKILL.md:20:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The backticks format the --max-items option in pagination advice. This is prose rather than executable shell syntax."
+        "reason": "The backticks format a result-limit flag, not a command."
       },
       {
         "id": "external_commands:SKILL.md:25:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format the service environment-variable name in setup documentation. No shell evaluation or command is present."
+        "reason": "The backticks format the credential variable name. No shell command or variable expansion appears here."
       },
       {
-        "id": "external_commands:SKILL.md:31:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:26:ruby-shell-backtick-execution",
         "verdict": "confirmed",
         "confidence": 0.99,
-        "reason": "The fenced block instructs npx -y to fetch and execute socialdatax-skills@latest with the API key available. Unpinned package changes could expose credentials or local files.",
-        "severity": "medium"
+        "reason": "The skill tells the agent to run an unpinned npm package without an install prompt. Even the status check runs code where the credential may be present.",
+        "severity": "high"
       },
       {
-        "id": "external_commands:SKILL.md:39:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
+        "id": "external_commands:SKILL.md:27:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
         "confidence": 0.99,
-        "reason": "The matched text closes a Markdown code fence and introduces hot-search documentation. It is not an additional shell execution."
+        "reason": "The user is directed to enter a live key into a mutable npm release. Hidden input does not protect the key from that process.",
+        "severity": "high"
       },
       {
-        "id": "external_commands:SKILL.md:44:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:28:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Inline backticks identify the hot-search subcommand and search syntax. They are Markdown formatting, not Ruby or shell evaluation."
+        "reason": "The backticks label a variable and a credential source. The CLI credential access is real, but the Markdown does not add shell execution."
       },
       {
-        "id": "external_commands:SKILL.md:47:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The line documents the required search keyword argument. Inline code spans do not execute their contents."
+        "id": "external_commands:SKILL.md:29:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.96,
+        "reason": "The prose directs the agent to rerun the documented CLI status check after key entry. That runs the same unpinned package with a configured credential.",
+        "severity": "high"
       },
       {
-        "id": "external_commands:SKILL.md:48:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
+        "id": "external_commands:SKILL.md:37:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
         "confidence": 0.99,
-        "reason": "The matched span describes sorting and publication-time filter options. Its backticks are Markdown delimiters rather than shell substitutions."
+        "reason": "The fence is Markdown, but the skill directs agents to execute the enclosed commands. Both run a mutable npm release without an install prompt.",
+        "severity": "high"
       },
       {
-        "id": "external_commands:SKILL.md:49:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:45:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "This span documents publication-time and duration filters. No executable expression or command substitution is present."
+        "reason": "This closes the CLI example block. Execution of the enclosed commands is adjudicated at the opening fence."
       },
       {
         "id": "external_commands:SKILL.md:50:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format duration and content-type options in prose. The match does not represent shell execution."
-      },
-      {
-        "id": "external_commands:SKILL.md:51:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The span explains content-type filtering and page limits using inline code. There is no shell evaluation."
-      },
-      {
-        "id": "external_commands:SKILL.md:52:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The line names pagination options and a response token field. Markdown backticks do not execute these identifiers."
+        "reason": "The line names a subcommand in the parameter reference and documents that it takes no required parameters."
       },
       {
         "id": "external_commands:SKILL.md:53:ruby-shell-backtick-execution",
         "verdict": "false_positive",
+        "confidence": 0.98,
+        "reason": "The inline text documents search syntax and keyword selection. The separate CLI example carries the shell argument risk."
+      },
+      {
+        "id": "external_commands:SKILL.md:54:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The span describes a result-count limit and output formatting. It contains documentation, not shell backtick execution."
+        "reason": "The pipes separate allowed sort values in documentation. They are not shell pipelines."
+      },
+      {
+        "id": "external_commands:SKILL.md:55:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The inline text lists allowed publish-time filters. It does not execute a command."
       },
       {
         "id": "external_commands:SKILL.md:56:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Inline code formats the pretty-print flag and pagination argument. These are documented options, not evaluated commands."
+        "reason": "The backticks delimit allowed duration filters in prose. They do not start a shell."
       },
       {
         "id": "external_commands:SKILL.md:57:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line requires preserving an opaque pagination token for the same search. Its backticks only format argument and field names."
+        "reason": "The text documents content-type choices, not an executable expression."
       },
       {
         "id": "external_commands:SKILL.md:58:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "This prose documents source-attribution flags and the hot-search command. Markdown code spans do not themselves execute commands."
+        "reason": "The inline spans name a page-count flag and a response field. Neither is shell substitution."
       },
       {
-        "id": "external_commands:SKILL.md:60:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:59:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line explains that hot-search does not require a keyword. Inline command names are not shell backtick evaluation."
+        "reason": "The backticks format the item-cap flag and its numeric placeholder. No command runs on this line."
       },
       {
         "id": "external_commands:SKILL.md:62:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The span lists default and newest-first sort enum values. These literals are not executable code."
+        "reason": "The inline flag controls output formatting. The line only describes it."
       },
       {
         "id": "external_commands:SKILL.md:63:ruby-shell-backtick-execution",
         "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The span describes time and like-count sort values in Markdown. No shell evaluation is present."
+        "confidence": 0.98,
+        "reason": "The spans document a pagination argument and its response field. Passing a cursor as data is not command substitution."
       },
       {
         "id": "external_commands:SKILL.md:64:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The matched range contains sorting and publication-filter documentation. Backticks delimit option literals, not commands."
+        "reason": "The span lists fixed source attribution flags for the separate CLI examples. It is not a standalone command."
       },
       {
-        "id": "external_commands:SKILL.md:67:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The span lists all-time and one-day publication filters. These inline literals cannot execute shell commands."
+        "id": "external_commands:SKILL.md:66:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.95,
+        "reason": "The prose directs the agent to use the CLI hot-search command for ranking requests. The documented invocation runs the unpinned npm package.",
+        "severity": "high"
       },
       {
         "id": "external_commands:SKILL.md:68:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The span defines day and week publication filters. Markdown formatting is mistaken for execution."
+        "reason": "The backticks label the default sorting value. No command is present."
       },
       {
         "id": "external_commands:SKILL.md:69:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The matched text lists week and half-year publication filters. It is an enum description, not executable syntax."
+        "reason": "The inline text is the newest-first sort value, not a shell call."
       },
       {
         "id": "external_commands:SKILL.md:70:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "This span ends the publication-filter list and begins duration filters. Its backticks only format enum values."
+        "reason": "The inline text is the like-count sort value, not executable code."
       },
       {
         "id": "external_commands:SKILL.md:73:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The span defines unrestricted and short-duration filters. No command or shell substitution exists here."
+        "reason": "The span labels the unrestricted publish-time filter. It does not invoke a command."
       },
       {
         "id": "external_commands:SKILL.md:74:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format duration-range enum values in a list. The text is not interpreted as shell code."
+        "reason": "The inline term labels the one-day publish-time filter."
       },
       {
         "id": "external_commands:SKILL.md:75:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The span documents medium and long content durations. It contains literal option names rather than executable expressions."
+        "reason": "The inline term labels the one-week publish-time filter."
       },
       {
         "id": "external_commands:SKILL.md:76:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "This span transitions from duration values to content-type values. Markdown code delimiters have no shell execution semantics."
+        "reason": "The inline term labels the six-month publish-time filter."
       },
       {
         "id": "external_commands:SKILL.md:79:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The listed all and video values are content-type filters. No shell commands are evaluated."
+        "reason": "The backticks label the unrestricted duration setting. They do not evaluate anything."
       },
       {
         "id": "external_commands:SKILL.md:80:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The listed video and image values describe content formats. The backticks are ordinary Markdown syntax."
+        "reason": "The span labels the under-one-minute duration filter."
       },
       {
         "id": "external_commands:SKILL.md:81:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The span describes image content and response fields. Inline identifiers are not command substitutions."
+        "reason": "The span labels the one-to-five-minute duration filter."
       },
       {
-        "id": "external_commands:SKILL.md:83:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:82:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line explains response fields, bounded pagination, and the unsupported --all flag. Backticks format identifiers without executing them."
+        "reason": "The span labels the over-five-minute duration filter."
       },
       {
-        "id": "external_commands:SKILL.md:91:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:85:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The span documents content_type and media fields for traceability. It contains no shell execution."
+        "reason": "The inline value means all supported content types. It does not start a process."
       },
       {
-        "id": "external_commands:SKILL.md:92:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:86:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The inline media_type comparison explains how to interpret audio resources. It is descriptive Markdown, not an executed expression."
+        "reason": "The inline value labels the video content filter."
+      },
+      {
+        "id": "external_commands:SKILL.md:87:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The inline value labels the image-post content filter."
+      },
+      {
+        "id": "external_commands:SKILL.md:89:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The spans name response fields and supported pagination flags. They do not execute a command."
+      },
+      {
+        "id": "external_commands:SKILL.md:97:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The span names a field to preserve for source tracing. The line does not execute code."
       },
       {
         "id": "external_commands:SKILL.md:98:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The span lists the names of two corresponding MCP tools. Tool names inside Markdown are not shell substitutions."
-      },
-      {
-        "id": "external_commands:SKILL.md:99:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "This span names MCP tools and describes hot-search arguments. There is no Ruby or shell execution syntax."
-      },
-      {
-        "id": "external_commands:SKILL.md:101:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The text documents invoking already available MCP tools for the stated research task. Backticks merely identify those tools."
-      },
-      {
-        "id": "external_commands:SKILL.md:103:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The span introduces the search tool and required keyword field. Markdown inline code is not shell evaluation."
+        "reason": "The inline text describes response fields and when to classify media as audio. It is not evaluated as code."
       },
       {
         "id": "external_commands:SKILL.md:104:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The text documents keyword and page-token arguments for the MCP search tool. No shell commands are constructed here."
+        "reason": "The entry names the hot-search MCP tool, not a shell executable."
       },
       {
         "id": "external_commands:SKILL.md:105:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line instructs passing the opaque token back to the same search interface. Backticks format data fields, not executable commands."
-      },
-      {
-        "id": "external_commands:SKILL.md:106:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The line specifies which pagination fields to omit on the first MCP request. It contains only interface documentation."
+        "reason": "The entry names the keyword-search MCP tool, not a shell executable."
       },
       {
         "id": "external_commands:SKILL.md:107:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Backticks format the MCP sort parameter and allowed enum values. No execution occurs at this location."
-      },
-      {
-        "id": "external_commands:SKILL.md:108:ruby-shell-backtick-execution",
-        "verdict": "false_positive",
-        "confidence": 0.99,
-        "reason": "The line lists publication-time filter values for MCP search. These are literal data options, not commands."
+        "reason": "The line describes a configured MCP call without a keyword parameter. It does not direct shell execution."
       },
       {
         "id": "external_commands:SKILL.md:109:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line lists duration filter values using inline code formatting. There is no command substitution."
+        "reason": "The inline text introduces the MCP search parameter list. It is not a shell command."
       },
       {
         "id": "external_commands:SKILL.md:110:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line documents content_type and its allowed values. Markdown delimiters do not execute these strings."
+        "reason": "The keyword is a structured MCP argument. The backticks only format its name."
+      },
+      {
+        "id": "external_commands:SKILL.md:111:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The line returns an opaque cursor to the same search as a structured MCP argument. It is not an instruction to evaluate the cursor."
       },
       {
         "id": "external_commands:SKILL.md:112:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line describes continuing the same search with its returned pagination token. No shell evaluation is involved."
+        "reason": "The line specifies which MCP arguments to omit. It does not start a shell."
       },
       {
         "id": "external_commands:SKILL.md:113:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The span discusses empty result pages and the service credential boundary. Inline field names and environment names are not shell commands."
+        "reason": "The spans list accepted MCP sort values. They are not commands."
       },
       {
-        "id": "external_commands:SKILL.md:117:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:114:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The span describes read-only intent, illustrative output, and failure recovery. Backticks identify credentials and response fields without shell substitution."
+        "reason": "The spans list supported MCP publish-time filters. They are not executable code."
       },
       {
-        "id": "external_commands:SKILL.md:126:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:115:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line describes preserving partial results and reducing remaining pagination limits. Its inline fields and flags are not executable backticks."
+        "reason": "The spans list supported MCP duration filters. They are not executable code."
       },
       {
-        "id": "external_commands:SKILL.md:127:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:116:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The span documents one retry and insufficient-balance handling. Inline error and environment names do not execute shell commands."
+        "reason": "The spans list supported MCP content-type filters. They do not invoke a shell."
       },
       {
-        "id": "external_commands:SKILL.md:128:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:118:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The span discusses billing errors and account-key consistency. Markdown code spans do not perform shell execution."
+        "reason": "The backticks identify the structured cursor fields used to continue the same query. The cursor is passed as data."
       },
       {
-        "id": "external_commands:SKILL.md:129:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:119:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The range contains credential troubleshooting and frequently asked questions. Backticks mark variable and error names rather than executable substitutions."
+        "reason": "The inline text names the result list field when explaining how to interpret an empty page."
       },
       {
-        "id": "external_commands:SKILL.md:135:ruby-shell-backtick-execution",
+        "id": "external_commands:SKILL.md:131:ruby-shell-backtick-execution",
+        "verdict": "confirmed",
+        "confidence": 0.95,
+        "reason": "CLI troubleshooting directs the agent to run the documented status command in the real execution environment. That uses the unpinned package with credential access.",
+        "severity": "high"
+      },
+      {
+        "id": "external_commands:SKILL.md:134:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line describes checking credential configuration and avoiding repeated billing-error retries. Its inline code is documentation only."
+        "reason": "The spans identify partial-result fields and limits for resuming a search. They do not perform shell substitution."
+      },
+      {
+        "id": "external_commands:SKILL.md:136:ruby-shell-backtick-execution",
+        "verdict": "false_positive",
+        "confidence": 0.99,
+        "reason": "The marked span is an API error identifier. The separate billing-link concern does not involve shell execution."
       },
       {
         "id": "network:SKILL.md:7:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL is the declared SocialDataX homepage in metadata. It is not an executable request or a credential-bearing destination."
+        "confidence": 0.99,
+        "reason": "The URL is a provider homepage in metadata. This field does not request a connection or transmit data."
       },
       {
         "id": "network:SKILL.md:25:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The URL directs users to the same service for API-key setup. No secret is embedded or transmitted by this link."
+        "confidence": 0.97,
+        "reason": "The URL directs the user to the provider's key management page. The line does not send credentials to that URL."
       },
       {
-        "id": "network:SKILL.md:128:hardcoded-url",
+        "id": "network:SKILL.md:136:hardcoded-url",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The link points to the declared service billing dashboard for insufficient-balance errors. The text neither automates payment nor embeds credentials."
+        "confidence": 0.96,
+        "reason": "The hardcoded URL is a provider billing fallback for display only. The distinct risk is selecting a link supplied by an error response."
       },
       {
         "id": "env_access:SKILL.md:7:generic-api-secret-keys",
         "verdict": "false_positive",
         "confidence": 0.98,
-        "reason": "Metadata declares the service-specific credential requirement without containing a key value. This supports intended authentication, not arbitrary environment harvesting."
+        "reason": "The metadata declares the expected credential variable name, not its value. It does not itself read or disclose the secret."
       },
       {
         "id": "env_access:SKILL.md:25:generic-api-secret-keys",
         "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The line names the expected environment variable and the service setup page. No credential disclosure or unrelated secret access is requested."
+        "confidence": 0.99,
+        "reason": "The text documents which variable to configure. It contains no key value or instruction to retrieve it into chat."
       },
       {
-        "id": "env_access:SKILL.md:117:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line specifies using the designated service credential for its intended API and excludes embedded keys. No evidence found of unrelated secret collection."
+        "id": "env_access:SKILL.md:28:generic-api-secret-keys",
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The CLI is documented to prefer the service key from the environment. A compromised package could access it even though the workflow does not print it."
       },
       {
-        "id": "env_access:SKILL.md:127:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.97,
-        "reason": "The line asks to check credential configuration after an API error. It does not instruct printing the key or sending it elsewhere."
+        "id": "sensitive:SKILL.md:27:credential-json-file",
+        "verdict": "confirmed",
+        "confidence": 0.99,
+        "reason": "The login flow persists a live key in a user credential file. Private permissions do not prevent access by a process running as that user."
       },
       {
-        "id": "env_access:SKILL.md:129:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.96,
-        "reason": "The line checks that the service key belongs to the account that received credit. It does not request unrelated credentials or secret publication."
-      },
-      {
-        "id": "env_access:SKILL.md:135:generic-api-secret-keys",
-        "verdict": "false_positive",
-        "confidence": 0.98,
-        "reason": "The FAQ asks whether the documented service variable is configured. Naming an authentication variable is not evidence of credential theft."
-      },
-      {
-        "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-7-14-bits-possible-b",
+        "id": "obfuscation:SKILL.md:1:heuristic-high-file-entropy-7-36-bits-possible-b",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The complete file is readable Chinese Markdown with ordinary YAML metadata and command examples. No evidence found of encrypted, binary, or concealed executable content."
+        "reason": "The file is readable Chinese Markdown with ordinary metadata and command examples. No encoded or encrypted payload was found."
       }
     ],
-    "semantic_findings": [],
-    "critical_findings": [],
-    "high_findings": [],
-    "medium_findings": [
+    "semantic_findings": [
       {
-        "title": "Ruby/shell backtick execution",
-        "description": "```bash",
+        "title": "Untrusted Search Values May Reach a Shell",
+        "description": "The CLI example places a user-derived keyword inside a quoted shell command. If an agent substitutes it into shell text, the shell can interpret it instead of passing it as data.",
+        "severity": "high",
         "locations": [
           {
             "file": "SKILL.md",
-            "line_start": 31,
-            "line_end": 39
+            "line_start": 42,
+            "line_end": 44
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 53,
+            "line_end": 53
+          }
+        ],
+        "confidence": 0.83,
+        "confidence_reasoning": "The shell template and user-derived keyword are explicit. The risk depends on how the host constructs the command, which the skill does not specify."
+      },
+      {
+        "title": "Returned Content Is Not Marked as Untrusted",
+        "description": "The workflow asks the agent to use externally supplied titles, descriptions, and links. It does not say to ignore instructions embedded in those results.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 93,
+            "line_end": 98
+          }
+        ],
+        "confidence": 0.88,
+        "confidence_reasoning": "The output guidance confirms that external text enters the analysis without an explicit trust boundary. No malicious result was observed."
+      },
+      {
+        "title": "Error-Supplied Billing Link Lacks Explicit Validation",
+        "description": "The skill tells the agent to display a billing link from an error before using a fixed fallback. An unverified link could misdirect payment.",
+        "severity": "medium",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 136,
+            "line_end": 137
+          }
+        ],
+        "confidence": 0.8,
+        "confidence_reasoning": "The text names the official destination but does not specify how to validate the link from the response. No malicious billing link was observed."
+      }
+    ],
+    "critical_findings": [],
+    "high_findings": [
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- 需要 API Key 的 CLI 调用,先在实际执行环境运行 `npx -y socialdatax-skills@latest auth status`;它不调用收费接口,只返回 `apiKey",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 26,
+            "line_end": 26
           }
         ],
         "review_kind": "capability",
         "source_category": "external_commands",
         "source_severity": "medium",
         "confidence": 0.99,
-        "confidence_reasoning": "The fenced block instructs npx -y to fetch and execute socialdatax-skills@latest with the API key available. Unpinned package changes could expose credentials or local files."
+        "confidence_reasoning": "The skill tells the agent to run an unpinned npm package without an install prompt. Even the status check runs code where the credential may be present."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- 缺少 Key 时,请用户从上述官网获取,在自己打开的本地终端运行 `npx -y socialdatax-skills@latest auth login`,按隐藏输入提示填写。Key 保存到该终",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 27,
+            "line_end": 27
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The user is directed to enter a live key into a mutable npm release. Hidden input does not protect the key from that process."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- 用户完成录入后,在实际业务命令的同一执行环境重新运行 `auth status`。false 时停止业务调用,核对操作系统用户、主目录与文件访问权限;true 只说明凭证可读,鉴权与结果仍以原业务",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 29,
+            "line_end": 29
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.96,
+        "confidence_reasoning": "The prose directs the agent to rerun the documented CLI status check after key entry. That runs the same unpinned package with a configured credential."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "```bash",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 37,
+            "line_end": 45
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.99,
+        "confidence_reasoning": "The fence is Markdown, but the skill directs agents to execute the enclosed commands. Both run a mutable npm release without an install prompt."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "如果用户要看当前抖音热榜,使用 `douyin hot-search`;这个命令不需要 `--keyword`。",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 66,
+            "line_end": 66
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.95,
+        "confidence_reasoning": "The prose directs the agent to use the CLI hot-search command for ranking requests. The documented invocation runs the unpinned npm package."
+      },
+      {
+        "title": "Ruby/shell backtick execution",
+        "description": "- 凭证来源排查:先确认本次调用使用 CLI 还是 MCP。CLI 在实际执行环境中用 `auth status` 确认环境或本地文件来源;MCP 检查当前连接实际使用的鉴权配置,不要求另设本地 CL",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 131,
+            "line_end": 134
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "external_commands",
+        "source_severity": "medium",
+        "confidence": 0.95,
+        "confidence_reasoning": "CLI troubleshooting directs the agent to run the documented status command in the real execution environment. That uses the unpinned package with credential access."
+      },
+      {
+        "title": "Generic API/secret keys",
+        "description": "- CLI 每次调用都会读取该私有用户文件,不依赖客户端加载 Shell 配置,不需要改客户端或系统设置。非空 `SOCIALDATAX_API_KEY` 优先,既有旧兼容变量其次,最后读取文件;`s",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 28,
+            "line_end": 28
+          }
+        ],
+        "review_kind": "capability",
+        "source_category": "env_access",
+        "source_severity": "high",
+        "confidence": 0.99,
+        "confidence_reasoning": "The CLI is documented to prefer the service key from the environment. A compromised package could access it even though the workflow does not print it."
+      },
+      {
+        "title": "Credential JSON file",
+        "description": "- 缺少 Key 时,请用户从上述官网获取,在自己打开的本地终端运行 `npx -y socialdatax-skills@latest auth login`,按隐藏输入提示填写。Key 保存到该终",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 27,
+            "line_end": 27
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "sensitive",
+        "source_severity": "high",
+        "confidence": 0.99,
+        "confidence_reasoning": "The login flow persists a live key in a user credential file. Private permissions do not prevent access by a process running as that user."
+      },
+      {
+        "title": "Untrusted Search Values May Reach a Shell",
+        "description": "The CLI example places a user-derived keyword inside a quoted shell command. If an agent substitutes it into shell text, the shell can interpret it instead of passing it as data.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 42,
+            "line_end": 44
+          },
+          {
+            "file": "SKILL.md",
+            "line_start": 53,
+            "line_end": 53
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "high",
+        "confidence": 0.83,
+        "confidence_reasoning": "The shell template and user-derived keyword are explicit. The risk depends on how the host constructs the command, which the skill does not specify."
+      }
+    ],
+    "medium_findings": [
+      {
+        "title": "Returned Content Is Not Marked as Untrusted",
+        "description": "The workflow asks the agent to use externally supplied titles, descriptions, and links. It does not say to ignore instructions embedded in those results.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 93,
+            "line_end": 98
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.88,
+        "confidence_reasoning": "The output guidance confirms that external text enters the analysis without an explicit trust boundary. No malicious result was observed."
+      },
+      {
+        "title": "Error-Supplied Billing Link Lacks Explicit Validation",
+        "description": "The skill tells the agent to display a billing link from an error before using a fixed fallback. An unverified link could misdirect payment.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 136,
+            "line_end": 137
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "medium",
+        "confidence": 0.8,
+        "confidence_reasoning": "The text names the official destination but does not specify how to validate the link from the response. No malicious billing link was observed."
       }
     ],
     "low_findings": [],
     "dangerous_patterns": [],
     "files_scanned": 2,
-    "total_lines": 146,
+    "total_lines": 154,
     "audit_model": "codex",
-    "audited_at": "2026-11-02T11:56:32.826Z",
-    "agent_auto_install_policy": "allowed",
+    "audited_at": "2026-11-18T15:24:11.854Z",
+    "agent_auto_install_policy": "confirmation_required",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Research Douyin Topics and Content Samples",
-    "value_statement": "Douyin content planning needs current signals and traceable examples, not unsupported trend claims. This skill guides SocialDataX searches and organizes rankings, content samples, and evidence-based observations.",
+    "user_title": "Research Douyin Trends and Content",
+    "value_statement": "Douyin rankings and search results are hard to compare without a clear sample. Use SocialDataX to organize current rankings, relevant posts, and follow-up questions in one brief.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
-      "Douyin research",
-      "SocialDataX",
-      "content planning",
-      "competitor content analysis",
+      "Douyin content research",
       "Douyin hot search",
-      "keyword research",
-      "social media trends"
+      "Douyin keyword search",
+      "SocialDataX",
+      "social media trends",
+      "competitor content analysis"
     ],
     "actual_capabilities": [
-      "Retrieve the current Douyin hot-search list through the documented SocialDataX CLI or corresponding MCP tool.",
-      "Search Douyin content by keyword with sorting, publication-time, duration, and content-type filters.",
-      "Collect bounded search samples using page limits, item limits, and opaque continuation tokens.",
-      "Organize returned titles, authors, links, content IDs, metrics, and publication times when available.",
-      "Separate current rankings, search samples, visible evidence, and analytical judgments.",
-      "Preserve partial results and resume eligible searches without exceeding the original collection limits."
+      "Retrieve current Douyin hot-search rankings without a keyword.",
+      "Search Douyin video and image posts by keyword through the SocialDataX CLI or a configured MCP connection.",
+      "Filter posts by publication window, duration, or content type and sort by recency or likes.",
+      "Continue the same search with a page cursor and use CLI page or item limits to bound the sample.",
+      "Summarize ranked topics and post samples separately, with titles, authors, links or IDs, and metrics when available."
     ],
     "limitations": [
-      "Requires a SocialDataX API key, network access, and sufficient service balance; the CLI also requires Node.js and npm.",
-      "The skill contains instructions, not the external CLI implementation; its examples execute an unpinned npm package.",
-      "Search results are bounded samples, not exhaustive coverage or proof of historical trends.",
-      "The documented workflow does not log in, publish, like, comment, or modify accounts; returned fields can vary."
+      "Live data requires a SocialDataX credential for the CLI or an authenticated MCP connection.",
+      "Research requests can consume service credits, and insufficient balance can interrupt retrieval.",
+      "Search results are samples, not a complete archive or a measure of total audience demand.",
+      "The research workflow cannot post, comment, like, or modify Douyin accounts."
     ],
     "use_cases": [
       {
-        "title": "Select creator topics",
-        "description": "Review current hot-search signals and related content samples to identify relevant topics and follow-up questions.",
-        "target_user": "Short-form content creators"
+        "title": "Prepare a daily trend brief",
+        "description": "Review the current ranking and identify relevant topics for the editorial calendar.",
+        "target_user": "Social media manager"
       },
       {
-        "title": "Compare competitor content",
-        "description": "Search brand or account keywords with consistent filters and compare returned titles, formats, and engagement indicators.",
-        "target_user": "Brand research analysts"
+        "title": "Compare competitor coverage",
+        "description": "Search two brands with the same filters and compare recurring formats using traceable examples.",
+        "target_user": "Brand researcher"
       },
       {
-        "title": "Prepare an editorial evidence brief",
-        "description": "Collect a bounded sample, preserve source references, and separate observations from recommendations for an editorial meeting.",
-        "target_user": "Content operations teams"
+        "title": "Plan a short video",
+        "description": "Review recent videos on a topic and identify a distinct approach supported by the sample.",
+        "target_user": "Video creator"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Review current rankings",
-        "prompt": "Retrieve the current Douyin hot-search list. Summarize relevant topics and returned heat signals without claiming historical growth.",
-        "scenario": "Beginner: inspect current topic signals."
+        "title": "Beginner: Check current trends",
+        "prompt": "Show the top five entries on the current Douyin hot-search list. Include rank and any available popularity signal.",
+        "scenario": "Daily trend review"
       },
       {
-        "title": "Find a focused sample",
-        "prompt": "Search Douyin for [topic] from the past week. Retrieve one page of videos under one minute. Preserve available titles, authors, and links.",
-        "scenario": "Basic: collect a small filtered sample."
+        "title": "Basic: Sample a topic",
+        "prompt": "Search Douyin for [topic] and stop after one page. Include titles, authors, and links or IDs when available.",
+        "scenario": "Initial topic research"
       },
       {
-        "title": "Compare brand samples",
-        "prompt": "Compare [brand A] and [brand B] using past-week video searches sorted by likes. Limit each sample to 20 items. Separate evidence from interpretation.",
-        "scenario": "Intermediate: compare matched search samples."
+        "title": "Intermediate: Compare post formats",
+        "prompt": "Search for [topic] over the past week. Compare one page of short videos with one page of image posts. Separate evidence from interpretation.",
+        "scenario": "Video and image-post comparison"
       },
       {
-        "title": "Build a bounded research brief",
-        "prompt": "Research [topic] using current hot-search signals and at most three search pages or 50 items, whichever comes first. Keep rankings separate from samples. Preserve references, label partial results, and propose three supported content angles.",
-        "scenario": "Advanced: combine sources while enforcing collection limits."
+        "title": "Advanced: Build a competitor brief",
+        "prompt": "Compare [brand A] and [brand B] using the same weekly filters and newest-first sorting. Stop after two pages per brand. Report recurring themes, source links, and sample gaps.",
+        "scenario": "Bounded competitor research"
       }
     ],
     "output_examples": [
       {
-        "input": "Show an example brief structure for current hot-search topics and related samples.",
+        "input": "Show the current Douyin hot-search ranking and suggest one follow-up topic.",
         "output": [
-          "Illustrative format only; no live data was retrieved.",
-          "Current rankings: list returned topics, ranks, and available heat signals.",
-          "Related search samples: list titles, authors, and available source references separately.",
-          "Interpretation: explain relevance and identify questions that need more evidence."
+          "Illustrative snapshot: Home workout routines rank third in this example.",
+          "Follow-up: Search for beginner home workouts to see which formats appear in recent posts.",
+          "The ranking is a current signal, not a forecast."
         ]
       },
       {
-        "input": "Show an example status note when a bounded search returns partial results.",
+        "input": "Compare one page each of video and image posts about small-space storage.",
         "output": [
-          "Illustrative format only; no live query was performed.",
-          "Status: results are incomplete; retained samples remain available for review.",
-          "Evidence: preserve collected references and the reported error.",
-          "Recovery: resolve the error and continue only with a valid returned token and remaining limits.",
-          "Boundary: do not restart automatically when no continuation token is available."
+          "Illustrative video sample: A closet reset demonstrates storage changes before and after.",
+          "Illustrative image-post sample: A drawer organizer guide uses labeled photos.",
+          "Possible content idea: Combine a short demonstration with a reference checklist. One page per format is not enough to compare overall popularity."
         ]
       }
     ],
     "best_practices": [
-      "Start with one page and explicit item limits; increase collection only when the research question needs more evidence.",
-      "Use a reviewed, pinned CLI version and keep the API key in the environment rather than prompts or shared reports.",
-      "Preserve available source references and filters; distinguish rankings, search samples, and interpretations."
+      "Start with one page and choose a page or item limit before expanding.",
+      "Use identical filters for comparisons and include links or content IDs when available.",
+      "State the search scope and separate measured signals from your interpretation."
     ],
     "anti_patterns": [
-      "Treating a current ranking or a small search sample as proof of sustained platform-wide growth.",
-      "Restarting partial searches from the first page or altering opaque pagination tokens.",
-      "Sharing API keys in prompts or repeatedly retrying insufficient-balance errors."
+      "Treating a small or partial sample as complete coverage of Douyin.",
+      "Combining keyword results and hot-search rankings as if they measure the same thing.",
+      "Pasting an API key, private query, or credential file into chat."
     ],
     "faq": [
       {
-        "question": "What do I need before using this skill?",
-        "answer": "You need SocialDataX credentials, sufficient service balance, and network access. Direct CLI use also needs Node.js and npm."
+        "question": "What do I need for live results?",
+        "answer": "Use an authenticated SocialDataX MCP connection or configure a SocialDataX API key for the CLI."
       },
       {
-        "question": "Can I use MCP instead of the CLI?",
-        "answer": "Yes. The skill documents corresponding hot-search and keyword-search MCP tools when those tools are already available."
+        "question": "Do I need a keyword for the hot-search list?",
+        "answer": "No. A keyword is required only for post search."
       },
       {
-        "question": "Does it change my Douyin account?",
-        "answer": "The documented workflow is read-only and excludes login, publishing, likes, comments, and account changes. The external package implementation was not reviewed here."
+        "question": "Can I search only for short videos?",
+        "answer": "Yes. Select video posts and use the under-one-minute duration filter."
       },
       {
-        "question": "Can it retrieve every matching result?",
-        "answer": "No. Search has no stable complete-result boundary. Use page and item limits, and continue only with returned pagination tokens."
+        "question": "Why are some results missing?",
+        "answer": "The filters, service coverage, or a request error can limit the sample. Check whether the results were reported as partial."
       },
       {
-        "question": "What happens when a request fails?",
-        "answer": "Preserve partial results and error details. Resolve the error before continuing with a valid token and remaining limits. Avoid repeated insufficient-balance retries."
+        "question": "Can a search use service credits?",
+        "answer": "Yes. Start with a small sample and expand only when the additional results are useful."
       },
       {
-        "question": "Are the marketplace output examples live results?",
-        "answer": "No. They show illustrative report structures. Actual topics, fields, links, and metrics depend on service responses."
+        "question": "Can this skill change my Douyin account?",
+        "answer": "No. It does not log into Douyin, publish posts, like posts, or leave comments."
       }
     ]
   },
@@ -1564,7 +1768,7 @@
       "name": "SKILL.md",
       "type": "file",
       "path": "SKILL.md",
-      "lines": 138
+      "lines": 146
     }
   ]
 }
