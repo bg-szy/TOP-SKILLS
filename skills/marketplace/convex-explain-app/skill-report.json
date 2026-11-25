@@ -1,10 +1,10 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-09-21T14:46:56.538Z",
-    "slug": "get-convex-convex-explain-app",
-    "source_url": "https://github.com/get-convex/agent-skills/tree/0aa10576821c6928f6a0f498c087af4ee231536e/skills/convex-explain-app",
-    "source_ref": "0aa10576821c6928f6a0f498c087af4ee231536e",
+    "generated_at": "2026-11-23T19:46:37.893Z",
+    "slug": "convex-convex-explain-app",
+    "source_url": "https://github.com/convex/agent-skills/tree/603f4920e15334e26614dcdca44816a4007ee255/skills/convex-explain-app",
+    "source_ref": "603f4920e15334e26614dcdca44816a4007ee255",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
@@ -24,22 +24,21 @@
     "upstream_version_normalized": null,
     "upstream_version_source": "none",
     "upstream_version_status": "missing",
-    "upstream_commit_sha": "0aa10576821c6928f6a0f498c087af4ee231536e"
+    "upstream_commit_sha": "603f4920e15334e26614dcdca44816a4007ee255"
   },
   "skill": {
     "name": "convex-explain-app",
-    "description": "Explains an existing Convex application from its schema and function surface, including relationships, access boundaries, authentication, components, external edges, and request flows.",
-    "summary": "Create a source-grounded architecture map of an existing Convex application without changing it.",
+    "description": "Explain an existing Convex app — data model + relationships, public vs internal functions, auth/ownership model, components, a request→data flow — read from the schema and function surface. Read-only.",
+    "summary": "Map an existing Convex app's tables, functions, access rules, and request flows without changing the app.",
     "icon": "📦",
-    "author": "get-convex",
-    "license": "MIT",
+    "author": "convex",
     "category": "documentation",
     "tags": [
-      "convex",
+      "Convex",
       "architecture",
-      "schema-analysis",
-      "code-documentation",
-      "application-mapping"
+      "data modeling",
+      "codebase onboarding",
+      "authentication"
     ],
     "supported_tools": [
       "claude",
@@ -55,7 +54,7 @@
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "All four static alerts are false positives caused by Markdown backticks around file paths, APIs, and package names. No command execution or semantic security threat is present.",
+    "summary": "All four backtick alerts are false positives because the matched text uses Markdown to label code references. The skill describes read-only inspection of Convex source or deployment metadata. No evidence found of prompt injection, credential disclosure, or unauthorized changes.",
     "remediation": [],
     "risk_factor_evidence": [
       {
@@ -131,25 +130,25 @@
         "id": "external_commands:SKILL.md:10:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 10 uses Markdown backticks to identify functionSpec, not Ruby or shell execution. The surrounding prose only describes read-only application analysis."
+        "reason": "The inline Markdown names the functionSpec introspection surface. It contains no Ruby or shell invocation."
       },
       {
         "id": "external_commands:SKILL.md:14:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 14 uses Markdown backticks around directories, files, and Convex inspection names. It contains no executable command or shell substitution."
+        "reason": "The backticks mark source paths and read-only MCP tool names. The workflow requests metadata through Convex MCP, not shell substitution."
       },
       {
         "id": "external_commands:SKILL.md:15:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 15 uses Markdown backticks to format schema identifiers and a Convex validator example. Nothing instructs the agent to execute a shell command."
+        "reason": "The inline Markdown names the schema file and shows a Convex ID validator as an example. The workflow reads declarations without executing them."
       },
       {
         "id": "external_commands:SKILL.md:18:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "Line 18 uses Markdown backticks to format a package scope. The instruction is to list components and external edges, not execute commands."
+        "reason": "The inline Markdown identifies a Convex package namespace. The instruction inventories existing integrations and environment variable references without requesting invocation or secret values."
       }
     ],
     "semantic_findings": [],
@@ -161,129 +160,129 @@
     "files_scanned": 1,
     "total_lines": 30,
     "audit_model": "codex",
-    "audited_at": "2026-09-21T14:46:56.538Z",
+    "audited_at": "2026-11-23T19:46:37.894Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
-    "user_title": "Explain Your Convex Application Architecture",
-    "value_statement": "Understanding an unfamiliar Convex application requires connecting schemas, functions, authentication, and integrations. This skill produces a structured, source-grounded architecture map without modifying the application.",
+    "user_title": "Explain an Existing Convex App",
+    "value_statement": "A Convex app's structure can be hard to understand when its behavior is spread across many files. This skill maps its tables, functions, access rules, and request flows without changing the app.",
     "seo_keywords": [
-      "Convex application architecture",
-      "Convex schema analysis",
-      "Convex function mapping",
-      "Convex authentication model",
       "Claude",
       "Codex",
       "Claude Code",
-      "application documentation",
-      "data relationship mapping",
-      "request flow analysis"
+      "Convex",
+      "Convex schema",
+      "backend architecture",
+      "public and internal functions",
+      "codebase onboarding",
+      "request flow"
     ],
     "actual_capabilities": [
-      "Maps Convex tables, fields, relationships, and indexes from the application schema.",
-      "Separates public functions from internal functions and summarizes their data access.",
-      "Describes identity establishment and ownership enforcement shown in the source.",
-      "Identifies installed Convex components, HTTP routes, cron jobs, external APIs, and environment variable references.",
-      "Traces representative request flows and presents the results as a scannable architecture map."
+      "List tables and fields, identify ID relationships, and describe the access paths suggested by indexes.",
+      "Separate public and internal queries, mutations, and actions, and summarize what each function does and what it touches.",
+      "Describe how the app establishes identity and enforces ownership, and note when no authentication foundation is evident.",
+      "List configured components, HTTP routes, scheduled jobs, and external APIs referenced by actions.",
+      "Trace one or two representative requests from the caller through the backend to the data it reads or writes.",
+      "Use read-only Convex MCP metadata when a deployment is available, or inspect the source directly."
     ],
     "limitations": [
-      "It describes observed architecture but does not perform a complete security audit.",
-      "It does not modify source files, deployments, schemas, or application data.",
-      "Its accuracy depends on access to the schema and complete function surface.",
-      "It reports ambiguous behavior when the available source does not establish a clear conclusion."
+      "It describes authorization behavior but does not audit for security gaps.",
+      "It does not change source files, write app data, or deploy changes.",
+      "Without access to a deployment, it can explain local source but cannot verify the live function and table metadata.",
+      "It reports ambiguous behavior rather than guessing when the source does not show what happens."
     ],
     "use_cases": [
       {
-        "title": "Onboard to a Convex codebase",
-        "description": "Build a concise map of tables, functions, authentication, integrations, and request flows before making changes.",
-        "target_user": "Developers joining an existing project"
+        "title": "Get oriented in a Convex project",
+        "description": "See how tables relate and which functions clients can call before making a first contribution.",
+        "target_user": "New team engineer"
       },
       {
-        "title": "Prepare architecture documentation",
-        "description": "Turn the current schema and function surface into source-grounded documentation for technical review.",
-        "target_user": "Technical leads and documentation owners"
+        "title": "Prepare an integration handoff",
+        "description": "Document HTTP routes, scheduled jobs, components, and external APIs for the team taking over the app.",
+        "target_user": "Technical lead"
       },
       {
-        "title": "Scope a deeper review",
-        "description": "Identify public surfaces, ownership patterns, and external edges that deserve focused security or readiness analysis.",
-        "target_user": "Security reviewers and platform engineers"
+        "title": "Document existing access rules",
+        "description": "Map identity setup and ownership checks before starting a separate authorization review.",
+        "target_user": "Security reviewer"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Explain the application",
-        "prompt": "Explain this Convex application using its schema and exported functions. Summarize tables, relationships, public functions, internal functions, and authentication.",
-        "scenario": "Use this for a first overview of an unfamiliar project."
+        "title": "Get an app overview",
+        "prompt": "Explain this Convex app using the local source. Start with table relationships and the difference between public and internal functions.",
+        "scenario": "First look at an unfamiliar repository."
       },
       {
-        "title": "Map data and access",
-        "prompt": "Map every Convex table, relationship, index, and function. Show which public and internal functions read or write each table.",
-        "scenario": "Use this when planning a feature that depends on existing data."
+        "title": "Map identity and ownership",
+        "prompt": "Explain how this app identifies callers and checks ownership. Name the fields and checks you find, and flag anything the source does not establish.",
+        "scenario": "Documenting how access is intended to work."
       },
       {
-        "title": "Trace system flows",
-        "prompt": "Explain authentication, ownership checks, components, HTTP routes, cron jobs, and external calls. Trace two representative requests from entry point to data.",
-        "scenario": "Use this to understand boundaries and runtime behavior."
+        "title": "Trace a feature",
+        "prompt": "Trace the task creation and listing flows if they exist. Identify the functions, ownership checks, tables, and indexes involved in each flow.",
+        "scenario": "Preparing to change a feature with linked data."
       },
       {
-        "title": "Produce an architecture handoff",
-        "prompt": "Create a source-grounded Convex architecture handoff. Highlight ambiguous behavior, public exposure, data relationships, ownership enforcement, external edges, and recommended next review steps.",
-        "scenario": "Use this before a security review, migration, or major extension."
+        "title": "Map a deployed backend",
+        "prompt": "Use read-only Convex MCP metadata for the target deployment if available. Explain the function surface, data model, HTTP routes, scheduled jobs, and external integrations. Mark what you could verify only in source.",
+        "scenario": "Preparing a handoff for a deployed app."
       }
     ],
     "output_examples": [
       {
-        "input": "Explain the data model and relationships in this task application.",
-        "output": "The application stores projects, tasks, and users. Tasks belong to projects through projectId and to users through ownerId."
-      },
-      {
-        "input": "Which functions are client-accessible, and what data do they touch?",
+        "input": "Explain the tables and task functions in this project tracker.",
         "output": [
-          "Public queries read projects and tasks for the authenticated user.",
-          "Public mutations create and update tasks after ownership checks.",
-          "Internal functions perform maintenance work and are not directly client-accessible."
+          "Each task belongs to a project and has a user as its owner.",
+          "The public task list query uses the owner index to return only the signed-in user's tasks.",
+          "The reminder sender is an internal action that clients cannot call directly."
         ]
       },
       {
-        "input": "Trace one representative request flow.",
-        "output": "The client calls createTask, identity is verified, ownership is checked, and the task is inserted before listMyTasks reads it by index."
+        "input": "Trace how a reminder reaches the email provider.",
+        "output": [
+          "A scheduled job starts an internal action that reads tasks due for reminders.",
+          "The action sends each reminder through the configured email provider.",
+          "The source identifies the environment variable for the provider credential, but does not show its value."
+        ]
       }
     ],
     "best_practices": [
-      "Provide the complete Convex schema and function surface for the most accurate map.",
-      "Ask the skill to identify uncertainty whenever generated files or deployment details are unavailable.",
-      "Follow the architecture map with a dedicated authorization or launch-readiness review."
+      "Name the target deployment if you want live metadata, so the explanation uses the intended environment.",
+      "Identify a feature or entry point when you need a focused request trace.",
+      "Use the architecture map as input to a separate security review before making changes to access rules."
     ],
     "anti_patterns": [
-      "Do not treat descriptive output as proof that authorization is secure.",
-      "Do not request inferred behavior when the source does not show it.",
-      "Do not use an outdated schema or partial function list as the sole source of truth."
+      "Treating a local source description as proof of what is deployed.",
+      "Assuming a public function has no access checks just because clients can call it.",
+      "Using the skill to request code changes, data writes, or deployment operations."
     ],
     "faq": [
       {
-        "question": "Does this skill change my Convex application?",
-        "answer": "No. It reads available source and deployment metadata to produce documentation."
+        "question": "Do I need a running deployment?",
+        "answer": "No. The skill can inspect the local Convex source when a deployment is not available."
       },
       {
-        "question": "What source files does it use?",
-        "answer": "It relies on the Convex schema, exported function surface, authentication configuration, component configuration, HTTP routes, and cron definitions."
+        "question": "Does this skill modify my app?",
+        "answer": "No. It reads source or deployment metadata and produces an explanation."
       },
       {
-        "question": "Can it inspect a deployed application?",
-        "answer": "Yes, when official read-only deployment tools are available. Otherwise, it analyzes the local source."
+        "question": "Can it tell me which functions clients can call?",
+        "answer": "Yes. It separates public functions from internal functions and summarizes the role of each."
       },
       {
-        "question": "Does it audit authorization vulnerabilities?",
-        "answer": "No. It describes authentication and ownership patterns, then recommends a dedicated authorization review."
+        "question": "Does it check for authorization vulnerabilities?",
+        "answer": "No. It describes the identity and ownership model. Use a separate security review to assess whether the checks are sufficient."
       },
       {
-        "question": "How does it handle missing information?",
-        "answer": "It marks unclear behavior as ambiguous instead of inventing an explanation."
+        "question": "Which integrations does it document?",
+        "answer": "It lists configured Convex components, HTTP routes, scheduled jobs, and external APIs referenced by actions."
       },
       {
-        "question": "What does the final output contain?",
-        "answer": "The output covers data relationships, function visibility, authentication, ownership, components, external edges, representative flows, and appropriate next review steps."
+        "question": "What happens when the code is unclear?",
+        "answer": "The skill identifies what the available source or metadata does not establish instead of inventing behavior."
       }
     ]
   },

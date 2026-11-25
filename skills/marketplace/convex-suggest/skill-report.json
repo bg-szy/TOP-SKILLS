@@ -1,10 +1,10 @@
 {
   "schema_version": "2.0",
   "meta": {
-    "generated_at": "2026-09-07T13:53:31.499Z",
-    "slug": "get-convex-convex-suggest",
-    "source_url": "https://github.com/get-convex/agent-skills/tree/c41ece22681a50d326e54f30d24148a6d46d0c3c/skills/convex-suggest",
-    "source_ref": "c41ece22681a50d326e54f30d24148a6d46d0c3c",
+    "generated_at": "2026-11-23T19:44:41.997Z",
+    "slug": "convex-convex-suggest",
+    "source_url": "https://github.com/convex/agent-skills/tree/603f4920e15334e26614dcdca44816a4007ee255/skills/convex-suggest",
+    "source_ref": "603f4920e15334e26614dcdca44816a4007ee255",
     "model": "codex",
     "analysis_version": "3.0.0",
     "source_type": "community",
@@ -24,22 +24,20 @@
     "upstream_version_normalized": null,
     "upstream_version_source": "none",
     "upstream_version_status": "missing",
-    "upstream_commit_sha": "c41ece22681a50d326e54f30d24148a6d46d0c3c"
+    "upstream_commit_sha": "603f4920e15334e26614dcdca44816a4007ee255"
   },
   "skill": {
     "name": "convex-suggest",
-    "description": "Suggest the matching Convex component when the user hand-rolls a pattern it already solves (crons, sharded-counter, rate-limiter, storage, search, presence, workflow, RAG, prosemirror-sync). Passive — suggest after the task, never interrupt. Never install without consent.",
-    "summary": "Identifies hand-built Convex patterns and suggests one relevant component after the current task.",
+    "description": "Spot custom implementations that a Convex component or built-in feature could replace. Suggest one option after the current task and install it only with explicit consent.",
+    "summary": "Get one Convex recommendation tied to your code or request.",
     "icon": "📦",
-    "author": "get-convex",
-    "license": "MIT",
+    "author": "convex",
     "category": "coding",
     "tags": [
-      "convex",
-      "components",
-      "architecture",
-      "code-review",
-      "backend"
+      "Convex",
+      "backend",
+      "component recommendations",
+      "code review"
     ],
     "supported_tools": [
       "claude",
@@ -53,12 +51,18 @@
     ]
   },
   "security_audit": {
-    "risk_level": "safe",
+    "risk_level": "low",
     "is_blocked": false,
     "safe_to_publish": true,
     "analysis_status": "ok",
-    "summary": "All four static findings are false positives caused by Markdown prose and inline code. The skill contains no executable shell, network, or filesystem operations.",
-    "remediation": [],
+    "summary": "The four static matches are Markdown formatting or examples for matching Convex use cases, not shell execution, email sending, or filesystem operations. Installation requires explicit consent, but the instructions do not require verifying the detector's install hint before following it.",
+    "remediation": [
+      {
+        "issue": "The alternative installation path lacks a verification step.",
+        "suggestion": "Verify the package and installation steps against official Convex documentation. Show the exact steps and obtain separate approval for changes outside the approved component.",
+        "severity": "low"
+      }
+    ],
     "risk_factor_evidence": [
       {
         "factor": "external_commands",
@@ -143,155 +147,182 @@
         "id": "external_commands:SKILL.md:17:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line uses Markdown inline code for a slash command that runs only after explicit user consent. It does not execute Ruby or shell backticks."
+        "reason": "The backticks format a slash command in Markdown, not a Ruby or shell expression. The workflow requires explicit consent before installation."
       },
       {
         "id": "external_commands:SKILL.md:24:ruby-shell-backtick-execution",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The backticks delimit an example expression inside explanatory prose. No command interpreter or execution API is present."
+        "reason": "The inline counter expression illustrates how to cite the user's code. It is not a command or an instruction to evaluate the expression."
       },
       {
         "id": "network:SKILL.md:15:email-sending-capability",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line maps email-related code to a suggested component. It neither sends email nor performs any network request."
+        "reason": "Email and SMTP are cues for recommending Resend. The rule does not send mail or instruct the assistant to connect to an email service."
       },
       {
         "id": "filesystem:SKILL.md:15:node-js-fs-operations",
         "verdict": "false_positive",
         "confidence": 0.99,
-        "reason": "The line mentions fs.write only as a pattern to recognize in user code. The skill performs no filesystem operation."
+        "reason": "The reference to fs.write is a cue for recommending Convex Storage. It is not a filesystem call or an instruction to write files."
       }
     ],
-    "semantic_findings": [],
+    "semantic_findings": [
+      {
+        "title": "Installation hint lacks verification",
+        "description": "After approval for a component, the workflow permits following a detector hint without checking whether its source and actions match what the user approved.",
+        "severity": "low",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 16,
+            "line_end": 17
+          }
+        ],
+        "confidence": 0.65,
+        "confidence_reasoning": "The instructions omit verification of the alternative installation path. No evidence shows that the detector returns unsafe commands."
+      }
+    ],
     "critical_findings": [],
     "high_findings": [],
     "medium_findings": [],
-    "low_findings": [],
+    "low_findings": [
+      {
+        "title": "Installation hint lacks verification",
+        "description": "After approval for a component, the workflow permits following a detector hint without checking whether its source and actions match what the user approved.",
+        "locations": [
+          {
+            "file": "SKILL.md",
+            "line_start": 16,
+            "line_end": 17
+          }
+        ],
+        "review_kind": "security",
+        "source_category": "semantic",
+        "source_severity": "low",
+        "confidence": 0.65,
+        "confidence_reasoning": "The instructions omit verification of the alternative installation path. No evidence shows that the detector returns unsafe commands."
+      }
+    ],
     "dangerous_patterns": [],
     "files_scanned": 1,
     "total_lines": 28,
     "audit_model": "codex",
-    "audited_at": "2026-09-07T13:53:31.499Z",
+    "audited_at": "2026-11-23T19:44:41.998Z",
     "agent_auto_install_policy": "allowed",
     "manual_install_policy": "allowed"
   },
   "content": {
     "user_title": "Find the Right Convex Component",
-    "value_statement": "Developers may rebuild infrastructure that existing Convex components already provide. This skill identifies matching patterns and suggests one focused alternative after completing the current task.",
+    "value_statement": "Custom backend code can duplicate features that Convex already offers. This skill suggests one relevant option after your task and explains what it could replace.",
     "seo_keywords": [
       "Claude",
       "Codex",
       "Claude Code",
       "Convex components",
-      "Convex development",
-      "backend architecture",
+      "Convex backend",
       "component recommendations",
-      "Convex code review",
-      "developer productivity"
+      "sharded counters",
+      "Convex workflows",
+      "Convex Storage"
     ],
     "actual_capabilities": [
-      "Observes Convex code and requests for patterns already handled by supported components.",
-      "Matches scheduling, counters, storage, search, presence, workflows, rate limits, and collaborative editing patterns.",
-      "Suggests one highest-priority component after the current task is complete.",
-      "Explains each recommendation using evidence from the user's code or request.",
-      "Provides an installation hint and waits for explicit consent before installation.",
-      "Avoids repeating declined suggestions or recommending components already installed."
+      "Matches patterns in Convex code snippets or user requests to documented recommendation rules.",
+      "Recognizes examples such as shared counter updates, scheduled jobs, database rate limits, and long-running actions.",
+      "Recommends built-in Convex Storage or full-text search when the observed code fits.",
+      "Suggests one option after the current task, cites the trigger, and provides an installation hint when applicable.",
+      "Skips options that are already installed and does not repeat a declined or ignored suggestion."
     ],
     "limitations": [
-      "The skill recognizes only the patterns and components listed in its detector rules.",
-      "It does not install components without explicit user consent.",
-      "It does not provide suggestions for generic coding tasks unrelated to Convex.",
-      "Recommendations still require developer review for project compatibility and migration effort."
+      "Does not offer recommendations for generic coding questions unrelated to Convex.",
+      "Relies on visible code or stated intent and does not perform a comprehensive dependency audit.",
+      "Does not benchmark performance or verify that a recommendation fits every project constraint.",
+      "Requires explicit consent before installing a recommended component."
     ],
     "use_cases": [
       {
-        "title": "Reduce custom infrastructure",
-        "description": "Identify an existing Convex component when application code recreates scheduling, storage, search, or workflow features.",
-        "target_user": "Convex application developers"
+        "title": "Review a shared counter",
+        "description": "Find out whether a sharded counter fits a Convex mutation that updates the same document under concurrent traffic.",
+        "target_user": "Backend developer"
       },
       {
-        "title": "Review scaling patterns",
-        "description": "Spot shared counters, collection scans, and rate-limit logic that may need purpose-built components.",
-        "target_user": "Backend technical leads"
+        "title": "Assess a custom upload flow",
+        "description": "Check whether Convex Storage fits an application that currently sends attachments to an external storage service.",
+        "target_user": "Full-stack developer"
       },
       {
-        "title": "Guide component adoption",
-        "description": "Give teams one evidence-based recommendation and a clear installation hint without disrupting active work.",
-        "target_user": "Developer experience engineers"
+        "title": "Plan a background job",
+        "description": "Evaluate one relevant Convex component for a job with multiple steps or a concurrency limit.",
+        "target_user": "Platform engineer"
       }
     ],
     "prompt_templates": [
       {
-        "title": "Check one code sample",
-        "prompt": "Review this Convex code and suggest one existing component that replaces a hand-built pattern. Explain the match and wait before installing.",
-        "scenario": "A beginner wants a focused recommendation for one snippet."
+        "title": "Check a Convex snippet",
+        "scenario": "Review one piece of custom backend logic.",
+        "prompt": "Review this Convex mutation. After the review, recommend one component if it matches the shared counter update. Do not install anything."
       },
       {
-        "title": "Review after completing a task",
-        "prompt": "After completing my task, inspect these snippets for duplicate infrastructure patterns. Recommend only the highest-priority Convex component and provide its install hint.",
-        "scenario": "A developer wants passive guidance during implementation."
+        "title": "Review a scheduled job",
+        "scenario": "Assess a recurring process during a bug fix.",
+        "prompt": "Fix the scheduling bug in this Convex task. Afterward, tell me whether the Convex crons component fits this recurring job."
       },
       {
-        "title": "Compare architecture patterns",
-        "prompt": "Compare my concurrency, scheduling, storage, search, and presence patterns against supported Convex components. Cite the triggering code and avoid already installed components.",
-        "scenario": "A technical lead reviews several backend patterns."
+        "title": "Assess search requirements",
+        "scenario": "Decide whether built-in search meets a project need.",
+        "prompt": "Review my hosted search integration and its requirements. Explain whether built-in Convex full-text search fits. Note any requirements you cannot verify."
       },
       {
-        "title": "Audit component opportunities",
-        "prompt": "Audit this Convex architecture for component opportunities. Rank matches internally, present one recommendation, explain scaling benefits, and install only after explicit consent.",
-        "scenario": "An advanced team evaluates component adoption across a system."
+        "title": "Prioritize a backend recommendation",
+        "scenario": "Choose one option in a project with several custom patterns.",
+        "prompt": "Review the import job and installed Convex components. After the review, recommend one missing option. Use job duration, retry requirements, and concurrency limits to explain your choice. Wait for explicit approval before installation."
       }
     ],
     "output_examples": [
       {
-        "input": "A mutation increments one shared likes value for every request.",
-        "output": "Consider the Convex sharded counter component. The shared increment can create contention at scale. I can provide the installation step after your approval."
+        "input": "Our Convex mutation updates the same post's like count every time a user clicks Like.",
+        "output": "Consider @convex-dev/sharded-counter. Your likes mutation updates one shared count, so concurrent requests can conflict. A sharded counter spreads those writes across multiple documents. No component was installed."
       },
       {
-        "input": "A scheduled action uses a recurring timer for cleanup work.",
-        "output": "Consider the Convex crons component. The recurring timer duplicates managed scheduling behavior. I will not install it unless you approve."
-      },
-      {
-        "input": "An application stores uploaded files through a custom external storage path.",
-        "output": "Consider Convex Storage. The upload path matches built-in storage capabilities and may reduce custom integration work. Review migration requirements before adopting it."
+        "input": "Our Convex app uses a hosted search service only to match words in article titles.",
+        "output": "Consider built-in Convex full-text search. Matching words in article titles is the only search requirement you described. A Convex search index could cover that requirement without a separate service."
       }
     ],
     "best_practices": [
-      "Provide relevant Convex code and describe the behavior you need.",
-      "Evaluate the recommendation against current dependencies, scale, and migration costs.",
-      "Approve installation only after confirming the component fits the project."
+      "Provide the relevant Convex snippet or describe the behavior you want.",
+      "List installed components and state any requirements the replacement must meet.",
+      "Verify the proposed package and installation steps against official documentation before approval."
     ],
     "anti_patterns": [
-      "Do not request several unrelated component suggestions in one pass.",
-      "Do not install a recommendation without reviewing its package and migration requirements.",
-      "Do not use this skill for generic code questions unrelated to Convex."
+      "Interrupting the current task to suggest a component.",
+      "Repeating a recommendation after the user declines or ignores it.",
+      "Treating interest in a recommendation as approval to install it."
     ],
     "faq": [
       {
-        "question": "Does this skill install Convex components automatically?",
-        "answer": "No. It waits for explicit consent before running an installation command."
+        "question": "When does the skill offer a recommendation?",
+        "answer": "It offers a recommendation after the current task when it sees a matching pattern in Convex code or in your request."
       },
       {
-        "question": "When does the skill present a suggestion?",
-        "answer": "It presents one suggestion after completing the current task, so it does not interrupt active work."
+        "question": "Will the skill install a component automatically?",
+        "answer": "No. It waits for explicit approval before starting installation."
       },
       {
-        "question": "Can it recommend several components at once?",
-        "answer": "It normally recommends only the highest-priority match. It can discuss more components when the user asks."
+        "question": "Can it suggest built-in Convex features?",
+        "answer": "Yes. The rules include Convex Storage for file uploads and built-in full-text search for matching text."
       },
       {
-        "question": "Which patterns can it recognize?",
-        "answer": "It covers listed patterns for messaging, scheduling, counters, aggregation, workflows, storage, search, presence, RAG, and collaborative editing."
+        "question": "Can it recommend more than one component?",
+        "answer": "It offers one recommendation at a time unless you ask for more."
       },
       {
-        "question": "Will it suggest components already installed?",
-        "answer": "No. Its rules require checking for existing installation before making a recommendation."
+        "question": "Will it recommend an installed component?",
+        "answer": "No. It skips components it knows are already installed. Share your component list if it is not visible."
       },
       {
-        "question": "Does it replace architectural review?",
-        "answer": "No. Developers should verify compatibility, operational needs, and migration effort before adopting a recommendation."
+        "question": "Does it verify that a component meets my requirements?",
+        "answer": "No. The suggestion is based on the code or request it sees. Check the documentation and test the component before replacing existing logic."
       }
     ]
   },
